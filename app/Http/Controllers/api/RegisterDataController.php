@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\AssetClass;
 use App\Models\AssetSubClass;
 use App\Models\Department;
+
 use Illuminate\Http\Request;
 
-class AssetDataController extends Controller
+class RegisterDataController extends Controller
 {
     public function getAssetSubClassesByClass($assetClassId)
     {
@@ -25,12 +26,14 @@ class AssetDataController extends Controller
 
     public function getCostCodesByDepartment($departmentId)
     {
-        $department = $departmentId;
+        $department = Department::find($departmentId);
 
         if (!$department) {
             return response()->json([], 404);
         }
 
-        return response()->json($department->costCodes);
+        return response()->json([
+            'id' => $department->id,
+        ]);
     }
 }

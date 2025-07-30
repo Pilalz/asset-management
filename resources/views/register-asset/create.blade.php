@@ -2,16 +2,6 @@
 
 @section('content')
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <div class="bg-white flex p-5 text-lg justify-between">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -20,7 +10,7 @@
                         <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
                         </svg>
-                        Asset
+                        Action
                     </a>
                 </li>
                 <li>
@@ -28,7 +18,7 @@
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                         </svg>
-                        <a href="{{ route('register-asset.index') }}" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Asset Sub Class</a>
+                        <a href="{{ route('register-asset.index') }}" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Register Asset</a>
                     </div>
                 </li>
                 <li aria-current="page">
@@ -46,9 +36,9 @@
     <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg m-5 bg-white dark:bg-gray-900">
         <form class="max-w mx-auto" action="{{ route('register-asset.store') }}" method="POST">
             @csrf
+
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a Department <span class="text-red-900">*</span></label>
-                {{-- Nama atribut diubah menjadi department_id --}}
                 <select name="department_id" id="department-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option selected value="">Choose a Department</option>
                     @foreach($departments as $department)
@@ -57,14 +47,13 @@
                         </option>
                     @endforeach
                 </select>
-                @error('department_id') {{-- Error message untuk department_id --}}
+                @error('department_id')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a Location <span class="text-red-900">*</span></label>
-                {{-- Nama atribut diubah menjadi location_id --}}
                 <select name="location_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option selected value="">Choose a Location</option>
                     @foreach($locations as $location)
@@ -73,7 +62,7 @@
                         </option>
                     @endforeach
                 </select>
-                @error('location_id') {{-- Error message untuk location_id --}}
+                @error('location_id')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
@@ -97,7 +86,6 @@
                             </tr>
                         </thead>
                         <tbody id="asset-list-body">
-                            {{-- Initial row, or populate with old data if validation fails --}}
                             @php
                                 $initialAssets = old('assets', [[]]); // Start with one empty row or old data
                                 if (empty($initialAssets[0])) { // Ensure at least one empty object if old is empty array
@@ -161,11 +149,11 @@
                                         @enderror
                                     </td>
                                     <td class="px-2 py-4">
-                                        {{-- Disabled input untuk tampilan --}}
+                                        {{-- Disabled input for display --}}
                                         <input type="text" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 cost-code-display-input" value="" disabled readonly>
-                                        {{-- Hidden input untuk mengirimkan ID ke backend --}}
-                                        <input type="hidden" name="assets[{{ $index }}][cost_code_id]" value="{{ old("assets.$index.cost_code_id", $assetData['cost_code_id'] ?? '') }}" class="cost-code-hidden-input">
-                                        @error("assets.$index.cost_code_id")
+                                        {{-- Hidden input to send Department ID to backend --}}
+                                        <input type="hidden" name="assets[{{ $index }}][department_id]" value="{{ old("assets.$index.department_id", $assetData['department_id'] ?? '') }}" class="cost-code-hidden-input">
+                                        @error("assets.$index.department_id") {{-- Error message for department_id in assets array --}}
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </td>
@@ -195,6 +183,8 @@
                 @enderror
             </div>
 
+            
+
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
             <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
         </form>
@@ -208,10 +198,10 @@
         const addAssetRowBtn = document.getElementById('add-asset-row');
         const departmentSelect = document.getElementById('department-select');
 
-        // Inisialisasi rowIndex berdasarkan jumlah baris yang ada (termasuk old input)
+        // Initialize rowIndex based on the number of existing rows (including old input)
         let rowIndex = assetListBody.children.length;
 
-        // Fungsi untuk memperbarui nomor baris
+        // Function to update row numbers in the first column
         function updateRowNumbers() {
             const rows = assetListBody.querySelectorAll('tr');
             rows.forEach((row, index) => {
@@ -222,17 +212,18 @@
             });
         }
 
-        // --- Fungsi untuk Mendapatkan Asset Sub Class berdasarkan Asset Class ---
+        // --- Function to Get Asset Sub Classes based on Asset Class ---
         function populateAssetSubClasses(assetClassSelectElement, assetSubClassSelectElement, selectedSubClassId = null) {
             const assetClassId = assetClassSelectElement.value;
-            assetSubClassSelectElement.innerHTML = '<option value="">Loading...</option>'; // Tampilkan loading
+            assetSubClassSelectElement.innerHTML = '<option value="">Loading...</option>'; // Show loading message
 
             if (!assetClassId) {
                 assetSubClassSelectElement.innerHTML = '<option value="">Choose Asset Sub Class</option>';
                 return;
             }
 
-            fetch(`/api/asset-sub-classes-by-class/${assetClassId}`) // Sesuaikan URL endpoint Anda
+            // Fetch data from API endpoint
+            fetch(`/api/asset-sub-classes-by-class/${assetClassId}`) // Adjust your API endpoint URL
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -257,11 +248,10 @@
                 });
         }
 
-        // --- Fungsi untuk Mendapatkan Cost Code berdasarkan Department ---
-        // Fungsi ini sekarang menerima elemen input display dan hidden
-        function populateCostCodes(departmentId, costCodeDisplayInput, costCodeHiddenInput, selectedCostCodeId = null) {
-            costCodeDisplayInput.value = 'Loading...'; // Tampilkan loading di input teks
-            costCodeHiddenInput.value = ''; // Kosongkan hidden input saat loading
+        // --- Function to Get Cost Code based on Department ---
+        function populateCostCodes(departmentId, costCodeDisplayInput, costCodeHiddenInput) {
+            costCodeDisplayInput.value = 'Loading...'; // Show loading in the text input
+            costCodeHiddenInput.value = ''; // Clear hidden input during loading
 
             if (!departmentId) {
                 costCodeDisplayInput.value = 'Choose Department first';
@@ -269,7 +259,8 @@
                 return;
             }
 
-            fetch(`/api/cost-codes-by-department/${departmentId}`) // Sesuaikan URL endpoint Anda
+            // Fetch data from API endpoint
+            fetch(`/api/cost-codes-by-department/${departmentId}`) // This endpoint should return { id: department_id, display_value: department_cost_code_display }
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -277,17 +268,10 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Jika ada data, cari yang cocok atau ambil yang pertama/default
-                    if (data.length > 0) {
-                        let selectedCostCode = data[0]; // Default ke yang pertama jika tidak ada selectedId
-                        if (selectedCostCodeId) {
-                            const found = data.find(cc => cc.id == selectedCostCodeId);
-                            if (found) {
-                                selectedCostCode = found;
-                            }
-                        }
-                        costCodeDisplayInput.value = `${selectedCostCode.code} - ${selectedCostCode.description}`;
-                        costCodeHiddenInput.value = selectedCostCode.id;
+                    // The received data is a single object { id: ..., display_value: ... }
+                    if (data && data.id) { // Ensure data is not empty and has an ID
+                        costCodeDisplayInput.value = data.id;
+                        costCodeHiddenInput.value = data.id;
                     } else {
                         costCodeDisplayInput.value = 'No Cost Code for this Department';
                         costCodeHiddenInput.value = '';
@@ -300,7 +284,7 @@
                 });
         }
 
-        // Fungsi untuk menambahkan baris baru
+        // Event listener for "Add Asset" button
         addAssetRowBtn.addEventListener('click', function() {
             const newRowHtml = `
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -334,10 +318,10 @@
                         </select>
                     </td>
                     <td class="px-2 py-4">
-                        {{-- Disabled input untuk tampilan --}}
+                        {{-- Disabled input for display --}}
                         <input type="text" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 cost-code-display-input" value="" disabled readonly>
-                        {{-- Hidden input untuk mengirimkan ID ke backend --}}
-                        <input type="hidden" name="assets[${rowIndex}][cost_code_id]" value="" class="cost-code-hidden-input">
+                        {{-- Hidden input to send Department ID to backend --}}
+                        <input type="hidden" name="assets[${rowIndex}][department_id]" value="" class="cost-code-hidden-input">
                     </td>
                     <td class="px-2 py-4">
                         <button type="button" class="text-red-600 hover:text-red-900 delete-row-btn">Delete</button>
@@ -346,12 +330,12 @@
             `;
 
             assetListBody.insertAdjacentHTML('beforeend', newRowHtml);
-            const newRowElement = assetListBody.lastElementChild; // Dapatkan elemen baris baru
+            const newRowElement = assetListBody.lastElementChild; // Get the new row element
             rowIndex++;
             updateRowNumbers();
-            attachEventListenersToNewRow(newRowElement); // Lampirkan event listener ke baris baru
+            attachEventListenersToNewRow(newRowElement); // Attach event listeners to the new row
 
-            // Panggil populateCostCodes untuk baris baru jika departemen sudah dipilih
+            // Call populateCostCodes for the new row if a department is already selected
             const currentDepartmentId = departmentSelect.value;
             if (currentDepartmentId) {
                 const newCostCodeDisplayInput = newRowElement.querySelector('.cost-code-display-input');
@@ -360,57 +344,54 @@
             }
         });
 
-        // Event listener untuk tombol delete (delegasi event)
+        // Event listener for delete button (event delegation)
         assetListBody.addEventListener('click', function(event) {
             if (event.target.classList.contains('delete-row-btn')) {
                 if (assetListBody.children.length > 1) {
-                    event.target.closest('tr').remove();
-                    rowIndex--; // Kurangi rowIndex saat baris dihapus
-                    updateRowNumbers();
+                    event.target.closest('tr').remove(); // Remove the closest row
+                    rowIndex--; // Decrement rowIndex when a row is removed
+                    updateRowNumbers(); // Update row numbers after deletion
                 } else {
-                    alert('Minimal harus ada satu baris aset.');
+                    alert('At least one asset row must remain.');
                 }
             }
         });
 
-        // Fungsi untuk melampirkan event listener ke elemen-elemen di baris baru
+        // Function to attach event listeners to elements within a new row
         function attachEventListenersToNewRow(rowElement) {
             const assetClassSelect = rowElement.querySelector('.asset-class-select');
             const assetSubClassSelect = rowElement.querySelector('.asset-sub-class-select');
-            const costCodeDisplayInput = rowElement.querySelector('.cost-code-display-input'); // Dapatkan input display
-            const costCodeHiddenInput = rowElement.querySelector('.cost-code-hidden-input'); // Dapatkan input hidden
 
             if (assetClassSelect && assetSubClassSelect) {
                 assetClassSelect.addEventListener('change', function() {
                     populateAssetSubClasses(assetClassSelect, assetSubClassSelect);
                 });
             }
-
-            // Tidak perlu event listener langsung di costCodeSelect karena sekarang diisi otomatis
-            // Event listener untuk departmentSelect akan menangani pembaruan cost codes di SEMUA baris
+            // No direct event listener needed for cost code input as it's driven by departmentSelect
         }
 
-        // Event listener untuk perubahan Department (memperbarui semua Cost Code di tabel)
+        // Event listener for Department selection change (updates all Cost Codes in the table)
         departmentSelect.addEventListener('change', function() {
             const currentDepartmentId = departmentSelect.value;
             assetListBody.querySelectorAll('tr').forEach(rowElement => {
                 const costCodeDisplayInput = rowElement.querySelector('.cost-code-display-input');
                 const costCodeHiddenInput = rowElement.querySelector('.cost-code-hidden-input');
                 if (costCodeDisplayInput && costCodeHiddenInput) {
+                    // No oldCostCodeId needed here, as we always get the value from the selected department
                     populateCostCodes(currentDepartmentId, costCodeDisplayInput, costCodeHiddenInput);
                 }
             });
         });
 
 
-        // Inisialisasi event listener dan populate dropdown untuk baris yang sudah ada saat halaman dimuat
+        // Initialize event listeners and populate dropdowns for existing rows when the page loads
         assetListBody.querySelectorAll('tr').forEach(row => {
             attachEventListenersToNewRow(row);
 
             const initialAssetClassSelect = row.querySelector('.asset-class-select');
             const initialAssetSubClassSelect = row.querySelector('.asset-sub-class-select');
-            const initialCostCodeDisplayInput = row.querySelector('.cost-code-display-input'); // Dapatkan input display
-            const initialCostCodeHiddenInput = row.querySelector('.cost-code-hidden-input'); // Dapatkan input hidden
+            const initialCostCodeDisplayInput = row.querySelector('.cost-code-display-input');
+            const initialCostCodeHiddenInput = row.querySelector('.cost-code-hidden-input');
 
             const initialIndex = Array.from(assetListBody.children).indexOf(row);
             const oldAssetData = @json(old('assets', []));
@@ -427,26 +408,28 @@
             }
 
             // Handle old input for Cost Code based on initial department selection
+            // oldCostCodeId is now old department_id
             if (initialCostCodeDisplayInput && initialCostCodeHiddenInput && oldAssetData[initialIndex]) {
-                const oldCostCodeId = oldAssetData[initialIndex].cost_code_id;
-                const currentDepartmentId = departmentSelect.value;
+                const oldDepartmentIdForAssetRow = oldAssetData[initialIndex].department_id; // Get old department_id from asset row
+                const currentDepartmentId = departmentSelect.value; // Get department_id from main dropdown
 
-                if (currentDepartmentId) {
-                    populateCostCodes(currentDepartmentId, initialCostCodeDisplayInput, initialCostCodeHiddenInput, oldCostCodeId);
+                // Use the departmentId from the main dropdown if already selected,
+                // otherwise, use oldDepartmentIdForAssetRow (for validation error cases)
+                const departmentIdToUse = currentDepartmentId || oldDepartmentIdForAssetRow;
+
+                if (departmentIdToUse) {
+                    populateCostCodes(departmentIdToUse, initialCostCodeDisplayInput, initialCostCodeHiddenInput, oldDepartmentIdForAssetRow);
                 } else {
-                    // Jika tidak ada department yang dipilih, pastikan input cost code juga kosong
                     initialCostCodeDisplayInput.value = 'Choose Department first';
                     initialCostCodeHiddenInput.value = '';
                 }
             } else if (initialCostCodeDisplayInput && initialCostCodeHiddenInput) {
-                 // Jika tidak ada old data sama sekali, dan belum ada department terpilih
                  initialCostCodeDisplayInput.value = 'Choose Department first';
                  initialCostCodeHiddenInput.value = '';
             }
         });
 
-        // Panggil populateCostCodes untuk semua baris saat halaman dimuat jika departemen sudah dipilih
-        // Ini memastikan cost codes terisi bahkan jika tidak ada old input untuk baris tersebut
+        // Call populateCostCodes for all rows when the page loads if a department is already selected
         const initialDepartmentId = departmentSelect.value;
         if (initialDepartmentId) {
             assetListBody.querySelectorAll('tr').forEach(rowElement => {
@@ -455,12 +438,15 @@
                 if (costCodeDisplayInput && costCodeHiddenInput) {
                     const initialIndex = Array.from(assetListBody.children).indexOf(rowElement);
                     const oldAssetData = @json(old('assets', []));
-                    const oldCostCodeId = oldAssetData[initialIndex] ? (oldAssetData[initialIndex].cost_code_id ?? null) : null;
-                    populateCostCodes(initialDepartmentId, costCodeDisplayInput, costCodeHiddenInput, oldCostCodeId);
+                    const oldDepartmentIdForAssetRow = oldAssetData[initialIndex] ? (oldAssetData[initialIndex].department_id ?? null) : null;
+
+                    const departmentIdToUse = initialDepartmentId || oldDepartmentIdForAssetRow;
+
+                    populateCostCodes(departmentIdToUse, costCodeDisplayInput, costCodeHiddenInput, oldDepartmentIdForAssetRow);
                 }
             });
         } else {
-            // Jika tidak ada department yang dipilih saat load, pastikan semua cost code input kosong
+            // If no department is selected on load, ensure all cost code inputs are empty
             assetListBody.querySelectorAll('tr').forEach(rowElement => {
                 const costCodeDisplayInput = rowElement.querySelector('.cost-code-display-input');
                 const costCodeHiddenInput = rowElement.querySelector('.cost-code-hidden-input');
@@ -471,8 +457,7 @@
             });
         }
 
-
-        updateRowNumbers(); // Perbarui nomor baris awal
+        updateRowNumbers();
     });
 </script>
 @endpush
