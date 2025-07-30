@@ -17,7 +17,7 @@ class AssetDataController extends Controller
         $assetClass = AssetClass::with('subClasses')->find($assetClassId);
 
         if (!$assetClass) {
-            return response()->json([], 404); // Mengembalikan array kosong jika tidak ditemukan
+            return response()->json([], 404);
         }
 
         return response()->json($assetClass->subClasses);
@@ -25,12 +25,10 @@ class AssetDataController extends Controller
 
     public function getCostCodesByDepartment($departmentId)
     {
-        // Pastikan relasi 'costCodes' ada di model Department
-        // dan foreign key 'department_id' ada di tabel cost_codes
-        $department = Department::with('costCodes')->find($departmentId);
+        $department = $departmentId;
 
         if (!$department) {
-            return response()->json([], 404); // Mengembalikan array kosong jika tidak ditemukan
+            return response()->json([], 404);
         }
 
         return response()->json($department->costCodes);
