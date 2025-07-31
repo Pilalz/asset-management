@@ -15,9 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('class_id')->constrained('asset_classes')->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
-            $table->integer('commercial');
-            $table->integer('fiscal');
-            $table->integer('cost');
             $table->timestamps();
         });
     }

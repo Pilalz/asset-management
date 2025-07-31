@@ -3,22 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\AssetClass;
 use App\Models\AssetSubClass;
+use App\Models\AssetClass;
+use App\Models\AssetName;
 
-class AssetSubClassController extends Controller
+class AssetNameController extends Controller
 {
     public function index()
     {
-        $assetsubclasses = AssetSubClass::with('assetClass')->get();
+        $assetnames = AssetName::all();
 
-        return view('asset-sub-class.index', compact('assetsubclasses'));
+        return view('asset-name.index', compact('assetnames'));
     }
 
     public function create()
     {
-        $assetclasses = AssetClass::all();
-        return view('asset-sub-class.create', compact('assetclasses'));
+        $assetsubclasses = AssetSubClass::all();
+        return view('asset-name.create', compact('assetsubclasses'));
     }
 
     public function store(Request $request)
@@ -31,14 +32,14 @@ class AssetSubClassController extends Controller
 
         AssetSubClass::create($request->all());
 
-        return redirect()->route('asset-sub-class.index')->with('success', 'Data berhasil ditambah');
+        return redirect()->route('asset-name.index')->with('success', 'Data berhasil ditambah');
     }
 
     public function edit(AssetSubClass $asset_sub_class)
     {
         $assetclasses = AssetClass::all();
 
-        return view('asset-sub-class.edit', compact('asset_sub_class', 'assetclasses'));
+        return view('asset-name.edit', compact('asset_sub_class', 'assetclasses'));
     }
 
     public function update(Request $request, AssetSubClass $asset_sub_class)
@@ -53,13 +54,13 @@ class AssetSubClassController extends Controller
 
         $asset_sub_class->update($dataToUpdate);
 
-        return redirect()->route('asset-sub-class.index')->with('success', 'Data berhasil diperbarui!');
+        return redirect()->route('asset-name.index')->with('success', 'Data berhasil diperbarui!');
     }
 
     public function destroy(AssetSubClass $asset_sub_class)
     {
         $asset_sub_class->delete();
 
-        return redirect()->route('asset-sub-class.index')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('asset-name.index')->with('success', 'Data berhasil dihapus!');
     }
 }

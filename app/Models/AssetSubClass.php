@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AssetClass;
+use App\Models\AssetName;
 
 class AssetSubClass extends Model
 {
@@ -15,13 +16,15 @@ class AssetSubClass extends Model
     protected $fillable = [
         'class_id',
         'name',
-        'commercial',
-        'fiscal',
-        'cost'
     ];
 
     public function assetClass()
     {
         return $this->belongsTo(AssetClass::class, 'class_id');
+    }
+
+    public function assetName()
+    {
+        return $this->hasMany(AssetName::class, 'sub_class_id', 'id');
     }
 }
