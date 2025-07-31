@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\RegisterAsset;
+use App\Models\TransferAsset;
 
 class Department extends Model
 {
@@ -20,5 +21,10 @@ class Department extends Model
     public function registerAsset()
     {
         return $this->hasMany(RegisterAsset::class, 'department_id', 'id');
+    }
+
+    public function transferAsset()
+    {
+        return $this->hasMany(TransferAsset::class, 'department_id', 'id');
     }
 }

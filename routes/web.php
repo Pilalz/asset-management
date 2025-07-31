@@ -6,6 +6,7 @@ use App\Http\Controllers\AssetSubClassController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RegisterAssetController;
+use App\Http\Controllers\TransferAssetController;
 
 Route::get('/', function () {
     return view('index');
@@ -16,7 +17,5 @@ Route::resource('asset-sub-class', AssetSubClassController::class);
 Route::resource('location', LocationController::class);
 Route::resource('department', DepartmentController::class);
 Route::resource('register-asset', RegisterAssetController::class);
-
-Route::get('/test-api', function () {
-    return response()->json(['message' => 'API is working!']);
-});
+Route::resource('transfer-asset', TransferAssetController::class);
+Route::get('/', function () {return view('index');});
