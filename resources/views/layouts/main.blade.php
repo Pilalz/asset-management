@@ -24,7 +24,35 @@
                     </a>
                 </div>
                 <div class="flex items-center">
-                    <div class="flex items-center ms-3">
+                    <div class="flex items-center ms-3 gap-4">
+                        <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 9a4 4 0 11-8 0 4 4 0 018 0zm-.965 5.688a.999.999 0 00-.73-.314h-1.547a.999.999 0 00-.73.314l-.064.088a1 1 0 00.126 1.488l.68.453a1 1 0 001.272 0l.68-.453a1 1 0 00.126-1.488l-.064-.088zM4.095 8.272a1 1 0 00-.73-.314H2.277a1 1 0 00-.73.314L1.47 8.36a1 1 0 00.126 1.488l.68.453a1 1 0 001.272 0l.68-.453a1 1 0 00.126-1.488l-.064-.088z"></path>
+                            </svg>
+                        </button>
+                        <div>
+                            <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300" aria-expanded="false" data-dropdown-toggle="dropdown-action">
+                                <div class="flex justify-center items-center w-8 h-8 rounded-full">
+                                    <svg class="w-[24px] h-[24px] text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+                                    </svg>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm border border-gray-800" id="dropdown-action">
+                            <ul class="py-1" role="none">
+                                <li>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Create Company</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
+                                </li>
+                            </ul>
+                        </div>
+
                         <div>
                             <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
                                 <span class="sr-only">Open user menu</span>
@@ -34,10 +62,10 @@
                         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
                             <div class="px-4 py-3" role="none">
                                 <p class="text-sm text-gray-900 dark:text-white" role="none">
-                                    Neil Sims
+                                    {{ Auth::user()->name }}
                                 </p>
                                 <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                    neil.sims@flowbite.com
+                                    {{ Auth::user()->email }}
                                 </p>
                             </div>
                             <ul class="py-1" role="none">
@@ -45,7 +73,12 @@
                                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</a>
+                                    <form method="POST" action="{{ route('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                                        @csrf
+                                        <button type="submit">
+                                            Logout
+                                        </button>
+                                    </form>
                                 </li>
                             </ul>
                         </div>
@@ -186,6 +219,47 @@
             </div>
         </main>
     </div>
+
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+
+        // Fungsi untuk menerapkan tema
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                htmlElement.classList.add('dark');
+                document.getElementById('theme-toggle-dark-icon').classList.remove('hidden');
+                document.getElementById('theme-toggle-light-icon').classList.add('hidden');
+            } else {
+                htmlElement.classList.remove('dark');
+                document.getElementById('theme-toggle-dark-icon').classList.add('hidden');
+                document.getElementById('theme-toggle-light-icon').classList.remove('hidden');
+            }
+        }
+
+        // Cek preferensi user saat halaman dimuat
+        const savedTheme = localStorage.getItem('color-theme');
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            applyTheme('dark');
+        } else {
+            applyTheme('light');
+        }
+
+        // Tangani klik tombol
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+                applyTheme('light');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+                applyTheme('dark');
+            }
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>

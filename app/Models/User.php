@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Company;
 
 class User extends Authenticatable
 {
@@ -20,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'google_id',
         'password',
     ];
 
@@ -32,6 +34,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function companys()
+    {
+        return $this->hasMany(Company::class, 'owner_id', 'id');
+    }
 
     /**
      * Get the attributes that should be cast.

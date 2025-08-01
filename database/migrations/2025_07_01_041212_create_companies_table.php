@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code');
-            $table->string('owner');
+            $table->foreignId('owner_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
