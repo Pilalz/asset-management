@@ -42,7 +42,7 @@
     </div>
     
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5 bg-white p-4">
-        <table id="assetSubClassTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <table id="assetNameTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-6 py-3">
@@ -116,11 +116,13 @@
                 @forelse ($assetnames as $asset_name)
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $loop->iteration }}</th>
+                        <td class="px-6 py-4">{{ $asset_name->assetSubClass->name }}</td>
                         <td class="px-6 py-4">{{ $asset_name->name }}</td>
-                        <td class="px-6 py-4">{{ $asset_name->name }}</td>
+                        <td class="px-6 py-4">{{ $asset_name->code }}</td>
                         <td class="px-6 py-4">{{ $asset_name->commercial }} (Years)</td>
                         <td class="px-6 py-4">{{ $asset_name->fiscal }} (Years)</td>
                         <td class="px-6 py-4">{{ $asset_name->cost }} (USD)</td>
+                        <td class="px-6 py-4">{{ $asset_name->lva }} (USD)</td>
                         <td>
                             <div class="flex">
                                 <a href="{{ route('asset-name.edit', $asset_name->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">
@@ -157,8 +159,8 @@
 
 @push('scripts')
 <script>
-    if (document.getElementById("assetSubClassTable") && typeof simpleDatatables.DataTable !== 'undefined') {
-        const dataTable = new simpleDatatables.DataTable("#assetSubClassTable", {
+    if (document.getElementById("assetNameTable") && typeof simpleDatatables.DataTable !== 'undefined') {
+        const dataTable = new simpleDatatables.DataTable("#assetNameTable", {
             searchable: true,
             sortable: true,
             tableRender: (_data, table, type) => {

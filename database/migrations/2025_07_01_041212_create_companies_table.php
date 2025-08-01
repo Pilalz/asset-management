@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset_names', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sub_class_id')->constrained('asset_classes')->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
             $table->string('code');
-            $table->integer('commercial');
-            $table->integer('fiscal');
-            $table->integer('cost');
-            $table->integer('lva');
+            $table->string('owner');
             $table->timestamps();
         });
     }
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('asset_names');
+        Schema::dropIfExists('companies');
     }
 };

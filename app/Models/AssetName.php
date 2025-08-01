@@ -10,7 +10,7 @@ class AssetName extends Model
 {
     use HasFactory;
 
-    protected $table = 'asset_sub_classes';
+    protected $table = 'asset_names';
 
     protected $fillable = [
         'sub_class_id',
