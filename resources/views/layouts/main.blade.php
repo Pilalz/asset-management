@@ -20,11 +20,30 @@
                     </button>
                     <a href="https://flowbite.com" class="flex ms-2 md:me-24">
                         <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 me-3" alt="FlowBite Logo" />
-                        <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Flowbite</span>
+                        <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Asset Management</span>
                     </a>
                 </div>
                 <div class="flex items-center">
                     <div class="flex items-center ms-3 gap-4">
+                        <button type="button" aria-expanded="false" data-dropdown-toggle="dropdown-company">
+                            <div class="text-black hover:bg-gray-200 hover:rounded-md focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                New Data
+                                <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm border border-gray-800" id="dropdown-company">
+                            <ul class="py-1" role="none">
+                                <li>
+                                    <a href="{{ route('company.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Create Company</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
+                                </li>
+                            </ul>
+                        </div>
+
                         <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
                             <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
@@ -33,6 +52,7 @@
                                 <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 9a4 4 0 11-8 0 4 4 0 018 0zm-.965 5.688a.999.999 0 00-.73-.314h-1.547a.999.999 0 00-.73.314l-.064.088a1 1 0 00.126 1.488l.68.453a1 1 0 001.272 0l.68-.453a1 1 0 00.126-1.488l-.064-.088zM4.095 8.272a1 1 0 00-.73-.314H2.277a1 1 0 00-.73.314L1.47 8.36a1 1 0 00.126 1.488l.68.453a1 1 0 001.272 0l.68-.453a1 1 0 00.126-1.488l-.064-.088z"></path>
                             </svg>
                         </button>
+
                         <div>
                             <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300" aria-expanded="false" data-dropdown-toggle="dropdown-action">
                                 <div class="flex justify-center items-center w-8 h-8 rounded-full">
@@ -45,7 +65,7 @@
                         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm border border-gray-800" id="dropdown-action">
                             <ul class="py-1" role="none">
                                 <li>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Create Company</a>
+                                    <a href="{{ route('company.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Create Company</a>
                                 </li>
                                 <li>
                                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
@@ -56,7 +76,7 @@
                         <div>
                             <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
                                 <span class="sr-only">Open user menu</span>
-                                <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
+                                <img class="w-8 h-8 rounded-full" src="{{ Auth::user()->avatar }}" alt="user photo">
                             </button>
                         </div>
                         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
@@ -82,6 +102,7 @@
                                 </li>
                             </ul>
                         </div>
+
                     </div>
                 </div>
             </div>

@@ -35,6 +35,7 @@ class GoogleController extends Controller
                     // Jika pengguna dengan email yang sama ditemukan,
                     // perbarui akun yang sudah ada dengan google_id dan login
                     $existingUser->google_id = $googleUser->id;
+                    $existingUser->avatar = $googleUser->getAvatar();
                     $existingUser->save();
                     Auth::login($existingUser);
                 } else {
@@ -45,6 +46,7 @@ class GoogleController extends Controller
                         'google_id' => $googleUser->id,
                         // Pastikan kolom 'password' ada, meskipun nilainya acak
                         'password' => Hash::make(rand(100000, 999999)),
+                        'avatar' => $googleUser->getAvatar(),
                     ]);
                     Auth::login($newUser);
                 }

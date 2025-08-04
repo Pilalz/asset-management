@@ -44,6 +44,6 @@ Route::resource('location', LocationController::class);
 Route::resource('department', DepartmentController::class);
 Route::resource('register-asset', RegisterAssetController::class);
 Route::resource('transfer-asset', TransferAssetController::class);
-Route::resource('transfer-asset', CompanyController::class);
+Route::resource('company', CompanyController::class);
 
 require __DIR__.'/auth.php';
