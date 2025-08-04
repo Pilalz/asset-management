@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Company;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Scopes\UserCompanyScope;
 
 class User extends Authenticatable
 {
@@ -24,6 +28,7 @@ class User extends Authenticatable
         'google_id',
         'password',
         'avatar',
+        'last_active_company_id',
     ];
 
     /**
@@ -35,11 +40,6 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
-    public function companys()
-    {
-        return $this->hasMany(Company::class, 'owner_id', 'id');
-    }
 
     /**
      * Get the attributes that should be cast.
@@ -53,4 +53,27 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function ownedCompanies(): HasMany
+    {
+        return $this->hasMany(Company::class, 'owner_id', 'id');
+    }
+
+    public function companies(): BelongsToMany
+    {
+        // Relasi many-to-many: satu user bisa tergabung dalam banyak perusahaan
+        // Melalui tabel pivot 'company_users'
+        return $this->belongsToMany(Company::class, 'company_users');
+    }
+
+    // Relasi ke company yang menjadi last_active_company
+    public function lastActiveCompany(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'last_active_company_id');
+    }
+
+    // protected static function booted(): void
+    // {
+    //     static::addGlobalScope(new UserCompanyScope);
+    // }
 }

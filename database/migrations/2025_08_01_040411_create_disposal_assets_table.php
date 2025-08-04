@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('disposal_assets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
             $table->longText('reason');
             $table->integer('nbv');
             $table->integer('esp');
+            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->timestamps();
         });
     }

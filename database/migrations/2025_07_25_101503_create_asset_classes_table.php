@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('asset_classes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->timestamps();
         });
     }

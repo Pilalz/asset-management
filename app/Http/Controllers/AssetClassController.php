@@ -21,7 +21,8 @@ class AssetClassController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'company_id' => 'required|string|max:255',
         ]);
 
         AssetClass::create($request->all());
@@ -37,7 +38,7 @@ class AssetClassController extends Controller
     public function update(Request $request, AssetClass $asset_class)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',            
         ]);
 
         $dataToUpdate = $validatedData;

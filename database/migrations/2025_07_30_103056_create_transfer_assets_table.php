@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('transfer_assets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
             $table->string('asset_id');
-            $table->foreignId('destination_loc_id')->constrained('locations')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('destination_loc_id')->constrained('locations')->onUpdate('cascade')->onDelete('no action');
             $table->longText('reason');
+            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->timestamps();
         });
     }

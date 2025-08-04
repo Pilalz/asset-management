@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class CompanyController extends Controller
 {
@@ -30,7 +31,16 @@ class CompanyController extends Controller
             'owner_id' => 'required|string|max:255'
         ]);
 
-        Company::create($request->all());
+        $companyData = $request->only(['name', 'code', 'owner_id']);
+
+        $newCompany = Company::create($companyData);
+
+        $user = Auth::user();
+
+        $user->last_active_company_id = $newCompany->id;
+        $user->save();
+
+        Session::put('active_company_id', $newCompany->id);
 
         return redirect()->route('company.index')->with('success', 'Data berhasil ditambah');
     }
@@ -60,5 +70,22 @@ class CompanyController extends Controller
         $company->delete();
 
         return redirect()->route('company.index')->with('success', 'Data berhasil dihapus!');
+    }
+
+    public function switch(Request $request)
+    {
+        $companyId = $request->input('company_id');
+
+        // Validasi apakah user terhubung dengan company ini
+        // (asumsi relasi many-to-many antara User dan Company)
+        if (auth()->user()->companies()->where('company_id', $companyId)->exists()) {
+            
+            // Simpan ID company yang aktif ke session
+            Session::put('active_company_id', $companyId);
+            
+            return redirect()->back()->with('success', 'Berhasil berganti perusahaan.');
+        }
+
+        return redirect()->back()->with('error', 'Akses tidak diizinkan.');
     }
 }

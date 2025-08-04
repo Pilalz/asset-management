@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Scopes\UserCompanyScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
@@ -20,47 +22,60 @@ class GoogleController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
+            $userToLogin = null;
 
-            // Lacak pengguna berdasarkan google_id
-            $user = User::where('google_id', $googleUser->id)->first();
+            // 1. CARI USER TANPA DIBLOKIR OLEH GLOBAL SCOPE
+            // Kita tetap gunakan withoutGlobalScope di sini untuk praktik terbaik.
+            $user = User::withoutGlobalScope(UserCompanyScope::class)
+                        ->where('email', $googleUser->getEmail())
+                        ->first();
 
             if ($user) {
-                // Jika pengguna sudah ada, login kan
-                Auth::login($user);
+                // Jika user dengan email yang sama sudah ada, update data Google-nya jika kosong.
+                $user->google_id = $user->google_id ?? $googleUser->getId();
+                $user->avatar = $user->avatar ?? $googleUser->getAvatar();
+                $user->save();
+                $userToLogin = $user;
             } else {
-                // Jika tidak ada google_id, cari dengan email
-                $existingUser = User::where('email', $googleUser->email)->first();
-
-                if ($existingUser) {
-                    // Jika pengguna dengan email yang sama ditemukan,
-                    // perbarui akun yang sudah ada dengan google_id dan login
-                    $existingUser->google_id = $googleUser->id;
-                    $existingUser->avatar = $googleUser->getAvatar();
-                    $existingUser->save();
-                    Auth::login($existingUser);
-                } else {
-                    // Jika benar-benar pengguna baru, buat akun baru
-                    $newUser = User::create([
-                        'name' => $googleUser->name,
-                        'email' => $googleUser->email,
-                        'google_id' => $googleUser->id,
-                        // Pastikan kolom 'password' ada, meskipun nilainya acak
-                        'password' => Hash::make(rand(100000, 999999)),
-                        'avatar' => $googleUser->getAvatar(),
-                    ]);
-                    Auth::login($newUser);
-                }
+                // Jika user benar-benar baru, buat akun baru.
+                $userToLogin = User::create([
+                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
+                    'password' => Hash::make(uniqid()), // Password acak
+                    'avatar' => $googleUser->getAvatar(),
+                ]);
             }
 
-            // Tambahkan baris debugging ini untuk memastikan pengguna telah login
-            // dd(Auth::check()); 
+            // 2. LAKUKAN PROSES LOGIN
+            Auth::login($userToLogin);
 
+            // 3. ATUR SESSION PERUSAHAAN (LANGKAH PALING PENTING)
+            // Cek perusahaan terakhir yang aktif, atau fallback ke perusahaan pertama yang dimiliki user.
+            $company = $userToLogin->lastActiveCompany ?? $userToLogin->companies()->first();
+
+            if ($company) {
+                Session::put('active_company_id', $company->id);
+
+                // Update juga `last_active_company_id` di database untuk login berikutnya.
+                if ($userToLogin->last_active_company_id !== $company->id) {
+                    $userToLogin->last_active_company_id = $company->id;
+                    $userToLogin->save();
+                }
+
+            } else {
+                // KASUS KRITIS: User ada tapi tidak terhubung ke perusahaan manapun.
+                Auth::logout();
+                Session::flush();
+                return redirect('/login')->with('error', 'Akun Anda belum terhubung dengan perusahaan manapun.');
+            }
+
+            // 4. ARAHKAN KE DASHBOARD
             return redirect()->intended('/dashboard');
 
         } catch (\Exception $e) {
-            // Catat error ke file log
-            \Log::error('Google Login Failed: ' . $e->getMessage());
-            return redirect('/login')->with('error', 'Login with Google failed.');
+            Log::error('Google Login Failed: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'Terjadi kesalahan saat login dengan Google.');
         }
     }
 }

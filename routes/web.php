@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\GoogleController;
-
 use App\Http\Controllers\AssetClassController;
 use App\Http\Controllers\AssetSubClassController;
 use App\Http\Controllers\AssetNameController;
@@ -12,6 +11,9 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RegisterAssetController;
 use App\Http\Controllers\TransferAssetController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\MainController;
+
+use Illuminate\Support\Facades\Session;
 
 
 Route::get('/', function () {
@@ -45,5 +47,7 @@ Route::resource('department', DepartmentController::class);
 Route::resource('register-asset', RegisterAssetController::class);
 Route::resource('transfer-asset', TransferAssetController::class);
 Route::resource('company', CompanyController::class);
+
+Route::get('/', [MainController::class, 'mainLayout']);
 
 require __DIR__.'/auth.php';

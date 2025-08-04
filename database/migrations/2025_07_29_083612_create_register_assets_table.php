@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('register_assets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('location_id')->constrained('locations')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
+            $table->foreignId('location_id')->constrained('locations')->onUpdate('cascade')->onDelete('no action');
             $table->boolean('insured');
+            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->timestamps();
         });
     }

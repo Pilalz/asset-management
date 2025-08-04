@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('class_id')->constrained('asset_classes')->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
+            $table->foreignId('company_id')->constrained('companies')->onDelete('no action');
             $table->timestamps();
         });
     }
