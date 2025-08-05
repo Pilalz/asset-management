@@ -27,6 +27,7 @@ class AssetSubClassController extends Controller
             'name' => 'required|string|max:255',
             'class_id'  => 'required|string|max:255',
             'name'  => 'required',
+            'company_id'  => 'required',
         ]);
 
         AssetSubClass::create($request->all());

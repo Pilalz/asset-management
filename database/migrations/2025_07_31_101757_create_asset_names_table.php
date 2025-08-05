@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('asset_names', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sub_class_id')->constrained('asset_classes')->onUpdate('cascade')->onDelete('no action');
+            $table->foreignId('sub_class_id')->constrained('asset_sub_classes')->onUpdate('cascade')->onDelete('no action');
             $table->string('name');
             $table->string('code');
             $table->integer('commercial');

@@ -22,7 +22,8 @@ class DepartmentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'max:255'
+            'description' => 'max:255',
+            'company_id'  => 'required',
         ]);
 
         Department::create($request->all());

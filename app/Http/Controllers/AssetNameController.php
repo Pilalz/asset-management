@@ -33,6 +33,7 @@ class AssetNameController extends Controller
             'fiscal'  => 'required',
             'cost'  => 'required',
             'lva'  => 'required',
+            'company_id'  => 'required',
         ]);
 
         AssetName::create($request->all());

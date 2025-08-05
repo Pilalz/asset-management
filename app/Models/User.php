@@ -71,9 +71,4 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Company::class, 'last_active_company_id');
     }
-
-    // protected static function booted(): void
-    // {
-    //     static::addGlobalScope(new UserCompanyScope);
-    // }
 }

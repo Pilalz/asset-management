@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Scopes\UserCompanyScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -24,11 +23,8 @@ class GoogleController extends Controller
             $googleUser = Socialite::driver('google')->user();
             $userToLogin = null;
 
-            // 1. CARI USER TANPA DIBLOKIR OLEH GLOBAL SCOPE
-            // Kita tetap gunakan withoutGlobalScope di sini untuk praktik terbaik.
-            $user = User::withoutGlobalScope(UserCompanyScope::class)
-                        ->where('email', $googleUser->getEmail())
-                        ->first();
+            // 1. CARI USER
+            $user = User::where('email', $googleUser->getEmail())->first();
 
             if ($user) {
                 // Jika user dengan email yang sama sudah ada, update data Google-nya jika kosong.
@@ -50,24 +46,19 @@ class GoogleController extends Controller
             // 2. LAKUKAN PROSES LOGIN
             Auth::login($userToLogin);
 
-            // 3. ATUR SESSION PERUSAHAAN (LANGKAH PALING PENTING)
-            // Cek perusahaan terakhir yang aktif, atau fallback ke perusahaan pertama yang dimiliki user.
+            // 3. ATUR SESSION PERUSAHAAN
             $company = $userToLogin->lastActiveCompany ?? $userToLogin->companies()->first();
 
             if ($company) {
                 Session::put('active_company_id', $company->id);
 
-                // Update juga `last_active_company_id` di database untuk login berikutnya.
                 if ($userToLogin->last_active_company_id !== $company->id) {
                     $userToLogin->last_active_company_id = $company->id;
                     $userToLogin->save();
                 }
 
             } else {
-                // KASUS KRITIS: User ada tapi tidak terhubung ke perusahaan manapun.
-                Auth::logout();
-                Session::flush();
-                return redirect('/login')->with('error', 'Akun Anda belum terhubung dengan perusahaan manapun.');
+                return redirect('/onboard');
             }
 
             // 4. ARAHKAN KE DASHBOARD
