@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\AssetClassController;
 use App\Http\Controllers\AssetSubClassController;
 use App\Http\Controllers\AssetNameController;
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RegisterAssetController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\TransferAssetController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyUserController;
+use App\Http\Controllers\DepreciationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,9 +78,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- Core Application Resources ---
     // All the main CRUD functionalities for asset management.
+    //Start Asset
     Route::resource('asset-class', AssetClassController::class);
     Route::resource('asset-sub-class', AssetSubClassController::class);
     Route::resource('asset-name', AssetNameController::class);
+    Route::resource('asset', AssetController::class);
+    //End Asset
+    //Start Depre
+    Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
+    Route::resource('depreciation', DepreciationController::class);
+    //End Depre
     Route::resource('location', LocationController::class);
     Route::resource('department', DepartmentController::class);
     Route::resource('register-asset', RegisterAssetController::class);
@@ -86,6 +95,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('company-user', CompanyUserController::class);
     //COMPANY
     Route::resource('company', CompanyController::class);
-    Route::post('/company/switch', [App\Http\Controllers\CompanyController::class, 'switch'])->name('company.switch');
+    Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
 
 });

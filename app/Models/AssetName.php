@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\AssetSubClass;
 use App\Models\Company;
+use App\Models\Asset;
 use App\Scopes\CompanyScope;
 
 class AssetName extends Model
@@ -34,6 +35,11 @@ class AssetName extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function Assets(): HasMany
+    {
+        return $this->hasMany(Asset::class, 'asset_name_id', 'id');
     }
 
     protected static function booted(): void

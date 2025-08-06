@@ -28,9 +28,14 @@ class Department extends Model
         return $this->hasMany(RegisterAsset::class, 'department_id', 'id');
     }
 
-    public function transferAsset()
+    public function transferAsset(): HasMany
     {
         return $this->hasMany(TransferAsset::class, 'department_id', 'id');
+    }
+
+    public function Assets(): HasMany
+    {
+        return $this->hasMany(Asset::class, 'department_id', 'id');
     }
 
     public function company(): BelongsTo

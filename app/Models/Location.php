@@ -33,6 +33,11 @@ class Location extends Model
         return $this->hasMany(TransferAsset::class, 'destination_loc_id', 'id');
     }
 
+    public function Assets(): HasMany
+    {
+        return $this->hasMany(Asset::class, 'location_id', 'id');
+    }
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);

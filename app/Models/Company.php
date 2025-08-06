@@ -17,6 +17,7 @@ use App\Models\DisposalAsset;
 use App\Models\Location;
 use App\Models\RegisterAsset;
 use App\Models\TransferAsset;
+use App\Models\Depreciation;
 
 class Company extends Model
 {
@@ -86,5 +87,17 @@ class Company extends Model
     public function transferAssets(): HasMany
     {
         return $this->hasMany(TransferAsset::class);
+    }
+
+    //Asset
+    public function assets(): HasMany
+    {
+        return $this->hasMany(Asset::class, 'company_id', 'id');
+    }
+
+    //Depreciation
+    public function depreciations(): HasMany
+    {
+        return $this->hasMany(Depreciation::class, 'company_id', 'id');
     }
 }
