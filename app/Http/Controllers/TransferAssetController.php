@@ -11,9 +11,8 @@ class TransferAssetController extends Controller
 {
     public function index()
     {
-        $transferassets = TransferAsset::all();
-        $locations = Location::all();
-        $departments = Department::all();
+        $transferassets = TransferAsset::paginate(25);
+
         return view('transfer-asset.index', compact('locations', 'departments', 'transferassets'));
     }
 

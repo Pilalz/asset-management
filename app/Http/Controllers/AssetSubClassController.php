@@ -10,7 +10,7 @@ class AssetSubClassController extends Controller
 {
     public function index()
     {
-        $assetsubclasses = AssetSubClass::with('assetClass')->get();
+        $assetsubclasses = AssetSubClass::with('assetClass')->paginate(25);
 
         return view('asset-sub-class.index', compact('assetsubclasses'));
     }

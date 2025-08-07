@@ -17,7 +17,8 @@ class TransferAsset extends Model
     protected $table = 'transfer_assets';
 
     protected $fillable = [
-        'id',
+        'submit_date',
+        'form_no',
         'department_id',
         'asset_id',
         'destination_loc_id',

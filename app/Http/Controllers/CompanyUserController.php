@@ -13,7 +13,7 @@ class CompanyUserController extends Controller
     {
         $activeCompanyId = Session::get('active_company_id');
 
-        $companyusers = CompanyUser::where('company_id', $activeCompanyId)->where('role', '!=', 'owner')->with('user')->get();
+        $companyusers = CompanyUser::where('company_id', $activeCompanyId)->where('role', '!=', 'owner')->with('user')->paginate(25);
         
         return view('company-user.index', compact('companyusers'));
     }
@@ -30,14 +30,12 @@ class CompanyUserController extends Controller
             'role' => 'required|string',
         ]);
 
-        // 2. Ambil data User berdasarkan email yang tervalidasi
         $userToAdd = User::where('email', $validated['email'])->first();
         $activeCompanyId = Session::get('active_company_id');
         
         $isAlreadyMember = CompanyUser::where('user_id', $userToAdd->id)->where('company_id', $activeCompanyId)->exists();
 
         if ($isAlreadyMember) {
-            // Jika sudah jadi anggota, kembalikan dengan pesan error
             return redirect()->back()->withInput()->with('error', 'User ini sudah menjadi anggota perusahaan.');
         }
 

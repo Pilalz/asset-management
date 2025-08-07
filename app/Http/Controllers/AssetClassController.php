@@ -9,7 +9,7 @@ class AssetClassController extends Controller
 {
     public function index()
     {
-        $assetclasses = AssetClass::all();
+        $assetclasses = AssetClass::paginate(25);
         return view('asset-class.index', compact('assetclasses'));
     }
 

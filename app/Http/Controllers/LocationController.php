@@ -9,7 +9,7 @@ class LocationController extends Controller
 {
     public function index()
     {
-        $locations = Location::all();
+        $locations = Location::paginate(25);
         return view('location.index', compact('locations'));
     }
 

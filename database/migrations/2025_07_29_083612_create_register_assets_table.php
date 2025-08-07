@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('register_assets', function (Blueprint $table) {
             $table->id();
+            $table->string('form_no')->unique();
             $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
             $table->foreignId('location_id')->constrained('locations')->onUpdate('cascade')->onDelete('no action');
             $table->boolean('insured');

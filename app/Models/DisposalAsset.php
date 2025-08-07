@@ -16,6 +16,8 @@ class DisposalAsset extends Model
     protected $table = 'disposal_assets';
 
     protected $fillable = [
+        'submit_date',
+        'form_no',
         'department_id',
         'reason',
         'nbv',

@@ -10,8 +10,7 @@ class DisposalAssetController extends Controller
 {
     public function index()
     {
-        $disposalassets = DisposalAsset::all();
-        $departments = Department::all();
+        $disposalassets = DisposalAsset::paginate(25);
         
         return view('disposal-asset.index', compact('departments', 'disposalassets'));
     }

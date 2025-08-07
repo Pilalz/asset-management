@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('transfer_assets', function (Blueprint $table) {
             $table->id();
+            $table->date('submit_date');
+            $table->string('form_no')->unique();
             $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
             $table->string('asset_id');
             $table->foreignId('destination_loc_id')->constrained('locations')->onUpdate('cascade')->onDelete('no action');

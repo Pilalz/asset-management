@@ -17,7 +17,7 @@ class RegisterAsset extends Model
     protected $table = 'register_assets';
 
     protected $fillable = [
-        'id',
+        'form_no',
         'department_id',
         'location_id',
         'insured',

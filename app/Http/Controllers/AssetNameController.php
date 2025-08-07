@@ -11,7 +11,7 @@ class AssetNameController extends Controller
 {
     public function index()
     {
-        $assetnames = AssetName::with('assetSubClass')->get();
+        $assetnames = AssetName::with('assetSubClass')->paginate(25);
 
         return view('asset-name.index', compact('assetnames'));
     }

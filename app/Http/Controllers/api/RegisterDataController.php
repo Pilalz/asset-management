@@ -6,16 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\AssetClass;
 use App\Models\AssetSubClass;
 use App\Models\Department;
-
+use App\Scopes\CompanyScope;
 use Illuminate\Http\Request;
 
 class RegisterDataController extends Controller
 {
     public function getAssetSubClassesByClass($assetClassId)
     {
-        // Pastikan relasi 'subClasses' ada di model AssetClass
-        // dan foreign key 'asset_class_id' ada di tabel asset_sub_classes
-        $assetClass = AssetClass::with('subClasses')->find($assetClassId);
+        $assetClass = AssetClass::withoutGlobalScope(CompanyScope::class)
+                        ->with(['subClasses' => function ($query) {
+                            $query->withoutGlobalScope(CompanyScope::class);
+                        }])
+                        ->find($assetClassId);
 
         if (!$assetClass) {
             return response()->json([], 404);
@@ -24,9 +26,24 @@ class RegisterDataController extends Controller
         return response()->json($assetClass->subClasses);
     }
 
+    public function getAssetNamesBySubClass($assetSubClassId)
+    {
+        $assetSubClass = AssetSubClass::withoutGlobalScope(CompanyScope::class)
+                                      ->with(['assetNames' => function ($query) {
+                                            $query->withoutGlobalScope(CompanyScope::class);
+                                        }])
+                                      ->find($assetSubClassId);
+
+        if (!$assetSubClass) {
+            return response()->json([], 404);
+        }
+
+        return response()->json($assetSubClass->assetNames);
+    }
+
     public function getCostCodesByDepartment($departmentId)
     {
-        $department = Department::find($departmentId);
+        $department = Department::withoutGlobalScope(CompanyScope::class)->find($departmentId);
 
         if (!$department) {
             return response()->json([], 404);
