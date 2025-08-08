@@ -78,6 +78,7 @@
                 @enderror
             </div>
 
+            <!-- Asset List -->
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset List <span class="text-red-900">*</span></label>
                 <div class="border-2 border-black rounded-lg p-4">
@@ -92,7 +93,6 @@
                                 <th scope="col" class="px-2 py-3">Asset Class</th>
                                 <th scope="col" class="px-2 py-3">Asset Sub Class</th>
                                 <th scope="col" class="px-2 py-3">Asset Name</th>
-                                <th scope="col" class="px-2 py-3">Cost Code</th>
                                 <th scope="col" class="px-2 py-3">Action</th>
                             </tr>
                         </thead>
@@ -155,15 +155,6 @@
                                         @enderror
                                     </td>
                                     <td class="px-2 py-4">
-                                        {{-- Disabled input for display --}}
-                                        <input type="text" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer cost-code-display-input" value="" disabled readonly>
-                                        {{-- Hidden input to send Department ID to backend --}}
-                                        <input type="hidden" name="assets[{{ $index }}][department_id]" value="{{ old("assets.$index.department_id", $assetData['department_id'] ?? '') }}" class="cost-code-hidden-input">
-                                        @error("assets.$index.department_id") {{-- Error message for department_id in assets array --}}
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </td>
-                                    <td class="px-2 py-4">
                                         <button type="button" class="text-red-600 hover:text-red-900 delete-row-btn">Delete</button>
                                     </td>
                                 </tr>
@@ -177,11 +168,11 @@
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured <span class="text-red-900">*</span></label>
                 <div class="flex items-center mb-4">
-                    <input id="insured-yes" name="insured" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured', 'Y') == 'Y' ? 'checked' : '' }}>
+                    <input id="insured-yes" name="insured" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured', 'Y') == 'Y' ? 'checked' : '' }}>
                     <label for="insured-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
                 </div>
                 <div class="flex items-center">
-                    <input id="insured-no" name="insured" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured') == 'N' ? 'checked' : '' }}>
+                    <input id="insured-no" name="insured" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured') == 'N' ? 'checked' : '' }}>
                     <label for="insured-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
                 </div>
                 @error('insured')
@@ -192,6 +183,24 @@
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval List <span class="text-red-900">*</span></label>
                 <div class="border-2 border-black rounded-lg p-4">
+                    
+                    <div class="flex flex-row mb-2">
+                        <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
+                        <div class="flex items-center mr-4">
+                            <input id="sequence-yes" name="sequence" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', 'Y') == 'Y' ? 'checked' : '' }}>
+                            <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="sequence-no" checked name="sequence" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence') == 'N' ? 'checked' : '' }}>
+                            <label for="sequence-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
+                        </div>
+                        @error('sequence')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <hr class="mb-2">
+                    
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr class="text-center">
@@ -201,43 +210,36 @@
                                 <th scope="col" class="px-2 py-3">Date</th>
                             </tr>
                         </thead>
-                        <tbody id="asset-list-body">
+                        <tbody id="approval-list-body">
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Submitted by
-                                </th>
-                                
+                                    <input type="text" name="approvals[0][approval_action]" value="Submitted by" readonly/>
+                                    @error("approvals[0][approval_action]")
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </th>   
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Asset Management
+                                    <input type="text" name="approvals[0][role]" value="Asset Management" readonly/>
+                                    @error("approvals[0][role]")
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </th>
-                                <!-- <td class="px-2 py-4">
-                                    <select type="text" name="assets[{{ $index }}][po_no]" value="{{ old("assets.$index.po_no", $assetData['po_no'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Diketahui">
-                                        <option selected>Choose aproval type</option>
-                                        <option value="Submitted by">Submitted by</option>
-                                        <option value="Known by">Known by</option>
-                                        <option value="Checked by">Checked by</option>
-                                        <option value="Approved by">Approved by</option>
-                                        <option value="Accepted by">Accepted by</option>
-                                    </select>
-                                    @error("assets.$index.po_no")
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </td> -->
                                 <td class="px-2 py-4">
-                                    <input type="text" name="assets[{{ $index }}][commission_date]" value="{{ old("assets.$index.commission_date", $assetData['commission_date'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-                                    @error("assets.$index.commission_date")
+                                    <input type="hidden" name="approvals[0][user_id]" value="{{ Auth::user()->id }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                    <input type="text" value="{{ Auth::user()->name }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                    @error("approvals[0][user_id]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
                                 <td class="px-2 py-4">
-                                    <input type="text" name="assets[{{ $index }}][specification]" value="{{ old("assets.$index.specification", $assetData['specification'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
-                                    @error("assets.$index.specification")
+                                    <input type="text" name="approvals[0][status]" value="Approved" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                    @error("approvals[0][status]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
                                 <td class="px-2 py-4">
-                                    <input type="date" name="assets[{{ $index }}][asset_details]" value="{{ old("assets.$index.asset_details", $assetData['asset_details'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Asset Details" />
-                                    @error("assets.$index.asset_details")
+                                    <input type="date" name="approvals[0][approval_date]" value="{{ now()->toDateString() }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Asset Details" />
+                                    @error("approvals[0][approval_date]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
@@ -245,27 +247,33 @@
 
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Checked by
+                                    <input type="text" name="approvals[1][approval_action]" value="Checked by" readonly/>
+                                    @error("approvals[1][approval_action]")
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </th>
-                                
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    User Manager
+                                    <input type="text" name="approvals[1][role]" value="User Manager" readonly/>
+                                    @error("approvals[1][role]")
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </th>
                                 <td class="px-2 py-4">
-                                    <input type="text" name="assets[{{ $index }}][commission_date]" value="{{ old("assets.$index.commission_date", $assetData['commission_date'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-                                    @error("assets.$index.commission_date")
+                                    <input type="hidden" name="approvals[1][user_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                    <input type="text" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                    @error("approvals[1][user_id]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
                                 <td class="px-2 py-4">
-                                    <input type="text" name="assets[{{ $index }}][specification]" value="{{ old("assets.$index.specification", $assetData['specification'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
-                                    @error("assets.$index.specification")
+                                    <input type="text" name="approvals[1][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                    @error("approvals[1][status]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
                                 <td class="px-2 py-4">
-                                    <input type="date" name="assets[{{ $index }}][asset_details]" value="{{ old("assets.$index.asset_details", $assetData['asset_details'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Asset Details" />
-                                    @error("assets.$index.asset_details")
+                                    <input type="date" name="approvals[1][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                    @error("approvals[1][approval_date]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
@@ -273,27 +281,33 @@
 
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Approved by
+                                    <input type="text" name="approvals[2][approval_action]" value="Approved by" readonly/>
+                                    @error("approvals[2][approval_action]")
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </th>
-                                
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    CFO
+                                    <input type="text" name="approvals[2][role]" value="CFO" readonly/>
+                                    @error("approvals[2][role]")
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </th>
                                 <td class="px-2 py-4">
-                                    <input type="text" name="assets[{{ $index }}][commission_date]" value="{{ old("assets.$index.commission_date", $assetData['commission_date'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-                                    @error("assets.$index.commission_date")
+                                    <input type="hidden" name="approvals[2][user_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                    <input type="text" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                    @error("approvals[2][user_id]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
                                 <td class="px-2 py-4">
-                                    <input type="text" name="assets[{{ $index }}][specification]" value="{{ old("assets.$index.specification", $assetData['specification'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
-                                    @error("assets.$index.specification")
+                                    <input type="text" name="approvals[2][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                    @error("approvals[2][status]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
                                 <td class="px-2 py-4">
-                                    <input type="date" name="assets[{{ $index }}][asset_details]" value="{{ old("assets.$index.asset_details", $assetData['asset_details'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Asset Details" />
-                                    @error("assets.$index.asset_details")
+                                    <input type="date" name="approvals[2][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                    @error("approvals[2][approval_date]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
@@ -301,27 +315,33 @@
 
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Approved by
+                                    <input type="text" name="approvals[3][approval_action]" value="Approved by" readonly/>
+                                    @error("approvals[3][approval_action]")
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </th>
-                                
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Director
+                                    <input type="text" name="approvals[3][role]" value="Director" readonly/>
+                                    @error("approvals[3][role]")
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </th>
                                 <td class="px-2 py-4">
-                                    <input type="text" name="assets[{{ $index }}][commission_date]" value="{{ old("assets.$index.commission_date", $assetData['commission_date'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-                                    @error("assets.$index.commission_date")
+                                    <input type="hidden" name="approvals[3][user_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                    <input type="text" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                    @error("approvals[3][user_id]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
                                 <td class="px-2 py-4">
-                                    <input type="text" name="assets[{{ $index }}][specification]" value="{{ old("assets.$index.specification", $assetData['specification'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
-                                    @error("assets.$index.specification")
+                                    <input type="text" name="approvals[3][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                    @error("approvals[3][status]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
                                 <td class="px-2 py-4">
-                                    <input type="date" name="assets[{{ $index }}][asset_details]" value="{{ old("assets.$index.asset_details", $assetData['asset_details'] ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Asset Details" />
-                                    @error("assets.$index.asset_details")
+                                    <input type="date" name="approvals[3][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                    @error("approvals[3][approval_date]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </td>
@@ -334,17 +354,45 @@
             <input type="hidden" name="company_id" value="{{ Auth::user()->last_active_company_id }}" required />
 
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
+            <!-- <button type="submit" class="text-white bg-yellow-500 hover:bg-yellow-600 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 ml-2">Draft</button> -->
             <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
         </form>
+
+        @if ($errors->any())
+            <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                <span class="font-medium">Validasi Gagal!</span> Mohon periksa error di bawah ini:
+                <ul class="mt-1.5 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
     </div>
 @endsection
 
 @push('scripts')
 <script>
+    // window.onload = function() {
+    //     // Mendapatkan elemen input date
+    //     const dateInput = document.getElementById('currentDateInput');
+        
+    //     // Mendapatkan tanggal saat ini
+    //     const today = new Date();
+        
+    //     // Memformat tanggal menjadi YYYY-MM-DD
+    //     const year = today.getFullYear();
+    //     const month = String(today.getMonth() + 1).padStart(2, '0'); // Bulan dimulai dari 0
+    //     const day = String(today.getDate()).padStart(2, '0');
+        
+    //     // Mengatur nilai input
+    //     dateInput.value = `${year}-${month}-${day}`;
+    // };
+
     document.addEventListener('DOMContentLoaded', function() {
         const assetListBody = document.getElementById('asset-list-body');
         const addAssetRowBtn = document.getElementById('add-asset-row');
-        const departmentSelect = document.getElementById('department-select');
         const assetClassesData = @json($assetclasses);
         const oldData = @json(old('assets', []));
 
@@ -355,37 +403,52 @@
                     <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white asset-row-number text-center">${index + 1}</td>
                     <td class="px-2 py-4">
                         <input type="text" name="assets[${index}][po_no]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="PO No." />
+                        @error("assets.$index.po_no")
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </td>
                     <td class="px-2 py-4">
                         <input type="text" name="assets[${index}][invoice_no]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Invoice No." />
+                        @error("assets.$index.invoice_no")
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </td>
                     <td class="px-2 py-4">
                         <input type="date" name="assets[${index}][commission_date]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                        @error("assets.$index.commission_date")
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </td>
                     <td class="px-2 py-4">
                         <input type="text" name="assets[${index}][specification]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Specification" />
+                        @error("assets.$index.specification")
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </td>
                     <td class="px-2 py-4">
                         <select name="assets[${index}][asset_class_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-class-select">
                             <option value="">Choose Asset Class</option>
                             ${classOptions}
                         </select>
+                        @error("assets.$index.asset_class_id")
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </td>
                     <td class="px-2 py-4">
                         <select name="assets[${index}][asset_sub_class_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-sub-class-select">
                             <option value="">Choose Asset Sub Class</option>
                         </select>
+                        @error("assets.$index.asset_sub_class_id")
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </td>
                     <td class="px-2 py-4">
                         <select name="assets[${index}][asset_name_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-name-select">
                             <option value="">Choose Asset Name</option>
                         </select>
-                    </td>
-                    <td class="px-2 py-4">
-                        {{-- Disabled input for display --}}
-                        <input type="text" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer cost-code-display-input" value="" disabled readonly>
-                        {{-- Hidden input to send Department ID to backend --}}
-                        <input type="hidden" name="assets[${index}][department_id]" value="" class="cost-code-hidden-input">
+                        @error("assets.$index.asset_name_id")
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </td>
                     <td class="px-2 py-4">
                         <button type="button" class="text-red-600 hover:text-red-900 delete-row-btn">Delete</button>
@@ -451,33 +514,6 @@
             }
         }
 
-        // --- Function to Get Cost Code based on Department ---
-        async function populateCostCodes(departmentId, costCodeDisplayInput, costCodeHiddenInput) {
-            costCodeDisplayInput.value = 'Loading...';
-            costCodeHiddenInput.value = '';
-            if (!departmentId) {
-                costCodeDisplayInput.value = '';
-                costCodeHiddenInput.value = '';
-                return;
-            }
-            try {
-                const response = await fetch(`/api/cost-codes-by-department/${departmentId}`);
-                if (!response.ok) throw new Error('Network error');
-                const data = await response.json();
-                if (data && data.id) { 
-                    costCodeDisplayInput.value = data.id;
-                    costCodeHiddenInput.value = data.id;
-                } else {
-                    costCodeDisplayInput.value = 'No Cost Code';
-                    costCodeHiddenInput.value = '';
-                }
-            } catch(error) {
-                console.error('Error fetching cost codes:', error);
-                costCodeDisplayInput.value = 'Error';
-                costCodeHiddenInput.value = '';
-            }
-        }
-
         function setupRowListeners(row) {
             const classSelect = row.querySelector('.asset-class-select');
             const subClassSelect = row.querySelector('.asset-sub-class-select');
@@ -507,22 +543,6 @@
             const newRow = assetListBody.lastElementChild;
             setupRowListeners(newRow);
             updateRowNumbers();
-            
-            const currentDepartmentId = departmentSelect.value;
-            if (currentDepartmentId) {
-                const displayInput = newRow.querySelector('.cost-code-display-input');
-                const hiddenInput = newRow.querySelector('.cost-code-hidden-input');
-                populateCostCodes(currentDepartmentId, displayInput, hiddenInput);
-            }
-        });
-
-        departmentSelect.addEventListener('change', function() {
-            const departmentId = this.value;
-            assetListBody.querySelectorAll('.asset-row').forEach(row => {
-                const displayInput = row.querySelector('.cost-code-display-input');
-                const hiddenInput = row.querySelector('.cost-code-hidden-input');
-                populateCostCodes(departmentId, displayInput, hiddenInput);
-            });
         });
 
         function initializeRows() {
@@ -547,14 +567,6 @@
                     }
                 }
             });
-            
-            if (departmentSelect.value) {
-                departmentSelect.dispatchEvent(new Event('change'));
-            } else {
-                assetListBody.querySelectorAll('.asset-row').forEach(row => {
-                    row.querySelector('.cost-code-display-input').value = 'Choose Department';
-                });
-            }
         }
 
         initializeRows();

@@ -40,17 +40,4 @@ class RegisterDataController extends Controller
 
         return response()->json($assetSubClass->assetNames);
     }
-
-    public function getCostCodesByDepartment($departmentId)
-    {
-        $department = Department::withoutGlobalScope(CompanyScope::class)->find($departmentId);
-
-        if (!$department) {
-            return response()->json([], 404);
-        }
-
-        return response()->json([
-            'id' => $department->id,
-        ]);
-    }
 }

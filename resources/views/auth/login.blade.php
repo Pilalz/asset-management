@@ -1,3 +1,7 @@
+<link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+<script>tailwind.config = {darkMode: 'class',}</script>
+<script src="https://cdn.tailwindcss.com"></script>
+
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />

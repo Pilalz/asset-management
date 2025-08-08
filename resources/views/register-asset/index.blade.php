@@ -55,7 +55,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <span class="flex items-center">
-                            Asset Class
+                            Form No
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                             </svg>
@@ -63,7 +63,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <span class="flex items-center">
-                            Asset Sub Class
+                            Department
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                             </svg>
@@ -71,7 +71,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <span class="flex items-center">
-                            Commercial Life
+                            Location
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                             </svg>
@@ -79,7 +79,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <span class="flex items-center">
-                            Fiscal Life
+                            Insured
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                             </svg>
@@ -87,7 +87,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <span class="flex items-center">
-                            Cost
+                            Asset Quantity
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                             </svg>
@@ -100,7 +100,11 @@
                 @forelse ($registerassets as $register_asset)
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $loop->iteration }}</th>
-                        <td class="px-6 py-4">{{ $register_asset->id }}</td>
+                        <td class="px-6 py-4">{{ $register_asset->form_no }}</td>
+                        <td class="px-6 py-4">{{ $register_asset->department->name }}</td>
+                        <td class="px-6 py-4">{{ $register_asset->location->name }}</td>
+                        <td class="px-6 py-4">{{ $register_asset->insured == 1 ? 'Yes' : 'No' }}</td>
+                        <td class="px-6 py-4">{{ $register_asset->detail_registers_count == null ? 'Kosong' : $register_asset->detail_registers_count }}</td>
                         <td>
                             <div class="flex">
                                 <a href="{{ route('register-asset.edit', $register_asset->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">

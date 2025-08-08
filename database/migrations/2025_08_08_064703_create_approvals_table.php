@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('detail_registers', function (Blueprint $table) {
+        Schema::create('approvals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('register_asset_id')->constrained('register_assets')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('po_no');
-            $table->string('invoice_no');
-            $table->date('commission_date');
-            $table->string('specification');
-            $table->foreignId('asset_name_id')->constrained('asset_names')->onUpdate('no action')->onDelete('no action');
+            $table->string('approval_action');
+            $table->string('role');
+            $table->foreignId('user_id')->constrained('users')->onUpdate('no action')->onDelete('no action')->nullable();
+            $table->string('status');
+            $table->date('approval_date')->nullable();
+            $table->date('approval_order');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('detail_registers');
+        Schema::dropIfExists('approvals');
     }
 };

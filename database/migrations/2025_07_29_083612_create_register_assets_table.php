@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
             $table->foreignId('location_id')->constrained('locations')->onUpdate('cascade')->onDelete('no action');
             $table->boolean('insured');
+            $table->string('sequence');
+            $table->string('status');
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->timestamps();
         });

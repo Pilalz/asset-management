@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Department;
 use App\Models\Location;
 use App\Models\Company;
+use App\Models\DetailRegister;
+use App\Models\Approval;
 use App\Scopes\CompanyScope;
 
 class RegisterAsset extends Model
@@ -21,6 +24,7 @@ class RegisterAsset extends Model
         'department_id',
         'location_id',
         'insured',
+        'sequence',
         'company_id',
     ];
 
@@ -37,6 +41,16 @@ class RegisterAsset extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function detailRegisters(): HasMany
+    {
+        return $this->hasMany(DetailRegister::class, 'register_asset_id', 'id');
+    }
+
+    public function approvals(): HasMany
+    {
+        return $this->hasMany(Approval::class, 'register_asset_id', 'id');
     }
 
     protected static function booted(): void
