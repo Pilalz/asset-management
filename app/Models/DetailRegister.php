@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\RegisterAsset;
+use App\Models\AssetName;
 
 class DetailRegister extends Model
 {
@@ -25,5 +26,10 @@ class DetailRegister extends Model
     public function registerAsset(): BelongsTo
     {
         return $this->belongsTo(RegisterAsset::class);
+    }
+
+    public function assetName(): BelongsTo
+    {
+        return $this->belongsTo(AssetName::class);
     }
 }

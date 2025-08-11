@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onUpdate('no action')->onDelete('no action')->nullable();
             $table->string('status');
             $table->date('approval_date')->nullable();
-            $table->date('approval_order');
+            $table->integer('approval_order');
             $table->timestamps();
         });
     }

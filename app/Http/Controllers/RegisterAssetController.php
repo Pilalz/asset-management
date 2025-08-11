@@ -23,6 +23,12 @@ class RegisterAssetController extends Controller
         return view('register-asset.index', compact('registerassets'));
     }
 
+    public function show(RegisterAsset $register_asset)
+    {
+
+        return view('register-asset.show', compact('register_asset'));
+    }
+
     public function create()
     {
         $locations = Location::all();
@@ -47,12 +53,12 @@ class RegisterAssetController extends Controller
     {
         //Store Register Asset
         $validated = $request->validate([
-            'form_no' => 'required|string|max:255',
-            'department_id' => 'required|max:255',
-            'location_id'  => 'required',
+            'form_no' => 'required|string|max:255|unique:register_assets,form_no',
+            'department_id' => 'required|exists:departments,id',
+            'location_id'  => 'required|exists:locations,id',
             'insured'  => 'required',
             'sequence'  => 'required',
-            'company_id'  => 'required',
+            'company_id'  => 'required|exists:companies,id',
 
             //Validasi Detail Asset
             'assets'                    => 'required|array|min:1',
@@ -71,56 +77,50 @@ class RegisterAssetController extends Controller
             'approvals.0.approval_date'     => 'required|date',
         ]);
 
-        dd($validated);
-
         $approvalsToStore = [];
-        $isSequence = ($validated['sequence'] === 1);
+        $isSequence = ($validated['sequence'] === "Y");
 
         foreach ($validated['approvals'] as $index => $approvalData) {
-            $order = 1; // Default order untuk non-sekuensial
+            $order = 1;
             if ($isSequence) {
-                $order = $index + 1; // Order increment untuk sekuensial
+                $order = $index + 1;
             }
 
             // Yang pertama ('Submitted by') otomatis approved
             $isFirstApprover = ($index === 0);
 
-            // Tambahkan data ke array baru yang akan disimpan
             $approvalsToStore[] = [
-                'approval_action'             => $approvalData['approval_action'],
-                'role'     => $approvalData['role'],
-                'approval_order'    => $order, // <-- LOGIKA INTI DI SINI
+                'approval_action'   => $approvalData['approval_action'],
+                'role'              => $approvalData['role'],
+                'user_id'           => $isFirstApprover ? $approvalData['user_id'] : null,
                 'status'            => $isFirstApprover ? 'approved' : 'pending',
-                'user_id' => $isFirstApprover ? $approvalData['user_id'] : null,
-                'approval_date'         => $isFirstApprover ? now() : null,
+                'approval_date'     => $isFirstApprover ? now() : null,
+                'approval_order'    => $order,
             ];
         }
 
-        dd($approvalsToStore);
-
         try {
-            DB::transaction(function () use ($validated) {
+            DB::transaction(function () use ($validated, $approvalsToStore) {
                 $registerAsset = RegisterAsset::create([
                     'form_no'       => $validated['form_no'],
                     'department_id' => $validated['department_id'],
                     'location_id'   => $validated['location_id'],
                     'insured'       => ($validated['insured'] == 'Y') ? 1 : 0,
-                    'status'    => 'Waiting',
+                    'sequence'      => ($validated['sequence'] == 'Y') ? 1 : 0,
+                    'status'        => 'Waiting',
                     'company_id'    => $validated['company_id'],
-                    'sequence'    => ($validated['sequence'] == 'Y') ? 1 : 0,
                 ]);
 
                 foreach ($validated['assets'] as $assetData) {
                     $registerAsset->detailRegisters()->create($assetData);
                 }
 
-                foreach ($validated['approvals'] as $approvalData) {
+                foreach ($approvalsToStore as $approvalData) {
                     $registerAsset->approvals()->create($approvalData);
                 }
 
             });
         } catch (\Exception $e) {
-            // Jika terjadi error di tengah jalan, redirect kembali dengan pesan error
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage())->withInput();
         }
 

@@ -25,6 +25,7 @@ class RegisterAsset extends Model
         'location_id',
         'insured',
         'sequence',
+        'status',
         'company_id',
     ];
 
