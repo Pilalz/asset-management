@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AssetClass;
+use App\Imports\AssetClassesImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AssetClassController extends Controller
 {
@@ -53,5 +55,26 @@ class AssetClassController extends Controller
         $asset_class->delete();
 
         return redirect()->route('asset-class.index')->with('success', 'Data berhasil dihapus!');
+    }
+
+    public function showImportForm()
+    {
+        return view('asset-class.import');
+    }
+
+    public function importExcel(Request $request)
+    {
+        // 1. Validasi file yang diupload
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        try {
+            Excel::import(new AssetClassesImport, $request->file('excel_file'));
+        } catch (\Exception $e) {
+            return redirect()->route('asset-class.import.form')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+        }
+
+        return redirect()->route('asset-class.index')->with('success', 'Data aset berhasil diimpor!');
     }
 }

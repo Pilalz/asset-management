@@ -99,4 +99,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('company', CompanyController::class);
     Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
 
+    // --- Import Data ---
+    Route::get('/asset-class/import', [AssetClassController::class, 'showImportForm'])->name('asset-class.import.form');
+    Route::post('/asset-class/import', [AssetClassController::class, 'importExcel'])->name('asset-class.import');
+
+    Route::get('/asset-sub-class/import', [AssetSubClassController::class, 'showImportForm'])->name('asset-sub-class.import.form');
+    Route::post('/asset-sub-class/import', [AssetSubClassController::class, 'importExcel'])->name('asset-sub-class.import');
+
+    Route::get('/asset-name/import', [AssetNameController::class, 'showImportForm'])->name('asset-name.import.form');
+    Route::post('/asset-name/import', [AssetNameController::class, 'importExcel'])->name('asset-name.import');
+
+    // --- API Data ---
+    Route::get('api/asset-name', [AssetNameController::class, 'datatables'])->name('api.asset-name');
 });

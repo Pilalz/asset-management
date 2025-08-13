@@ -31,7 +31,51 @@
             </ol>
         </nav>
 
-        <div class="flex">
+        <div class="flex gap-2">
+            <!-- Modal toggle -->
+            <button data-modal-target="import-modal" data-modal-toggle="import-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+            Import Data
+            </button>
+            <!-- Main modal -->
+            <div id="import-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="relative p-4 w-full max-w-md max-h-full">
+                    <!-- Modal content -->
+                    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+                        <!-- Modal header -->
+                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                Import Data Asset Class
+                            </h3>
+                            <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="import-modal">
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                </svg>
+                                <span class="sr-only">Close modal</span>
+                            </button>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="p-4 md:p-5">
+                            <form action="{{ route('asset-name.import') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="mb-4">
+                                    <label for="excel_file" class="block mb-2 text-sm font-medium text-gray-900">Upload Excel File (.xlsx, .xls)</label>
+                                    <input type="file" name="excel_file" id="excel_file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" required>
+                                </div>   
+                                <div class="mb-4">
+                                    <p class="text-sm text-gray-600">
+                                        Pastikan file Excel Anda memiliki header pada baris pertama dengan nama kolom seperti: `id`, `name`.
+                                    </p>
+                                    <a href="/path/to/template.xlsx" class="text-blue-600 hover:underline">Download Template Excel</a>
+                                </div>
+                                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5">
+                                    Import Data
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <a href="{{ route('asset-name.create') }}" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg class="w-4 h-4 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
@@ -113,45 +157,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($assetnames as $asset_name)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $loop->iteration }}</th>
-                        <td class="px-6 py-4">{{ $asset_name->assetSubClass->name }}</td>
-                        <td class="px-6 py-4">{{ $asset_name->name }}</td>
-                        <td class="px-6 py-4">{{ $asset_name->code }}</td>
-                        <td class="px-6 py-4">{{ $asset_name->commercial }} (Years)</td>
-                        <td class="px-6 py-4">{{ $asset_name->fiscal }} (Years)</td>
-                        <td class="px-6 py-4">{{ $asset_name->cost }} (USD)</td>
-                        <td class="px-6 py-4">{{ $asset_name->lva }} (USD)</td>
-                        <td>
-                            <div class="flex">
-                                <a href="{{ route('asset-name.edit', $asset_name->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">
-                                    <svg class="w-3.5 h-3.5 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                                    </svg>
-                                    Edit
-                                </a>
-
-                                <form action="{{ route('asset-name.destroy', $asset_name->id) }}" method="POST" class="group">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" 
-                                        class="text-red-700 text-red-700 group-hover:text-white border border-red-700 group-hover:bg-red-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:border-red-500 dark:text-red-500 dark:group-hover:text-white dark:group-hover:bg-red-600">
-                                        <svg class="w-3.5 h-3.5 me-2 text-red-700 dark:text-white group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                                        </svg>
-                                        Delete
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="10" class="text-center p-3">Tidak ada data.</td>
-                    </tr>
-                @endforelse
+                
             </tbody>
         </table>
     </div>
@@ -159,51 +165,23 @@
 
 @push('scripts')
 <script>
-    if (document.getElementById("assetNameTable") && typeof simpleDatatables.DataTable !== 'undefined') {
-        const dataTable = new simpleDatatables.DataTable("#assetNameTable", {
-            searchable: true,
-            sortable: true,
-            tableRender: (_data, table, type) => {
-                if (type === "print") {
-                    return table
-                }
-
-                const tHead = table.childNodes[0];
-                const columnHeaders = tHead.childNodes[0].childNodes; // Ini adalah TH dari baris header pertama
-                const filterHeaders = {
-                    nodeName: "TR",
-                    attributes: {
-                        class: "search-filtering-row"
-                    },
-                    childNodes: Array.from(columnHeaders).map(
-                        (_th, index) => {
-                            // Cek jika ini adalah kolom "Asset Class" (indeks 1)
-                            if (index === 1) { // Indeks 1 adalah kolom "Asset Class"
-                                return {
-                                    nodeName: "TH",
-                                    childNodes: [
-                                        {
-                                            nodeName: "INPUT",
-                                            attributes: {
-                                                class: "datatable-input",
-                                                type: "search",
-                                                "data-columns": "[" + index + "]",
-                                                placeholder: "Cari Asset Class..." // Tambahkan placeholder
-                                            }
-                                        }
-                                    ]
-                                };
-                            } else {
-                                // Untuk kolom lain, kembalikan TH kosong
-                                return { nodeName: "TH", childNodes: [] };
-                            }
-                        }
-                    )
-                }
-                tHead.childNodes.push(filterHeaders); // Menambahkan baris filter ke thead
-                return table;
-            }
+    $(document).ready(function() {
+        $('#assetNameTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('api.asset-name') }}",
+            columns: [
+                { data: 'id', name: 'id' }, // Kolom No (bisa diganti dengan DT_RowIndex)
+                { data: 'asset_sub_class_name', name: 'assetSubClass.name', orderable: false },
+                { data: 'name', name: 'name' },
+                { data: 'code', name: 'code' },
+                { data: 'commercial', name: 'commercial' },
+                { data: 'fiscal', name: 'fiscal' },
+                { data: 'cost', name: 'cost' },
+                { data: 'lva', name: 'lva' },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+            ]
         });
-    }
+    });
 </script>
 @endpush
