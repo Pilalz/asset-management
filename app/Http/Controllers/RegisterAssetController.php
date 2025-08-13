@@ -9,6 +9,7 @@ use App\Models\Department;
 use App\Models\AssetClass;
 use App\Models\AssetSubClass;
 use App\Models\Approval;
+use App\Models\CompanyUser;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -21,12 +22,6 @@ class RegisterAssetController extends Controller
         $registerassets = RegisterAsset::withCount('detailRegisters')->paginate(25);
 
         return view('register-asset.index', compact('registerassets'));
-    }
-
-    public function show(RegisterAsset $register_asset)
-    {
-
-        return view('register-asset.show', compact('register_asset'));
     }
 
     public function create()
@@ -126,5 +121,167 @@ class RegisterAssetController extends Controller
 
 
         return redirect()->route('register-asset.index')->with('success', 'Data berhasil ditambah');
+    }
+
+    public function show(RegisterAsset $register_asset)
+    {
+        // Eager load relasi untuk efisiensi
+        $register_asset->load('approvals.user', 'department', 'location', 'detailRegisters.assetName.assetSubClass.assetClass');
+        
+        $canApprove = false;
+        $userApprovalStatus = null;
+
+        if ($register_asset->status === 'Waiting') {
+            $user = Auth::user();
+            $userApprovalStatus = 'Anda tidak ada dalam daftar approver, atau bukan giliran Anda.';
+
+            if ($user->role) {
+                // LOGIKA UNTUK APPROVAL PARALLEL
+                if ($register_asset->sequence === "0") {
+                    if ($register_asset->approvals()->where('role', $user->role)->where('status', 'pending')->exists()) {
+                        $canApprove = true;
+                    }
+                }
+
+                // LOGIKA UNTUK APPROVAL SEQUENTIAL
+                if ($register_asset->sequence === "1") {
+                    $nextApprover = $register_asset->approvals()->where('status', 'pending')->orderBy('approval_order', 'asc')->first();
+                    if ($nextApprover && $nextApprover->role === $user->role) {
+                        $canApprove = true;
+                    }
+                }
+
+                // Cek apakah user sudah pernah approve
+                if ($register_asset->approvals()->where('user_id', $user->id)->exists()) {
+                    $canApprove = false; // Override, pastikan tidak bisa approve dua kali
+                    $userApprovalStatus = 'Anda sudah menyetujui formulir ini.';
+                }
+            } else {
+                $userApprovalStatus = 'Anda tidak memiliki role di perusahaan ini.';
+            }
+        }
+        return view('register-asset.show', compact('register_asset', 'canApprove', 'userApprovalStatus'));
+    }
+
+    public function approve(Request $request, RegisterAsset $register_asset)
+    {
+        $user = Auth::user();
+
+        // Validasi ulang di backend untuk keamanan
+        $nextApprover = $register_asset->approvals()
+            ->where('status', 'pending')
+            ->orderBy('approval_order', 'asc')
+            ->first();
+
+        // Kondisi kapan user TIDAK BOLEH approve
+        if (
+            ($register_asset->sequence === "1" && (!$nextApprover || $nextApprover->role !== $user->role)) ||
+            ($register_asset->sequence === "0" && !$register_asset->approvals()->where('role', $user->role)->where('status', 'pending')->exists())
+        ) {
+            return back()->with('error', 'Saat ini bukan giliran Anda untuk melakukan approval.');
+        }
+        
+        try {
+            DB::transaction(function () use ($register_asset, $user, $request, $nextApprover) {
+                // 1. Update baris approval milik user ini
+                $approval = $register_asset->approvals()
+                    ->where('role', $user->role)
+                    ->where('status', 'pending')
+                    ->when($register_asset->sequence === 1, function ($query) use ($nextApprover) {
+                        return $query->where('approval_order', $nextApprover->approval_order);
+                    })
+                    ->first();
+
+                if ($approval) {
+                    $approval->update([
+                        'status' => 'approved',
+                        'user_id' => $user->id,
+                        'approval_date' => now(),
+                    ]);
+                } else {
+                    // Throw exception jika approval tidak ditemukan, untuk membatalkan transaksi
+                    throw new \Exception("Approval yang valid tidak ditemukan untuk peran Anda.");
+                }
+
+                // 2. Cek apakah semua approval sudah selesai
+                $allApproved = $register_asset->approvals()->where('status', '!=', 'approved')->doesntExist();
+
+                if ($allApproved) {
+                    // 3. JIKA SELESAI, jalankan proses final
+                    $this->finalizeAssetRegistration($register_asset);
+                }
+            });
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+
+        return redirect()->route('register-asset.index')->with('success', 'Formulir berhasil disetujui.');
+    }
+
+    private function generateAssetNumber($companyId, $assetClassId)
+    {
+        // 1. Siapkan komponen-komponennya
+        $prefix = 'FA';
+        $companyCode = str_pad($companyId, 2, '0', STR_PAD_LEFT); // Contoh: 1 -> 01
+        $year = now()->format('y'); // yy -> 25
+        $assetClassCode = str_pad($assetClassId, 2, '0', STR_PAD_LEFT); // Contoh: 3 -> 03
+
+        // 2. Buat prefix lengkap untuk pencarian di database
+        $searchPrefix = $prefix . $companyCode . $year . $assetClassCode;
+
+        // 3. Cari aset terakhir dengan prefix yang sama
+        $lastAsset = Asset::where('asset_number', 'like', $searchPrefix . '%')
+                        ->orderBy('asset_number', 'desc')
+                        ->first();
+
+        $sequence = 1; // Mulai dari 1 jika tidak ada data sebelumnya
+        if ($lastAsset) {
+            // Ambil 5 digit terakhir dari nomor aset, ubah ke integer, lalu tambah 1
+            $lastSequence = (int) substr($lastAsset->asset_number, -5);
+            $sequence = $lastSequence + 1;
+        }
+
+        // 4. Format nomor urut menjadi 5 digit dengan angka nol di depan
+        $formattedSequence = str_pad($sequence, 5, '0', STR_PAD_LEFT); // 1 -> 00001
+
+        // 5. Gabungkan semuanya
+        return $searchPrefix . $formattedSequence;
+    }
+
+    private function finalizeAssetRegistration(RegisterAsset $register_asset)
+    {
+        // Ubah status form menjadi 'approved'
+        $register_asset->update(['status' => 'Approved']);
+
+        // Loop melalui detail dan buat aset baru
+        foreach ($register_asset->detailRegisters as $detail) {
+
+            $assetClassId = $detail->asset_name_id;
+
+            $newAssetNumber = $this->generateAssetNumber($register_asset->company_id, $assetClassId);
+
+            Asset::create([
+                'asset_number' => $newAssetNumber,
+                'asset_name_id' => $detail->asset_name_id,
+                'status' => 'Active',
+                'description' => $detail->specification,
+                'detail' => null,
+                'unit_no' => null,
+                'sn_chassis' => null,
+                'sn_engine' => null,
+                'location_id' => $register_asset->location_id,
+                'department_id' => $register_asset->department_id,
+                'quantity' => 1,
+                'capitalized_date' => now(),
+                'start_depre_date' => now(),
+                'acquisition_value' => 0,
+                'current_cost' => 0,
+                'useful_life_month' => $detail->assetName->commercial * 12,
+                'accum_depre' => 0,
+                'net_book_value' => 0,
+                'company_id' => $register_asset->company_id,
+            ]);
+        }
     }
 }

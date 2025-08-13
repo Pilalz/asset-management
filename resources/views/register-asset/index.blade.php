@@ -87,6 +87,14 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <span class="flex items-center">
+                            Sequence
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <span class="flex items-center">
                             Asset Quantity
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
@@ -112,6 +120,7 @@
                         <td class="px-6 py-4">{{ $register_asset->department->name }}</td>
                         <td class="px-6 py-4">{{ $register_asset->location->name }}</td>
                         <td class="px-6 py-4">{{ $register_asset->insured == 1 ? 'Yes' : 'No' }}</td>
+                        <td class="px-6 py-4">{{ $register_asset->sequence == 1 ? 'Yes' : 'No' }}</td>
                         <td class="px-6 py-4">{{ $register_asset->detail_registers_count == null ? 'Kosong' : $register_asset->detail_registers_count }}</td>
                         <td>
                             @php
@@ -120,7 +129,7 @@
 
                                 if ($statusText === 'Waiting') {
                                     $statusClass = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
-                                } elseif ($statusText === 'Approved') {
+                                } elseif ($statusText === 'Approved' || 'approved') {
                                     $statusClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
                                 } elseif ($statusText === 'Rejected') {
                                     $statusClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';

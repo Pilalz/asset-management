@@ -40,9 +40,12 @@
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role <span class="text-red-900">*</span></label>
                 <select name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option selected value="">Choose a Class</option>
-                    <option value="admin">Admin</option>
-                    <option value="staff">staff</option>
-                    <option value="viewer">Viewer</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Staff">staff</option>
+                    <option value="Viewer">Viewer</option>
+                    <option value="User Manager">User Manager</option>
+                    <option value="CFO">CFO</option>
+                    <option value="Director">Director</option>
                 </select>
                  @error('role')
                     <div class="text-danger">{{ $message }}</div>

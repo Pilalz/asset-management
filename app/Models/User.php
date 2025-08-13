@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Company;
+use App\Models\CompanyUser;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Scopes\UserCompanyScope;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
@@ -70,5 +72,18 @@ class User extends Authenticatable
     public function lastActiveCompany(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'last_active_company_id');
+    }
+
+    protected function role(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $companyUser = CompanyUser::where('user_id', $this->id)
+                    ->where('company_id', $this->last_active_company_id)
+                    ->first();
+                
+                return $companyUser?->role; // Mengembalikan nama role (string) atau null
+            }
+        );
     }
 }

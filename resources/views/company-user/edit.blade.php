@@ -44,9 +44,12 @@
             <div class="mb-5">
                 <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role <span class="text-red-900">*</span></label>
                 <select id="role" name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                    <option value="admin" {{ $company_user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                    <option value="staff" {{ $company_user->role == 'staff' ? 'selected' : '' }}>Staff</option>
-                    <option value="viewer" {{ $company_user->role == 'viewer' ? 'selected' : '' }}>Viewer</option>
+                    <option value="Admin" {{ $company_user->role == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="Staff" {{ $company_user->role == 'staff' ? 'selected' : '' }}>Staff</option>
+                    <option value="Viewer" {{ $company_user->role == 'viewer' ? 'selected' : '' }}>Viewer</option>
+                    <option value="User Manager" {{ $company_user->role == 'user manager' ? 'selected' : '' }}>User Manager</option>
+                    <option value="CFO" {{ $company_user->role == 'cfo' ? 'selected' : '' }}>CFO</option>
+                    <option value="Director" {{ $company_user->role == 'director' ? 'selected' : '' }}>Director</option>
                 </select>
                 @error('role')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>

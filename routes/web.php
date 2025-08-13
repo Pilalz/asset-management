@@ -83,14 +83,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('asset-sub-class', AssetSubClassController::class);
     Route::resource('asset-name', AssetNameController::class);
     Route::resource('asset', AssetController::class);
-    //End Asset
     //Start Depre
     Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
     Route::resource('depreciation', DepreciationController::class);
-    //End Depre
+
     Route::resource('location', LocationController::class);
     Route::resource('department', DepartmentController::class);
+    //Start Register
     Route::resource('register-asset', RegisterAssetController::class);
+    Route::post('/register-asset/{register_asset}/approve', [RegisterAssetController::class, 'approve'])->name('register-asset.approve');
+
     Route::resource('transfer-asset', TransferAssetController::class);
     Route::resource('company-user', CompanyUserController::class);
     //COMPANY
