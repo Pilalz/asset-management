@@ -14,13 +14,15 @@
         </nav>
     </div>
     
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5 bg-white">
-        <div class="flex p-4 gap-2 justify-around">
-            <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>
-            <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>
-            <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>
-            <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>
+    <div class="p-5">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white">
+            <div class="flex p-4 gap-2 justify-around">
+                <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>
+                <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>
+                <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>
+                <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>
+            </div>
         </div>
-        
     </div>
+    
 @endsection

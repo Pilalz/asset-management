@@ -85,124 +85,124 @@
         </div>
     </div>
     
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5 bg-white p-4">
-        <table id="assetSubClassTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            No
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            Asset Class
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            Asset Sub Class
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($assetsubclasses as $asset_sub_class)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $loop->iteration }}</th>
-                        <td class="px-6 py-4">{{ $asset_sub_class->assetClass->name }}</td>
-                        <td class="px-6 py-4">{{ $asset_sub_class->name }}</td>
-                        <td>
-                            <div class="flex">
-                                <a href="{{ route('asset-sub-class.edit', $asset_sub_class->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">
-                                    <svg class="w-3.5 h-3.5 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                                    </svg>
-                                    Edit
-                                </a>
-
-                                <form action="{{ route('asset-sub-class.destroy', $asset_sub_class->id) }}" method="POST" class="group">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" 
-                                        class="text-red-700 text-red-700 group-hover:text-white border border-red-700 group-hover:bg-red-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:border-red-500 dark:text-red-500 dark:group-hover:text-white dark:group-hover:bg-red-600">
-                                        <svg class="w-3.5 h-3.5 me-2 text-red-700 dark:text-white group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                                        </svg>
-                                        Delete
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
+    <div class="p-5">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5 bg-white p-4">
+            <table id="assetSubClassTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <td colspan="10" class="text-center p-3">Tidak ada data.</td>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="flex items-center">
+                                No
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="flex items-center">
+                                Asset Class
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="flex items-center">
+                                Asset Sub Class
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3">Actions</th>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                    <tr id="filter-row">
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
 
 @push('scripts')
 <script>
-    if (document.getElementById("assetSubClassTable") && typeof simpleDatatables.DataTable !== 'undefined') {
-        const dataTable = new simpleDatatables.DataTable("#assetSubClassTable", {
-            searchable: true,
-            sortable: true,
-            tableRender: (_data, table, type) => {
-                if (type === "print") {
-                    return table
-                }
-
-                const tHead = table.childNodes[0];
-                const columnHeaders = tHead.childNodes[0].childNodes; // Ini adalah TH dari baris header pertama
-                const filterHeaders = {
-                    nodeName: "TR",
-                    attributes: {
-                        class: "search-filtering-row"
-                    },
-                    childNodes: Array.from(columnHeaders).map(
-                        (_th, index) => {
-                            // Cek jika ini adalah kolom "Asset Class" (indeks 1)
-                            if (index === 1) { // Indeks 1 adalah kolom "Asset Class"
-                                return {
-                                    nodeName: "TH",
-                                    childNodes: [
-                                        {
-                                            nodeName: "INPUT",
-                                            attributes: {
-                                                class: "datatable-input",
-                                                type: "search",
-                                                "data-columns": "[" + index + "]",
-                                                placeholder: "Cari Asset Class..." // Tambahkan placeholder
-                                            }
-                                        }
-                                    ]
-                                };
-                            } else {
-                                // Untuk kolom lain, kembalikan TH kosong
-                                return { nodeName: "TH", childNodes: [] };
-                            }
-                        }
-                    )
-                }
-                tHead.childNodes.push(filterHeaders); // Menambahkan baris filter ke thead
-                return table;
+    $(document).ready(function() {
+        $('#assetSubClassTable thead tr:eq(0) th').each(function(i) {
+            var title = $(this).text().trim();
+            var cell = $('#filter-row').children().eq(i);
+            if (i === 0 || i === 3) {
+                return;
             }
+            $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
         });
-    }
+
+        var table = $('#assetSubClassTable').DataTable({
+            dom:  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'l><'text-sm'f>>" +
+                  "<'overflow-x-auto'tr>" +
+                  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('api.asset-sub-class') }}",
+            autoWidth: false,
+            orderCellsTop: true,
+            columns: [
+                { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
+                { data: 'asset_class_name', name: 'assetClass.name' },
+                { data: 'name', name: 'name' },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+            ],
+            order: [[0, 'asc']],
+            language: {
+                search: "Search : ",
+                searchPlaceholder: "Cari di sini...",
+            },
+            initComplete: function () {
+                // --- Tambahkan kelas ke search box utama di sini ---
+                $('.dt-search input').addClass('w-full sm:w-auto bg-white-50 border border-white-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500');
+                
+                // --- Logika untuk filter per kolom ---
+                this.api().columns().every(function (index) {
+                    var column = this;
+                    var cell = $('#assetSubClassTable thead #filter-row').children().eq(column.index());
+                    
+                    if (column.settings()[0].bSearchable === false) {
+                        return;
+                    }
+                    
+                    var input = $('input', cell);
+                    input.on('keyup change clear', function(e) {
+                        e.stopPropagation();
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                    input.on('click', function(e) {
+                        e.stopPropagation();
+                    });
+                });
+            },
+
+            columnDefs: [
+                {
+                    targets: 0,
+                    className: 'px-6 py-4'
+                },
+            ],
+
+            createdRow: function( row, data, dataIndex ) {
+                $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+            },
+        });
+
+        table.columns().every(function() {
+            var that = this;
+            
+            // Event untuk filtering saat mengetik
+            $('input', $('#assetSubClassTable thead #filter-row').children().eq(this.index())).on('keyup change clear', function(e) {
+                e.stopPropagation(); // Hentikan event agar tidak memicu sorting
+                if (that.search() !== this.value) {
+                    that.search(this.value).draw();
+                }
+            });
+        });
+    });
 </script>
 @endpush

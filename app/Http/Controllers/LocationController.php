@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Location;
+use Yajra\DataTables\Facades\DataTables;
+use App\Scopes\CompanyScope;
 
 class LocationController extends Controller
 {
     public function index()
     {
-        $locations = Location::paginate(25);
-        return view('location.index', compact('locations'));
+        return view('location.index');
     }
 
     public function create()
@@ -55,5 +56,26 @@ class LocationController extends Controller
         $location->delete();
 
         return redirect()->route('location.index')->with('success', 'Data berhasil dihapus!');
+    }
+
+    public function datatables(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = Location::withoutGlobalScope(CompanyScope::class)
+                          ->select('locations.*');
+
+        $query->where('locations.company_id', $companyId);
+
+        return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('action', function ($location) {
+                return view('components.action-buttons', [
+                    'editUrl' => route('location.edit', $location->id),
+                    'deleteUrl' => route('location.destroy', $location->id)
+                ])->render();
+            })
+            ->rawColumns(['action'])
+            ->toJson();
     }
 }

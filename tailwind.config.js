@@ -10,6 +10,7 @@ export default {
         "./resources/views/**/*.blade.php",
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
+        "./node_modules/flowbite/**/*.js",
         "./resources/**/*.vue",
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
     ],
@@ -22,5 +23,8 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [
+        forms,
+        require('flowbite/plugin'),
+    ],
 };

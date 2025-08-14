@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asset Management</title>
-
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <script>tailwind.config = {darkMode: 'class',}</script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    @stack('styles')
     <style>
-        #logo-sidebar, main {
+        #logo-sidebar, #main-content {
             transition: all 0.3s ease-in-out;
         }
-        #logo-sidebar.collapsed .menu-text {
+        #logo-sidebar.collapsed .menu-text, #logo-sidebar.collapsed .arrow-icon {
             display: none;
         }
         #logo-sidebar.collapsed .group {
@@ -22,14 +21,14 @@
         }
     </style>
 </head>
-<body class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
+<body class="bg-gray-100 dark:bg-gray-900">
     <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div class="px-3 py-3 lg:px-5 lg:pl-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center justify-start rtl:justify-end">
-                    <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                    <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700">
                         <span class="sr-only">Open sidebar</span>
-                        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
                         </svg>
                     </button>
@@ -143,7 +142,7 @@
         </div>
     </nav>
 
-    <div class="flex flex-1 pt-14">
+    <div class="flex pt-16">
         <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
             <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800 flex flex-col">
                 <ul class="space-y-2 font-medium flex-grow">
@@ -274,15 +273,12 @@
         </aside>
 
         <main id="main-content" class="flex-1 sm:ml-64">
-            <div class="flex flex-col flex-1 min-h-full">
-                @yield('content')
-            </div>
+            @yield('content')
         </main>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // --- THEME TOGGLE LOGIC (Your original code, it's correct) ---
             const themeToggleBtn = document.getElementById('theme-toggle');
             const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
             const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
@@ -290,59 +286,77 @@
             function applyTheme(theme) {
                 if (theme === 'dark') {
                     document.documentElement.classList.add('dark');
-                    themeToggleDarkIcon.classList.remove('hidden');
-                    themeToggleLightIcon.classList.add('hidden');
+                    if(themeToggleDarkIcon) themeToggleDarkIcon.classList.remove('hidden');
+                    if(themeToggleLightIcon) themeToggleLightIcon.classList.add('hidden');
                 } else {
                     document.documentElement.classList.remove('dark');
-                    themeToggleDarkIcon.classList.add('hidden');
-                    themeToggleLightIcon.classList.remove('hidden');
+                    if(themeToggleDarkIcon) themeToggleDarkIcon.classList.add('hidden');
+                    if(themeToggleLightIcon) themeToggleLightIcon.classList.remove('hidden');
                 }
             }
 
-            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            const savedTheme = localStorage.getItem('color-theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 applyTheme('dark');
             } else {
                 applyTheme('light');
             }
 
-            themeToggleBtn.addEventListener('click', function() {
-                const isDark = document.documentElement.classList.toggle('dark');
-                localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
-                applyTheme(isDark ? 'dark' : 'light');
-            });
+            if(themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', function() {
+                    const isDark = document.documentElement.classList.toggle('dark');
+                    const newTheme = isDark ? 'dark' : 'light';
+                    localStorage.setItem('color-theme', newTheme);
+                    applyTheme(newTheme);
+                });
+            }
 
-
-            // --- NEW SIDEBAR COLLAPSE LOGIC ---
             const sidebar = document.getElementById('logo-sidebar');
             const mainContent = document.getElementById('main-content');
             const sidebarToggleBtn = document.getElementById('sidebar-toggle');
             const sidebarToggleIcon = document.getElementById('sidebar-toggle-icon');
+            
+            if (sidebar && mainContent && sidebarToggleBtn && sidebarToggleIcon) {
+                function applySidebarState(isCollapsed) {
+                    if (isCollapsed) {
+                        sidebar.classList.add('collapsed');
+                        sidebar.style.width = '4.5rem'; // 72px
 
-            // Function to apply sidebar state
-            function applySidebarState(isCollapsed) {
-                if (isCollapsed) {
-                    sidebar.classList.add('collapsed');
-                    sidebar.style.width = '4.5rem'; // 72px
-                    mainContent.style.marginLeft = '4.5rem';
-                    sidebarToggleIcon.style.transform = 'rotate(180deg)';
-                } else {
-                    sidebar.classList.remove('collapsed');
-                    sidebar.style.width = '16rem'; // 256px
-                    mainContent.style.marginLeft = '16rem';
-                    sidebarToggleIcon.style.transform = 'rotate(0deg)';
+                        if (window.innerWidth >= 640) {
+                            mainContent.style.marginLeft = '4.5rem';
+                        }
+                        sidebarToggleIcon.style.transform = 'rotate(180deg)';
+                    } else {
+                        sidebar.classList.remove('collapsed');
+                        sidebar.style.width = '16rem'; // 256px
+                        if (window.innerWidth >= 640) {
+                            mainContent.style.marginLeft = '16rem';
+                        }
+                        sidebarToggleIcon.style.transform = 'rotate(0deg)';
+                    }
                 }
+
+                const isSidebarCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                applySidebarState(isSidebarCollapsed);
+
+                sidebarToggleBtn.addEventListener('click', () => {
+                    const currentlyCollapsed = sidebar.classList.contains('collapsed');
+                    const newState = !currentlyCollapsed;
+                    localStorage.setItem('sidebar-collapsed', newState);
+                    applySidebarState(newState);
+                });
+                
+                window.addEventListener('resize', () => {
+                    const currentState = localStorage.getItem('sidebar-collapsed') === 'true';
+                    if (window.innerWidth < 640) {
+                        mainContent.style.marginLeft = '0';
+                    } else {
+                        applySidebarState(currentState);
+                    }
+                });
             }
-
-            // Check for saved sidebar state in localStorage
-            const isSidebarCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
-            applySidebarState(isSidebarCollapsed);
-
-            // Handle sidebar toggle button click
-            sidebarToggleBtn.addEventListener('click', () => {
-                const currentlyCollapsed = sidebar.classList.contains('collapsed');
-                localStorage.setItem('sidebar-collapsed', !currentlyCollapsed);
-                applySidebarState(!currentlyCollapsed);
-            });
         });
     </script>
 

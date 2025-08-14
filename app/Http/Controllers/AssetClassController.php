@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\AssetClass;
 use App\Imports\AssetClassesImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
+use App\Scopes\CompanyScope;
 
 class AssetClassController extends Controller
 {
@@ -76,5 +78,26 @@ class AssetClassController extends Controller
         }
 
         return redirect()->route('asset-class.index')->with('success', 'Data aset berhasil diimpor!');
+    }
+
+    public function datatables(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = AssetClass::withoutGlobalScope(CompanyScope::class)
+                          ->select('asset_classes.*');
+
+        $query->where('asset_classes.company_id', $companyId);
+
+        return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('action', function ($asset_class) {
+                return view('components.action-buttons', [
+                    'editUrl' => route('asset-class.edit', $asset_class->id),
+                    'deleteUrl' => route('asset-class.destroy', $asset_class->id)
+                ])->render();
+            })
+            ->rawColumns(['action'])
+            ->toJson();
     }
 }

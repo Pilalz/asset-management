@@ -85,94 +85,65 @@
         </div>
     </div>
     
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5 bg-white p-4">
-        <table id="assetNameTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <div class="p-5">
+        <div class="shadow-md sm:rounded-lg bg-white p-4">
+            <table id="assetNameTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            No
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            Asset Sub Class
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            Asset Name
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            Asset Code
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            Commercial Life
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            Fiscal Life
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            Cost
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="flex items-center">
-                            LVA
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col" class="px-6 py-3">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-            </tbody>
-        </table>
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <th scope="col" class="px-6 py-3">No</th>
+                        <th scope="col" class="px-6 py-3">Asset Sub Class</th>
+                        <th scope="col" class="px-6 py-3">Asset Name</th>
+                        <th scope="col" class="px-6 py-3">Asset Code</th>
+                        <th scope="col" class="px-6 py-3">Commercial Life</th>
+                        <th scope="col" class="px-6 py-3">Fiscal Life</th>
+                        <th scope="col" class="px-6 py-3">Cost</th>
+                        <th scope="col" class="px-6 py-3">LVA</th>
+                        <th scope="col" class="px-6 py-3">Actions</th>
+                    </tr>
+                    <tr id="filter-row">
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
 
 @push('scripts')
 <script>
     $(document).ready(function() {
-        $('#assetNameTable').DataTable({
+        $('#assetNameTable thead tr:eq(0) th').each(function(i) {
+            var title = $(this).text().trim();
+            var cell = $('#filter-row').children().eq(i);
+            if (i === 0 || i === 8) {
+                return;
+            }
+            $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+        });
+
+        var table = $('#assetNameTable').DataTable({
+            dom:  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'l><'text-sm'f>>" +
+                  "<'overflow-x-auto'tr>" +
+                  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
             processing: true,
             serverSide: true,
             ajax: "{{ route('api.asset-name') }}",
+            autoWidth: false,
+            orderCellsTop: true,
             columns: [
-                { data: 'id', name: 'id' }, // Kolom No (bisa diganti dengan DT_RowIndex)
-                { data: 'asset_sub_class_name', name: 'assetSubClass.name', orderable: false },
+                { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
+                { data: 'asset_sub_class_name', name: 'assetSubClass.name' },
                 { data: 'name', name: 'name' },
                 { data: 'code', name: 'code' },
                 { data: 'commercial', name: 'commercial' },
@@ -180,7 +151,83 @@
                 { data: 'cost', name: 'cost' },
                 { data: 'lva', name: 'lva' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
-            ]
+            ],
+            order: [[0, 'asc']],
+            language: {
+                search: "Search : ",
+                searchPlaceholder: "Cari di sini...",
+            },
+            initComplete: function () {
+                // --- Tambahkan kelas ke search box utama di sini ---
+                $('.dt-search input').addClass('w-full sm:w-auto bg-white-50 border border-white-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500');
+                
+                // --- Logika untuk filter per kolom ---
+                this.api().columns().every(function (index) {
+                    var column = this;
+                    var cell = $('#assetNameTable thead #filter-row').children().eq(column.index());
+                    
+                    if (column.settings()[0].bSearchable === false) {
+                        return;
+                    }
+                    
+                    var input = $('input', cell);
+                    input.on('keyup change clear', function(e) {
+                        e.stopPropagation();
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                    input.on('click', function(e) {
+                        e.stopPropagation();
+                    });
+                });
+            },
+
+            columnDefs: [
+                {
+                    targets: 0,
+                    className: 'px-6 py-4'
+                },
+                {
+                    targets: [4, 5], 
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return data + ' (Years)';
+                        }
+                        return data;
+                    }
+                },
+                {
+                    targets: [6, 7], 
+                    className: 'p-2',
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return data + ' (USD)';
+                        }
+                        return data;
+                    }
+                },
+                {
+                    targets: 8, 
+                    className: 'flex p-2'
+                }
+            ],
+
+            createdRow: function( row, data, dataIndex ) {
+                $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+            },
+        });
+
+        table.columns().every(function() {
+            var that = this;
+            
+            // Event untuk filtering saat mengetik
+            $('input', $('#assetNameTable thead #filter-row').children().eq(this.index())).on('keyup change clear', function(e) {
+                e.stopPropagation(); // Hentikan event agar tidak memicu sorting
+                if (that.search() !== this.value) {
+                    that.search(this.value).draw();
+                }
+            });
         });
     });
 </script>

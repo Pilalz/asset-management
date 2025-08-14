@@ -7,14 +7,14 @@ use App\Models\AssetClass;
 use App\Models\AssetSubClass;
 use App\Imports\AssetSubClassesImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
+use App\Scopes\CompanyScope;
 
 class AssetSubClassController extends Controller
 {
     public function index()
     {
-        $assetsubclasses = AssetSubClass::with('assetClass')->get();
-
-        return view('asset-sub-class.index', compact('assetsubclasses'));
+        return view('asset-sub-class.index');
     }
 
     public function create()
@@ -88,5 +88,30 @@ class AssetSubClassController extends Controller
 
         // 3. Redirect kembali dengan pesan sukses
         return redirect()->route('asset-sub-class.index')->with('success', 'Data aset berhasil diimpor!');
+    }
+
+    public function datatables(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = AssetSubClass::withoutGlobalScope(CompanyScope::class)
+                          ->with('assetClass')
+                          ->select('asset_sub_classes.*');
+
+        $query->where('asset_sub_classes.company_id', $companyId);
+
+        return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('asset_class_name', function (AssetSubClass $assetSubClass) {
+                return $assetSubClass->assetClass?->name ?? 'N/A';
+            })
+            ->addColumn('action', function ($asset_sub_class) {
+                return view('components.action-buttons', [
+                    'editUrl' => route('asset-sub-class.edit', $asset_sub_class->id),
+                    'deleteUrl' => route('asset-sub-class.destroy', $asset_sub_class->id)
+                ])->render();
+            })
+            ->rawColumns(['action'])
+            ->toJson();
     }
 }

@@ -9,14 +9,12 @@ use App\Models\AssetName;
 use App\Imports\AssetNamesImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
+use App\Scopes\CompanyScope;
 
 class AssetNameController extends Controller
 {
     public function index()
     {
-        // $assetnames = AssetName::with('assetSubClass')->get();
-
-        // return view('asset-name.index', compact('assetnames'));
         return view('asset-name.index');
     }
 
@@ -102,26 +100,24 @@ class AssetNameController extends Controller
     {
         $companyId = session('active_company_id');
 
-        $query = AssetName::with('assetSubClass')
-                            ->where('asset_names.company_id', $companyId)
-                            ->select('asset_names.*');
+        $query = AssetName::withoutGlobalScope(CompanyScope::class)
+                          ->with('assetSubClass')
+                          ->select('asset_names.*');
 
-                            dd($query->get());
-        return DataTables::of($query)
-            ->addColumn('action', function ($asset_name) {
-                // Buat tombol action secara dinamis
-                $editUrl = route('asset-name.edit', $asset_name->id);
-                $deleteUrl = route('asset-name.destroy', $asset_name->id);
-                
-                return '<a href="' . $editUrl . '" class="btn btn-primary btn-sm">Edit</a> ' .
-                       '<form action="' . $deleteUrl . '" method="POST" style="display:inline;">' .
-                       csrf_field() . method_field("DELETE") .
-                       '<button type="submit" class="btn btn-danger btn-sm">Delete</button></form>';
+        $query->where('asset_names.company_id', $companyId);
+
+        return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('asset_sub_class_name', function (AssetName $assetName) {
+                return $assetName->assetSubClass?->name ?? 'N/A';
             })
-            ->addColumn('asset_sub_class_name', function ($asset_name) {
-                return $asset_name->assetSubClass->name ?? 'N/A';
+            ->addColumn('action', function ($asset_name) {
+                return view('components.action-buttons', [
+                    'editUrl' => route('asset-name.edit', $asset_name->id),
+                    'deleteUrl' => route('asset-name.destroy', $asset_name->id)
+                ])->render();
             })
             ->rawColumns(['action'])
-            ->make(true);
+            ->toJson();
     }
 }
