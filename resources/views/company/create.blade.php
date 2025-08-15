@@ -25,35 +25,37 @@
         </nav>
     </div>
 
-    <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg m-5 bg-white dark:bg-gray-900">
-        <form class="max-w mx-auto" action="{{ route('company.store') }}" method="POST">
-            @csrf
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company Name <span class="text-red-900">*</span></label>
-                <input type="text" name="name" value="{{ old('name') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
-                 @error('name')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
+    <div class="p-5">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg m-5 bg-white dark:bg-gray-900">
+            <form class="max-w mx-auto" action="{{ route('company.store') }}" method="POST">
+                @csrf
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company Name <span class="text-red-900">*</span></label>
+                    <input type="text" name="name" value="{{ old('name') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
+                    @error('name')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Code <span class="text-red-900">*</span></label>
-                <input type="text" name="code" value="{{ old('code') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" />
-                 @error('code')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-                <small class="text-xs text-gray-400">Abbreviation of company name</small>
-            </div>
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Code <span class="text-red-900">*</span></label>
+                    <input type="text" name="code" value="{{ old('code') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" />
+                    @error('code')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    <small class="text-xs text-gray-400">Abbreviation of company name</small>
+                </div>
 
-            <div class="mb-5">
-                <input type="hidden" name="owner_id" value="{{ Auth::user()->id }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                 @error('owner_id')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
+                <div class="mb-5">
+                    <input type="hidden" name="owner_id" value="{{ Auth::user()->id }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                    @error('owner_id')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
 
-            <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
-            <a href="{{ route('company.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
-        </form>
+                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
+                <a href="{{ route('company.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
+            </form>
+        </div>
     </div>
 @endsection

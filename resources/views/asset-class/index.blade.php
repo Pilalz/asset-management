@@ -90,16 +90,10 @@
             <table id="assetClassTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">
-                            <span class="flex items-center">
-                                No
-                            </span>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <span class="flex items-center">
-                                Asset Class
-                            </span>
-                        </th>
+                        <th scope="col" class="px-6 py-3">No</th>
+                        <th scope="col" class="px-6 py-3">Asset Class</th>
+                        <th scope="col" class="px-6 py-3">Object Id</th>
+                        <th scope="col" class="px-6 py-3">Object Acc Name</th>
                         <th scope="col" class="px-6 py-3">Actions</th>
                     </tr>
                 </thead>
@@ -126,6 +120,8 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
                 { data: 'name', name: 'name' },
+                { data: 'obj_id', name: 'obj_id' },
+                { data: 'obj_acc', name: 'obj_acc' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             order: [[0, 'asc']],
@@ -142,6 +138,15 @@
                 {
                     targets: 0,
                     className: 'px-6 py-4'
+                },
+                {
+                    targets: 3, 
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return 'Direct Ownership : ' + data;
+                        }
+                        return data;
+                    }
                 },
             ],
 

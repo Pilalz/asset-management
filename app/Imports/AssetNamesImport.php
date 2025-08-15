@@ -18,7 +18,7 @@ class AssetNamesImport implements ToModel, WithHeadingRow
         return new AssetName([
             'sub_class_id'    => $row['sub_class_id'],
             'name'    => $row['name'],
-            'code'    => $row['code'],
+            'grouping'    => $row['grouping'],
             'commercial'    => $row['commercial'],
             'fiscal'    => $row['fiscal'],
             'cost'    => $row['cost'],

@@ -16,7 +16,7 @@ class AssetSeeder extends Seeder
         DB::table('assets')->insert([
             [
                 'asset_number' => 'FA012025080001',
-                'asset_name_id' => '1',
+                'asset_name_id' => '2',
                 'status' => 'active',
                 'description' => 'Adjustable Table',
                 'location_id' => '2',

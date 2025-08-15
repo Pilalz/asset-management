@@ -15,15 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('asset_number')->unique();
             $table->foreignId('asset_name_id')->constrained('asset_names')->onUpdate('cascade')->onDelete('cascade');
-            //obj
             $table->string('status');
             $table->string('description');
             $table->longText('detail')->nullable();
-            //pareto
+            $table->string('pareto')->nullable();
             $table->string('unit_no')->nullable();
             $table->string('sn_chassis')->nullable();
             $table->string('sn_engine')->nullable();
-            //po no
+            $table->string('po_no')->nullable();
             $table->foreignId('location_id')->constrained('locations')->onUpdate('cascade')->onDelete('no action');
             $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
             $table->bigInteger('quantity');

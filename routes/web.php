@@ -82,34 +82,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('asset-class', AssetClassController::class);
     Route::resource('asset-sub-class', AssetSubClassController::class);
     Route::resource('asset-name', AssetNameController::class);
-    Route::resource('asset', AssetController::class);
-    //Start Depre
-    Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
+    Route::resource('asset', AssetController::class)->except('show');
     Route::resource('depreciation', DepreciationController::class);
-
     Route::resource('location', LocationController::class);
     Route::resource('department', DepartmentController::class);
-    //Start Register
     Route::resource('register-asset', RegisterAssetController::class);
-    Route::post('/register-asset/{register_asset}/approve', [RegisterAssetController::class, 'approve'])->name('register-asset.approve');
-
     Route::resource('transfer-asset', TransferAssetController::class);
     Route::resource('company-user', CompanyUserController::class);
-    //COMPANY
     Route::resource('company', CompanyController::class);
+
+    //Start Depre
+    Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
+    //Start Register
+    Route::post('/register-asset/{register_asset}/approve', [RegisterAssetController::class, 'approve'])->name('register-asset.approve');
+    //COMPANY
     Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
 
     // --- Import Data ---
-    Route::get('/asset-class/import', [AssetClassController::class, 'showImportForm'])->name('asset-class.import.form');
     Route::post('/asset-class/import', [AssetClassController::class, 'importExcel'])->name('asset-class.import');
-
-    Route::get('/asset-sub-class/import', [AssetSubClassController::class, 'showImportForm'])->name('asset-sub-class.import.form');
     Route::post('/asset-sub-class/import', [AssetSubClassController::class, 'importExcel'])->name('asset-sub-class.import');
-
-    Route::get('/asset-name/import', [AssetNameController::class, 'showImportForm'])->name('asset-name.import.form');
     Route::post('/asset-name/import', [AssetNameController::class, 'importExcel'])->name('asset-name.import');
+    Route::post('/asset/import', [AssetController::class, 'importExcel'])->name('asset.import');
 
     // --- API Data ---
+    Route::get('api/asset', [AssetController::class, 'datatables'])->name('api.asset');
     Route::get('api/asset-name', [AssetNameController::class, 'datatables'])->name('api.asset-name');
     Route::get('api/asset-sub-class', [AssetSubClassController::class, 'datatables'])->name('api.asset-sub-class');
     Route::get('api/asset-class', [AssetClassController::class, 'datatables'])->name('api.asset-class');

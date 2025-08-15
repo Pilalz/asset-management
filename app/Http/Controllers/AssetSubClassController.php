@@ -66,11 +66,6 @@ class AssetSubClassController extends Controller
         return redirect()->route('asset-sub-class.index')->with('success', 'Data berhasil dihapus!');
     }
 
-    public function showImportForm()
-    {
-        return view('asset-sub-class.import');
-    }
-
     public function importExcel(Request $request)
     {
         // 1. Validasi file yang diupload

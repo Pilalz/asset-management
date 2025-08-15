@@ -16,6 +16,8 @@ class AssetClass extends Model
 
     protected $fillable = [
         'name',
+        'obj_id',
+        'obj_acc',
         'company_id',
     ];
 

@@ -30,7 +30,7 @@ class AssetNameController extends Controller
         $request->validate([
             'sub_class_id' => 'required|string|max:255',
             'name'  => 'required|string|max:255',
-            'code'  => 'required|string|max:255',
+            'grouping'  => 'required|string|max:255',
             'commercial'  => 'required',
             'fiscal'  => 'required',
             'cost'  => 'required',
@@ -55,7 +55,7 @@ class AssetNameController extends Controller
         $validatedData = $request->validate([
             'sub_class_id' => 'required|string|max:255',
             'name'  => 'required|string|max:255',
-            'code'  => 'required|string|max:255',
+            'grouping'  => 'required|string|max:255',
             'commercial'  => 'required',
             'fiscal'  => 'required',
             'cost'  => 'required',
@@ -74,11 +74,6 @@ class AssetNameController extends Controller
         $asset_name->delete();
 
         return redirect()->route('asset-name.index')->with('success', 'Data berhasil dihapus!');
-    }
-
-    public function showImportForm()
-    {
-        return view('asset-name.import');
     }
 
     public function importExcel(Request $request)

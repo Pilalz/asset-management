@@ -1,6 +1,31 @@
 @extends('layouts.main')
 
 @section('content')
+    @push('styles')
+        <style>
+            /*
+            * Kita buat selector yang lebih spesifik untuk menimpa gaya hover bawaan DataTables.
+            * Ini menargetkan baris 'tr' di dalam tbody tabel dengan ID #locationTable.
+            */
+
+            /* Gaya untuk Light Mode */
+            #locationTable tbody tr:hover {
+                background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */
+            }
+
+            /* Gaya untuk Dark Mode */
+            .dark #locationTable tbody tr:hover {
+                background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
+            }
+
+            /* Menghapus background bawaan dari kolom yang diurutkan */
+            table.dataTable tbody tr > .sorting_1,
+            table.dataTable tbody tr > .sorting_2,
+            table.dataTable tbody tr > .sorting_3 {
+                background-color: inherit !important;
+            }
+        </style>
+    @endpush
     <div class="bg-white flex p-5 text-lg justify-between">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">

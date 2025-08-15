@@ -19,7 +19,7 @@ class AssetName extends Model
     protected $fillable = [
         'sub_class_id',
         'name',
-        'code',
+        'grouping',
         'commercial',
         'fiscal',
         'cost',

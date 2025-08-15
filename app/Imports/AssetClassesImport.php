@@ -17,6 +17,8 @@ class AssetClassesImport implements ToModel, WithHeadingRow
     {
         return new AssetClass([
             'name'    => $row['name'],
+            'obj_id'    => $row['obj_id'],
+            'obj_acc'    => $row['obj_acc'],
             'company_id'   => session('active_company_id'),
         ]);
     }

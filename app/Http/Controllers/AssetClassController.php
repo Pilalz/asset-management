@@ -26,6 +26,8 @@ class AssetClassController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'obj_id' => 'required|string|max:255',
+            'obj_acc' => 'required|string|max:255',
             'company_id' => 'required|string|max:255',
         ]);
 
@@ -42,7 +44,9 @@ class AssetClassController extends Controller
     public function update(Request $request, AssetClass $asset_class)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',            
+            'name' => 'required|string|max:255',
+            'obj_id' => 'required|string|max:255',
+            'obj_acc' => 'required|string|max:255',          
         ]);
 
         $dataToUpdate = $validatedData;
@@ -57,11 +61,6 @@ class AssetClassController extends Controller
         $asset_class->delete();
 
         return redirect()->route('asset-class.index')->with('success', 'Data berhasil dihapus!');
-    }
-
-    public function showImportForm()
-    {
-        return view('asset-class.import');
     }
 
     public function importExcel(Request $request)

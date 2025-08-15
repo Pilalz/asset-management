@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('asset_names', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sub_class_id')->constrained('asset_sub_classes')->onUpdate('cascade')->onDelete('no action');
+            $table->foreignId('sub_class_id')->constrained('asset_sub_classes')->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
-            $table->string('code');
+            $table->string('grouping');
             $table->integer('commercial');
             $table->integer('fiscal');
             $table->integer('cost');
             $table->integer('lva');
-            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
+            $table->foreignId('company_id')->constrained('companies')->onDelete('no action');
             $table->timestamps();
         });
     }

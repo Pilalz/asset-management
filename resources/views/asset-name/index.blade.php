@@ -93,7 +93,7 @@
                         <th scope="col" class="px-6 py-3">No</th>
                         <th scope="col" class="px-6 py-3">Asset Sub Class</th>
                         <th scope="col" class="px-6 py-3">Asset Name</th>
-                        <th scope="col" class="px-6 py-3">Asset Code</th>
+                        <th scope="col" class="px-6 py-3">Asset Grouping</th>
                         <th scope="col" class="px-6 py-3">Commercial Life</th>
                         <th scope="col" class="px-6 py-3">Fiscal Life</th>
                         <th scope="col" class="px-6 py-3">Cost</th>
@@ -145,7 +145,7 @@
                 { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
                 { data: 'asset_sub_class_name', name: 'assetSubClass.name' },
                 { data: 'name', name: 'name' },
-                { data: 'code', name: 'code' },
+                { data: 'grouping', name: 'grouping' },
                 { data: 'commercial', name: 'commercial' },
                 { data: 'fiscal', name: 'fiscal' },
                 { data: 'cost', name: 'cost' },
