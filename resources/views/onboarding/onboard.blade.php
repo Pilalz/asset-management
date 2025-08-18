@@ -25,6 +25,49 @@
                 </div>
                 <div class="flex items-center">
                     <div class="flex items-center ms-3 gap-4">
+
+                        <!-- Tombol utama dropdown -->
+                        <button type="button" aria-expanded="false" data-dropdown-toggle="dropdown-company">
+                            <div class="text-black hover:bg-gray-200 hover:rounded-md focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-4 py-2.5 text-center inline-flex items-center dark:text-white dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                {{ $activeCompany?->name ?? 'Choose Company' }}
+                                <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                </svg>
+                            </div>
+                        </button>
+                        <!-- Konten Dropdown -->
+                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm border border-gray-200 dark:bg-gray-700 dark:border-gray-600" id="dropdown-company">
+                            <ul class="py-1" role="none">
+                                <!-- Menu "Setting Company" -->
+                                @if($activeCompany == null)
+                                    <li>
+                                        <p class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">Anda belum tergabung dalam company apapun</p>
+                                    </li>
+                                @endif
+                                @if($activeCompany)
+                                    <li>
+                                        <a href="{{ route('company.edit', ['company' => $activeCompany->id]) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Setting Company</a>
+                                    </li>
+                                @endif
+                                @if(isset($userCompanies) && $userCompanies->count() > 1)
+                                    <hr class="my-1 border-gray-200 dark:border-gray-600">
+                                    <li class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">Switch Company</li>
+                                    @foreach ($userCompanies as $company)
+                                        @if($activeCompany?->id !== $company->id)
+                                            <li>
+                                                <form action="{{ route('company.switch') }}" method="POST" class="w-full">
+                                                    @csrf
+                                                    <input type="hidden" name="company_id" value="{{ $company->id }}">
+                                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
+                                                        {{ $company->name }}
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            </ul>
+                        </div>
                         
                         <!-- Theme Setting -->
                         <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">

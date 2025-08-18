@@ -3,11 +3,6 @@
 @section('content')
     @push('styles')
         <style>
-            /*
-            * Kita buat selector yang lebih spesifik untuk menimpa gaya hover bawaan DataTables.
-            * Ini menargetkan baris 'tr' di dalam tbody tabel dengan ID #locationTable.
-            */
-
             /* Gaya untuk Light Mode */
             #locationTable tbody tr:hover {
                 background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */

@@ -82,7 +82,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('asset-class', AssetClassController::class);
     Route::resource('asset-sub-class', AssetSubClassController::class);
     Route::resource('asset-name', AssetNameController::class);
-    Route::resource('asset', AssetController::class)->except('show');
+    Route::resource('asset', AssetController::class);
     Route::resource('depreciation', DepreciationController::class);
     Route::resource('location', LocationController::class);
     Route::resource('department', DepartmentController::class);
@@ -110,4 +110,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/asset-sub-class', [AssetSubClassController::class, 'datatables'])->name('api.asset-sub-class');
     Route::get('api/asset-class', [AssetClassController::class, 'datatables'])->name('api.asset-class');
     Route::get('api/location', [LocationController::class, 'datatables'])->name('api.location');
+    Route::get('api/department', [DepartmentController::class, 'datatables'])->name('api.department');
 });

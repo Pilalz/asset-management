@@ -27,7 +27,7 @@ class EnsureCompanyIsSelected
             if (!$request->is(['onboard*']) && !$request->routeIs('logout')) {
                 
                 // 3. Jika semua kondisi terpenuhi, paksa redirect ke halaman onboarding.
-                return redirect()->route('onboard');
+                return redirect()->route('onboard.index');
             }
         }
 

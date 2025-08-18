@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\Asset;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class AssetsImport implements ToModel, WithHeadingRow
 {
@@ -29,8 +30,8 @@ class AssetsImport implements ToModel, WithHeadingRow
             'location_id'       => $row['location_id'],
             'department_id'     => $row['department_id'],
             'quantity'          => $row['quantity'],
-            'capitalized_date'  => $row['capitalized_date'],
-            'start_depre_date'  => $row['start_depre_date'],
+            'capitalized_date'  => !empty($row['capitalized_date']) ? Date::excelToDateTimeObject($row['capitalized_date']) : null,
+            'start_depre_date'  => !empty($row['start_depre_date']) ? Date::excelToDateTimeObject($row['start_depre_date']) : null,
             'acquisition_value' => $row['acquisition_value'],
             'current_cost'      => $row['current_cost'],
             'useful_life_month' => $row['useful_life_month'],

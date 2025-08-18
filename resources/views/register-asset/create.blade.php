@@ -92,16 +92,17 @@
             @csrf
 
             <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900">*</span></label>
+                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900">*</span></label>
                 <span> : </span>
-                <input type="text" name="form_no" value="{{ $form_no }}" class="w-full px-1 w-64 text-sm text-gray-900 bg-transparent appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500" readonly/>
+                <p class="w-full px-2">{{ $form_no }}</p>
+                <input type="hidden" name="form_no" value="{{ $form_no }}" class="w-full px-1 w-64 text-sm text-gray-900 appearance-none dark:text-white" readonly/>
                 @error('form_no')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
+                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
                 <span> : </span>
                 <select name="department_id" id="department-select" class="w-full px-1 mx-1 w-64 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                     <option selected value="">Choose a Department</option>
@@ -117,7 +118,7 @@
             </div>
 
             <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Select Location <span class="text-red-900">*</span></label>
+                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Location <span class="text-red-900">*</span></label>
                 <span> : </span>
                 <select name="location_id" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                     <option selected value="">Choose a Location</option>
@@ -240,7 +241,7 @@
                     
                     <div class="flex flex-row mb-2">
                         <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
-                        <div class="flex items-center mr-4">
+                        <div class="flex items-center pr-4">
                             <input id="sequence-yes" name="sequence" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', 'Y') == 'Y' ? 'checked' : '' }}>
                             <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
                         </div>
@@ -267,13 +268,13 @@
                         <tbody id="approval-list-body">
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <input type="text" name="approvals[0][approval_action]" value="Submitted by" readonly/>
+                                    <input type="text" name="approvals[0][approval_action]" value="Submitted by" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
                                     @error("approvals[0][approval_action]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </th>   
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <input type="text" name="approvals[0][role]" value="Asset Management" readonly/>
+                                    <input type="text" name="approvals[0][role]" value="Asset Management" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
                                     @error("approvals[0][role]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -301,13 +302,13 @@
 
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <input type="text" name="approvals[1][approval_action]" value="Checked by" readonly/>
+                                    <input type="text" name="approvals[1][approval_action]" value="Checked by" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
                                     @error("approvals[1][approval_action]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </th>
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <input type="text" name="approvals[1][role]" value="User Manager" readonly/>
+                                    <input type="text" name="approvals[1][role]" value="User Manager" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
                                     @error("approvals[1][role]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -335,13 +336,13 @@
 
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <input type="text" name="approvals[2][approval_action]" value="Approved by" readonly/>
+                                    <input type="text" name="approvals[2][approval_action]" value="Approved by" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
                                     @error("approvals[2][approval_action]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </th>
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <input type="text" name="approvals[2][role]" value="CFO" readonly/>
+                                    <input type="text" name="approvals[2][role]" value="CFO" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
                                     @error("approvals[2][role]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -369,13 +370,13 @@
 
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <input type="text" name="approvals[3][approval_action]" value="Approved by" readonly/>
+                                    <input type="text" name="approvals[3][approval_action]" value="Approved by" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
                                     @error("approvals[3][approval_action]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </th>
                                 <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <input type="text" name="approvals[3][role]" value="Director" readonly/>
+                                    <input type="text" name="approvals[3][role]" value="Director" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
                                     @error("approvals[3][role]")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -408,7 +409,6 @@
             <input type="hidden" name="company_id" value="{{ Auth::user()->last_active_company_id }}" required />
 
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
-            <!-- <button type="submit" class="text-white bg-yellow-500 hover:bg-yellow-600 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 ml-2">Draft</button> -->
             <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
         </form>
 

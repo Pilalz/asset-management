@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Department;
+use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
+use App\Scopes\CompanyScope;
 
 class DepartmentController extends Controller
 {
@@ -55,5 +58,26 @@ class DepartmentController extends Controller
         $department->delete();
 
         return redirect()->route('department.index')->with('success', 'Data berhasil dihapus!');
+    }
+
+    public function datatables(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = Department::withoutGlobalScope(CompanyScope::class)
+                          ->select('departments.*');
+
+        $query->where('departments.company_id', $companyId);
+
+        return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('action', function ($department) {
+                return view('components.action-buttons', [
+                    'editUrl' => route('department.edit', $department->id),
+                    'deleteUrl' => route('department.destroy', $department->id)
+                ])->render();
+            })
+            ->rawColumns(['action'])
+            ->toJson();
     }
 }

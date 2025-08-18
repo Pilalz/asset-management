@@ -13,7 +13,7 @@ class TransferAssetController extends Controller
     {
         $transferassets = TransferAsset::paginate(25);
 
-        return view('transfer-asset.index', compact('locations', 'departments', 'transferassets'));
+        return view('transfer-asset.index', compact('transferassets'));
     }
 
     public function create()

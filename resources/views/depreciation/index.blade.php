@@ -22,84 +22,77 @@
                 </li>
             </ol>
         </nav>
-
-        <div class="flex">
-            <a href="{{ route('depreciation.create') }}" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                <svg class="w-4 h-4 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
-                </svg>
-                New Data
-            </a>
-        </div>
     </div>
     
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5 bg-white p-4">
-        {{-- Form untuk filter tahun jika perlu --}}
-        <div class="mb-4 flex flex-row content-center">
-            <form method="GET" action="{{ route('depreciation.index') }}">
-                <label for="year" class="">Tampilkan Tahun:</label>
-                <select name="year" id="year" onchange="this.form.submit()" class="py-2 px-0 w-24 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                    @for ($y = now()->year; $y >= 2020; $y--)
-                        <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>{{ $y }}</option>
-                    @endfor
-                </select>
-            </form>
-        </div>
-        
+    <div class="p-5">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white p-4">
+            {{-- Form untuk filter tahun jika perlu --}}
+            <div class="mb-4 flex flex-row content-center">
+                <form method="GET" action="{{ route('depreciation.index') }}">
+                    <label for="year" class="">Tampilkan Tahun:</label>
+                    <select name="year" id="year" onchange="this.form.submit()" class="py-2 px-0 w-24 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                        @for ($y = now()->year; $y >= 2020; $y--)
+                            <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endfor
+                    </select>
+                </form>
+            </div>
+            
 
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                {{-- Baris Header Pertama --}}
-                <tr>
-                    <th rowspan="2" class="px-2 py-3 border">No</th>
-                    <th rowspan="2" class="px-6 py-3 border">Asset Name</th>
-                    <th rowspan="2" class="px-6 py-3 border">Asset Number</th>
-                    
-                    {{-- Loop untuk membuat header bulan --}}
-                    @foreach($months as $monthName)
-                        <th colspan="3" class="text-center px-6 py-3 border">{{ $monthName }}</th>
-                    @endforeach
-                </tr>
-                {{-- Baris Header Kedua --}}
-                <tr>
-                    @foreach($months as $monthName)
-                        <th class="px-2 py-2 border">Monthly Depre</th>
-                        <th class="px-2 py-2 border">Accum Depre</th>
-                        <th class="px-2 py-2 border">Book Value</th>
-                    @endforeach
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($pivotedData as $assetId => $data)
-                    <tr class="bg-white border-b hover:bg-gray-50">
-                        <td class="px-2 py-4 border">{{ $loop->iteration }}</td>
-                        <td class="px-6 py-4 border">
-                            {{ $data['master_data']->assetName->name }}
-                        </td>
-                        <td class="px-6 py-4 border">{{ $data['master_data']->asset_number }}</td>
-
-                        {{-- Loop untuk mengisi data per bulan --}}
-                        @foreach ($months as $monthKey => $monthName)
-                            {{-- Cek apakah ada data untuk aset ini di bulan ini --}}
-                            @if (isset($data['schedule'][$monthKey]))
-                                <td class="px-2 py-4 border text-right">{{ number_format($data['schedule'][$monthKey]->monthly_depre, 0, ',', '.') }}</td>
-                                <td class="px-2 py-4 border text-right">{{ number_format($data['schedule'][$monthKey]->accumulated_depre, 0, ',', '.') }}</td>
-                                <td class="px-2 py-4 border text-right">{{ number_format($data['schedule'][$monthKey]->book_value, 0, ',', '.') }}</td>
-                            @else
-                                {{-- Jika tidak ada data, buat sel kosong --}}
-                                <td class="px-2 py-4 border"></td>
-                                <td class="px-2 py-4 border"></td>
-                                <td class="px-2 py-4 border"></td>
-                            @endif
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    {{-- Baris Header Pertama --}}
+                    <tr>
+                        <th rowspan="2" class="px-2 py-3 border">No</th>
+                        <th rowspan="2" class="px-6 py-3 border">Asset Name</th>
+                        <th rowspan="2" class="px-6 py-3 border">Asset Number</th>
+                        
+                        {{-- Loop untuk membuat header bulan --}}
+                        @foreach($months as $monthName)
+                            <th colspan="3" class="text-center px-6 py-3 border">{{ $monthName }}</th>
                         @endforeach
                     </tr>
-                @empty
+                    {{-- Baris Header Kedua --}}
                     <tr>
-                        <td colspan="{{ 3 + (count($months) * 3) }}" class="text-center p-3">Tidak ada data untuk ditampilkan.</td>
+                        @foreach($months as $monthName)
+                            <th class="px-2 py-2 border">Monthly Depre</th>
+                            <th class="px-2 py-2 border">Accum Depre</th>
+                            <th class="px-2 py-2 border">Book Value</th>
+                        @endforeach
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse ($pivotedData as $assetId => $data)
+                        <tr class="bg-white border-b hover:bg-gray-50">
+                            <td class="px-2 py-4 border">{{ $loop->iteration }}</td>
+                            <td class="px-6 py-4 border">
+                                {{ $data['master_data']->assetName->name }}
+                            </td>
+                            <td class="px-6 py-4 border">{{ $data['master_data']->asset_number }}</td>
+
+                            {{-- Loop untuk mengisi data per bulan --}}
+                            @foreach ($months as $monthKey => $monthName)
+                                {{-- Cek apakah ada data untuk aset ini di bulan ini --}}
+                                @if (isset($data['schedule'][$monthKey]))
+                                    <td class="px-2 py-4 border text-right">{{ number_format($data['schedule'][$monthKey]->monthly_depre, 0, ',', '.') }}</td>
+                                    <td class="px-2 py-4 border text-right">{{ number_format($data['schedule'][$monthKey]->accumulated_depre, 0, ',', '.') }}</td>
+                                    <td class="px-2 py-4 border text-right">{{ number_format($data['schedule'][$monthKey]->book_value, 0, ',', '.') }}</td>
+                                @else
+                                    {{-- Jika tidak ada data, buat sel kosong --}}
+                                    <td class="px-2 py-4 border"></td>
+                                    <td class="px-2 py-4 border"></td>
+                                    <td class="px-2 py-4 border"></td>
+                                @endif
+                            @endforeach
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="{{ 3 + (count($months) * 3) }}" class="text-center p-3">Tidak ada data untuk ditampilkan.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
 

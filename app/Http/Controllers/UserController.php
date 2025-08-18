@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Company;
+use App\Models\CompanyUser;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +13,11 @@ class UserController extends Controller
     //Onboarding User
     public function onboard()
     {
-        return view('onboarding.onboard');
+        $user = Auth::user();
+        $company_user = CompanyUser::where('user_id', $user->id)->get();
+        $activeCompany = $user->last_active_company_id;
+        
+        return view('onboarding.onboard', compact('company_user', 'activeCompany'));
     }
 
     public function createCompany()

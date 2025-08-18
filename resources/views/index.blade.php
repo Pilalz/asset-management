@@ -15,8 +15,10 @@
     </div>
     
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white">
-            <div class="flex p-4 gap-2 justify-around">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white p-4">
+            <h1>Hii {{ Auth::user()->name }}</h1>
+            <h1>Welcome to </h1>
+            <div class="flex gap-2 justify-around">
                 <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>
                 <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>
                 <div class="p-4 bg-gray-500 w-full rounded-lg">testes</div>

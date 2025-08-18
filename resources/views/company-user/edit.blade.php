@@ -25,39 +25,41 @@
         </nav>
     </div>
 
-    <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg m-5 bg-white dark:bg-gray-900">
-        <form class="max-w mx-auto" action="{{ route('company-user.update', $company_user->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name <span class="text-red-900">*</span></label>
-                <input type="text" name="name" value="{{ old('name', $company_user->user->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly required />
-                <small class="text-xs text-gray-400">Tidak bisa di edit</small>
-            </div>
+    <div class="p-5">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
+            <form class="max-w mx-auto" action="{{ route('company-user.update', $company_user->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name <span class="text-red-900">*</span></label>
+                    <input type="text" name="name" value="{{ old('name', $company_user->user->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly required />
+                    <small class="text-xs text-gray-400">Tidak bisa di edit</small>
+                </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email <span class="text-red-900">*</span></label>
-                <input type="email" name="email" value="{{ old('name', $company_user->user->email) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly required />
-                <small class="text-xs text-gray-400">Tidak bisa di edit</small>
-            </div>
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email <span class="text-red-900">*</span></label>
+                    <input type="email" name="email" value="{{ old('name', $company_user->user->email) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly required />
+                    <small class="text-xs text-gray-400">Tidak bisa di edit</small>
+                </div>
 
-            <div class="mb-5">
-                <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role <span class="text-red-900">*</span></label>
-                <select id="role" name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                    <option value="Admin" {{ $company_user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                    <option value="Staff" {{ $company_user->role == 'staff' ? 'selected' : '' }}>Staff</option>
-                    <option value="Viewer" {{ $company_user->role == 'viewer' ? 'selected' : '' }}>Viewer</option>
-                    <option value="User Manager" {{ $company_user->role == 'user manager' ? 'selected' : '' }}>User Manager</option>
-                    <option value="CFO" {{ $company_user->role == 'cfo' ? 'selected' : '' }}>CFO</option>
-                    <option value="Director" {{ $company_user->role == 'director' ? 'selected' : '' }}>Director</option>
-                </select>
-                @error('role')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
+                <div class="mb-5">
+                    <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role <span class="text-red-900">*</span></label>
+                    <select id="role" name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="Admin" {{ $company_user->role == 'admin' ? 'selected' : '' }}>Admin</option>
+                        <option value="Staff" {{ $company_user->role == 'staff' ? 'selected' : '' }}>Staff</option>
+                        <option value="Viewer" {{ $company_user->role == 'viewer' ? 'selected' : '' }}>Viewer</option>
+                        <option value="User Manager" {{ $company_user->role == 'user manager' ? 'selected' : '' }}>User Manager</option>
+                        <option value="CFO" {{ $company_user->role == 'cfo' ? 'selected' : '' }}>CFO</option>
+                        <option value="Director" {{ $company_user->role == 'director' ? 'selected' : '' }}>Director</option>
+                    </select>
+                    @error('role')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
-            <a href="{{ route('company-user.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
-        </form>
+                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
+                <a href="{{ route('company-user.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
+            </form>
+        </div>
     </div>
 @endsection

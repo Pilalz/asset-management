@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\RegisterAsset;
 use App\Models\Location;
+use App\Models\Asset;
 use App\Models\Department;
 use App\Models\AssetClass;
 use App\Models\AssetSubClass;
@@ -219,16 +220,16 @@ class RegisterAssetController extends Controller
         return redirect()->route('register-asset.index')->with('success', 'Formulir berhasil disetujui.');
     }
 
-    private function generateAssetNumber($companyId, $assetClassId)
+    private function generateAssetNumber($companyId, $assetNameId)
     {
         // 1. Siapkan komponen-komponennya
         $prefix = 'FA';
         $companyCode = str_pad($companyId, 2, '0', STR_PAD_LEFT); // Contoh: 1 -> 01
         $year = now()->format('y'); // yy -> 25
-        $assetClassCode = str_pad($assetClassId, 2, '0', STR_PAD_LEFT); // Contoh: 3 -> 03
+        $assetGrouping = $assetNameId;
 
         // 2. Buat prefix lengkap untuk pencarian di database
-        $searchPrefix = $prefix . $companyCode . $year . $assetClassCode;
+        $searchPrefix = $prefix . $companyCode;
 
         // 3. Cari aset terakhir dengan prefix yang sama
         $lastAsset = Asset::where('asset_number', 'like', $searchPrefix . '%')
@@ -246,7 +247,7 @@ class RegisterAssetController extends Controller
         $formattedSequence = str_pad($sequence, 5, '0', STR_PAD_LEFT); // 1 -> 00001
 
         // 5. Gabungkan semuanya
-        return $searchPrefix . $formattedSequence;
+        return $searchPrefix . $year . $assetGrouping . $formattedSequence;
     }
 
     private function finalizeAssetRegistration(RegisterAsset $register_asset)
@@ -257,9 +258,9 @@ class RegisterAssetController extends Controller
         // Loop melalui detail dan buat aset baru
         foreach ($register_asset->detailRegisters as $detail) {
 
-            $assetClassId = $detail->asset_name_id;
+            $assetNameId = $detail->assetName->grouping;
 
-            $newAssetNumber = $this->generateAssetNumber($register_asset->company_id, $assetClassId);
+            $newAssetNumber = $this->generateAssetNumber($register_asset->company_id, $assetNameId);
 
             Asset::create([
                 'asset_number' => $newAssetNumber,
@@ -267,9 +268,11 @@ class RegisterAssetController extends Controller
                 'status' => 'Active',
                 'description' => $detail->specification,
                 'detail' => null,
+                'pareto' => null,
                 'unit_no' => null,
                 'sn_chassis' => null,
                 'sn_engine' => null,
+                'po_no' => $register_asset->po_no,
                 'location_id' => $register_asset->location_id,
                 'department_id' => $register_asset->department_id,
                 'quantity' => 1,

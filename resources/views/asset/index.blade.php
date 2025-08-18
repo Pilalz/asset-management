@@ -1,7 +1,26 @@
 @extends('layouts.main')
 
 @section('content')
+    @push('styles')
+        <style>
+            /* Gaya untuk Light Mode */
+            #assetTable tbody tr:hover {
+                background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */
+            }
 
+            /* Gaya untuk Dark Mode */
+            .dark #assetTable tbody tr:hover {
+                background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
+            }
+
+            /* Menghapus background bawaan dari kolom yang diurutkan */
+            table.dataTable tbody tr > .sorting_1,
+            table.dataTable tbody tr > .sorting_2,
+            table.dataTable tbody tr > .sorting_3 {
+                background-color: inherit !important;
+            }
+        </style>
+    @endpush
     <div class="bg-white flex p-5 text-lg justify-between">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -148,7 +167,28 @@
                         <th scope="col" class="px-6 py-3">No</th>
                         <th scope="col" class="px-6 py-3">Asset Number</th>
                         <th scope="col" class="px-6 py-3">Status</th>
+                        <th scope="col" class="px-6 py-3">Asset Name</th>
+                        <th scope="col" class="px-6 py-3">Obj Acc</th>
+                        <th scope="col" class="px-6 py-3">Description</th>
+                        <th scope="col" class="px-6 py-3">Pareto</th>
+                        <th scope="col" class="px-6 py-3">PO No</th>
+                        <th scope="col" class="px-6 py-3">Location</th>
+                        <th scope="col" class="px-6 py-3">Department</th>
+                        <th scope="col" class="px-6 py-3">Qty</th>
+                        <th scope="col" class="px-6 py-3">Capitalized Date</th>
+                        <th scope="col" class="px-6 py-3">Start Depre Date</th>
+                        <th scope="col" class="px-6 py-3">Acquisition Value</th>
+                        <th scope="col" class="px-6 py-3">Useful Life Month</th>
+                        <th scope="col" class="px-6 py-3">Accum Depre</th>
+                        <th scope="col" class="px-6 py-3">Net Book Value</th>
                         <th scope="col" class="px-6 py-3">Actions</th>
+                    </tr>
+                    <tr id="filter-row">
+                        <th></th><th></th><th></th><th></th>
+                        <th></th><th></th><th></th><th></th>
+                        <th></th><th></th><th></th><th></th>
+                        <th></th><th></th><th></th><th></th>
+                        <th></th><th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -161,11 +201,47 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function() {
-        var table = $('#assetTable').DataTable({
+    document.addEventListener('DOMContentLoaded', () => {
+        // Temukan semua elemen notifikasi yang memiliki class 'auto-dismiss-alert'
+        const alertElements = document.querySelectorAll('.auto-dismiss-alert');
+
+        alertElements.forEach(targetEl => {
+            // Ambil tombol 'close' di dalam notifikasi (jika ada)
+            const triggerEl = targetEl.querySelector('[data-dismiss-target]');
+
+            // Opsi yang Anda inginkan
+            const options = {
+                transition: 'transition-opacity',
+                duration: 1000,
+                timing: 'ease-out',
+                onHide: (context, targetEl) => {
+                    console.log(`Element dengan ID ${targetEl.id} telah disembunyikan.`);
+                }
+            };
+
+            // Buat instance Dismiss dari Flowbite
+            const dismiss = new Dismiss(targetEl, triggerEl, options);
+
+            // (Opsional) Sembunyikan notifikasi secara otomatis setelah 5 detik
+            setTimeout(() => {
+                dismiss.hide();
+            }, 3000);
+        });
+
+        if (typeof $ !== 'undefined') {
+            $('#assetTable thead tr:eq(0) th').each(function(i) {
+                var title = $(this).text().trim();
+                var cell = $('#filter-row').children().eq(i);
+                if (i === 0 || i === 17) {
+                    return;
+                }
+                $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            });
+
+            $('#assetTable').DataTable({
             dom:  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'l><'text-sm'f>>" +
-                  "<'overflow-x-auto'tr>" +
-                  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
+                "<'overflow-x-auto'tr>" +
+                "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
             processing: true,
             serverSide: true,
             ajax: "{{ route('api.asset') }}",
@@ -175,6 +251,20 @@
                 { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
                 { data: 'asset_number', name: 'asset_number' },
                 { data: 'status', name: 'status' },
+                { data: 'asset_name_name', name: 'asset_name_name' },
+                { data: 'asset_class_obj', name: 'asset_class_obj' },
+                { data: 'description', name: 'description' },
+                { data: 'pareto', name: 'pareto' },
+                { data: 'po_no', name: 'po_no' },
+                { data: 'location_name', name: 'location_name' },
+                { data: 'department_name', name: 'department_name' },
+                { data: 'quantity', name: 'quantity' },
+                { data: 'capitalized_date', name: 'capitalized_date' },
+                { data: 'start_depre_date', name: 'start_depre_date' },
+                { data: 'acquisition_value', name: 'acquisition_value' },
+                { data: 'useful_life_month', name: 'useful_life_month' },
+                { data: 'accum_depre', name: 'accum_depre' },
+                { data: 'net_book_value', name: 'net_book_value' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             order: [[0, 'asc']],
@@ -183,8 +273,28 @@
                 searchPlaceholder: "Cari di sini...",
             },
             initComplete: function () {
-                // --- Tambahkan kelas ke search box utama di sini ---
                 $('.dt-search input').addClass('w-full sm:w-auto bg-white-50 border border-white-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500');
+
+                // --- Logika untuk filter per kolom ---
+                this.api().columns().every(function (index) {
+                    var column = this;
+                    var cell = $('#assetTable thead #filter-row').children().eq(column.index());
+                    
+                    if (column.settings()[0].bSearchable === false) {
+                        return;
+                    }
+                    
+                    var input = $('input', cell);
+                    input.on('keyup change clear', function(e) {
+                        e.stopPropagation();
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                    input.on('click', function(e) {
+                        e.stopPropagation();
+                    });
+                });
             },
 
             columnDefs: [
@@ -192,12 +302,55 @@
                     targets: 0,
                     className: 'px-6 py-4'
                 },
+                {
+                    targets: 4, 
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return 'Direct Ownership : ' + data;
+                        }
+                        return data;
+                    }
+                },
+                {
+                    targets: [13, 15, 16], 
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            let number = parseFloat(data);
+
+                            if (isNaN(number)) {
+                                return data;
+                            }
+
+                            return number.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                            });
+                        }
+                        return data;
+                    }
+                }
             ],
 
             createdRow: function( row, data, dataIndex ) {
                 $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
             },
         });
+
+        table.columns().every(function() {
+            var that = this;
+            
+            // Event untuk filtering saat mengetik
+            $('input', $('#assetTable thead #filter-row').children().eq(this.index())).on('keyup change clear', function(e) {
+                e.stopPropagation(); // Hentikan event agar tidak memicu sorting
+                if (that.search() !== this.value) {
+                    that.search(this.value).draw();
+                }
+            });
+        });
+
+        }
     });
 </script>
 @endpush
