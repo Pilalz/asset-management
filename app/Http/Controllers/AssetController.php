@@ -84,25 +84,22 @@ class AssetController extends Controller
         $companyId = session('active_company_id');
 
         $query = Asset::withoutGlobalScope(CompanyScope::class)
-                          ->with(['assetName', 'location', 'department'])
-                          ->select('assets.*');
-
-        $query->where('assets.company_id', $companyId);
+                        ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+                        ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+                        ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+                        ->join('locations', 'assets.location_id', '=', 'locations.id')
+                        ->join('departments', 'assets.department_id', '=', 'departments.id')
+                        ->where('assets.company_id', $companyId)
+                        ->select([
+                            'assets.*',
+                            'asset_names.name as asset_name_name',
+                            'asset_classes.obj_acc as asset_class_obj',
+                            'locations.name as location_name',
+                            'departments.name as department_name',
+                        ]);
 
         return DataTables::eloquent($query)
             ->addIndexColumn()
-            ->addColumn('asset_name_name', function (Asset $asset) {
-                return $asset->assetName?->name ?? 'N/A';
-            })
-            ->addColumn('asset_class_obj', function (Asset $asset) {
-                return $asset->assetName?->assetSubClass?->assetClass?->obj_acc ?? 'N/A';
-            })
-            ->addColumn('location_name', function (Asset $asset) {
-                return $asset->location?->name ?? 'N/A';
-            })
-            ->addColumn('department_name', function (Asset $asset) {
-                return $asset->department?->name ?? 'N/A';
-            })
             ->addColumn('action', function ($asset) {
                 return view('components.action-asset-buttons', [
                     'showUrl' => route('asset.show', $asset->id),
@@ -112,24 +109,16 @@ class AssetController extends Controller
                 ])->render();
             })
             ->filterColumn('asset_name_name', function($query, $keyword) {
-                $query->whereHas('assetName', function($q) use ($keyword) {
-                    $q->where('name', 'like', "%{$keyword}%");
-                });
+                $query->where('asset_names.name', 'like', "%{$keyword}%");
             })
             ->filterColumn('asset_class_obj', function($query, $keyword) {
-                $query->whereHas('assetName.assetSubClass.assetClass', function($q) use ($keyword) {
-                    $q->where('obj_acc', 'like', "%{$keyword}%");
-                });
+                $query->where('asset_classes.obj_acc', 'like', "%{$keyword}%");
             })
             ->filterColumn('location_name', function($query, $keyword) {
-                $query->whereHas('location', function($q) use ($keyword) {
-                    $q->where('name', 'like', "%{$keyword}%");
-                });
+                $query->where('locations.name', 'like', "%{$keyword}%");
             })
             ->filterColumn('department_name', function($query, $keyword) {
-                $query->whereHas('department', function($q) use ($keyword) {
-                    $q->where('name', 'like', "%{$keyword}%");
-                });
+                $query->where('departments.name', 'like', "%{$keyword}%");
             })
             ->rawColumns(['action'])
             ->toJson();

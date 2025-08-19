@@ -111,4 +111,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/asset-class', [AssetClassController::class, 'datatables'])->name('api.asset-class');
     Route::get('api/location', [LocationController::class, 'datatables'])->name('api.location');
     Route::get('api/department', [DepartmentController::class, 'datatables'])->name('api.department');
+    Route::get('api/company-user', [CompanyUserController::class, 'datatables'])->name('api.company-user');
+
+    Route::get('/api/find-asset/{assetNumber}', [TransferAssetController::class, 'findAssetByNumber'])->name('api.find-asset');
 });

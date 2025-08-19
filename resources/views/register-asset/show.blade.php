@@ -87,161 +87,163 @@
         </div>
     @endif
 
-    <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg m-5 bg-white dark:bg-gray-900">
-        <div class="mb-5 flex">
-            <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900">*</span></label>
-            <span> : </span>
-            <p class="flex ml-1 text-sm text-gray-900">{{ $register_asset->form_no }}</p>
-        </div>
-
-        <div class="mb-5 flex content-center">
-            <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
-            <span> : </span>
-            <p class="ml-1 text-sm text-gray-900">{{ $register_asset->department->name }}</p>
-        </div>
-
-        <div class="mb-5 flex content-center">
-            <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Select Location <span class="text-red-900">*</span></label>
-            <span> : </span>
-            <p class="ml-1 text-sm text-gray-900">{{ $register_asset->location->name }}</p>
-        </div>
-
-        <!-- Asset List -->
-        <div class="mb-5">
-            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset List <span class="text-red-900">*</span></label>
-            <div class="border-2 border-black rounded-lg p-4">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-2 py-3">No</th>
-                            <th scope="col" class="px-2 py-3">PO No.</th>
-                            <th scope="col" class="px-2 py-3">Invoice No.</th>
-                            <th scope="col" class="px-2 py-3">Commission Date</th>
-                            <th scope="col" class="px-2 py-3">Specification</th>
-                            <th scope="col" class="px-2 py-3">Asset Class</th>
-                            <th scope="col" class="px-2 py-3">Asset Sub Class</th>
-                            <th scope="col" class="px-2 py-3">Asset Name</th>
-                        </tr>
-                    </thead>
-                    <tbody id="asset-list-body">
-                        @foreach($register_asset->detailRegisters as $detail)
-                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 asset-row">
-                                <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white asset-row-number text-center">{{ $loop->iteration }}</td>
-                                <td class="px-2 py-4">{{ $detail->po_no }}</td>
-                                <td class="px-2 py-4">{{ $detail->invoice_no }}</td>
-                                <td class="px-2 py-4">{{ $detail->commission_date }}</td>
-                                <td class="px-2 py-4">{{ $detail->specification }}</td>
-                                <td class="px-2 py-4">{{ $detail->assetName->assetSubClass->assetClass->name }}</td>
-                                <td class="px-2 py-4">{{ $detail->assetName->assetSubClass->name }}</td>
-                                <td class="px-2 py-4">{{ $detail->assetName->name }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+    <div class="p-5">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
+            <div class="mb-5 flex">
+                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900">*</span></label>
+                <span> : </span>
+                <p class="flex ml-1 text-sm text-gray-900">{{ $register_asset->form_no }}</p>
             </div>
-        </div>
 
-        <div class="mb-5">
-            @php
-                $insuredText = $register_asset->insured;
-                $insuredClass = '';
+            <div class="mb-5 flex content-center">
+                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
+                <span> : </span>
+                <p class="ml-1 text-sm text-gray-900">{{ $register_asset->department->name }}</p>
+            </div>
 
-                if ($insuredText == 0) {
-                    $insuredClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
-                } elseif ($insuredText == 1) {
-                    $insuredClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-                } else { 
-                    $insuredClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
-                }
-            @endphp
-            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured <span class="text-red-900">*</span> :  <span class="{{ $insuredClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->insured == 1) ? "Yes" : "No" }}</span></label>
-        </div>
+            <div class="mb-5 flex content-center">
+                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Select Location <span class="text-red-900">*</span></label>
+                <span> : </span>
+                <p class="ml-1 text-sm text-gray-900">{{ $register_asset->location->name }}</p>
+            </div>
 
-        <div class="mb-5">
-            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval List <span class="text-red-900">*</span></label>
-            <div class="border-2 border-black rounded-lg p-4">
-                
-                <div class="flex flex-row mb-2">
-                    @php
-                        $sequenceText = $register_asset->sequence;
-                        $sequenceClass = '';
-
-                        if ($sequenceText == 0) {
-                            $sequenceClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
-                        } elseif ($sequenceText == 1) {
-                            $sequenceClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-                        } else { 
-                            $sequenceClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
-                        }
-                    @endphp
-                    <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
+            <!-- Asset List -->
+            <div class="mb-5">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset List <span class="text-red-900">*</span></label>
+                <div class="border-2 border-black rounded-lg p-4">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-2 py-3">No</th>
+                                <th scope="col" class="px-2 py-3">PO No.</th>
+                                <th scope="col" class="px-2 py-3">Invoice No.</th>
+                                <th scope="col" class="px-2 py-3">Commission Date</th>
+                                <th scope="col" class="px-2 py-3">Specification</th>
+                                <th scope="col" class="px-2 py-3">Asset Class</th>
+                                <th scope="col" class="px-2 py-3">Asset Sub Class</th>
+                                <th scope="col" class="px-2 py-3">Asset Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="asset-list-body">
+                            @foreach($register_asset->detailRegisters as $detail)
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 asset-row">
+                                    <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white asset-row-number text-center">{{ $loop->iteration }}</td>
+                                    <td class="px-2 py-4">{{ $detail->po_no }}</td>
+                                    <td class="px-2 py-4">{{ $detail->invoice_no }}</td>
+                                    <td class="px-2 py-4">{{ $detail->commission_date }}</td>
+                                    <td class="px-2 py-4">{{ $detail->specification }}</td>
+                                    <td class="px-2 py-4">{{ $detail->assetName->assetSubClass->assetClass->name }}</td>
+                                    <td class="px-2 py-4">{{ $detail->assetName->assetSubClass->name }}</td>
+                                    <td class="px-2 py-4">{{ $detail->assetName->name }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-
-                <hr class="mb-2">
-                
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
-                            <th scope="col" class="px-2 py-3">Name</th>
-                            <th scope="col" class="px-2 py-3">Signature</th>
-                            <th scope="col" class="px-2 py-3">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="approval-list-body">
-                        @foreach($register_asset->approvals->sortBy('approval_order') as $approv)
-                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
-                                <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
-                                <td class="px-2 py-4">{{ $approv->user?->name ?? "-" }}</td>
-                                <td class="px-2 py-4">{{ $approv->status }}</td>
-                                <td class="px-2 py-4">{{ $approv->approval_date }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
             </div>
-        </div>
-        <div class="flex gap-2 content-center">
-            <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
-            @if ($canApprove)
-                <button
-                    type="button" 
-                    data-modal-target="confirmation-modal" 
-                    data-modal-toggle="confirmation-modal"
-                    class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Approve & Sign
-                </button>
-            @else
-                <p class="flex items-center">{{ $userApprovalStatus }}</p>
-            @endif
 
-            <div id="confirmation-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div class="relative p-4 w-full max-w-md max-h-full">
-                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                        <div class="p-4 md:p-5 text-center">
-                            <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                            </svg>
-                            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                                Apakah Anda yakin ingin menyetujui formulir ini?
-                            </h3>
-                            
-                            {{-- Tombol ini yang akan men-submit form --}}
-                            <button id="confirm-approve-btn" data-modal-hide="confirmation-modal" type="button" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                                Ya, saya yakin
-                            </button>
-                            <button data-modal-hide="confirmation-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 ...">
-                                Batal
-                            </button>
+            <div class="mb-5">
+                @php
+                    $insuredText = $register_asset->insured;
+                    $insuredClass = '';
+
+                    if ($insuredText == 0) {
+                        $insuredClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+                    } elseif ($insuredText == 1) {
+                        $insuredClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                    } else { 
+                        $insuredClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+                    }
+                @endphp
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured <span class="text-red-900">*</span> :  <span class="{{ $insuredClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->insured == 1) ? "Yes" : "No" }}</span></label>
+            </div>
+
+            <div class="mb-5">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval List <span class="text-red-900">*</span></label>
+                <div class="border-2 border-black rounded-lg p-4">
+                    
+                    <div class="flex flex-row mb-2">
+                        @php
+                            $sequenceText = $register_asset->sequence;
+                            $sequenceClass = '';
+
+                            if ($sequenceText == 0) {
+                                $sequenceClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+                            } elseif ($sequenceText == 1) {
+                                $sequenceClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                            } else { 
+                                $sequenceClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+                            }
+                        @endphp
+                        <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
+                    </div>
+
+                    <hr class="mb-2">
+                    
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
+                                <th scope="col" class="px-2 py-3">Name</th>
+                                <th scope="col" class="px-2 py-3">Signature</th>
+                                <th scope="col" class="px-2 py-3">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approval-list-body">
+                            @foreach($register_asset->approvals->sortBy('approval_order') as $approv)
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
+                                    <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
+                                    <td class="px-2 py-4">{{ $approv->user?->name ?? "-" }}</td>
+                                    <td class="px-2 py-4">{{ $approv->status }}</td>
+                                    <td class="px-2 py-4">{{ $approv->approval_date }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="flex gap-2 content-center">
+                <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
+                @if ($canApprove)
+                    <button
+                        type="button" 
+                        data-modal-target="confirmation-modal" 
+                        data-modal-toggle="confirmation-modal"
+                        class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5">
+                        Approve & Sign
+                    </button>
+                @else
+                    <p class="flex items-center">{{ $userApprovalStatus }}</p>
+                @endif
+
+                <div id="confirmation-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div class="relative p-4 w-full max-w-md max-h-full">
+                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                            <div class="p-4 md:p-5 text-center">
+                                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg>
+                                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                    Apakah Anda yakin ingin menyetujui formulir ini?
+                                </h3>
+                                
+                                {{-- Tombol ini yang akan men-submit form --}}
+                                <button id="confirm-approve-btn" data-modal-hide="confirmation-modal" type="button" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                    Ya, saya yakin
+                                </button>
+                                <button data-modal-hide="confirmation-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 ...">
+                                    Batal
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <form id="approve-form" action="{{ route('register-asset.approve', $register_asset) }}" method="POST" class="hidden">
-                @csrf
-            </form>
+                <form id="approve-form" action="{{ route('register-asset.approve', $register_asset) }}" method="POST" class="hidden">
+                    @csrf
+                </form>
 
+            </div>
         </div>
     </div>
 @endsection

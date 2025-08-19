@@ -6,16 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\CompanyUser;
 use App\Models\User;
 use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\Facades\DataTables;
+use App\Scopes\CompanyScope;
 
 class CompanyUserController extends Controller
 {
     public function index()
-    {
-        $activeCompanyId = Session::get('active_company_id');
-
-        $companyusers = CompanyUser::where('company_id', $activeCompanyId)->where('role', '!=', 'owner')->with('user')->paginate(25);
-        
-        return view('company-user.index', compact('companyusers'));
+    {   
+        return view('company-user.index');
     }
 
     public function create()
@@ -71,5 +69,34 @@ class CompanyUserController extends Controller
         $company_user->delete();
 
         return redirect()->route('company-user.index')->with('success', 'Data berhasil dihapus!');
+    }
+
+    public function datatables(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = CompanyUser::withoutGlobalScope(CompanyScope::class)
+                          ->where('role', '!=', 'owner')
+                          ->with('user')
+                          ->select('company_users.*');
+
+        $query->where('company_users.company_id', $companyId);
+
+        return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('user_name', function (CompanyUser $companyUser) {
+                return $companyUser->user?->name ?? 'N/A';
+            })
+            ->addColumn('user_email', function (CompanyUser $companyUser) {
+                return $companyUser->user?->email ?? 'N/A';
+            })
+            ->addColumn('action', function ($company_user) {
+                return view('components.action-buttons', [
+                    'editUrl' => route('company-user.edit', $company_user->id),
+                    'deleteUrl' => route('company-user.destroy', $company_user->id)
+                ])->render();
+            })
+            ->rawColumns(['action'])
+            ->toJson();
     }
 }

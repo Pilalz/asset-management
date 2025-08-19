@@ -1,6 +1,26 @@
 @extends('layouts.main')
 
 @section('content')
+    @push('styles')
+        <style>
+            /* Gaya untuk Light Mode */
+            #userTable tbody tr:hover {
+                background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */
+            }
+
+            /* Gaya untuk Dark Mode */
+            .dark #userTable tbody tr:hover {
+                background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
+            }
+
+            /* Menghapus background bawaan dari kolom yang diurutkan */
+            table.dataTable tbody tr > .sorting_1,
+            table.dataTable tbody tr > .sorting_2,
+            table.dataTable tbody tr > .sorting_3 {
+                background-color: inherit !important;
+            }
+        </style>
+    @endpush
     <div class="bg-white flex p-5 text-lg justify-between">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -38,77 +58,22 @@
             <table id="userTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">
-                            <span class="flex items-center">
-                                No
-                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                </svg>
-                            </span>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <span class="flex items-center">
-                                Name
-                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                </svg>
-                            </span>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <span class="flex items-center">
-                                Email
-                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                </svg>
-                            </span>
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            <span class="flex items-center">
-                                Role
-                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                </svg>
-                            </span>
-                        </th>
+                        <th scope="col" class="px-6 py-3">No</th>
+                        <th scope="col" class="px-6 py-3">Name</th>
+                        <th scope="col" class="px-6 py-3">Email</th>
+                        <th scope="col" class="px-6 py-3">Role</th>
                         <th scope="col" class="px-6 py-3">Actions</th>
+                    </tr>
+                    <tr id="filter-row">
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($companyusers as $company_user)
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $loop->iteration }}</th>
-                            <td class="px-6 py-4">{{ $company_user->user->name }}</td>
-                            <td class="px-6 py-4">{{ $company_user->user->email }}</td>
-                            <td class="px-6 py-4">{{ $company_user->role }}</td>
-                            <td>
-                                <div class="flex">
-                                    <a href="{{ route('company-user.edit', $company_user->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">
-                                        <svg class="w-3.5 h-3.5 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                                        </svg>
-                                        Edit
-                                    </a>
-
-                                    <form action="{{ route('company-user.destroy', $company_user->id) }}" method="POST" class="group">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" 
-                                            class="text-red-700 text-red-700 group-hover:text-white border border-red-700 group-hover:bg-red-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:border-red-500 dark:text-red-500 dark:group-hover:text-white dark:group-hover:bg-red-600">
-                                            <svg class="w-3.5 h-3.5 me-2 text-red-700 dark:text-white group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                                            </svg>
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center p-3">Tidak ada data.</td>
-                        </tr>
-                    @endforelse
+                    
                 </tbody>
             </table>
         </div>
@@ -117,11 +82,86 @@
 
 @push('scripts')
 <script>
-    if (document.getElementById("userTable") && typeof simpleDatatables.DataTable !== 'undefined') {
-        const dataTable = new simpleDatatables.DataTable("#userTable", {
-            searchable: true,
-            sortable: true
+    $(document).ready(function() {
+        $('#userTable thead tr:eq(0) th').each(function(i) {
+            var title = $(this).text().trim();
+            var cell = $('#filter-row').children().eq(i);
+            if (i === 0 || i === 4) {
+                return;
+            }
+            $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
         });
-    }
+
+        var table = $('#userTable').DataTable({
+            dom:  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'l><'text-sm'f>>" +
+                  "<'overflow-x-auto'tr>" +
+                  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('api.company-user') }}",
+            autoWidth: false,
+            orderCellsTop: true,
+            columns: [
+                { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
+                { data: 'user_name', name: 'user.name' },
+                { data: 'user_email', name: 'user.email' },
+                { data: 'role', name: 'role' },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+            ],
+            order: [[0, 'asc']],
+            language: {
+                search: "Search : ",
+                searchPlaceholder: "Cari di sini...",
+            },
+            initComplete: function () {
+                // --- Tambahkan kelas ke search box utama di sini ---
+                $('.dt-search input').addClass('w-full sm:w-auto bg-white-50 border border-white-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500');
+                
+                // --- Logika untuk filter per kolom ---
+                this.api().columns().every(function (index) {
+                    var column = this;
+                    var cell = $('#userTable thead #filter-row').children().eq(column.index());
+                    
+                    if (column.settings()[0].bSearchable === false) {
+                        return;
+                    }
+                    
+                    var input = $('input', cell);
+                    input.on('keyup change clear', function(e) {
+                        e.stopPropagation();
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                    input.on('click', function(e) {
+                        e.stopPropagation();
+                    });
+                });
+            },
+
+            columnDefs: [
+                {
+                    targets: 0,
+                    className: 'px-6 py-4'
+                },
+            ],
+
+            createdRow: function( row, data, dataIndex ) {
+                $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+            },
+        });
+
+        table.columns().every(function() {
+            var that = this;
+            
+            // Event untuk filtering saat mengetik
+            $('input', $('#userTable thead #filter-row').children().eq(this.index())).on('keyup change clear', function(e) {
+                e.stopPropagation(); // Hentikan event agar tidak memicu sorting
+                if (that.search() !== this.value) {
+                    that.search(this.value).draw();
+                }
+            });
+        });
+    });
 </script>
 @endpush

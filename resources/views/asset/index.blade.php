@@ -21,7 +21,7 @@
             }
         </style>
     @endpush
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800 dark:border-b dark:border-gray-700">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -160,41 +160,43 @@
     @endif
     
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5 bg-white p-4">
-            <table id="assetTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">No</th>
-                        <th scope="col" class="px-6 py-3">Asset Number</th>
-                        <th scope="col" class="px-6 py-3">Status</th>
-                        <th scope="col" class="px-6 py-3">Asset Name</th>
-                        <th scope="col" class="px-6 py-3">Obj Acc</th>
-                        <th scope="col" class="px-6 py-3">Description</th>
-                        <th scope="col" class="px-6 py-3">Pareto</th>
-                        <th scope="col" class="px-6 py-3">PO No</th>
-                        <th scope="col" class="px-6 py-3">Location</th>
-                        <th scope="col" class="px-6 py-3">Department</th>
-                        <th scope="col" class="px-6 py-3">Qty</th>
-                        <th scope="col" class="px-6 py-3">Capitalized Date</th>
-                        <th scope="col" class="px-6 py-3">Start Depre Date</th>
-                        <th scope="col" class="px-6 py-3">Acquisition Value</th>
-                        <th scope="col" class="px-6 py-3">Useful Life Month</th>
-                        <th scope="col" class="px-6 py-3">Accum Depre</th>
-                        <th scope="col" class="px-6 py-3">Net Book Value</th>
-                        <th scope="col" class="px-6 py-3">Actions</th>
-                    </tr>
-                    <tr id="filter-row">
-                        <th></th><th></th><th></th><th></th>
-                        <th></th><th></th><th></th><th></th>
-                        <th></th><th></th><th></th><th></th>
-                        <th></th><th></th><th></th><th></th>
-                        <th></th><th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                </tbody>
-            </table>
+        <div class="shadow-md sm:rounded-lg bg-white p-4 dark:bg-gray-800">
+            <div class="relative overflow-x-auto">
+                <table id="assetTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">No</th>
+                            <th scope="col" class="px-6 py-3">Asset Number</th>
+                            <th scope="col" class="px-6 py-3">Status</th>
+                            <th scope="col" class="px-6 py-3">Asset Name</th>
+                            <th scope="col" class="px-6 py-3">Obj Acc</th>
+                            <th scope="col" class="px-6 py-3">Description</th>
+                            <th scope="col" class="px-6 py-3">Pareto</th>
+                            <th scope="col" class="px-6 py-3">PO No</th>
+                            <th scope="col" class="px-6 py-3">Location</th>
+                            <th scope="col" class="px-6 py-3">Department</th>
+                            <th scope="col" class="px-6 py-3">Qty</th>
+                            <th scope="col" class="px-6 py-3">Capitalized Date</th>
+                            <th scope="col" class="px-6 py-3">Start Depre Date</th>
+                            <th scope="col" class="px-6 py-3">Acquisition Value</th>
+                            <th scope="col" class="px-6 py-3">Useful Life Month</th>
+                            <th scope="col" class="px-6 py-3">Accum Depre</th>
+                            <th scope="col" class="px-6 py-3">Net Book Value</th>
+                            <th scope="col" class="px-6 py-3">Actions</th>
+                        </tr>
+                        <tr id="filter-row">
+                            <th></th><th></th><th></th><th></th>
+                            <th></th><th></th><th></th><th></th>
+                            <th></th><th></th><th></th><th></th>
+                            <th></th><th></th><th></th><th></th>
+                            <th></th><th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 @endsection
@@ -238,7 +240,7 @@
                 $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
             });
 
-            $('#assetTable').DataTable({
+            var table = $('#assetTable').DataTable({
             dom:  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'l><'text-sm'f>>" +
                 "<'overflow-x-auto'tr>" +
                 "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
