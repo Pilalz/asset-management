@@ -38,11 +38,11 @@
             <form class="max-w mx-auto" action="{{ route('asset.update', $asset->id) }}" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="flex flex-row gap-5">
+                <div class="flex flex-row gap-5 items-start">
                     <div class="w-1/2">
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Number <span class="text-red-900">*</span></label>
-                            <input type="text" name="asset_number" value="{{ old('asset_number', $asset->asset_number) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="text" name="asset_number" value="{{ old('asset_number', $asset->asset_number) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
                             @error('asset_number')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -50,7 +50,8 @@
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Name <span class="text-red-900">*</span></label>
-                            <input type="text" name="asset_name_id" value="{{ old('asset_name_id', $asset->assetName->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="text" value="{{ old('asset_name_id', $asset->assetName->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="hidden" name="asset_name_id" value="{{ old('asset_name_id', $asset->assetName->id) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             @error('asset_name_id')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -58,7 +59,7 @@
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status <span class="text-red-900">*</span></label>
-                            <input type="text" name="status" value="{{ old('status', $asset->status) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="text" name="status" value="{{ old('status', $asset->status) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
                             @error('status')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -73,40 +74,40 @@
                         </div>
 
                         <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Detail <span class="text-red-900">*</span></label>
-                            <input type="text" name="detail" value="{{ old('detail', $asset->detail) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Detail </label>
+                            <input type="text" name="detail" value="{{ old('detail', $asset->detail) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                             @error('detail')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pareto <span class="text-red-900">*</span></label>
-                            <input type="text" name="pareto" value="{{ old('pareto', $asset->pareto) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pareto </label>
+                            <input type="text" name="pareto" value="{{ old('pareto', $asset->pareto) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                             @error('pareto')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unit No <span class="text-red-900">*</span></label>
-                            <input type="text" name="unit_no" value="{{ old('unit_no', $asset->unit_no) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unit No </label>
+                            <input type="text" name="unit_no" value="{{ old('unit_no', $asset->unit_no) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                             @error('unit_no')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sn Chassis <span class="text-red-900">*</span></label>
-                            <input type="text" name="sn_chassis" value="{{ old('sn_chassis', $asset->sn_chassis) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sn Chassis </label>
+                            <input type="text" name="sn_chassis" value="{{ old('sn_chassis', $asset->sn_chassis) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                             @error('sn_chassis')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sn Engine <span class="text-red-900">*</span></label>
-                            <input type="text" name="sn_engine" value="{{ old('sn_engine', $asset->sn_engine) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sn Engine </label>
+                            <input type="text" name="sn_engine" value="{{ old('sn_engine', $asset->sn_engine) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                             @error('sn_engine')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -123,7 +124,8 @@
                     <div class="w-1/2">
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location <span class="text-red-900">*</span></label>
-                            <input type="text" name="location_id" value="{{ old('location_id', $asset->location->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="text" value="{{ old('location_id', $asset->location->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="hidden" name="location_id" value="{{ old('location_id', $asset->location->id) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             @error('location_id')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -131,7 +133,8 @@
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department <span class="text-red-900">*</span></label>
-                            <input type="text" name="department_id" value="{{ old('department_id', $asset->department->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="text" value="{{ old('department_id', $asset->department->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="hidden" name="department_id" value="{{ old('department_id', $asset->department->id) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             @error('department_id')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -145,17 +148,27 @@
                             @enderror
                         </div>
 
-                        <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900">*</span></label>
-                            <input type="text" name="capitalized_date" value="{{ old('capitalized_date', $asset->capitalized_date) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            @error('capitalized_date')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @if ($asset->depreciations->count() == 0)
+                            <div class="mb-5">
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900">*</span></label>
+                                <input type="date" name="capitalized_date" value="{{ old('capitalized_date', $asset->capitalized_date?->format('Y-m-d')) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                @error('capitalized_date')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @else
+                            <div class="mb-5">
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900">*</span></label>
+                                <input type="date" name="capitalized_date" value="{{ old('capitalized_date', $asset->capitalized_date?->format('Y-m-d')) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
+                                @error('capitalized_date')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start Depre Date <span class="text-red-900">*</span></label>
-                            <input type="text" name="start_depre_date" value="{{ old('start_depre_date', $asset->start_depre_date) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="date" name="start_depre_date" value="{{ old('start_depre_date', $asset->start_depre_date?->format('Y-m-d')) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             @error('start_depre_date')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -163,23 +176,37 @@
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acquisition Value <span class="text-red-900">*</span></label>
-                            <input type="text" name="acquisition_value" value="{{ old('acquisition_value', $asset->acquisition_value) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            @error('acquisition_value')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <div class="relative ">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                    </svg>
+                                </div>
+                                <input type="text" name="acquisition_value" value="{{ old('acquisition_value', $asset->acquisition_value) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                @error('acquisition_value')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current Cost <span class="text-red-900">*</span></label>
-                            <input type="text" name="current_cost" value="{{ old('current_cost', $asset->current_cost) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            @error('current_cost')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                    </svg>
+                                </div>
+                                <input type="text" name="current_cost" value="{{ old('current_cost', $asset->current_cost) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                @error('current_cost')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Useful Life Month <span class="text-red-900">*</span></label>
-                            <input type="text" name="useful_life_month" value="{{ old('useful_life_month', $asset->useful_life_month) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="text" name="useful_life_month" value="{{ old('useful_life_month', $asset->useful_life_month) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
                             @error('useful_life_month')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -187,18 +214,32 @@
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Accum Depre <span class="text-red-900">*</span></label>
-                            <input type="text" name="accum_depre" value="{{ old('accum_depre', $asset->accum_depre) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            @error('accum_depre')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <div class="relative ">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                    </svg>
+                                </div>
+                                <input type="text" name="accum_depre" value="{{ old('accum_depre', $asset->accum_depre) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
+                                @error('accum_depre')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Net Book Value <span class="text-red-900">*</span></label>
-                            <input type="text" name="net_book_value" value="{{ old('net_book_value', $asset->net_book_value) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            @error('net_book_value')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <div class="relative ">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                    </svg>
+                                </div>
+                                <input type="text" name="net_book_value" value="{{ old('net_book_value', $asset->net_book_value) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                @error('net_book_value')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                     </div>
                 </div>

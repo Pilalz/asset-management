@@ -89,7 +89,7 @@
 
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
-            <form class="max-w mx-auto" action="{{ route('transfer-asset.store') }}" method="POST">
+            <form id="main-transfer-form" class="max-w mx-auto" action="{{ route('transfer-asset.store') }}" method="POST">
                 @csrf
 
                 <div class="mb-5 flex content-center">
@@ -106,23 +106,17 @@
                     <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900">*</span></label>
                     <span> : </span>
                     <p class="w-full px-2">{{ $form_no }}</p>
-                    <input type="hidden" name="form_no" value="{{ $form_no }}" class="w-full px-1 w-64 text-sm text-gray-900 appearance-none dark:text-white" readonly/>
+                    <input type="hidden" name="form_no" value="{{ $form_no }}" class="w-full px-1 text-sm text-gray-900 appearance-none dark:text-white" readonly/>
                     @error('form_no')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="mb-5 flex content-center">
-                    <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
+                    <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Department <span class="text-red-900">*</span></label>
                     <span> : </span>
-                    <select name="department_id" id="department-select" class="w-full px-1 mx-1 w-64 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                        <option selected value="">Choose a Department</option>
-                        @foreach($departments as $department)
-                            <option value="{{ $department->id }}" {{ old('department_id') == $department->id ? 'selected' : '' }}>
-                                {{ $department->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <input type="text" id="department-display" value="" class="block py-1 px-0 mx-2 w-full text-sm text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0" readonly/>
+                    <input type="hidden" name="department_id" id="department-id-input" value="">
                     @error('department_id')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -143,17 +137,18 @@
                                 <tr>
                                     <th scope="col" class="px-2 py-3">Asset Name</th>
                                     <th scope="col" class="px-2 py-3">Description</th>
+                                    <th scope="col" class="px-2 py-3">ID Pareto</th>
+                                    <th scope="col" class="px-2 py-3">No. Unit</th>
+                                    <th scope="col" class="px-2 py-3">No. Mesin</th>
+                                    <th scope="col" class="px-2 py-3">No. Engine</th>
+                                    <th scope="col" class="px-2 py-3">Tahun Pembelian</th>
                                     <th scope="col" class="px-2 py-3">Location</th>
-                                    <th scope="col" class="px-2 py-3">Department</th>
-                                    <th scope="col" class="px-2 py-3">Quantity</th>
-                                    <th scope="col" class="px-2 py-3">Accum Depre</th>
-                                    <th scope="col" class="px-2 py-3">Net Book Value</th>
                                 </tr>
                             </thead>
                             <tbody id="asset-data-body">
                                 
                                 <tr>
-                                    <td colspan="6" class="text-center p-4">Please select an asset.</td>
+                                    <td colspan="8" class="text-center p-4">Please select an asset.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -163,15 +158,15 @@
                 <div class="mb-5 flex content-center">
                     <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Destination Location <span class="text-red-900">*</span></label>
                     <span> : </span>
-                    <select name="location_id" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                    <select name="destination_loc_id" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                         <option selected value="">Choose a Location</option>
                         @foreach($locations as $location)
-                            <option value="{{ $location->id }}" {{ old('location_id') == $location->id ? 'selected' : '' }}>
+                            <option value="{{ $location->id }}" {{ old('destination_loc_id') == $location->id ? 'selected' : '' }}>
                                 {{ $location->name }}
                             </option>
                         @endforeach
                     </select>
-                    @error('location_id')
+                    @error('destination_loc_id')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
@@ -232,7 +227,7 @@
                                         @enderror
                                     </td>
                                     <td class="px-2 py-4">
-                                        <input type="text" name="approvals[0][status]" value="Approved" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                        <input type="text" name="approvals[0][status]" value="Approved" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
                                         @error("approvals[0][status]")
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -266,7 +261,7 @@
                                         @enderror
                                     </td>
                                     <td class="px-2 py-4">
-                                        <input type="text" name="approvals[1][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                        <input type="text" name="approvals[1][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
                                         @error("approvals[1][status]")
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -300,7 +295,7 @@
                                         @enderror
                                     </td>
                                     <td class="px-2 py-4">
-                                        <input type="text" name="approvals[2][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                        <input type="text" name="approvals[2][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
                                         @error("approvals[2][status]")
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -334,7 +329,7 @@
                                         @enderror
                                     </td>
                                     <td class="px-2 py-4">
-                                        <input type="text" name="approvals[3][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                        <input type="text" name="approvals[3][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
                                         @error("approvals[3][status]")
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -369,7 +364,7 @@
                                         @enderror
                                     </td>
                                     <td class="px-2 py-4">
-                                        <input type="text" name="approvals[4][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                        <input type="text" name="approvals[4][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
                                         @error("approvals[4][status]")
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -403,7 +398,7 @@
                                         @enderror
                                     </td>
                                     <td class="px-2 py-4">
-                                        <input type="text" name="approvals[5][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                        <input type="text" name="approvals[5][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
                                         @error("approvals[5][status]")
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -437,7 +432,7 @@
                                         @enderror
                                     </td>
                                     <td class="px-2 py-4">
-                                        <input type="text" name="approvals[6][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                        <input type="text" name="approvals[6][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
                                         @error("approvals[6][status]")
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -453,6 +448,8 @@
                         </table>
                     </div>
                 </div>
+
+                <input type="hidden" name="company_id" value="{{ Auth::user()->last_active_company_id }}" required />
 
                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
                 <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
@@ -490,7 +487,7 @@
             }
 
             // Tampilkan status loading
-            assetDataBody.innerHTML = '<tr><td colspan="6" class="text-center p-4">Loading...</td></tr>';
+            assetDataBody.innerHTML = '<tr><td colspan="8" class="text-center p-4">Loading...</td></tr>';
             
             // Buat URL API
             const url = `/api/find-asset/${assetNumber}`;
@@ -511,6 +508,16 @@
                         existingInput.remove();
                     }
 
+                    const departmentDisplayInput = document.getElementById('department-display');
+                    const departmentIdInput = document.getElementById('department-id-input');
+
+                    if (departmentDisplayInput && data.department) {
+                        departmentDisplayInput.value = data.department.name;
+                    }
+                    if (departmentIdInput && data.department_id) {
+                        departmentIdInput.value = data.department_id;
+                    }
+
                     // Buat input hidden untuk asset_id dan tambahkan ke form utama
                     const assetIdInput = document.createElement('input');
                     assetIdInput.type = 'hidden';
@@ -521,23 +528,40 @@
                     // Buat format mata uang
                     const nbv = new Intl.NumberFormat('en-US', { 
                         style: 'currency', 
-                        currency: 'USD' 
+                        currency: 'USD',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
                     }).format(data.net_book_value);
+
+                    const depre = new Intl.NumberFormat('en-US', { 
+                        style: 'currency', 
+                        currency: 'USD',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    }).format(data.accum_depre);
 
                     // Tampilkan data di dalam tabel
                     assetDataBody.innerHTML = `
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <td class="px-4 py-4">${data.assetName ? data.assetName.name : 'N/A'}</td>
+                            <td class="px-4 py-4">
+                                ${data.asset_name_id ? data.asset_name.name : 'N/A'}
+                                <input type="hidden" name="asset_id" value="${data.id || '-'}" />
+                            </td>
                             <td class="px-4 py-4">${data.description || '-'}</td>
-                            <td class="px-4 py-4">${data.location ? data.location.name : 'N/A'}</td>
-                            <td class="px-4 py-4">${data.department ? data.department.name : 'N/A'}</td>
-                            <td class="px-4 py-4">${data.quantity}</td>
-                            <td class="px-4 py-4 text-right">${net_book_value}</td>
+                            <td class="px-4 py-4">${data.pareto || '-'}</td>
+                            <td class="px-4 py-4">${data.unit_no || '-'}</td>
+                            <td class="px-4 py-4">${data.sn_chassis || '-'}</td>
+                            <td class="px-4 py-4">${data.sn_engine || '-'}</td>
+                            <td class="px-4 py-4">${data.capitalized_date ? new Date(data.capitalized_date).getFullYear() : '-'}</td>
+                            <td class="px-4 py-4">
+                                ${data.location ? data.location.name : 'N/A'}
+                                <input type="hidden" name="origin_loc_id" value="${data.location_id || '-'}" />
+                            </td>
                         </tr>
                     `;
                 })
                 .catch(error => {
-                    assetDataBody.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-red-500">${error.message}</td></tr>`;
+                    assetDataBody.innerHTML = `<tr><td colspan="8" class="text-center p-4 text-red-500">${error.message}</td></tr>`;
                 });
         });
     });

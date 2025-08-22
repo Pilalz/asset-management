@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\Department;
 use App\Models\Location;
 use App\Models\Company;
@@ -49,13 +50,19 @@ class RegisterAsset extends Model
         return $this->hasMany(DetailRegister::class, 'register_asset_id', 'id');
     }
 
-    public function approvals(): HasMany
+    public function approvals(): MorphMany
     {
-        return $this->hasMany(Approval::class, 'register_asset_id', 'id');
+        return $this->morphMany(Approval::class, 'approvable');
     }
 
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
+
+        static::deleting(function (RegisterAsset $register_asset) {
+            // Hapus semua relasi anaknya terlebih dahulu
+            $register_asset->detailRegisters()->delete();
+            $register_asset->approvals()->delete();
+        });
     }
 }

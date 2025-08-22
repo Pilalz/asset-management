@@ -61,7 +61,36 @@ class AssetController extends Controller
 
     public function edit(Asset $asset)
     {
+        $asset->load('depreciations');        
+
         return view('asset.edit', compact('asset'));
+    }
+
+    public function update(Request $request, Asset $asset)
+    {
+        $validatedData = $request->validate([
+            'description' => 'required|string|max:255',
+            'detail'  => 'max:255',
+            'pareto'  => 'max:255',
+            'unit_no'  => 'max:255',
+            'sn_chassis'  => 'max:255',
+            'sn_engine'  => 'max:255',
+            'po_no'  => 'required|string|max:255',
+            'location_id'  => 'required|exists:locations,id',
+            'department_id'  => 'required|exists:departments,id',
+            'quantity'  => 'required',
+            'capitalized_date'  => 'required|date',
+            'start_depre_date'  => 'required|date',
+            'acquisition_value'  => 'required',
+            'current_cost'  => 'required',
+            'net_book_value'  => 'required',
+        ]);
+
+        $dataToUpdate = $validatedData;
+
+        $asset->update($dataToUpdate);
+
+        return redirect()->route('asset.index')->with('success', 'Data berhasil diperbarui!');
     }
 
     public function importExcel(Request $request)

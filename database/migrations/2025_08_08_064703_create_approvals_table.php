@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('approvals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('register_asset_id')->constrained('register_assets')->onUpdate('cascade')->onDelete('cascade');
+            $table->morphs('approvable');
             $table->string('approval_action');
             $table->string('role');
-            $table->foreignId('user_id')->constrained('users')->onUpdate('no action')->onDelete('no action')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('no action')->onDelete('no action');
             $table->string('status');
             $table->date('approval_date')->nullable();
             $table->integer('approval_order');

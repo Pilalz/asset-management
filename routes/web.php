@@ -33,7 +33,7 @@ use App\Http\Controllers\DepreciationController;
 
 // Welcome Page
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 // Google Authentication Routes
@@ -95,7 +95,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
     //Start Register
     Route::post('/register-asset/{register_asset}/approve', [RegisterAssetController::class, 'approve'])->name('register-asset.approve');
-    //COMPANY
+    //Start Transfer
+    Route::post('/transfer-asset/{transfer_asset}/approve', [TransferAssetController::class, 'approve'])->name('transfer-asset.approve');
+    //Start Company
     Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
 
     // --- Import Data ---

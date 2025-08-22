@@ -314,6 +314,31 @@
                     }
                 },
                 {
+                    targets: [11, 12],
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            if (!data) {
+                                return '-';
+                            }
+                            
+                            try {
+                                const date = new Date(data);
+                                
+                                const options = {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric'
+                                };
+
+                                return date.toLocaleDateString('id-ID', options);
+                            } catch (e) {
+                                return data;
+                            }
+                        }
+                        return data;
+                    }
+                },
+                {
                     targets: [13, 15, 16], 
                     render: function (data, type, row) {
                         if (type === 'display') {

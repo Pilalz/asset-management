@@ -124,6 +124,102 @@ class RegisterAssetController extends Controller
         return redirect()->route('register-asset.index')->with('success', 'Data berhasil ditambah');
     }
 
+    public function edit(RegisterAsset $register_asset)
+    {
+        $locations = Location::all();
+        $departments = Department::all();
+        $assetclasses = AssetClass::all();
+
+        $register_asset->load('approvals.user', 'department', 'location', 'detailRegisters.assetName.assetSubClass.assetClass');
+
+        return view('register-asset.edit', compact('register_asset', 'locations', 'departments', 'assetclasses'));
+    }
+
+    public function update(Request $request, RegisterAsset $registerAsset)
+    {
+        $validated = $request->validate([
+            'department_id' => 'required|exists:departments,id',
+            'location_id'   => 'required|exists:locations,id',
+            'insured'       => 'required',
+            'sequence'      => 'required',
+
+            //Validasi Detail Asset
+            'assets'                    => 'required|array|min:1',
+            'assets.*.po_no'            => 'nullable|string|max:255',
+            'assets.*.invoice_no'       => 'nullable|string|max:255',
+            'assets.*.commission_date'  => 'required|date',
+            'assets.*.specification'    => 'required|string',
+            'assets.*.asset_name_id'    => 'required|exists:asset_names,id',
+
+            //Validasi Approval
+            'approvals'                     => 'required|array|min:1',
+            'approvals.*.approval_action'   => 'required|string|max:255',
+            'approvals.*.role'              => 'required|string|max:255',
+            'approvals.0.user_id'           => 'required|string|max:255',
+            'approvals.*.status'            => 'required|string|max:255',
+            'approvals.0.approval_date'     => 'required|date',
+        ]);
+
+        try {
+            DB::transaction(function () use ($validated, $registerAsset) {
+                $registerAsset->update([
+                    'department_id' => $validated['department_id'],
+                    'location_id'   => $validated['location_id'],
+                    'insured'       => ($validated['insured'] == 'Y') ? 1 : 0,
+                    'sequence'      => ($validated['sequence'] == 'Y') ? 1 : 0,
+                ]);
+
+                $registerAsset->detailRegisters()->delete();
+                if (isset($validated['assets'])) {
+                    foreach ($validated['assets'] as $assetData) {
+                        $registerAsset->detailRegisters()->create($assetData);
+                    }
+                }
+
+                $registerAsset->approvals()->delete();
+                $isSequence = ($validated['sequence'] === 'Y');
+                foreach ($validated['approvals'] as $index => $approvalData) {
+                    $order = $isSequence ? ($index + 1) : 1;
+
+                    $registerAsset->approvals()->create([
+                        'approval_action'   => $approvalData['approval_action'],
+                        'role'              => $approvalData['role'],
+                        'approval_order'    => $order,
+                        'status'            => 'pending',
+                        'user_id'           => null,
+                        'approval_date'     => null,
+                    ]);
+                }
+                
+                $firstApprover = $registerAsset->approvals()->orderBy('approval_order', 'asc')->first();
+                if ($firstApprover) {
+                    $firstApprover->update([
+                        'status' => 'approved',
+                        'user_id' => Auth::id(),
+                        'approval_date' => now()
+                    ]);
+                }
+            });
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
+        }
+
+        return redirect()->route('register-asset.index')->with('success', 'Data berhasil di-update');
+    }
+
+    public function destroy(RegisterAsset $register_asset)
+    {
+        try {
+            $register_asset->delete();
+
+        } catch (\Exception $e) {
+            return redirect()->route('register-asset.index')
+                ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
+
+        return redirect()->route('register-asset.index')->with('success', 'Data berhasil dihapus!');
+    }
+
     public function show(RegisterAsset $register_asset)
     {
         // Eager load relasi untuk efisiensi
@@ -200,7 +296,6 @@ class RegisterAssetController extends Controller
                         'approval_date' => now(),
                     ]);
                 } else {
-                    // Throw exception jika approval tidak ditemukan, untuk membatalkan transaksi
                     throw new \Exception("Approval yang valid tidak ditemukan untuk peran Anda.");
                 }
 
@@ -208,7 +303,6 @@ class RegisterAssetController extends Controller
                 $allApproved = $register_asset->approvals()->where('status', '!=', 'approved')->doesntExist();
 
                 if ($allApproved) {
-                    // 3. JIKA SELESAI, jalankan proses final
                     $this->finalizeAssetRegistration($register_asset);
                 }
             });

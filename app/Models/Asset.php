@@ -41,6 +41,11 @@ class Asset extends Model
         'company_id',
     ];
 
+    protected $casts = [
+        'capitalized_date' => 'datetime',
+        'start_depre_date' => 'datetime',
+    ];
+
     public function assetName(): BelongsTo
     {
         return $this->belongsTo(AssetName::class, 'asset_name_id');

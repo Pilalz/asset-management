@@ -6,7 +6,7 @@
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
-                    <a href="{{ route('register-asset.index') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                    <a href="{{ route('transfer-asset.index') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                         <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
                         </svg>
@@ -18,7 +18,7 @@
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                         </svg>
-                        <a href="{{ route('register-asset.index') }}" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Register Asset</a>
+                        <a href="{{ route('transfer-asset.index') }}" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Transfer Asset</a>
                     </div>
                 </li>
                 <li aria-current="page">
@@ -89,83 +89,75 @@
 
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
-            
             <div class="mb-5 flex content-center">
-                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir</label>
-                <span>:</span>
-                <span class="flex ml-1 text-sm text-gray-900">{{ $register_asset->form_no }}</span>
-            </div>
-
-            <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Select Department </label>
+                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Tanggal Pengajuan </label>
                 <span> : </span>
-                <p class="ml-1 text-sm text-gray-900">{{ $register_asset->department->name }}</p>
+                <p class="flex ml-1 text-sm text-gray-900">{{ $transfer_asset->submit_date }}</p>
             </div>
 
             <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Select Location </label>
+                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir </label>
                 <span> : </span>
-                <p class="ml-1 text-sm text-gray-900">{{ $register_asset->location->name }}</p>
+                <p class="flex ml-1 text-sm text-gray-900">{{ $transfer_asset->form_no }}</p>
             </div>
 
-            <!-- Asset List -->
+            <div class="mb-5 flex content-center">
+                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Department </label>
+                <span> : </span>
+                <p class="flex ml-1 text-sm text-gray-900">{{ $transfer_asset->department->name }}</p>
+            </div>
+
             <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset List </label>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Data </label>
                 <div class="border-2 border-black rounded-lg p-4">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="px-2 py-3">No</th>
-                                <th scope="col" class="px-2 py-3">PO No.</th>
-                                <th scope="col" class="px-2 py-3">Invoice No.</th>
-                                <th scope="col" class="px-2 py-3">Commission Date</th>
-                                <th scope="col" class="px-2 py-3">Specification</th>
-                                <th scope="col" class="px-2 py-3">Asset Class</th>
-                                <th scope="col" class="px-2 py-3">Asset Sub Class</th>
+                                <th scope="col" class="px-2 py-3">Asset Number</th>
                                 <th scope="col" class="px-2 py-3">Asset Name</th>
+                                <th scope="col" class="px-2 py-3">Description</th>
+                                <th scope="col" class="px-2 py-3">ID Pareto</th>
+                                <th scope="col" class="px-2 py-3">No. Unit</th>
+                                <th scope="col" class="px-2 py-3">No. Mesin</th>
+                                <th scope="col" class="px-2 py-3">No. Engine</th>
+                                <th scope="col" class="px-2 py-3">Tahun Pembelian</th>
+                                <th scope="col" class="px-2 py-3">Location</th>
                             </tr>
                         </thead>
-                        <tbody id="asset-list-body">
-                            @foreach($register_asset->detailRegisters as $detail)
-                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 asset-row">
-                                    <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white asset-row-number text-center">{{ $loop->iteration }}</td>
-                                    <td class="px-2 py-4">{{ $detail->po_no }}</td>
-                                    <td class="px-2 py-4">{{ $detail->invoice_no }}</td>
-                                    <td class="px-2 py-4">{{ $detail->commission_date }}</td>
-                                    <td class="px-2 py-4">{{ $detail->specification }}</td>
-                                    <td class="px-2 py-4">{{ $detail->assetName->assetSubClass->assetClass->name }}</td>
-                                    <td class="px-2 py-4">{{ $detail->assetName->assetSubClass->name }}</td>
-                                    <td class="px-2 py-4">{{ $detail->assetName->name }}</td>
-                                </tr>
-                            @endforeach
+                        <tbody id="asset-data-body">
+                            <tr>
+                                <td class="p-4">{{ $transfer_asset->asset?->asset_number ?? "-" }}</td>
+                                <td class="p-4">{{ $transfer_asset->asset?->assetName->name ?? "-" }}</td>
+                                <td class="p-4">{{ $transfer_asset->asset?->description ?? "-" }}</td>
+                                <td class="p-4">{{ $transfer_asset->asset?->pareto ?? "-" }}</td>
+                                <td class="p-4">{{ $transfer_asset->asset?->unit_no ?? "-" }}</td>
+                                <td class="p-4">{{ $transfer_asset->asset?->sn_chassis ?? "-" }}</td>
+                                <td class="p-4">{{ $transfer_asset->asset?->sn_engine ?? "-" }}</td>
+                                <td class="p-4">{{ $transfer_asset->asset?->capitalized_date->format('Y') }}</td>
+                                <td class="p-4">{{ $transfer_asset->asset?->location->name ?? "-" }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="mb-5">
-                @php
-                    $insuredText = $register_asset->insured;
-                    $insuredClass = '';
+            <div class="mb-5 flex content-center">
+                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Destination Location </label>
+                <span> : </span>
+                <p class="flex ml-1 text-sm text-gray-900">{{ $transfer_asset->dest_location->name }}</p>
+            </div>
 
-                    if ($insuredText == 0) {
-                        $insuredClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
-                    } elseif ($insuredText == 1) {
-                        $insuredClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-                    } else { 
-                        $insuredClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
-                    }
-                @endphp
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured  :  <span class="{{ $insuredClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->insured == 1) ? "Yes" : "No" }}</span></label>
+            <div class="mb-5">
+                <label class="block mb-2 w-40 text-sm font-medium text-gray-900 dark:text-white">Alasan :</label>
+                <p class="w-auto px-1 border-b border-gray-700 text-sm text-gray-900">{{ $transfer_asset->reason }}</p>
             </div>
 
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval List </label>
                 <div class="border-2 border-black rounded-lg p-4">
-                    
                     <div class="flex flex-row mb-2">
                         @php
-                            $sequenceText = $register_asset->sequence;
+                            $sequenceText = $transfer_asset->sequence;
                             $sequenceClass = '';
 
                             if ($sequenceText == 0) {
@@ -176,7 +168,7 @@
                                 $sequenceClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
                             }
                         @endphp
-                        <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence  :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
+                        <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence  :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($transfer_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
                     </div>
 
                     <hr class="mb-2">
@@ -191,13 +183,13 @@
                             </tr>
                         </thead>
                         <tbody id="approval-list-body">
-                            @foreach($register_asset->approvals->sortBy('approval_order') as $approv)
+                            @foreach($transfer_asset->approvals->sortBy('approval_order') as $approv)
                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                     <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
                                     <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
                                     <td class="px-2 py-4">{{ $approv->user?->name ?? "-" }}</td>
                                     <td class="px-2 py-4">{{ $approv->status }}</td>
-                                    <td class="px-2 py-4">{{ $approv->approval_date }}</td>
+                                    <td class="px-2 py-4">{{ $approv->approval_date ?? "-" }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -205,7 +197,7 @@
                 </div>
             </div>
             <div class="flex gap-2 content-center">
-                <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
+                <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
                 @if ($canApprove)
                     <button
                         type="button" 
@@ -240,11 +232,10 @@
                         </div>
                     </div>
                 </div>
-                <form id="approve-form" action="{{ route('register-asset.approve', $register_asset) }}" method="POST" class="hidden">
+                <form id="approve-form" action="{{ route('transfer-asset.approve', $transfer_asset) }}" method="POST" class="hidden">
                     @csrf
                 </form>
-
-            </div>
+            </div>            
         </div>
     </div>
 @endsection

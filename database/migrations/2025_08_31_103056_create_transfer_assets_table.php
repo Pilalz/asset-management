@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->date('submit_date');
             $table->string('form_no')->unique();
-            $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
-            $table->string('asset_id');
-            $table->foreignId('destination_loc_id')->constrained('locations')->onUpdate('cascade')->onDelete('no action');
+            $table->foreignId('department_id')->constrained('departments');
+            $table->foreignId('asset_id')->constrained('assets');
+            $table->foreignId('origin_loc_id')->constrained('locations');
+            $table->foreignId('destination_loc_id')->constrained('locations');
             $table->longText('reason');
+            $table->string('sequence');
+            $table->string('status');
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->timestamps();
         });

@@ -137,7 +137,7 @@
     </nav>
 
     <div class="flex pt-16">
-        <main class="sm:ml-64 text-center">
+        <main class="size-full p-5 text-center">
             <h1>Anda belum memiliki atau tergabung dengan suatu perusahaan</h1>
         </main>
     </div>

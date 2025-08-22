@@ -56,7 +56,7 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
-                                Asset Class
+                                Form No.
                                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                                 </svg>
@@ -64,7 +64,7 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
-                                Asset Sub Class
+                                Submit Date
                                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                                 </svg>
@@ -72,7 +72,7 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
-                                Commercial Life
+                                Department
                                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                                 </svg>
@@ -80,7 +80,7 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
-                                Fiscal Life
+                                Asset
                                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                                 </svg>
@@ -88,7 +88,31 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
-                                Cost
+                                Original Loc
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="flex items-center">
+                                Destination Loc
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="flex items-center">
+                                Sequence
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="flex items-center">
+                                Status
                                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                                 </svg>
@@ -101,22 +125,61 @@
                     @forelse ($transferassets as $transfer_asset)
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $loop->iteration }}</th>
-                            <td class="px-6 py-4">{{ $transfer_asset->id }}</td>
+                            <td class="px-6 py-4">{{ $transfer_asset->form_no }}</td>
+                            <td class="px-6 py-4">{{ $transfer_asset->submit_date }}</td>
+                            <td class="px-6 py-4">{{ $transfer_asset->department->name }}</td>
+                            <td class="px-6 py-4">{{ $transfer_asset->asset->description }}</td>
+                            <td class="px-6 py-4">{{ $transfer_asset->ori_location->name }}</td>
+                            <td class="px-6 py-4">{{ $transfer_asset->dest_location->name }}</td>
+                            <td class="px-6 py-4">{{ $transfer_asset->sequence == 1 ? 'Yes' : 'No' }}</td>
+                            <td>
+                                @php
+                                    $statusText = $transfer_asset->status;
+                                    $statusClass = '';
+
+                                    if ($statusText === 'Waiting') {
+                                        $statusClass = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+                                    } elseif ($statusText === 'Approved' || 'approved') {
+                                        $statusClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                                    } elseif ($statusText === 'Rejected') {
+                                        $statusClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+                                    } else { // Default untuk 'draft' atau lainnya
+                                        $statusClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+                                    }
+                                @endphp
+                                <span class="{{ $statusClass }} text-xs font-medium px-2 py-0.5 rounded">{{ $transfer_asset->status }}</span>
+                            </td>
                             <td>
                                 <div class="flex">
-                                    <a href="{{ route('transfer-asset.edit', $transfer_asset->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">
-                                        <svg class="w-3.5 h-3.5 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
+                                    <a href="{{ route('transfer-asset.show', $transfer_asset->id) }}" type="button" class="text-white bg-gray-700 hover:bg-gray-800 font-medium rounded-lg text-xs px-3 py-2.5 text-center inline-flex items-center me-2 dark:bg-gray-600 dark:hover:bg-gray-700">
+                                        <svg class="w-3.5 h-3.5 mr-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
                                         </svg>
-                                        Edit
+                                        Show
                                     </a>
 
+                                    @if ($transfer_asset->status === 'Approved')
+                                        <a type="button" class="text-white bg-gray-400 hover:bg-gray-400 font-medium rounded-lg text-xs px-3 py-2.5 text-center inline-flex items-center me-2 dark:bg-gray-400 dark:hover:bg-gray-400" disable>
+                                            <svg class="w-3.5 h-3.5 mr-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                            </svg>
+                                            Edit
+                                        </a>
+                                    @else
+                                        <a href="{{ route('transfer-asset.edit', $transfer_asset->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-xs px-3 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">
+                                            <svg class="w-3.5 h-3.5 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                            </svg>
+                                            Edit
+                                        </a>
+                                    @endif
+                                    
                                     <form action="{{ route('transfer-asset.destroy', $transfer_asset->id) }}" method="POST" class="group">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
                                             onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" 
-                                            class="text-red-700 text-red-700 group-hover:text-white border border-red-700 group-hover:bg-red-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:border-red-500 dark:text-red-500 dark:group-hover:text-white dark:group-hover:bg-red-600">
+                                            class="text-red-700 group-hover:text-white border border-red-700 group-hover:bg-red-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:border-red-500 dark:text-red-500 dark:group-hover:text-white dark:group-hover:bg-red-600">
                                             <svg class="w-3.5 h-3.5 me-2 text-red-700 dark:text-white group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                             </svg>

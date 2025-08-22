@@ -96,7 +96,7 @@
                     <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900">*</span></label>
                     <span> : </span>
                     <p class="w-full px-2">{{ $form_no }}</p>
-                    <input type="hidden" name="form_no" value="{{ $form_no }}" class="w-full px-1 w-64 text-sm text-gray-900 appearance-none dark:text-white" readonly/>
+                    <input type="hidden" name="form_no" value="{{ $form_no }}" class="px-1 w-64 text-sm text-gray-900 appearance-none dark:text-white" readonly/>
                     @error('form_no')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -105,7 +105,7 @@
                 <div class="mb-5 flex content-center">
                     <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
                     <span> : </span>
-                    <select name="department_id" id="department-select" class="w-full px-1 mx-1 w-64 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                    <select name="department_id" id="department-select" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                         <option selected value="">Choose a Department</option>
                         @foreach($departments as $department)
                             <option value="{{ $department->id }}" {{ old('department_id') == $department->id ? 'selected' : '' }}>
