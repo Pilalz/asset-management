@@ -19,6 +19,8 @@ return new class extends Migration
             $table->longText('reason');
             $table->integer('nbv');
             $table->integer('esp');
+            $table->string('sequence');
+            $table->string('status');
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->timestamps();
         });

@@ -9,6 +9,7 @@ use App\Models\Location;
 use App\Models\Department;
 use App\Models\Company;
 use App\Models\Depreciation;
+use App\Models\DetailDisposal;
 use App\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -69,6 +70,11 @@ class Asset extends Model
     public function depreciations(): HasMany
     {
         return $this->hasMany(Depreciation::class, 'asset_id', 'id');
+    }
+
+    public function detailDisposals(): HasMany
+    {
+        return $this->hasMany(DetailDisposal::class, 'asset_id', 'id');
     }
 
     protected static function booted(): void

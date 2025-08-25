@@ -11,6 +11,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RegisterAssetController;
 use App\Http\Controllers\TransferAssetController;
+use App\Http\Controllers\DisposalAssetController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyUserController;
@@ -77,8 +78,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // --- Core Application Resources ---
-    // All the main CRUD functionalities for asset management.
-    //Start Asset
     Route::resource('asset-class', AssetClassController::class);
     Route::resource('asset-sub-class', AssetSubClassController::class);
     Route::resource('asset-name', AssetNameController::class);
@@ -88,6 +87,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('department', DepartmentController::class);
     Route::resource('register-asset', RegisterAssetController::class);
     Route::resource('transfer-asset', TransferAssetController::class);
+    Route::resource('disposal-asset', DisposalAssetController::class);
     Route::resource('company-user', CompanyUserController::class);
     Route::resource('company', CompanyController::class);
 
@@ -97,6 +97,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/register-asset/{register_asset}/approve', [RegisterAssetController::class, 'approve'])->name('register-asset.approve');
     //Start Transfer
     Route::post('/transfer-asset/{transfer_asset}/approve', [TransferAssetController::class, 'approve'])->name('transfer-asset.approve');
+    //Start Diposal
+    Route::post('/disposal-asset/{disposal_asset}/approve', [DisposalAssetController::class, 'approve'])->name('disposal-asset.approve');
     //Start Company
     Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
 
@@ -106,7 +108,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/asset-name/import', [AssetNameController::class, 'importExcel'])->name('asset-name.import');
     Route::post('/asset/import', [AssetController::class, 'importExcel'])->name('asset.import');
 
-    // --- API Data ---
+    // --- API Data Datatables ---
     Route::get('api/asset', [AssetController::class, 'datatables'])->name('api.asset');
     Route::get('api/asset-name', [AssetNameController::class, 'datatables'])->name('api.asset-name');
     Route::get('api/asset-sub-class', [AssetSubClassController::class, 'datatables'])->name('api.asset-sub-class');
@@ -115,5 +117,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/department', [DepartmentController::class, 'datatables'])->name('api.department');
     Route::get('api/company-user', [CompanyUserController::class, 'datatables'])->name('api.company-user');
 
+    Route::get('api/disposal-asset', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset');
     Route::get('/api/find-asset/{assetNumber}', [TransferAssetController::class, 'findAssetByNumber'])->name('api.find-asset');
 });
