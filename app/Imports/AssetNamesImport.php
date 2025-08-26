@@ -4,10 +4,14 @@ namespace App\Imports;
 
 use App\Models\AssetName;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AssetNamesImport implements ToModel, WithHeadingRow
+class AssetNamesImport implements ToModel, WithStartRow
 {
+    public function startRow(): int
+    {
+        return 2;
+    }
     /**
     * @param array $row
     *
@@ -16,14 +20,14 @@ class AssetNamesImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return new AssetName([
-            'sub_class_id'    => $row['sub_class_id'],
-            'name'    => $row['name'],
-            'grouping'    => $row['grouping'],
-            'commercial'    => $row['commercial'],
-            'fiscal'    => $row['fiscal'],
-            'cost'    => $row['cost'],
-            'lva'    => $row['lva'],
-            'company_id'   => session('active_company_id'),
+            'sub_class_id'  => $row[0],
+            'name'          => $row[1],
+            'grouping'      => $row[2],
+            'commercial'    => $row[3],
+            'fiscal'        => $row[4],
+            'cost'          => $row[5],
+            'lva'           => $row[6],
+            'company_id'    => session('active_company_id'),
         ]);
     }
 }

@@ -85,9 +85,9 @@
                                 </div>   
                                 <div class="mb-4">
                                     <p class="text-sm text-gray-600">
-                                        Pastikan file Excel Anda memiliki header pada baris pertama dengan nama kolom seperti: `id`, `name`.
+                                        Silahkan download template Excel jika anda belum memilikinya.
                                     </p>
-                                    <a href="/path/to/template.xlsx" class="text-blue-600 hover:underline">Download Template Excel</a>
+                                    <a href="{{ asset('template/TemplateAssetSubClass.xlsx') }}" class="text-blue-600 hover:underline">Download Template Excel</a>
                                 </div>
                                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5">
                                     Import Data

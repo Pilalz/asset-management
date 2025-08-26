@@ -73,7 +73,7 @@ class AssetClassController extends Controller
         try {
             Excel::import(new AssetClassesImport, $request->file('excel_file'));
         } catch (\Exception $e) {
-            return redirect()->route('asset-class.import.form')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+            return redirect()->route('asset-class.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
         }
 
         return redirect()->route('asset-class.index')->with('success', 'Data aset berhasil diimpor!');

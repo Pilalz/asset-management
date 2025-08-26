@@ -230,7 +230,7 @@ class DisposalAssetController extends Controller
                 ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
 
-        return redirect()->route('register-asset.index')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('disposal-asset.index')->with('success', 'Data berhasil dihapus!');
     }
 
     public function show(DisposalAsset $disposal_asset)
@@ -324,23 +324,22 @@ class DisposalAssetController extends Controller
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
 
-        return redirect()->route('register-asset.index')->with('success', 'Formulir berhasil disetujui.');
+        return redirect()->route('disposal-asset.index')->with('success', 'Formulir berhasil disetujui.');
     }
 
     private function finalizeAssetDisposal(DisposalAsset $disposal_asset)
     {
-        // Ubah status form menjadi 'approved'
+        // 1. Ubah status form menjadi 'approved'
         $disposal_asset->update(['status' => 'Approved']);
 
-        $asset = $disposal_asset->asset; 
+        // 2. Kumpulkan semua ID aset dari detail
+        $assetIds = $disposal_asset->detailDisposals->pluck('asset_id');
 
-        if ($asset) {
-            $asset->update([
-                'status'   => 'Disposal',
+        // 3. Jika ada ID yang terkumpul, update semua aset sekaligus
+        if ($assetIds->isNotEmpty()) {
+            Asset::whereIn('id', $assetIds)->update([
+                'status' => 'Disposal',
             ]);
-        } else {
-            // (Opsional) Tambahkan penanganan error jika aset tidak ditemukan
-            throw new \Exception("Aset yang terhubung dengan form transfer ini tidak ditemukan.");
         }
     }
 
@@ -354,6 +353,7 @@ class DisposalAssetController extends Controller
                         ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
                         ->join('locations', 'assets.location_id', '=', 'locations.id')
                         ->join('departments', 'assets.department_id', '=', 'departments.id')
+                        ->where('assets.status', '=', 'Active')
                         ->where('assets.company_id', $companyId)
                         ->select([
                             'assets.*',

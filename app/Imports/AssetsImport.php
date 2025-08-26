@@ -4,11 +4,15 @@ namespace App\Imports;
 
 use App\Models\Asset;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class AssetsImport implements ToModel, WithHeadingRow
+class AssetsImport implements ToModel, WithStartRow
 {
+    public function startRow(): int
+    {
+        return 2;
+    }
     /**
     * @param array $row
     *
@@ -17,26 +21,26 @@ class AssetsImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return new Asset([
-            'asset_number'      => $row['asset_number'],
-            'asset_name_id'     => $row['asset_name_id'],
-            'status'            => $row['status'],
-            'description'       => $row['description'],
-            'detail'            => $row['detail'] ?? null,
-            'pareto'            => $row['pareto'] ?? null,
-            'unit_no'           => $row['unit_no'] ?? null,
-            'sn_chassis'        => $row['sn_chassis'] ?? null,
-            'sn_engine'         => $row['sn_engine'] ?? null,
-            'po_no'             => $row['po_no'] ?? null,
-            'location_id'       => $row['location_id'],
-            'department_id'     => $row['department_id'],
-            'quantity'          => $row['quantity'],
-            'capitalized_date'  => !empty($row['capitalized_date']) ? Date::excelToDateTimeObject($row['capitalized_date']) : null,
-            'start_depre_date'  => !empty($row['start_depre_date']) ? Date::excelToDateTimeObject($row['start_depre_date']) : null,
-            'acquisition_value' => $row['acquisition_value'],
-            'current_cost'      => $row['current_cost'],
-            'useful_life_month' => $row['useful_life_month'],
-            'accum_depre'       => $row['accum_depre'],
-            'net_book_value'    => $row['net_book_value'],
+            'asset_number'      => $row[0],
+            'asset_name_id'     => $row[1],
+            'status'            => $row[2],
+            'description'       => $row[3],
+            'detail'            => $row[4] ?? null,
+            'pareto'            => $row[5] ?? null,
+            'unit_no'           => $row[6] ?? null,
+            'sn_chassis'        => $row[7] ?? null,
+            'sn_engine'         => $row[8] ?? null,
+            'po_no'             => $row[9] ?? null,
+            'location_id'       => $row[10],
+            'department_id'     => $row[11],
+            'quantity'          => $row[12],
+            'capitalized_date'  => !empty($row[13]) ? Date::excelToDateTimeObject($row[13]) : null,
+            'start_depre_date'  => !empty($row[14]) ? Date::excelToDateTimeObject($row[14]) : null,
+            'acquisition_value' => $row[15],
+            'current_cost'      => $row[16],
+            'useful_life_month' => $row[17],
+            'accum_depre'       => $row[18],
+            'net_book_value'    => $row[19],
             'company_id'        => session('active_company_id'),
         ]);
     }
