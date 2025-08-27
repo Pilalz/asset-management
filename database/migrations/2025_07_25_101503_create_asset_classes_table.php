@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('obj_id');
             $table->string('obj_acc');
-            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
+            $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });
     }

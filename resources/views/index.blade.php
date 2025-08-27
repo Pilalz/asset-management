@@ -19,14 +19,145 @@
             <h1 class="text-lg font-bold">Hello {{ Auth::user()->name }}</h1>
             <p class="text-md">Welcome To {{ Auth::user()->lastActiveCompany->name }}</p>
             <div class="flex gap-2 justify-around mt-2">
-                <div class="p-4 bg-gray-200 w-full rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-900">testes</div>
-                <div class="p-4 bg-gray-200 w-full rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-900">testes</div>
-                <div class="p-4 bg-gray-200 w-full rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-900">testes</div>
-                <div class="p-4 bg-gray-200 w-full rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-900">testes</div>
-            </div>
-            </div>
+                
+                <div class="max-w-sm w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
+                    <div class="flex justify-between items-start w-full">
+                        <div class="flex-col items-center">
+                            <div class="flex items-center mb-1">
+                                <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white me-1">Asset by Location</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-6" id="assetbyloc-chart"></div>
+                    <div class=" grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
+                    </div>
+                </div>
+
+                <div class="max-w-sm w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
+                    <div class="flex justify-between items-start w-full">
+                        <div class="flex-col items-center">
+                            <div class="flex items-center mb-1">
+                                <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white me-1">Asset by Location</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-6" id="assetbyclass-chart"></div>
+                    <div class=" grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
+                    </div>
+                </div>                
+
             </div>
         </div>
     </div>
-    
 @endsection
+
+@push('scripts')
+<script>
+    const assetLocData = @json($assetLocData);
+    const assetClassData = @json($assetClassData);
+
+    const getLocationChartOptions  = () => {
+        return {
+            series: assetLocData.series.map(Number),
+            labels: assetLocData.labels,
+            
+            colors: ["#1C64F2", "#16BDCA", "#9061F9", "#FDBA8C", "#E74694"],
+            chart: {
+                height: 420,
+                width: "100%",
+                type: "pie",
+            },
+            stroke: {
+                colors: ["white"],
+                lineCap: "",
+            },
+            plotOptions: {
+                pie: {
+                    labels: {
+                        show: true,
+                    },
+                    size: "100%",
+                    dataLabels: {
+                        offset: -25
+                    }
+                },
+            },
+            dataLabels: {
+                enabled: true,
+                style: {
+                    fontFamily: "Inter, sans-serif",
+                },
+                // Formatter untuk menampilkan angka absolut, bukan persen
+                formatter: function (value, { seriesIndex, w }) {
+                    const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                    const count = w.globals.series[seriesIndex];
+                    const percentage = (count / total * 100).toFixed(1);
+                    return `${count} (${percentage}%)`; // Contoh output: "15 (45.5%)"
+                },
+            },
+            legend: {
+                position: "bottom",
+                fontFamily: "Inter, sans-serif",
+            },
+        }
+    }
+
+    if (document.getElementById("assetbyloc-chart") && typeof ApexCharts !== 'undefined') {
+        const chart = new ApexCharts(document.getElementById("assetbyloc-chart"), getLocationChartOptions ());
+        chart.render();
+    }
+
+    
+
+    const getClassChartOptions  = () => {
+        return {
+            series: assetClassData.series.map(Number),
+            labels: assetClassData.labels,
+            
+            colors: ["#1C64F2", "#16BDCA", "#9061F9", "#FDBA8C", "#E74694"],
+            chart: {
+                height: 420,
+                width: "100%",
+                type: "pie",
+            },
+            stroke: {
+                colors: ["white"],
+                lineCap: "",
+            },
+            plotOptions: {
+                pie: {
+                    labels: {
+                        show: true,
+                    },
+                    size: "100%",
+                    dataLabels: {
+                        offset: -25
+                    }
+                },
+            },
+            dataLabels: {
+                enabled: true,
+                style: {
+                    fontFamily: "Inter, sans-serif",
+                },
+                // Formatter untuk menampilkan angka absolut, bukan persen
+                formatter: function (value, { seriesIndex, w }) {
+                    const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                    const count = w.globals.series[seriesIndex];
+                    const percentage = (count / total * 100).toFixed(1);
+                    return `${count} (${percentage}%)`; // Contoh output: "15 (45.5%)"
+                },
+            },
+            legend: {
+                position: "bottom",
+                fontFamily: "Inter, sans-serif",
+            },
+        }
+    }
+
+    if (document.getElementById("assetbyclass-chart") && typeof ApexCharts !== 'undefined') {
+        const chart = new ApexCharts(document.getElementById("assetbyclass-chart"), getClassChartOptions ());
+        chart.render();
+    }
+</script>
+@endpush

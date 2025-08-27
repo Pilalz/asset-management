@@ -191,7 +191,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center p-3">Tidak ada data.</td>
+                            <td colspan="10" class="text-center p-3">Tidak ada data.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -209,4 +209,4 @@
         });
     }
 </script>
-@endpush
+@push('scripts')

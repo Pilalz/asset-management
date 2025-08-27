@@ -1,12 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetClassController;
 use App\Http\Controllers\AssetSubClassController;
 use App\Http\Controllers\AssetNameController;
-use App\Http\Controllers\AssetController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RegisterAssetController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\DepreciationController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,9 +60,7 @@ require __DIR__.'/auth.php';
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- Dashboard ---
-    Route::get('/dashboard', function () {
-        return view('index');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // --- User Profile ---
     Route::controller(ProfileController::class)->name('profile.')->group(function () {

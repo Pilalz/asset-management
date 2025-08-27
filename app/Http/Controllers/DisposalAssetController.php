@@ -36,7 +36,7 @@ class DisposalAssetController extends Controller
         }
         
         $formattedSeq = str_pad($seq, 5, '0', STR_PAD_LEFT);
-        $form_no = Auth::user()->lastActiveCompany->code ."/". now()->format('Y/m') ."/". $formattedSeq ;
+        $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq ;
         
         return view('disposal-asset.create', compact('departments', 'assetclasses', 'form_no'));
     }

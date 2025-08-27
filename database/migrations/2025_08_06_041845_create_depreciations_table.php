@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('monthly_depre', 18, 0);
             $table->decimal('accumulated_depre', 18, 0);
             $table->decimal('book_value', 18, 0);
-            $table->foreignId('company_id')->constrained('companies')->onUpdate('no action')->onDelete('no action');
+            $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });
     }

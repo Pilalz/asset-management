@@ -40,7 +40,7 @@ class RegisterAssetController extends Controller
         }
         
         $formattedSeq = str_pad($seq, 5, '0', STR_PAD_LEFT);
-        $form_no = Auth::user()->lastActiveCompany->code ."/". now()->format('Y/m') ."/". $formattedSeq ;
+        $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq ;
         
         return view('register-asset.create', compact('locations', 'departments', 'assetclasses', 'form_no'));
     }

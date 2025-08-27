@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Asset;
+use Illuminate\Support\Facades\DB;
+use App\Scopes\CompanyScope;
+
+class DashboardController extends Controller
+{
+    public function index()
+    {
+        //Asset By Location
+        $assetCountByLocation = Asset::withoutGlobalScope(CompanyScope::class)
+            ->join('locations', 'assets.location_id', '=', 'locations.id')
+            ->select('locations.name as location_name', DB::raw('count(assets.id) as asset_count'))
+            ->where('assets.company_id', session('active_company_id'))
+            ->groupBy('locations.name')
+            ->orderBy('asset_count', 'desc')
+            ->get();
+
+        $assetLocData = [
+            'labels' => $assetCountByLocation->pluck('location_name'),
+            'series' => $assetCountByLocation->pluck('asset_count'),
+        ];
+
+        //Asset By Class
+        $assetCountByClass = Asset::withoutGlobalScope(CompanyScope::class)
+            ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+            ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+            ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+            ->select('asset_classes.name as class_name', DB::raw('count(assets.id) as asset_count'))
+            ->where('assets.company_id', session('active_company_id'))
+            ->groupBy('asset_classes.name')
+            ->orderBy('asset_count', 'desc')
+            ->get();
+
+        $assetClassData = [
+            'labels' => $assetCountByClass->pluck('class_name'),
+            'series' => $assetCountByClass->pluck('asset_count'),
+        ];
+
+        return view('index', compact('assetLocData', 'assetClassData'));
+    }
+}

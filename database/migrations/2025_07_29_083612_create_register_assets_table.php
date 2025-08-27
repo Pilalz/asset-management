@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('register_assets', function (Blueprint $table) {
             $table->id();
             $table->string('form_no')->unique();
-            $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
-            $table->foreignId('location_id')->constrained('locations')->onUpdate('cascade')->onDelete('no action');
+            $table->foreignId('department_id')->constrained('departments');
+            $table->foreignId('location_id')->constrained('locations');
             $table->boolean('insured');
             $table->string('sequence');
             $table->string('status');
-            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
+            $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });
     }

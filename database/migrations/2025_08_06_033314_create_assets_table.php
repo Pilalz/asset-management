@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
             $table->string('asset_number')->unique();
-            $table->foreignId('asset_name_id')->constrained('asset_names')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('asset_name_id')->constrained('asset_names');
             $table->string('status');
             $table->string('description');
             $table->longText('detail')->nullable();
@@ -23,8 +23,8 @@ return new class extends Migration
             $table->string('sn_chassis')->nullable();
             $table->string('sn_engine')->nullable();
             $table->string('po_no')->nullable();
-            $table->foreignId('location_id')->constrained('locations')->onUpdate('cascade')->onDelete('no action');
-            $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
+            $table->foreignId('location_id')->constrained('locations');
+            $table->foreignId('department_id')->constrained('departments');
             $table->bigInteger('quantity');
             $table->date('capitalized_date');
             $table->date('start_depre_date');
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->integer('useful_life_month');
             $table->decimal('accum_depre', 18, 0);
             $table->decimal('net_book_value', 18, 0);
-            $table->foreignId('company_id')->constrained('companies')->onUpdate('no action')->onDelete('no action');
+            $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });
     }

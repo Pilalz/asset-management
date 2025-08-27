@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('invoice_no');
             $table->date('commission_date');
             $table->string('specification');
-            $table->foreignId('asset_name_id')->constrained('asset_names')->onUpdate('no action')->onDelete('no action');
+            $table->foreignId('asset_name_id')->constrained('asset_names');
             $table->timestamps();
         });
     }

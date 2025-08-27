@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->date('submit_date');
             $table->string('form_no')->unique();
-            $table->foreignId('department_id')->constrained('departments')->onUpdate('cascade')->onDelete('no action');
+            $table->foreignId('department_id')->constrained('departments');
             $table->longText('reason');
             $table->integer('nbv');
             $table->integer('esp');
             $table->string('sequence');
             $table->string('status');
-            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
+            $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });
     }

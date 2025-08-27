@@ -27,6 +27,7 @@ class CompanyController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'alias' => 'required|string|unique:companies,alias',
             'code' => 'required|string|unique:companies,code',
         ]);
 
@@ -34,11 +35,12 @@ class CompanyController extends Controller
 
         $newCompany = Company::create([
             'name' => $validated['name'],
+            'alias' => $validated['alias'],
             'code' => $validated['code'],
             'owner_id' => $user->id,
         ]);
 
-        $newCompany->users()->attach($user->id, ['role' => 'owner']);
+        $newCompany->users()->attach($user->id, ['role' => 'Owner']);
 
         $user->last_active_company_id = $newCompany->id;
         $user->save();
@@ -56,7 +58,8 @@ class CompanyController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255',
+            'alias' => 'required|string',
+            'code' => 'required|string',
         ]);
 
         $dataToUpdate = $validatedData;

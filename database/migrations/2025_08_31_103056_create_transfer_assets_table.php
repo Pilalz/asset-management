@@ -22,7 +22,7 @@ return new class extends Migration
             $table->longText('reason');
             $table->string('sequence');
             $table->string('status');
-            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
+            $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });
     }

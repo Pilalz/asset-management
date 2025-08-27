@@ -16,7 +16,7 @@ return new class extends Migration
             $table->morphs('approvable');
             $table->string('approval_action');
             $table->string('role');
-            $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('no action')->onDelete('no action');
+            $table->foreignId('user_id')->nullable()->constrained('users');
             $table->string('status');
             $table->date('approval_date')->nullable();
             $table->integer('approval_order');
