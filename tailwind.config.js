@@ -8,9 +8,7 @@ export default {
     
     content: [
         "./storage/framework/views/*.php",
-        "./resources/views/**/*.blade.php",
         "./resources/**/*.blade.php",
-        "./resources/views/components/**/*.blade.php",
         "./resources/**/*.js",
         "./node_modules/flowbite/**/*.js",
         "./resources/**/*.vue",

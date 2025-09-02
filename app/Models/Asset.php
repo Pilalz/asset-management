@@ -21,6 +21,7 @@ class Asset extends Model
     protected $fillable = [
         'asset_number',
         'asset_name_id',
+        'asset_type',
         'status',
         'description',
         'detail',

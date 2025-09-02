@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asset Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     @stack('styles')
     <style>
         #logo-sidebar, #main-content {
@@ -124,11 +122,9 @@
                                 </p>
                             </div>
                             <ul class="py-1" role="none">
-                                @if (Auth::user()->google_id == null)
-                                    <li>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
-                                    </li>
-                                @endif
+                                <li>
+                                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
+                                </li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
                                         @csrf
@@ -180,22 +176,24 @@
                     </li>
 
                     <li>
-                        <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs(['asset.*']) ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' }}" aria-controls="dropdown-asset" data-collapse-toggle="dropdown-asset" aria-expanded="{{ request()->routeIs(['asset.*']) ? 'true' : 'false' }}">
-                            <svg class="w-5 h-5 transition duration-75 {{ request()->routeIs(['asset.*']) ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs(['asset.*', 'assetLVA.*']) ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' }}" aria-controls="dropdown-asset" data-collapse-toggle="dropdown-asset" aria-expanded="{{ request()->routeIs(['asset.*', 'assetLVA.*']) ? 'true' : 'false' }}">
+                            <svg class="w-5 h-5 transition duration-75 {{ request()->routeIs(['asset.*', 'assetLVA.*']) ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-width="2" d="M3 11h18m-9 0v8m-8 0h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"/>
                             </svg>
                             <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap menu-text">Asset</span>
-                            <svg class="w-3 h-3 arrow-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <svg class="w-3 h-3 arrow-icon transition-transform duration-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
                         </button>
-                        <ul id="dropdown-asset" class="{{ request()->routeIs(['asset.*']) ? '' : 'hidden' }} py-2 space-y-2">
+                        <ul id="dropdown-asset" class="{{ request()->routeIs(['asset.*', 'assetLVA.*']) ? '' : 'hidden' }} py-2 space-y-2">
+                            <li>
+                                <a href="" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text">Arrival</a>
+                            </li>
                             <li>
                                 <a href="{{ route('asset.index') }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text {{ request()->routeIs('asset.*') ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">Fixed Asset</a>
                             </li>
-
                             <li>
-                                <a href="" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text">Low Value Asset</a>
+                                <a href="{{ route('assetLVA.index') }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text {{ request()->routeIs('assetLVA.*') ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">Low Value Asset</a>
                             </li>
                         </ul>
                     </li>
@@ -206,7 +204,7 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.005 11.19V12l6.998 4.042L19 12v-.81M5 16.15v.81L11.997 21l6.998-4.042v-.81M12.003 3 5.005 7.042l6.998 4.042L19 7.042 12.003 3Z"/>
                             </svg>
                             <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap menu-text">Grouping</span>
-                            <svg class="w-3 h-3 arrow-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <svg class="w-3 h-3 arrow-icon transition-transform duration-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
                         </button>
@@ -230,7 +228,7 @@
                                 <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="m12.9306 3.74083 1.8658 1.86571-2.0523 2.05229-1.5548-1.55476c-.995-.99505-3.23389-.49753-3.91799.18657l2.73639-2.73639c.6841-.68409 1.9901-.74628 2.9229.18658Z"/>
                             </svg>
                             <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap menu-text">Action</span>
-                            <svg class="w-3 h-3 arrow-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <svg class="w-3 h-3 arrow-icon transition-transform duration-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
                         </button>
@@ -297,7 +295,6 @@
             @yield('content')
         </main>
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const themeToggleBtn = document.getElementById('theme-toggle');
@@ -362,6 +359,13 @@
                 const dropdownToggles = document.querySelectorAll('aside button[data-collapse-toggle]');
 
                 dropdownToggles.forEach(toggle => {
+                    const arrowIcon = toggle.querySelector('.arrow-icon');
+                    if (arrowIcon && toggle.getAttribute('aria-expanded') === 'true') {
+                        arrowIcon.classList.add('rotate-180');
+                    }
+                });
+
+                dropdownToggles.forEach(toggle => {
                     toggle.addEventListener('click', function(event) {
                         // Cek apakah sidebar sedang dalam keadaan kecil (collapsed)
                         if (sidebar.classList.contains('collapsed')) {
@@ -372,6 +376,12 @@
                             // Buka sidebar
                             applySidebarState(false);
                             localStorage.setItem('sidebar-collapsed', 'false');
+                        } else {
+                            // PENAMBAHAN BARU: Logika untuk memutar arrow icon
+                            const arrowIcon = this.querySelector('.arrow-icon');
+                            if (arrowIcon) {
+                                arrowIcon.classList.toggle('rotate-180');
+                            }
                         }
                     });
                 });
@@ -397,9 +407,6 @@
             }
         });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
     @stack('scripts')
 </body>
 </html>

@@ -49,18 +49,20 @@ class RegisterAssetController extends Controller
     {
         //Store Register Asset
         $validated = $request->validate([
-            'form_no' => 'required|string|max:255|unique:register_assets,form_no',
+            'form_no'       => 'required|string|max:255|unique:register_assets,form_no',
             'department_id' => 'required|exists:departments,id',
-            'location_id'  => 'required|exists:locations,id',
-            'insured'  => 'required',
-            'sequence'  => 'required',
-            'company_id'  => 'required|exists:companies,id',
+            'location_id'   => 'required|exists:locations,id',
+            'asset_type'    => 'required',
+            'insured'       => 'required',
+            'polish_no'     => 'required_if:insured,Y|nullable|string|max:255',
+            'sequence'      => 'required',
+            'company_id'    => 'required|exists:companies,id',
 
             //Validasi Detail Asset
             'assets'                    => 'required|array|min:1',
             'assets.*.po_no'            => 'nullable|string|max:255',
             'assets.*.invoice_no'       => 'nullable|string|max:255',
-            'assets.*.commission_date'  => 'required|date',
+            'assets.*.commission_date'  => 'required_if:asset_type,FA|nullable|date',
             'assets.*.specification'    => 'required|string',
             'assets.*.asset_name_id'    => 'required|exists:asset_names,id',
 
@@ -101,7 +103,9 @@ class RegisterAssetController extends Controller
                     'form_no'       => $validated['form_no'],
                     'department_id' => $validated['department_id'],
                     'location_id'   => $validated['location_id'],
+                    'asset_type'   => $validated['asset_type'],
                     'insured'       => ($validated['insured'] == 'Y') ? 1 : 0,
+                    'polish_no'   => $validated['polish_no'],
                     'sequence'      => ($validated['sequence'] == 'Y') ? 1 : 0,
                     'status'        => 'Waiting',
                     'company_id'    => $validated['company_id'],
@@ -140,14 +144,16 @@ class RegisterAssetController extends Controller
         $validated = $request->validate([
             'department_id' => 'required|exists:departments,id',
             'location_id'   => 'required|exists:locations,id',
+            'asset_type'    => 'required',
             'insured'       => 'required',
+            'polish_no'     => 'required_if:insured,Y|nullable|string|max:255',
             'sequence'      => 'required',
 
             //Validasi Detail Asset
             'assets'                    => 'required|array|min:1',
             'assets.*.po_no'            => 'nullable|string|max:255',
             'assets.*.invoice_no'       => 'nullable|string|max:255',
-            'assets.*.commission_date'  => 'required|date',
+            'assets.*.commission_date'  => 'required_if:asset_type,FA|nullable|date',
             'assets.*.specification'    => 'required|string',
             'assets.*.asset_name_id'    => 'required|exists:asset_names,id',
 
@@ -165,7 +171,9 @@ class RegisterAssetController extends Controller
                 $registerAsset->update([
                     'department_id' => $validated['department_id'],
                     'location_id'   => $validated['location_id'],
+                    'asset_type'   => $validated['asset_type'],
                     'insured'       => ($validated['insured'] == 'Y') ? 1 : 0,
+                    'polish_no'   => $validated['polish_no'],
                     'sequence'      => ($validated['sequence'] == 'Y') ? 1 : 0,
                 ]);
 
@@ -264,6 +272,10 @@ class RegisterAssetController extends Controller
     {
         $user = Auth::user();
 
+        if (empty($user->signature)) {
+            return back()->with('error', 'You must save a signature in your profile before approving.');
+        }
+
         // Validasi ulang di backend untuk keamanan
         $nextApprover = $register_asset->approvals()
             ->where('status', 'pending')
@@ -293,6 +305,7 @@ class RegisterAssetController extends Controller
                     $approval->update([
                         'status' => 'approved',
                         'user_id' => $user->id,
+                        'signature_image'   => $user->signature,
                         'approval_date' => now(),
                     ]);
                 } else {
@@ -314,35 +327,35 @@ class RegisterAssetController extends Controller
         return redirect()->route('register-asset.index')->with('success', 'Formulir berhasil disetujui.');
     }
 
-    private function generateAssetNumber($companyId, $assetNameId)
-    {
-        // 1. Siapkan komponen-komponennya
-        $prefix = 'FA';
-        $companyCode = str_pad($companyId, 2, '0', STR_PAD_LEFT); // Contoh: 1 -> 01
-        $year = now()->format('y'); // yy -> 25
-        $assetGrouping = $assetNameId;
+    // private function generateAssetNumber($companyId, $assetNameId)
+    // {
+    //     // 1. Siapkan komponen-komponennya
+    //     $prefix = 'FA';
+    //     $companyCode = str_pad($companyId, 2, '0', STR_PAD_LEFT); // Contoh: 1 -> 01
+    //     $year = now()->format('y'); // yy -> 25
+    //     $assetGrouping = $assetNameId;
 
-        // 2. Buat prefix lengkap untuk pencarian di database
-        $searchPrefix = $prefix . $companyCode;
+    //     // 2. Buat prefix lengkap untuk pencarian di database
+    //     $searchPrefix = $prefix . $companyCode;
 
-        // 3. Cari aset terakhir dengan prefix yang sama
-        $lastAsset = Asset::where('asset_number', 'like', $searchPrefix . '%')
-                        ->orderBy('asset_number', 'desc')
-                        ->first();
+    //     // 3. Cari aset terakhir dengan prefix yang sama
+    //     $lastAsset = Asset::where('asset_number', 'like', $searchPrefix . '%')
+    //                     ->orderBy('asset_number', 'desc')
+    //                     ->first();
 
-        $sequence = 1; // Mulai dari 1 jika tidak ada data sebelumnya
-        if ($lastAsset) {
-            // Ambil 5 digit terakhir dari nomor aset, ubah ke integer, lalu tambah 1
-            $lastSequence = (int) substr($lastAsset->asset_number, -5);
-            $sequence = $lastSequence + 1;
-        }
+    //     $sequence = 1; // Mulai dari 1 jika tidak ada data sebelumnya
+    //     if ($lastAsset) {
+    //         // Ambil 5 digit terakhir dari nomor aset, ubah ke integer, lalu tambah 1
+    //         $lastSequence = (int) substr($lastAsset->asset_number, -5);
+    //         $sequence = $lastSequence + 1;
+    //     }
 
-        // 4. Format nomor urut menjadi 5 digit dengan angka nol di depan
-        $formattedSequence = str_pad($sequence, 5, '0', STR_PAD_LEFT); // 1 -> 00001
+    //     // 4. Format nomor urut menjadi 5 digit dengan angka nol di depan
+    //     $formattedSequence = str_pad($sequence, 5, '0', STR_PAD_LEFT); // 1 -> 00001
 
-        // 5. Gabungkan semuanya
-        return $searchPrefix . $year . $assetGrouping . $formattedSequence;
-    }
+    //     // 5. Gabungkan semuanya
+    //     return $searchPrefix . $year . $assetGrouping . $formattedSequence;
+    // }
 
     private function finalizeAssetRegistration(RegisterAsset $register_asset)
     {
@@ -352,26 +365,27 @@ class RegisterAssetController extends Controller
         // Loop melalui detail dan buat aset baru
         foreach ($register_asset->detailRegisters as $detail) {
 
-            $assetNameId = $detail->assetName->grouping;
+            // $assetNameId = $detail->assetName->grouping;
 
-            $newAssetNumber = $this->generateAssetNumber($register_asset->company_id, $assetNameId);
+            // $newAssetNumber = $this->generateAssetNumber($register_asset->company_id, $assetNameId);
 
             Asset::create([
-                'asset_number' => $newAssetNumber,
+                'asset_number' => null,
                 'asset_name_id' => $detail->asset_name_id,
-                'status' => 'Active',
+                'asset_type' => $register_asset->asset_type,
+                'status' => 'Onboard',
                 'description' => $detail->specification,
                 'detail' => null,
                 'pareto' => null,
                 'unit_no' => null,
                 'sn_chassis' => null,
                 'sn_engine' => null,
-                'po_no' => $register_asset->po_no,
+                'po_no' => $detail->po_no,
                 'location_id' => $register_asset->location_id,
                 'department_id' => $register_asset->department_id,
                 'quantity' => 1,
                 'capitalized_date' => now(),
-                'start_depre_date' => now(),
+                'start_depre_date' => null,
                 'acquisition_value' => 0,
                 'current_cost' => 0,
                 'useful_life_month' => $detail->assetName->commercial * 12,
@@ -380,5 +394,26 @@ class RegisterAssetController extends Controller
                 'company_id' => $register_asset->company_id,
             ]);
         }
+    }
+
+    public function datatables(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = RegisterAsset::withoutGlobalScope(CompanyScope::class)
+                          ->select('register_assets.*');
+
+        $query->where('register_assets.company_id', $companyId);
+
+        return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('action', function ($register_asset) {
+                return view('components.action-buttons', [
+                    'editUrl' => route('register_asset.edit', $register_asset->id),
+                    'deleteUrl' => route('register_asset.destroy', $register_asset->id)
+                ])->render();
+            })
+            ->rawColumns(['action'])
+            ->toJson();
     }
 }

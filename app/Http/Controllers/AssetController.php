@@ -19,6 +19,11 @@ class AssetController extends Controller
         return view('asset.index');
     }
 
+    public function indexLVA()
+    {
+        return view('asset.index-lva');
+    }
+
     public function show(Request $request, Asset $asset)
     {
         $year = $request->input('year', now()->year);
@@ -118,7 +123,101 @@ class AssetController extends Controller
                         ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
                         ->join('locations', 'assets.location_id', '=', 'locations.id')
                         ->join('departments', 'assets.department_id', '=', 'departments.id')
+                        ->where('assets.asset_type', '=', 'FA')
                         ->where('assets.status', '=', 'Active')
+                        ->where('assets.company_id', $companyId)
+                        ->select([
+                            'assets.*',
+                            'asset_names.name as asset_name_name',
+                            'asset_classes.obj_acc as asset_class_obj',
+                            'locations.name as location_name',
+                            'departments.name as department_name',
+                        ]);
+
+        return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('action', function ($asset) {
+                return view('components.action-asset-buttons', [
+                    'showUrl' => route('asset.show', $asset->id),
+                    'depreUrl' => route('depreciation.depre', $asset->id),
+                    'editUrl' => route('asset.edit', $asset->id),
+                    'deleteUrl' => route('asset.destroy', $asset->id)
+                ])->render();
+            })
+            ->filterColumn('asset_name_name', function($query, $keyword) {
+                $query->where('asset_names.name', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('asset_class_obj', function($query, $keyword) {
+                $query->where('asset_classes.obj_acc', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('location_name', function($query, $keyword) {
+                $query->where('locations.name', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('department_name', function($query, $keyword) {
+                $query->where('departments.name', 'like', "%{$keyword}%");
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+    }
+
+    public function datatablesLVA(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = Asset::withoutGlobalScope(CompanyScope::class)
+                        ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+                        ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+                        ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+                        ->join('locations', 'assets.location_id', '=', 'locations.id')
+                        ->join('departments', 'assets.department_id', '=', 'departments.id')
+                        ->where('assets.asset_type', '=', 'LVA')
+                        ->where('assets.status', '=', 'Active')
+                        ->where('assets.company_id', $companyId)
+                        ->select([
+                            'assets.*',
+                            'asset_names.name as asset_name_name',
+                            'asset_classes.obj_acc as asset_class_obj',
+                            'locations.name as location_name',
+                            'departments.name as department_name',
+                        ]);
+
+        return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('action', function ($asset) {
+                return view('components.action-asset-buttons', [
+                    'showUrl' => route('asset.show', $asset->id),
+                    'depreUrl' => route('depreciation.depre', $asset->id),
+                    'editUrl' => route('asset.edit', $asset->id),
+                    'deleteUrl' => route('asset.destroy', $asset->id)
+                ])->render();
+            })
+            ->filterColumn('asset_name_name', function($query, $keyword) {
+                $query->where('asset_names.name', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('asset_class_obj', function($query, $keyword) {
+                $query->where('asset_classes.obj_acc', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('location_name', function($query, $keyword) {
+                $query->where('locations.name', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('department_name', function($query, $keyword) {
+                $query->where('departments.name', 'like', "%{$keyword}%");
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+    }
+
+    public function datatablesArrival(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = Asset::withoutGlobalScope(CompanyScope::class)
+                        ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+                        ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+                        ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+                        ->join('locations', 'assets.location_id', '=', 'locations.id')
+                        ->join('departments', 'assets.department_id', '=', 'departments.id')
+                        ->where('assets.status', '=', 'Onboard')
                         ->where('assets.company_id', $companyId)
                         ->select([
                             'assets.*',

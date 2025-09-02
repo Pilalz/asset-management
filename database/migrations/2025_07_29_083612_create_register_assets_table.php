@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('form_no')->unique();
             $table->foreignId('department_id')->constrained('departments');
             $table->foreignId('location_id')->constrained('locations');
+            $table->string('asset_type');
             $table->boolean('insured');
             $table->string('sequence');
             $table->string('status');

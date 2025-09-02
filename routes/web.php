@@ -91,6 +91,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('company-user', CompanyUserController::class);
     Route::resource('company', CompanyController::class);
 
+    //Start Asset
+    Route::get('/asset-lva', [AssetController::class, 'indexLVA'])->name('assetLVA.index');
     //Start Depre
     Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
     //Start Register
@@ -101,6 +103,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/disposal-asset/{disposal_asset}/approve', [DisposalAssetController::class, 'approve'])->name('disposal-asset.approve');
     //Start Company
     Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
+    //Start Profile
+    Route::put('/profile/signature', [ProfileController::class, 'updateSignature'])->name('profile.updateSignature');
 
     // --- Import Data ---
     Route::post('/asset-class/import', [AssetClassController::class, 'importExcel'])->name('asset-class.import');
@@ -110,6 +114,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- API Data Datatables ---
     Route::get('api/asset', [AssetController::class, 'datatables'])->name('api.asset');
+    Route::get('api/assetLVA', [AssetController::class, 'datatablesLVA'])->name('api.assetLVA');
     Route::get('api/asset-name', [AssetNameController::class, 'datatables'])->name('api.asset-name');
     Route::get('api/asset-sub-class', [AssetSubClassController::class, 'datatables'])->name('api.asset-sub-class');
     Route::get('api/asset-class', [AssetClassController::class, 'datatables'])->name('api.asset-class');

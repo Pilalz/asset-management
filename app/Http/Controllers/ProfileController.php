@@ -37,6 +37,14 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
+    public function updateSignature(Request $request)
+    {
+        $request->validate(['signature' => 'required|string']);
+        $user = Auth::user();
+        $user->update(['signature' => $request->signature]);
+        return back()->with('success', 'Signature saved successfully.');
+    }
+
     /**
      * Delete the user's account.
      */

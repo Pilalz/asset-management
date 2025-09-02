@@ -81,6 +81,24 @@
                     @enderror
                 </div>
 
+                <div class="mb-5 flex content-center">
+                    <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Asset Type <span class="text-red-900">*</span></label>
+                    <span> : </span>
+                    <div class="w-full flex ml-2">
+                        <div class="flex items-center pr-4">
+                            <input id="fixed-asset" name="asset_type" type="radio" value="FA" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('asset_type', $register_asset->asset_type) == 'FA' ? 'checked' : '' }}>
+                            <label for="fixed-asset" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Fixed Asset <span class="italic">(FA)</span></label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="low-value-asset" name="asset_type" type="radio" value="LVA" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('asset_type', $register_asset->asset_type) == 'LVA' ? 'checked' : '' }}>
+                            <label for="low-value-asset" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Low Value Asset <span class="italic">(LVA)</span></label>
+                        </div>
+                    </div>
+                    @error('asset_type')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <!-- Asset List -->
                 <div class="mb-5">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset List <span class="text-red-900">*</span></label>
@@ -91,7 +109,7 @@
                                     <th scope="col" class="px-2 py-3">No</th>
                                     <th scope="col" class="px-2 py-3">PO No.</th>
                                     <th scope="col" class="px-2 py-3">Invoice No.</th>
-                                    <th scope="col" class="px-2 py-3">Commission Date</th>
+                                    <th scope="col" class="px-2 py-3 commission-date-th">Commission Date</th>
                                     <th scope="col" class="px-2 py-3">Specification</th>
                                     <th scope="col" class="px-2 py-3">Asset Class</th>
                                     <th scope="col" class="px-2 py-3">Asset Sub Class</th>
@@ -116,8 +134,8 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </td>
-                                        <td class="px-2 py-4">
-                                            <input type="date" name="assets[{{ $index }}][commission_date]" value="{{ old("assets.$index.commission_date", $assetData->commission_date ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                        <td class="px-2 py-4 commission-date-td overflow-hidden transition-all duration-500 ease-in-out">
+                                            <input type="date" name="assets[{{ $index }}][commission_date]" value="{{ old("assets.$index.commission_date", $assetData->commission_date ?? '') }}" class="commission-date-input block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
                                             @error("assets.$index.commission_date")
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -179,6 +197,15 @@
                         <label for="insured-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
                     </div>
                     @error('insured')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div id="polish-no-wrapper" class="mb-5 flex content-center overflow-hidden transition-all duration-500 ease-in-out">
+                    <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Polish No. <span class="text-red-900">*</span></label>
+                    <span> : </span>
+                    <input type="text" id="polish-no-input" name="polish_no" value="{{ old("polish_no", $register_asset->polish_no ?? '') }}" class="block py-1 px-0 ml-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"/>
+                    @error('polish_no')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
@@ -267,10 +294,71 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        //Insured
+        const insuredRadios = document.querySelectorAll('input[name="insured"]');
+        const polishNoWrapper = document.getElementById('polish-no-wrapper');
+        const polishNoInput = document.getElementById('polish-no-input');
+
+        //commission Date
+        const assetTypeRadios = document.querySelectorAll('input[name="asset_type"]');
+
+        //Asset List
         const assetListBody = document.getElementById('asset-list-body');
         const addAssetRowBtn = document.getElementById('add-asset-row');
         const assetClassesData = @json($assetclasses);
         const initialAssetsData = @json($initialAssets);
+
+        //Hide Insured
+        function togglePolishNoVisibility() {
+            // Cek radio button mana yang sedang dipilih
+            const selectedValue = document.querySelector('input[name="insured"]:checked').value;
+
+            if (selectedValue === 'Y') {
+                // Tampilkan div dengan transisi
+                polishNoWrapper.style.maxHeight = polishNoWrapper.scrollHeight + 'px';
+                polishNoWrapper.style.opacity = '1';
+                polishNoWrapper.classList.add('mb-5');
+                polishNoInput.required = true;
+            } else {
+                // Sembunyikan div dengan transisi
+                polishNoWrapper.style.maxHeight = '0px';
+                polishNoWrapper.style.opacity = '0';
+                polishNoWrapper.classList.remove('mb-5');
+                polishNoInput.required = false;
+                polishNoInput.value = '';
+            }
+        }
+
+        insuredRadios.forEach(radio => {
+            radio.addEventListener('change', togglePolishNoVisibility);
+        });
+
+        togglePolishNoVisibility();
+
+        //Hide commission Date
+        function toggleCommissionDateVisibility() {
+            const selectedValue = document.querySelector('input[name="asset_type"]:checked').value;
+            const headers = document.querySelectorAll('.commission-date-th');
+            const cells = document.querySelectorAll('.commission-date-td');
+            const inputs = document.querySelectorAll('.commission-date-input');
+            
+            if (selectedValue === 'FA') {
+                // Tampilkan semua header dan sel kolom
+                headers.forEach(el => el.classList.remove('hidden'));
+                cells.forEach(el => el.classList.remove('hidden'));
+                inputs.forEach(el => el.required = true); // Jadikan semua input required
+            } else {
+                // Sembunyikan semua header dan sel kolom
+                headers.forEach(el => el.classList.add('hidden'));
+                cells.forEach(el => el.classList.add('hidden'));
+                inputs.forEach(el => {
+                    el.required = false; // Hapus required
+                    el.value = ''; // Kosongkan nilainya
+                });
+            }
+        }
+
+        assetTypeRadios.forEach(radio => radio.addEventListener('change', toggleCommissionDateVisibility));
 
         function createRowTemplate(index) {
             let classOptions = assetClassesData.map(cls => `<option value="${cls.id}">${cls.name}</option>`).join('');
@@ -289,8 +377,8 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </td>
-                    <td class="px-2 py-4">
-                        <input type="date" name="assets[${index}][commission_date]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                    <td class="px-2 py-4 commission-date-td overflow-hidden transition-all duration-500 ease-in-out">
+                        <input type="date" name="assets[${index}][commission_date]" value="" class="commission-date-input block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
                         @error("assets.$index.commission_date")
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -423,6 +511,7 @@
             const newRow = assetListBody.lastElementChild;
             setupRowListeners(newRow);
             updateRowNumbers();
+            toggleCommissionDateVisibility(); 
         });
 
         function initializeRows() {
@@ -458,6 +547,7 @@
             });
         }
 
+        toggleCommissionDateVisibility(); 
         initializeRows();
         updateRowNumbers();
     });

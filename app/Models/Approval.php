@@ -21,6 +21,7 @@ class Approval extends Model
         'approval_action',
         'role',
         'user_id',
+        'signature_image',
         'status',
         'approval_date',
         'approval_order',

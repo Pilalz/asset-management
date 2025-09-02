@@ -8,7 +8,6 @@
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
-        "@tailwindcss/vite": "^4.1.11",
         "alpinejs": "^3.4.2",
         "autoprefixer": "^10.4.21",
         "axios": "^1.8.2",
@@ -19,10 +18,10 @@
         "vite": "^7.0.4"
     },
     "dependencies": {
-        "apexcharts": "^3.46.0",
-        "datatables.net-dt": "^2.3.2",
+        "apexcharts": "^3.54.1",
+        "datatables.net-dt": "^2.3.3",
         "flowbite": "^3.1.2",
         "jquery": "^3.7.1",
-        "simple-datatables": "^10.0.0"
+        "signature_pad": "^5.0.10"
     }
 }

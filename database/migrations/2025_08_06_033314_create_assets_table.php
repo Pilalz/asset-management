@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
-            $table->string('asset_number')->unique();
+            $table->string('asset_number')->nullable()->unique();
             $table->foreignId('asset_name_id')->constrained('asset_names');
+            $table->string('asset_type');
             $table->string('status');
             $table->string('description');
             $table->longText('detail')->nullable();
@@ -27,7 +28,7 @@ return new class extends Migration
             $table->foreignId('department_id')->constrained('departments');
             $table->bigInteger('quantity');
             $table->date('capitalized_date');
-            $table->date('start_depre_date');
+            $table->date('start_depre_date')->nullable();
             $table->decimal('acquisition_value', 18, 0);
             $table->decimal('current_cost', 18, 0);
             $table->integer('useful_life_month');

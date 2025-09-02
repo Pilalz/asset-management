@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('approval_action');
             $table->string('role');
             $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->text('signature_image')->nullable();
             $table->string('status');
             $table->date('approval_date')->nullable();
             $table->integer('approval_order');

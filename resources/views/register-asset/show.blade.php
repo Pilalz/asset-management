@@ -108,6 +108,12 @@
                 <p class="ml-1 text-sm text-gray-900">{{ $register_asset->location->name }}</p>
             </div>
 
+            <div class="mb-5 flex content-center">
+                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Asset Type </label>
+                <span> : </span>
+                <p class="ml-1 text-sm text-gray-900">{{ $register_asset->asset_type }}</p>
+            </div>
+
             <!-- Asset List -->
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset List </label>
@@ -159,6 +165,14 @@
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured  :  <span class="{{ $insuredClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->insured == 1) ? "Yes" : "No" }}</span></label>
             </div>
 
+            @if($register_asset->insured == 1)
+                <div class="mb-5 flex content-center">
+                    <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Polish No. </label>
+                    <span> : </span>
+                    <p class="ml-1 text-sm text-gray-900">{{ $register_asset->polish_no }}</p>
+                </div>
+            @endif
+
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval List </label>
                 <div class="border-2 border-black rounded-lg p-4">
@@ -196,7 +210,15 @@
                                     <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
                                     <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
                                     <td class="px-2 py-4">{{ $approv->user?->name ?? "-" }}</td>
-                                    <td class="px-2 py-4">{{ $approv->status }}</td>
+                                    @if ($approval->status == 'approved' && $approval->signature_image)
+                                        <div class="signature-container">
+                                            <img src="{{ $approval->signature_image }}" alt="Signature" class="h-12">
+                                        </div>
+                                    @else
+                                        <div class="status-pending">
+                                            Pending
+                                        </div>
+                                    @endif
                                     <td class="px-2 py-4">{{ $approv->approval_date }}</td>
                                 </tr>
                             @endforeach
