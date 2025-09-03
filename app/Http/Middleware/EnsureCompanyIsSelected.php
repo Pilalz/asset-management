@@ -17,21 +17,30 @@ class EnsureCompanyIsSelected
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // 1. Cek jika user sudah login DAN session 'active_company_id' TIDAK ADA.
-        if (Auth::check() && !Session::has('active_company_id')) {
+        // 1. Pastikan pengguna sudah login
+        if (Auth::check()) {
+            $user = Auth::user();
+            $hasActiveCompany = !is_null($user->last_active_company_id);
 
-            // 2. Cek agar tidak terjadi redirect berulang-ulang (loop).
-            // Kita izinkan akses ke halaman 'onboard', 'company', dan 'logout'.
-            
-            // --- BARIS INI YANG DIPERBARUI ---
-            if (!$request->is(['onboard*']) && !$request->routeIs('logout')) {
-                
-                // 3. Jika semua kondisi terpenuhi, paksa redirect ke halaman onboarding.
-                return redirect()->route('onboard.index');
+            // 2. JIKA PENGGUNA PUNYA PERUSAHAAN AKTIF
+            if ($hasActiveCompany) {
+                // Tapi dia mencoba mengakses halaman onboard...
+                if ($request->routeIs('onboard.*')) {
+                    // ...maka paksa arahkan ke dashboard.
+                    return redirect()->route('dashboard');
+                }
+            } 
+            // 3. JIKA PENGGUNA TIDAK PUNYA PERUSAHAAN AKTIF
+            else {
+                // Dan dia TIDAK sedang berada di halaman onboard...
+                if (!$request->routeIs('onboard.*')) {
+                     // ...maka paksa arahkan ke halaman onboard.
+                    return redirect()->route('onboard.index');
+                }
             }
         }
 
-        // 4. Jika user adalah tamu, atau sudah punya company aktif, izinkan request berlanjut.
+        // 4. Jika semua kondisi tidak terpenuhi, izinkan request berlanjut.
         return $next($request);
     }
 }

@@ -21,8 +21,8 @@ class DashboardController extends Controller
             ->get();
 
         $assetLocData = [
-            'labels' => $assetCountByLocation->pluck('location_name'),
-            'series' => $assetCountByLocation->pluck('asset_count'),
+            'labels' => $assetCountByLocation->pluck('location_name')->all(),
+            'series' => $assetCountByLocation->pluck('asset_count')->all(),
         ];
 
         //Asset By Class
@@ -37,8 +37,8 @@ class DashboardController extends Controller
             ->get();
 
         $assetClassData = [
-            'labels' => $assetCountByClass->pluck('class_name'),
-            'series' => $assetCountByClass->pluck('asset_count'),
+            'labels' => $assetCountByClass->pluck('class_name')->all(),
+            'series' => $assetCountByClass->pluck('asset_count')->all(),
         ];
 
         return view('index', compact('assetLocData', 'assetClassData'));

@@ -41,86 +41,58 @@
     </div>
 @endsection
 
-<!-- @push('scripts')
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
-        if (typeof ApexCharts === 'undefined') {
-            console.error("Kesalahan Kritis: ApexCharts tidak ditemukan. Pastikan sudah diimpor dan didaftarkan di app.js, dan npm run dev berjalan.");
-            return;
-        }
-
+        // Ambil data dari Blade
         const assetLocData = @json($assetLocData);
         const assetClassData = @json($assetClassData);
 
-        const getLocationChartOptions = () => {
-            return {
-                series: assetLocData.series.map(Number),
-                labels: assetLocData.labels,
-                colors: ["#1C64F2", "#16BDCA", "#9061F9", "#FDBA8C", "#E74694"],
-                chart: { 
-                    type: "pie", 
-                    height: 420, 
-                    width: "100%" 
-                },
-                dataLabels: {
-                    enabled: true,
-                    formatter: function (value, { seriesIndex, w }) {
-                        const count = w.globals.series[seriesIndex];
-                        return `${count} (${value.toFixed(1)}%)`;
-                    },
-                },
-                legend: {
-                    position: "bottom",
-                    fontFamily: "Inter, sans-serif",
-                },
-            }
-        };
-        
-        const getClassChartOptions = () => {
-            return {
-                series: assetClassData.series.map(Number),
-                labels: assetClassData.labels,
-                colors: ["#1C64F2", "#16BDCA", "#9061F9", "#FDBA8C", "#E74694"],
-                chart: { 
-                    type: "pie", 
-                    height: 420, 
-                    width: "100%" 
-                },
-                legend: {
-                    position: "bottom",
-                    fontFamily: "Inter, sans-serif",
-                },
-                dataLabels: {
-                    enabled: true,
-                    formatter: function (value, { seriesIndex, w }) {
-                        const count = w.globals.series[seriesIndex];
-                        return `${count} (${value.toFixed(1)}%)`;
-                    },
-                },
+        // Opsi minimal untuk Chart Lokasi
+        const minimalLocationOptions = {
+            series: assetLocData.series.map(Number),
+            labels: assetLocData.labels,
+            chart: {
+                type: 'pie',
+                height: 420
+            },
+            legend: {
+                position: 'bottom'
             }
         };
 
-        const locChartDiv = document.getElementById("assetbyloc-chart");
-        if (locChartDiv) {
-            if (assetLocData && assetLocData.series.length > 0) {
-                const locChart = new ApexCharts(locChartDiv, getLocationChartOptions());
+        // Opsi minimal untuk Chart Kelas
+        const minimalClassOptions = {
+            series: assetClassData.series.map(Number),
+            labels: assetClassData.labels,
+            chart: {
+                type: 'pie',
+                height: 420
+            },
+            legend: {
+                position: 'bottom'
+            }
+        };
+
+        // Render Chart Lokasi
+        if (document.getElementById("assetbyloc-chart") && typeof ApexCharts !== 'undefined') {
+            if (assetLocData.series && assetLocData.series.length > 0) {
+                const locChart = new ApexCharts(document.getElementById("assetbyloc-chart"), minimalLocationOptions);
                 locChart.render();
             } else {
-                locChartDiv.innerHTML = '<div class="text-center text-gray-500 py-10">Tidak ada data lokasi untuk ditampilkan.</div>';
+                document.getElementById("assetbyloc-chart").innerHTML = '<div class="text-center text-gray-500 py-10">No location data to display.</div>';
             }
         }
 
         // Render Chart Kelas
-        const classChartDiv = document.getElementById("assetbyclass-chart");
-        if (classChartDiv) {
-            if (assetClassData && assetClassData.series.length > 0) {
-                const classChart = new ApexCharts(classChartDiv, getClassChartOptions());
+        if (document.getElementById("assetbyclass-chart") && typeof ApexCharts !== 'undefined') {
+            if (assetClassData.series && assetClassData.series.length > 0) {
+                const classChart = new ApexCharts(document.getElementById("assetbyclass-chart"), minimalClassOptions);
                 classChart.render();
             } else {
-                classChartDiv.innerHTML = '<div class="text-center text-gray-500 py-10">Tidak ada data kelas aset untuk ditampilkan.</div>';
+                document.getElementById("assetbyclass-chart").innerHTML = '<div class="text-center text-gray-500 py-10">No class data to display.</div>';
             }
         }
     });
 </script>
-@endpush -->
+@endpush
