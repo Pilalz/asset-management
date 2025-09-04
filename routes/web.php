@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AssetLowValueController;
+use App\Http\Controllers\AssetArrivalController;
 use App\Http\Controllers\AssetClassController;
 use App\Http\Controllers\AssetSubClassController;
 use App\Http\Controllers\AssetNameController;
@@ -82,6 +84,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('asset-sub-class', AssetSubClassController::class);
     Route::resource('asset-name', AssetNameController::class);
     Route::resource('asset', AssetController::class);
+    Route::resource('assetLVA', AssetLowValueController::class);
+    Route::resource('assetArrival', AssetArrivalController::class);
     Route::resource('depreciation', DepreciationController::class);
     Route::resource('location', LocationController::class);
     Route::resource('department', DepartmentController::class);
@@ -91,8 +95,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('company-user', CompanyUserController::class);
     Route::resource('company', CompanyController::class);
 
-    //Start Asset
-    Route::get('/asset-lva', [AssetController::class, 'indexLVA'])->name('assetLVA.index');
     //Start Depre
     Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
     //Start Register
@@ -114,7 +116,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- API Data Datatables ---
     Route::get('api/asset', [AssetController::class, 'datatables'])->name('api.asset');
-    Route::get('api/assetLVA', [AssetController::class, 'datatablesLVA'])->name('api.assetLVA');
+    Route::get('api/assetLVA', [AssetLowValueController::class, 'datatables'])->name('api.assetLVA');
+    Route::get('api/assetArrival', [AssetArrivalController::class, 'datatables'])->name('api.assetArrival');
     Route::get('api/asset-name', [AssetNameController::class, 'datatables'])->name('api.asset-name');
     Route::get('api/asset-sub-class', [AssetSubClassController::class, 'datatables'])->name('api.asset-sub-class');
     Route::get('api/asset-class', [AssetClassController::class, 'datatables'])->name('api.asset-class');

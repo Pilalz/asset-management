@@ -176,8 +176,8 @@
                     </li>
 
                     <li>
-                        <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs(['asset.*', 'assetLVA.*']) ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' }}" aria-controls="dropdown-asset" data-collapse-toggle="dropdown-asset" aria-expanded="{{ request()->routeIs(['asset.*', 'assetLVA.*']) ? 'true' : 'false' }}">
-                            <svg class="w-5 h-5 transition duration-75 {{ request()->routeIs(['asset.*', 'assetLVA.*']) ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs(['asset.*', 'assetLVA.*', 'assetArrival.*']) ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' }}" aria-controls="dropdown-asset" data-collapse-toggle="dropdown-asset" aria-expanded="{{ request()->routeIs(['asset.*', 'assetLVA.*', 'assetArrival.*']) ? 'true' : 'false' }}">
+                            <svg class="w-5 h-5 transition duration-75 {{ request()->routeIs(['asset.*', 'assetLVA.*', 'assetArrival.*']) ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-width="2" d="M3 11h18m-9 0v8m-8 0h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"/>
                             </svg>
                             <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap menu-text">Asset</span>
@@ -185,9 +185,9 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
                         </button>
-                        <ul id="dropdown-asset" class="{{ request()->routeIs(['asset.*', 'assetLVA.*']) ? '' : 'hidden' }} py-2 space-y-2">
+                        <ul id="dropdown-asset" class="{{ request()->routeIs(['asset.*', 'assetLVA.*', 'assetArrival.*']) ? '' : 'hidden' }} py-2 space-y-2">
                             <li>
-                                <a href="" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text">Arrival</a>
+                                <a href="{{ route('assetArrival.index') }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text {{ request()->routeIs('assetArrival.*') ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">Arrival</a>
                             </li>
                             <li>
                                 <a href="{{ route('asset.index') }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text {{ request()->routeIs('asset.*') ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">Fixed Asset</a>

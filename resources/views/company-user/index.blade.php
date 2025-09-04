@@ -79,3 +79,7 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    @vite('resources/js/pages/companyUser.js')
+@endpush

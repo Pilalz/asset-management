@@ -14,75 +14,86 @@ class DepreciationController extends Controller
 {
     public function depre(Asset $asset)
     {
-        $depreDateForPeriod = now()->endOfMonth();
-        
-        //Validasi agar tidak dijalankan lebih dari 1x
-        $alreadyRunThisMonth = Depreciation::where('asset_id', $asset->id)
-            ->whereBetween('depre_date', [
-                $depreDateForPeriod->copy()->startOfMonth(), 
-                $depreDateForPeriod->copy()->endOfMonth()
-            ])->exists();
-
-        if ($alreadyRunThisMonth) {
-            return back()->with('info', 'Depresiasi untuk aset ini pada periode ini sudah dijalankan.');
+        if ($asset->useful_life_month <= 0) {
+            return back()->with('error', 'Masa manfaat aset (useful life month) tidak boleh nol.');
         }
-
-        //Rumus dan validasi UL
-        $monthly_depre = 0;
-        if ($asset->useful_life_month > 0) {
-            $monthly_depre = round($asset->current_cost / $asset->useful_life_month);
-        } else {
-            return back()->with('error', 'Masa manfaat aset (useful_life_month) tidak boleh nol.');
-        }
-
-        //Validasi Asset Depresiasi = 0
-        if (($asset->net_book_value - $monthly_depre) <= 0) {
-            $final_depreciation_amount = $asset->net_book_value;
-            $new_book_value = 0;
-            $new_status = 'Fully Depreciated';
-        } else {
-            $final_depreciation_amount = $monthly_depre;
-            $new_book_value = $asset->net_book_value - $final_depreciation_amount;
-            $new_status = $asset->current_status;
-        }
-
-        if ($final_depreciation_amount <= 0) {
+        if ($asset->net_book_value <= 0) {
             return back()->with('info', 'Aset ini sudah terdepresiasi penuh.');
         }
 
         try {
-            DB::transaction(function () use ($asset, $depreDateForPeriod, $final_depreciation_amount, $new_book_value, $new_status) {
-                // Kalkulasi akumulasi depresiasi
+            DB::transaction(function () use ($asset) {
+                // --- Menentukan Periode Pengejaran ---
                 $lastDepreciation = Depreciation::where('asset_id', $asset->id)->latest('depre_date')->first();
-                $new_accumulated_depre = $final_depreciation_amount;
-                if ($lastDepreciation) {
-                    $new_accumulated_depre += $lastDepreciation->accumulated_depre;
+                
+                // Tanggal mulai adalah bulan setelah depresiasi terakhir, atau start_depre_date jika belum pernah.
+                $startDate = $lastDepreciation 
+                    ? Carbon::parse($lastDepreciation->depre_date)->addMonth()->startOfMonth()
+                    : Carbon::parse($asset->start_depre_date)->startOfMonth();
+
+                $endDate = now()->startOfMonth();
+
+                // --- Jika tidak ada periode yang perlu dikejar ---
+                if ($startDate->greaterThan($endDate)) {
+                    // Menggunakan redirect()->back() agar bisa di-chain dengan with()
+                    return redirect()->back()->with('info', 'Tidak ada periode depresiasi yang perlu dijalankan untuk aset ini.');
                 }
 
-                $depre_date_for_db = $depreDateForPeriod->toDateString(); // Format: Y-m-d
+                // --- Inisialisasi Nilai Awal ---
+                $currentBookValue = $asset->net_book_value;
+                $currentAccumulatedDepre = $asset->accum_depre;
+                $monthlyDepre = round($asset->current_cost / $asset->useful_life_month);
+                $newStatus = $asset->status;
 
-                // Buat log depresiasi
-                Depreciation::create([
-                    'asset_id' => $asset->id,
-                    'depre_date' => $depre_date_for_db,
-                    'monthly_depre' => $final_depreciation_amount,
-                    'accumulated_depre' => $new_accumulated_depre,
-                    'book_value' => $new_book_value,
-                    'company_id' => Auth::user()->last_active_company_id,
-                ]);
+                // --- Looping untuk Setiap Bulan yang Terlewat ---
+                for ($date = $startDate; $date->lessThanOrEqualTo($endDate); $date->addMonth()) {
+                    
+                    // Jika nilai buku sudah 0, hentikan loop
+                    if ($currentBookValue <= 0) {
+                        break;
+                    }
 
-                // Update data master aset
+                    $finalDepreciationAmount = $monthlyDepre;
+                    
+                    // Cek jika depresiasi bulan ini akan membuat nilai buku menjadi 0 atau minus
+                    if (($currentBookValue - $monthlyDepre) <= 0) {
+                        $finalDepreciationAmount = $currentBookValue; // Depresiasi terakhir adalah sisa nilai buku
+                        $newStatus = 'Fully Depreciated';
+                    }
+
+                    // Update nilai berjalan
+                    $currentBookValue -= $finalDepreciationAmount;
+                    $currentAccumulatedDepre += $finalDepreciationAmount;
+
+                    // Buat log depresiasi untuk bulan ini
+                    Depreciation::create([
+                        'asset_id' => $asset->id,
+                        'depre_date' => $date->copy()->endOfMonth()->toDateString(), // Selalu di akhir bulan
+                        'monthly_depre' => $finalDepreciationAmount,
+                        'accumulated_depre' => $currentAccumulatedDepre,
+                        'book_value' => $currentBookValue,
+                        'company_id' => $asset->company_id,
+                    ]);
+
+                    // Jika sudah terdepresiasi penuh, keluar dari loop
+                    if ($newStatus === 'Fully Depreciated') {
+                        break;
+                    }
+                }
+
+                // --- Update Data Master Aset (hanya sekali setelah loop selesai) ---
                 $asset->update([
-                    'accum_depre' => $new_accumulated_depre,
-                    'net_book_value' => $new_book_value,
-                    // 'current_status' => $new_status,
+                    'accum_depre' => $currentAccumulatedDepre,
+                    'net_book_value' => $currentBookValue,
+                    'status' => $newStatus,
                 ]);
             });
+
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
 
-        return back()->with('success', 'Depresiasi untuk aset ' . $asset->asset_name . ' berhasil dicatat.');
+        return back()->with('success', 'Depresiasi untuk aset ' . ($asset->assetName->name ?? $asset->asset_number) . ' berhasil dicatat.');
     }
 
     public function index(Request $request)

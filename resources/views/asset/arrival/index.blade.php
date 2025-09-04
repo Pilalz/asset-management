@@ -24,20 +24,18 @@
     <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800 dark:border-b dark:border-gray-700">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-                <li class="inline-flex items-center">
-                    <a href="{{ route('asset.index') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                        <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
-                        </svg>
-                        Asset
-                    </a>
+                <li class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                    </svg>
+                    Asset
                 </li>
                 <li>
                     <div class="flex items-center">
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                         </svg>
-                        <a href="{{ route('asset.index') }}" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Asset</a>
+                        <a href="{{ route('assetArrival.index') }}" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Arrival</a>
                     </div>
                 </li>
                 <li aria-current="page">
@@ -50,52 +48,6 @@
                 </li>
             </ol>
         </nav>
-
-        <div class="flex gap-2">
-            <!-- Modal toggle -->
-            <button data-modal-target="import-modal" data-modal-toggle="import-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-            Import Data
-            </button>
-            <!-- Main modal -->
-            <div id="import-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div class="relative p-4 w-full max-w-md max-h-full">
-                    <!-- Modal content -->
-                    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-                        <!-- Modal header -->
-                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                Import Data Asset Class
-                            </h3>
-                            <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="import-modal">
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                </svg>
-                                <span class="sr-only">Close modal</span>
-                            </button>
-                        </div>
-                        <!-- Modal body -->
-                        <div class="p-4 md:p-5">
-                            <form action="{{ route('asset.import') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="mb-4">
-                                    <label for="excel_file" class="block mb-2 text-sm font-medium text-gray-900">Upload Excel File (.xlsx, .xls)</label>
-                                    <input type="file" name="excel_file" id="excel_file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" required>
-                                </div>   
-                                <div class="mb-4">
-                                    <p class="text-sm text-gray-600">
-                                        Silahkan download template Excel jika anda belum memilikinya.
-                                    </p>
-                                    <a href="{{ asset('template/TemplateAsset.xlsx') }}" class="text-blue-600 hover:underline">Download Template Excel</a>
-                                </div>
-                                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5">
-                                    Import Data
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     @if (session('success'))
@@ -159,26 +111,21 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-6 py-3">No</th>
-                            <th scope="col" class="px-6 py-3">Asset Number</th>
+                            <th scope="col" class="px-6 py-3">Registration Form</th>
+                            <th scope="col" class="px-6 py-3">Asset Type</th>
                             <th scope="col" class="px-6 py-3">Status</th>
                             <th scope="col" class="px-6 py-3">Asset Name</th>
                             <th scope="col" class="px-6 py-3">Obj Acc</th>
                             <th scope="col" class="px-6 py-3">Description</th>
-                            <th scope="col" class="px-6 py-3">Pareto</th>
                             <th scope="col" class="px-6 py-3">PO No</th>
                             <th scope="col" class="px-6 py-3">Location</th>
                             <th scope="col" class="px-6 py-3">Department</th>
                             <th scope="col" class="px-6 py-3">Qty</th>
                             <th scope="col" class="px-6 py-3">Capitalized Date</th>
-                            <th scope="col" class="px-6 py-3">Start Depre Date</th>
-                            <th scope="col" class="px-6 py-3">Acquisition Value</th>
                             <th scope="col" class="px-6 py-3">Useful Life Month</th>
-                            <th scope="col" class="px-6 py-3">Accum Depre</th>
-                            <th scope="col" class="px-6 py-3">Net Book Value</th>
                             <th scope="col" class="px-6 py-3">Actions</th>
                         </tr>
                         <tr id="filter-row">
-                            <th></th><th></th><th></th><th></th>
                             <th></th><th></th><th></th><th></th>
                             <th></th><th></th><th></th><th></th>
                             <th></th><th></th><th></th><th></th>
@@ -197,12 +144,20 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Temukan semua elemen notifikasi yang memiliki class 'auto-dismiss-alert'
         const alertElements = document.querySelectorAll('.auto-dismiss-alert');
 
         alertElements.forEach(targetEl => {
-            // Ambil tombol 'close' di dalam notifikasi (jika ada)
-            const triggerEl = targetEl.querySelector('[data-dismiss-target]');
+            const alertElements = document.querySelectorAll('.auto-dismiss-alert');
+
+            if (alertElements.length > 0) {
+                alertElements.forEach(targetEl => {
+                    // Sekarang 'Dismiss' dijamin sudah ada
+                    const dismiss = new Dismiss(targetEl); 
+                    setTimeout(() => {
+                        dismiss.hide();
+                    }, 5000);
+                });
+            }
 
             // Opsi yang Anda inginkan
             const options = {
@@ -227,7 +182,7 @@
             $('#assetTable thead tr:eq(0) th').each(function(i) {
                 var title = $(this).text().trim();
                 var cell = $('#filter-row').children().eq(i);
-                if (i === 0 || i === 17) {
+                if (i === 0 || i === 13) {
                     return;
                 }
                 $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
@@ -239,27 +194,23 @@
                 "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
             processing: true,
             serverSide: true,
-            ajax: "{{ route('api.assetLVA') }}",
+            ajax: "{{ route('api.assetArrival') }}",
             autoWidth: false,
             orderCellsTop: true,
             columns: [
                 { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
-                { data: 'asset_number', name: 'asset_number' },
+                { data: 'registration_form_no', name: 'registration_form_no' },
+                { data: 'asset_type', name: 'asset_type' },
                 { data: 'status', name: 'status' },
                 { data: 'asset_name_name', name: 'asset_name_name' },
                 { data: 'asset_class_obj', name: 'asset_class_obj' },
                 { data: 'description', name: 'description' },
-                { data: 'pareto', name: 'pareto' },
                 { data: 'po_no', name: 'po_no' },
                 { data: 'location_name', name: 'location_name' },
                 { data: 'department_name', name: 'department_name' },
                 { data: 'quantity', name: 'quantity' },
                 { data: 'capitalized_date', name: 'capitalized_date' },
-                { data: 'start_depre_date', name: 'start_depre_date' },
-                { data: 'acquisition_value', name: 'acquisition_value' },
                 { data: 'useful_life_month', name: 'useful_life_month' },
-                { data: 'accum_depre', name: 'accum_depre' },
-                { data: 'net_book_value', name: 'net_book_value' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             order: [[0, 'asc']],
@@ -298,7 +249,22 @@
                     className: 'px-6 py-4'
                 },
                 {
-                    targets: 4, 
+                    targets: 2, 
+                    render: function (data, type, row) {
+                        if (data === 'LVA') {
+                            return 'Low Value Asset';
+                        }
+                        if (data === 'FA') {
+                            return 'Fixed Asset';
+                        }
+                        else{
+                            return 'Unidentified';
+                        }
+                        return data;
+                    }
+                },
+                {
+                    targets: 5, 
                     render: function (data, type, row) {
                         if (type === 'display') {
                             return 'Direct Ownership : ' + data;
@@ -307,7 +273,7 @@
                     }
                 },
                 {
-                    targets: [11, 12],
+                    targets: 11,
                     render: function (data, type, row) {
                         if (type === 'display') {
                             if (!data) {
@@ -331,26 +297,6 @@
                         return data;
                     }
                 },
-                {
-                    targets: [13, 15, 16], 
-                    render: function (data, type, row) {
-                        if (type === 'display') {
-                            let number = parseFloat(data);
-
-                            if (isNaN(number)) {
-                                return data;
-                            }
-
-                            return number.toLocaleString('en-US', {
-                                style: 'currency',
-                                currency: 'USD',
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 0
-                            });
-                        }
-                        return data;
-                    }
-                }
             ],
 
             createdRow: function( row, data, dataIndex ) {

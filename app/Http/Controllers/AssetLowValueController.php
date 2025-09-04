@@ -4,69 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Asset;
-use App\Models\Depreciation;
-use App\Imports\AssetsImport;
-use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 
-class AssetController extends Controller
+class AssetLowValueController extends Controller
 {
     public function index()
     {
-        return view('asset.fixed.index');
+        return view('asset.low-value.index');
     }
 
-    public function show(Request $request, Asset $asset)
+    public function show(Asset $assetLVA)
     {
-        $year = $request->input('year', now()->year);
-        $startDate = Carbon::create($year, 1, 1)->startOfMonth();
-        $endDate = Carbon::create($year, 12, 1)->endOfMonth();
-
-        $schedules = Depreciation::where('asset_id', $asset->id)
-            ->whereBetween('depre_date', [$startDate, $endDate])
-            ->orderBy('depre_date')
-            ->get();
-
-        $pivotedData = [];
-        $pivotedData[$asset->id] = [
-            'master_data' => $asset,
-            'schedule' => []
-        ];
-
-        foreach ($schedules as $schedule) {
-            $monthKey = Carbon::parse($schedule->depre_date)->format('Y-m');
-            $pivotedData[$asset->id]['schedule'][$monthKey] = (object)[
-                'monthly_depre' => $schedule->monthly_depre,
-                'accumulated_depre' => $schedule->accumulated_depre,
-                'book_value' => $schedule->book_value,
-            ];
-        }
-
-        $months = [];
-        $period = CarbonPeriod::create($startDate, '1 month', $endDate);
-        foreach ($period as $date) {
-            $months[$date->format('Y-m')] = $date->format('M-y');
-        }
-        
-        return view('asset.fixed.show', [
-            'pivotedData' => $pivotedData,
-            'months' => $months,
-            'selectedYear' => $year,
-            'asset' =>$asset
-        ]);
+        $assetLVA->load('location', 'department');
+        return view('asset.low-value.show', ['asset' => $assetLVA]);
     }
 
-    public function edit(Asset $asset)
-    {
-        $asset->load('depreciations');        
-
-        return view('asset.fixed.edit', compact('asset'));
+    public function edit(Asset $assetLVA)
+    {      
+        return view('asset.low-value.edit', ['asset' => $assetLVA]);
     }
 
-    public function update(Request $request, Asset $asset)
+    public function update(Request $request, Asset $assetLVA)
     {
         $validatedData = $request->validate([
             'description' => 'required|string|max:255',
@@ -80,7 +39,6 @@ class AssetController extends Controller
             'department_id'  => 'required|exists:departments,id',
             'quantity'  => 'required',
             'capitalized_date'  => 'required|date',
-            'start_depre_date'  => 'required|date',
             'acquisition_value'  => 'required',
             'current_cost'  => 'required',
             'net_book_value'  => 'required',
@@ -88,24 +46,9 @@ class AssetController extends Controller
 
         $dataToUpdate = $validatedData;
 
-        $asset->update($dataToUpdate);
+        $assetLVA->update($dataToUpdate);
 
-        return redirect()->route('asset.fixed.index')->with('success', 'Data berhasil diperbarui!');
-    }
-
-    public function importExcel(Request $request)
-    {
-        $request->validate([
-            'excel_file' => 'required|mimes:xlsx,xls',
-        ]);
-
-        try {
-            Excel::import(new AssetsImport, $request->file('excel_file'));
-        } catch (\Exception $e) {
-            return redirect()->route('asset.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
-        }
-        
-        return redirect()->route('asset.fixed.index')->with('success', 'Data aset berhasil diimpor!');
+        return redirect()->route('assetLVA.index')->with('success', 'Data berhasil diperbarui!');
     }
 
     public function datatables(Request $request)
@@ -118,7 +61,7 @@ class AssetController extends Controller
                         ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
                         ->join('locations', 'assets.location_id', '=', 'locations.id')
                         ->join('departments', 'assets.department_id', '=', 'departments.id')
-                        ->where('assets.asset_type', '=', 'FA')
+                        ->where('assets.asset_type', '=', 'LVA')
                         ->where('assets.status', '=', 'Active')
                         ->where('assets.company_id', $companyId)
                         ->select([
@@ -132,10 +75,9 @@ class AssetController extends Controller
         return DataTables::eloquent($query)
             ->addIndexColumn()
             ->addColumn('action', function ($asset) {
-                return view('components.action-asset-buttons', [
-                    'showUrl' => route('asset.show', $asset->id),
-                    'depreUrl' => route('depreciation.depre', $asset->id),
-                    'editUrl' => route('asset.edit', $asset->id),
+                return view('components.action-low-value-asset-buttons', [
+                    'showUrl' => route('assetLVA.show', $asset->id),
+                    'editUrl' => route('assetLVA.edit', $asset->id),
                     'deleteUrl' => route('asset.destroy', $asset->id)
                 ])->render();
             })

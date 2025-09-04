@@ -139,3 +139,7 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    @vite('resources/js/pages/assetName.js')
+@endpush
