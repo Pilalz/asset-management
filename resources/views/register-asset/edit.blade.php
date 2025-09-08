@@ -306,7 +306,7 @@
         const assetListBody = document.getElementById('asset-list-body');
         const addAssetRowBtn = document.getElementById('add-asset-row');
         const assetClassesData = @json($assetclasses);
-        const initialAssetsData = @json($initialAssets);
+        const initialAssetsData = @json($initialAssets ?? []);
 
         //Hide Insured
         function togglePolishNoVisibility() {
@@ -431,8 +431,6 @@
 
         // --- Function to Get Asset Sub Classes based on Asset Class ---
         async function populateSubClasses(classId, subClassSelect, nameSelect, selectedSubClassId = null) {
-            // Kita tidak lagi membaca dari classSelect.value, karena classId sudah diberikan
-            
             subClassSelect.innerHTML = '<option value="">Loading...</option>';
             nameSelect.innerHTML = '<option value="">Choose Asset Name</option>';
             if (!classId) {
@@ -547,8 +545,8 @@
             });
         }
 
-        toggleCommissionDateVisibility(); 
         initializeRows();
+        toggleCommissionDateVisibility();
         updateRowNumbers();
     });
 </script>

@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\Facades\DataTables;
+use App\Scopes\CompanyScope;
 
 class RegisterAssetController extends Controller
 {
@@ -401,19 +403,52 @@ class RegisterAssetController extends Controller
         $companyId = session('active_company_id');
 
         $query = RegisterAsset::withoutGlobalScope(CompanyScope::class)
-                          ->select('register_assets.*');
+                        ->with(['department', 'location'])
+                        ->withCount('detailRegisters')
+                        ->where('company_id', $companyId);
 
-        $query->where('register_assets.company_id', $companyId);
-
-        return DataTables::eloquent($query)
+        return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('action', function ($register_asset) {
-                return view('components.action-buttons', [
-                    'editUrl' => route('register_asset.edit', $register_asset->id),
-                    'deleteUrl' => route('register_asset.destroy', $register_asset->id)
+            ->addColumn('department_name', function($registerAsset) {
+                return $registerAsset->department->name ?? '-';
+            })
+            ->addColumn('location_name', function($registerAsset) {
+                return $registerAsset->location->name ?? '-';
+            })
+            ->addColumn('action', function ($register_assets) {
+                return view('components.action-buttons-3-buttons', [
+                    'model'     => $register_assets,
+                    'showUrl' => route('register-asset.show', $register_assets->id),
+                    'editUrl' => route('register-asset.edit', $register_assets->id),
+                    'deleteUrl' => route('register-asset.destroy', $register_assets->id)
                 ])->render();
+            })
+            ->filterColumn('department_name', function($query, $keyword) {
+                $query->whereHas('department', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('location_name', function($query, $keyword) {
+                $query->whereHas('location', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderColumn('department_name', function ($query, $order) {
+                $query->orderBy(
+                    Department::select('name')
+                        ->whereColumn('departments.id', 'register_assets.department_id'),
+                    $order
+                );
+            })
+            ->orderColumn('location_name', function ($query, $order) {
+                $query->orderBy(
+                    Location::select('name')
+                        ->whereColumn('locations.id', 'register_assets.location_id'),
+                    $order
+                );
             })
             ->rawColumns(['action'])
             ->toJson();
+        
     }
 }

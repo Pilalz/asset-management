@@ -75,7 +75,7 @@ class AssetLowValueController extends Controller
         return DataTables::eloquent($query)
             ->addIndexColumn()
             ->addColumn('action', function ($asset) {
-                return view('components.action-low-value-asset-buttons', [
+                return view('components.action-buttons-3-buttons', [
                     'showUrl' => route('assetLVA.show', $asset->id),
                     'editUrl' => route('assetLVA.edit', $asset->id),
                     'deleteUrl' => route('asset.destroy', $asset->id)

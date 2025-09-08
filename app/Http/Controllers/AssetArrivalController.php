@@ -45,6 +45,7 @@ class AssetArrivalController extends Controller
             $validatedData['start_depre_date'] = null;
         }
 
+        $validatedData['status'] = 'Active';
         $validatedData['current_cost'] = $validatedData['acquisition_value'];
         $validatedData['net_book_value'] = $validatedData['acquisition_value'];
 

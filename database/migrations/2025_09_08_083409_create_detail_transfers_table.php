@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transfer_assets', function (Blueprint $table) {
+        Schema::create('detail_transfers', function (Blueprint $table) {
             $table->id();
-            $table->date('submit_date');
-            $table->string('form_no')->unique();
-            $table->foreignId('department_id')->constrained('departments');
+            $table->foreignId('transfer_asset_id')->constrained('transfer_assets')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('asset_id')->constrained('assets');
+            $table->foreignId('origin_loc_id')->constrained('locations');
             $table->foreignId('destination_loc_id')->constrained('locations');
-            $table->longText('reason');
-            $table->string('sequence');
-            $table->string('status');
-            $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });
     }
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transfer_assets');
+        Schema::dropIfExists('detail_transfers');
     }
 };

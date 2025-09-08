@@ -35,6 +35,7 @@ class CalculateDepreciation extends Command
         // Ambil semua aset yang aktif dan sudah melewati tanggal mulai depresiasi
         $assetsToDepreciate = Asset::withoutGlobalScope(CompanyScope::class)
                                     ->where('status', 'Active')
+                                    ->where('asset_type', 'FA')
                                     ->where('start_depre_date', '<=', now())
                                     ->whereColumn('accum_depre', '<', 'acquisition_value') // Hanya proses aset yang belum habis didepresiasi
                                     ->get();

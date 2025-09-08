@@ -210,14 +210,14 @@
                                     <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
                                     <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
                                     <td class="px-2 py-4">{{ $approv->user?->name ?? "-" }}</td>
-                                    @if ($approval->status == 'approved' && $approval->signature_image)
-                                        <div class="signature-container">
-                                            <img src="{{ $approval->signature_image }}" alt="Signature" class="h-12">
-                                        </div>
+                                    @if ($approv->status == 'approved' && $approv->user->signature)
+                                        <td class="px-2 py-4 status-pending">
+                                            <div class="signature-container">
+                                                <img src="{{ $approv->user->signature }}" alt="Signature" class="h-12">
+                                            </div>
+                                        </td>
                                     @else
-                                        <div class="status-pending">
-                                            Pending
-                                        </div>
+                                        <td class="px-2 py-4 status-pending">{{ $approv->status}}</td>
                                     @endif
                                     <td class="px-2 py-4">{{ $approv->approval_date }}</td>
                                 </tr>
