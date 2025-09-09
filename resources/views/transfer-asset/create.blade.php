@@ -100,10 +100,10 @@
         </div>
 
         <form class="max-w mx-auto" action="{{ route('transfer-asset.store') }}" method="POST">
+            @csrf
             <div id="default-tab-content">
                 <div class="hidden rounded-b-lg" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
                     <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-900">
-                        @csrf
 
                         <div class="mb-5 flex content-center">
                             <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Tanggal Pengajuan <span class="text-red-900">*</span></label>
@@ -535,7 +535,7 @@
                     "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('api.disposal-asset') }}",
+                ajax: "{{ route('api.disposal-asset-find') }}",
                 autoWidth: false,
                 orderCellsTop: true,
                 columns: [

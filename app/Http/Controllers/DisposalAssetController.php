@@ -343,6 +343,47 @@ class DisposalAssetController extends Controller
         }
     }
 
+    public function datatables(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = DisposalAsset::withoutGlobalScope(CompanyScope::class)
+                        ->with(['department'])
+                        ->withCount('detailDisposals')
+                        ->where('company_id', $companyId);
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('department_name', function($disposalAsset) {
+                return $disposalAsset->department->name ?? '-';
+            })
+            ->addColumn('asset_quantity', function($disposalAsset) {
+                return $disposalAsset->detail_disposals_count . ' Asset(s)';
+            })
+            ->addColumn('action', function ($disposal_assets) {
+                return view('components.action-buttons-3-buttons', [
+                    'model'     => $disposal_assets,
+                    'showUrl' => route('disposal-asset.show', $disposal_assets->id),
+                    'editUrl' => route('disposal-asset.edit', $disposal_assets->id),
+                    'deleteUrl' => route('disposal-asset.destroy', $disposal_assets->id)
+                ])->render();
+            })
+            ->filterColumn('department_name', function($query, $keyword) {
+                $query->whereHas('department', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderColumn('department_name', function ($query, $order) {
+                $query->orderBy(
+                    Department::select('name')
+                        ->whereColumn('departments.id', 'disposal_assets.department_id'),
+                    $order
+                );
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+    }
+
     public function datatablesAsset(Request $request)
     {
         $companyId = session('active_company_id');

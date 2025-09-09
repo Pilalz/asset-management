@@ -120,22 +120,24 @@
                                 <th scope="col" class="px-2 py-3">No. Unit</th>
                                 <th scope="col" class="px-2 py-3">No. Mesin</th>
                                 <th scope="col" class="px-2 py-3">No. Engine</th>
-                                <th scope="col" class="px-2 py-3">Tahun Pembelian</th>
+                                <th scope="col" class="px-2 py-3">Tahun Akuisisi</th>
                                 <th scope="col" class="px-2 py-3">Location</th>
                             </tr>
                         </thead>
                         <tbody id="asset-data-body">
-                            <tr>
-                                <td class="p-4">{{ $transfer_asset->asset?->asset_number ?? "-" }}</td>
-                                <td class="p-4">{{ $transfer_asset->asset?->assetName->name ?? "-" }}</td>
-                                <td class="p-4">{{ $transfer_asset->asset?->description ?? "-" }}</td>
-                                <td class="p-4">{{ $transfer_asset->asset?->pareto ?? "-" }}</td>
-                                <td class="p-4">{{ $transfer_asset->asset?->unit_no ?? "-" }}</td>
-                                <td class="p-4">{{ $transfer_asset->asset?->sn_chassis ?? "-" }}</td>
-                                <td class="p-4">{{ $transfer_asset->asset?->sn_engine ?? "-" }}</td>
-                                <td class="p-4">{{ $transfer_asset->asset?->capitalized_date->format('Y') }}</td>
-                                <td class="p-4">{{ $transfer_asset->asset?->location->name ?? "-" }}</td>
-                            </tr>
+                            @foreach($transfer_asset->detailTransfers as $detail)
+                                <tr>
+                                    <td class="p-4">{{ $detail->asset?->asset_number ?? "-" }}</td>
+                                    <td class="p-4">{{ $detail->asset?->assetName->name ?? "-" }}</td>
+                                    <td class="p-4">{{ $detail->asset?->description ?? "-" }}</td>
+                                    <td class="p-4">{{ $detail->asset?->pareto ?? "-" }}</td>
+                                    <td class="p-4">{{ $detail->asset?->unit_no ?? "-" }}</td>
+                                    <td class="p-4">{{ $detail->asset?->sn_chassis ?? "-" }}</td>
+                                    <td class="p-4">{{ $detail->asset?->sn_engine ?? "-" }}</td>
+                                    <td class="p-4">{{ $detail->asset?->capitalized_date->format('Y') }}</td>
+                                    <td class="p-4">{{ $detail->originLocation->name ?? "-" }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -144,7 +146,7 @@
             <div class="mb-5 flex content-center">
                 <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Destination Location </label>
                 <span> : </span>
-                <p class="flex ml-1 text-sm text-gray-900">{{ $transfer_asset->dest_location->name }}</p>
+                <p class="flex ml-1 text-sm text-gray-900">{{ $transfer_asset->destinationLocation->name }}</p>
             </div>
 
             <div class="mb-5">
@@ -170,9 +172,7 @@
                         @endphp
                         <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence  :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($transfer_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
                     </div>
-
                     <hr class="mb-2">
-                    
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>

@@ -2,23 +2,23 @@ import $ from 'jquery';
 import 'datatables.net-dt';
 
 $(document).ready(function() {
-    if ($('#transferAssetTable').length) {
-        $('#transferAssetTable thead tr:eq(0) th').each(function(i) {
+    if ($('#disposalAssetTable').length) {
+        $('#disposalAssetTable thead tr:eq(0) th').each(function(i) {
             var title = $(this).text().trim();
             var cell = $('#filter-row').children().eq(i);
-            if (i === 0 || i === 8) {
+            if (i === 0 || i === 9) {
                 return;
             }
             $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
         });
 
-        var table = $('#transferAssetTable').DataTable({
+        var table = $('#disposalAssetTable').DataTable({
             dom:  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'l><'text-sm'f>>" +
                 "<'overflow-x-auto'tr>" +
                 "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
             processing: true,
             serverSide: true,
-            ajax: "/api/transfer-asset",
+            ajax: "/api/disposal-asset",
             autoWidth: false,
             orderCellsTop: true,
             columns: [
@@ -26,9 +26,10 @@ $(document).ready(function() {
                 { data: 'form_no', name: 'form_no' },
                 { data: 'submit_date', name: 'submit_date' },
                 { data: 'department_name', name: 'department_name' },
-                { data: 'destination_location_name', name: 'destination_location_name' },
+                { data: 'nbv', name: 'nbv' },
+                { data: 'esp', name: 'esp' },
                 { data: 'sequence', name: 'sequence', render: data => data == 1 ? 'Yes' : 'No' },
-                { data: 'detail_transfers_count', name: 'detail_transfers_count' },
+                { data: 'detail_disposals_count', name: 'detail_disposals_count' },
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
@@ -43,7 +44,7 @@ $(document).ready(function() {
                 // --- Logika untuk filter per kolom ---
                 this.api().columns().every(function (index) {
                     var column = this;
-                    var cell = $('#transferAssetTable thead #filter-row').children().eq(column.index());
+                    var cell = $('#disposalAssetTable thead #filter-row').children().eq(column.index());
                     
                     if (column.settings()[0].bSearchable === false) {
                         return;
@@ -67,12 +68,57 @@ $(document).ready(function() {
                     targets: 0,
                     className: 'px-6 py-4'
                 },
+                {
+                    targets: 2,
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            if (!data) {
+                                return '-';
+                            }
+                            
+                            try {
+                                const date = new Date(data);
+                                
+                                const options = {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric'
+                                };
+
+                                return date.toLocaleDateString('id-ID', options);
+                            } catch (e) {
+                                return data;
+                            }
+                        }
+                        return data;
+                    }
+                },
+                {
+                    targets: [4, 5], 
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            let number = parseFloat(data);
+
+                            if (isNaN(number)) {
+                                return data;
+                            }
+
+                            return number.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                            });
+                        }
+                        return data;
+                    }
+                }
             ],
 
             createdRow: function( row, data, dataIndex ) {
                 $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
 
-                var statusCell = $(row).find('td:eq(7)');
+                var statusCell = $(row).find('td:eq(8)');
 
                 // Tentukan class berdasarkan nilai 'data.status'
                 let statusClass = '';

@@ -538,7 +538,7 @@
                     "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('api.disposal-asset') }}",
+                ajax: "{{ route('api.disposal-asset-find') }}",
                 autoWidth: false,
                 orderCellsTop: true,
                 columns: [

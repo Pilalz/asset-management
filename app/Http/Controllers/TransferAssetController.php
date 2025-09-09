@@ -10,6 +10,7 @@ use App\Models\Department;
 use Illuminate\Support\Facades\Auth;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class TransferAssetController extends Controller
 {
@@ -127,21 +128,25 @@ class TransferAssetController extends Controller
     public function edit(TransferAsset $transfer_asset)
     {
         $locations = Location::all();
+        $departments = Department::all();
 
-        $transfer_asset->load('approvals.user', 'department', 'ori_location', 'dest_location');
+        $transfer_asset->load('approvals.user', 'department', 'destinationLocation', 'detailTransfers');
 
-        return view('transfer-asset.edit', compact('transfer_asset', 'locations'));
+        $selectedAssetIds = $transfer_asset->detailTransfers->pluck('asset_id');
+
+        return view('transfer-asset.edit', compact('transfer_asset', 'locations', 'departments', 'selectedAssetIds'));
     }
 
     public function update(Request $request, TransferAsset $transfer_asset)
     {
         $validated = $request->validate([
-            'department_id' => 'required|exists:departments,id',
-            'asset_id' => 'required|exists:assets,id',
-            'origin_loc_id'   => 'required|exists:locations,id',
-            'destination_loc_id'   => 'required|exists:locations,id',
-            'reason'      => 'required',
-            'sequence'      => 'required',
+            'department_id'         => 'required|exists:departments,id',
+            'destination_loc_id'    => 'required|exists:locations,id',
+            'reason'                => 'required',
+            'sequence'              => 'required',
+
+            //Asset
+            'asset_ids'          => 'required|string',
 
             //Validasi Approval
             'approvals'                     => 'required|array|min:1',
@@ -152,16 +157,26 @@ class TransferAssetController extends Controller
             'approvals.0.approval_date'     => 'required|date',
         ]);
 
+        $assetIds = explode(',', $validated['asset_ids']);
+
         try {
-            DB::transaction(function () use ($validated, $transfer_asset) {
+            DB::transaction(function () use ($validated, $transfer_asset, $assetIds) {
                 $transfer_asset->update([
                     'department_id'         => $validated['department_id'],
-                    'asset_id'              => $validated['asset_id'],
-                    'origin_loc_id'         => $validated['origin_loc_id'],
                     'destination_loc_id'    => $validated['destination_loc_id'],
                     'reason'                => $validated['reason'],
                     'sequence'              => ($validated['sequence'] == 'Y') ? 1 : 0,
                 ]);
+
+                $transfer_asset->detailTransfers()->delete();
+                $assetsToTransfer = Asset::whereIn('id', $assetIds)->get();
+                foreach ($assetsToTransfer as $asset) {
+                    $transfer_asset->detailTransfers()->create([
+                        'asset_id'              => $asset->id,
+                        'origin_loc_id'         => $asset->location_id,
+                        'destination_loc_id'    => $validated['destination_loc_id'],
+                    ]);
+                }
 
                 $transfer_asset->approvals()->delete();
                 $isSequence = ($validated['sequence'] === 'Y');
@@ -181,9 +196,9 @@ class TransferAssetController extends Controller
                 $firstApprover = $transfer_asset->approvals()->orderBy('approval_order', 'asc')->first();
                 if ($firstApprover) {
                     $firstApprover->update([
-                        'status' => 'approved',
-                        'user_id' => Auth::id(),
-                        'approval_date' => now()
+                        'status'        => 'approved',
+                        'user_id'       => Auth::id(),
+                        'approval_date' => now(),
                     ]);
                 }
             });
@@ -210,7 +225,7 @@ class TransferAssetController extends Controller
     public function show(TransferAsset $transfer_asset)
     {
         // Eager load relasi untuk efisiensi
-        $transfer_asset->load('approvals.user', 'department', 'ori_location', 'dest_location', 'asset');
+        $transfer_asset->load('approvals.user', 'department', 'destinationLocation', 'detailTransfers');
         
         $canApprove = false;
         $userApprovalStatus = null;
@@ -325,20 +340,20 @@ class TransferAssetController extends Controller
         $companyId = session('active_company_id');
 
         $query = TransferAsset::withoutGlobalScope(CompanyScope::class)
-                        ->with(['dest_location', 'department'])
+                        ->with(['destinationLocation', 'department'])
                         ->withCount('detailTransfers')
                         ->where('company_id', $companyId);
 
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('destination_location_name', function($transferAsset) {
-                return $transferAsset->dest_location->name ?? '-';
+                return $transferAsset->destinationLocation->name ?? '-';
             })
             ->addColumn('department_name', function($transferAsset) {
                 return $transferAsset->department->name ?? '-';
             })
-            ->addColumn('asset_details', function($row) {
-                return $row->detail_transfers_count . ' Asset(s)';
+            ->addColumn('asset_quantity', function($transferAsset) {
+                return $transferAsset->detail_transfers_count . ' Asset(s)';
             })
             ->addColumn('action', function ($transfer_assets) {
                 return view('components.action-buttons-3-buttons', [
@@ -348,32 +363,31 @@ class TransferAssetController extends Controller
                     'deleteUrl' => route('transfer-asset.destroy', $transfer_assets->id)
                 ])->render();
             })
-            // ->filterColumn('department_name', function($query, $keyword) {
-            //     $query->whereHas('department', function($q) use ($keyword) {
-            //         $q->where('name', 'like', "%{$keyword}%");
-            //     });
-            // })
-            // ->filterColumn('location_name', function($query, $keyword) {
-            //     $query->whereHas('location', function($q) use ($keyword) {
-            //         $q->where('name', 'like', "%{$keyword}%");
-            //     });
-            // })
-            // ->orderColumn('department_name', function ($query, $order) {
-            //     $query->orderBy(
-            //         Department::select('name')
-            //             ->whereColumn('departments.id', 'transfer_assets.department_id'),
-            //         $order
-            //     );
-            // })
-            // ->orderColumn('location_name', function ($query, $order) {
-            //     $query->orderBy(
-            //         Location::select('name')
-            //             ->whereColumn('locations.id', 'transfer_assets.location_id'),
-            //         $order
-            //     );
-            // })
+            ->filterColumn('destination_location_name', function($query, $keyword) {
+                $query->whereHas('destinationLocation', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('department_name', function($query, $keyword) {
+                $query->whereHas('department', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderColumn('destination_location_name', function ($query, $order) {
+                $query->orderBy(
+                    Location::select('name')
+                        ->whereColumn('locations.id', 'transfer_assets.destination_loc_id'),
+                    $order
+                );
+            })
+            ->orderColumn('department_name', function ($query, $order) {
+                $query->orderBy(
+                    Department::select('name')
+                        ->whereColumn('departments.id', 'transfer_assets.department_id'),
+                    $order
+                );
+            })
             ->rawColumns(['action'])
             ->toJson();
-        
     }
 }

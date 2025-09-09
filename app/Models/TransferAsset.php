@@ -35,7 +35,7 @@ class TransferAsset extends Model
         return $this->belongsTo(Department::class, 'department_id');
     }
 
-    public function dest_location(): BelongsTo
+    public function destinationLocation(): BelongsTo
     {
         return $this->belongsTo(Location::class, 'destination_loc_id');
     }
@@ -61,7 +61,7 @@ class TransferAsset extends Model
 
         static::deleting(function (TransferAsset $transfer_asset) {
             // Hapus semua relasi anaknya terlebih dahulu
-            $transfer_asset->detailRegisters()->delete();
+            $transfer_asset->detailTransfers()->delete();
             $transfer_asset->approvals()->delete();
         });
     }

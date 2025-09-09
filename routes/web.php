@@ -126,6 +126,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/company-user', [CompanyUserController::class, 'datatables'])->name('api.company-user');
     Route::get('api/register-asset', [RegisterAssetController::class, 'datatables'])->name('api.register-asset');
     Route::get('api/transfer-asset', [TransferAssetController::class, 'datatables'])->name('api.transfer-asset');
+    Route::get('api/disposal-asset', [DisposalAssetController::class, 'datatables'])->name('api.disposal-asset');
 
-    Route::get('api/disposal-asset', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset');
+    Route::get('api/disposal-asset-find', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset-find');
 });

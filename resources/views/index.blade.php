@@ -1,6 +1,29 @@
 @extends('layouts.main')
 
 @section('content')
+    @push('styles')
+        <style>
+            .apexcharts-canvas .apexcharts-legend-text {
+                font-size: 12px !important;
+                color: #4B5563 !important;
+            }
+
+            .apexcharts-canvas .dark .apexcharts-legend-text .apexcharts-theme-dark {
+                color: #E5E7EB !important; /* Warna abu-abu terang */
+            }
+
+            .apexcharts-canvas .apexcharts-tooltip .apexcharts-tooltip-text-y-value, .apexcharts-canvas .apexcharts-tooltip .apexcharts-tooltip-text-y-label{
+                font-size: 14px !important;
+                font-family: inherit !important;
+                color: #111827 !important;
+            }
+            .dark .apexcharts-tooltip.apexcharts-theme-dark {
+                background: #1F2937 !important; /* Warna abu-abu sangat gelap (gray-800) */
+                border-color: #4B5563 !important; /* Warna border abu-abu (gray-600) */
+                color: #E5E7EB !important;
+            }
+        </style>
+    @endpush
     <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -44,9 +67,31 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Ambil data dari Blade
         const assetLocData = @json($assetLocData);
         const assetClassData = @json($assetClassData);
+
+        // var options = {
+        //   series: [44, 55, 13, 43, 22],
+        //   chart: {
+        //   width: 380,
+        //   type: 'pie',
+        // },
+        // labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+        // responsive: [{
+        //   breakpoint: 480,
+        //   options: {
+        //     chart: {
+        //       width: 200
+        //     },
+        //     legend: {
+        //       position: 'bottom'
+        //     }
+        //   }
+        // }]
+        // };
+
+        // var chart = new ApexCharts(document.querySelector("#assetbyclass-chart"), options);
+        // chart.render();
 
         // Opsi minimal untuk Chart Lokasi
         const minimalLocationOptions = {

@@ -155,7 +155,8 @@
                         <div class="mb-5 flex content-center">
                             <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku <span class="text-red-900">*</span></label>
                             <span> : </span>
-                            <input type="number" name="nbv" value="{{ old("disposal_asset.nbv", $disposal_asset->nbv ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="text" id="nbv-display" value="{{ old("disposal_asset.nbv", $disposal_asset->nbv ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="hidden" name="nbv" id="nbv-value" value="{{ old("disposal_asset.nbv", $disposal_asset->nbv ?? '') }}"/>
                             @error('nbv')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -164,7 +165,8 @@
                         <div class="mb-5 flex content-center">
                             <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi <span class="text-red-900">*</span></label>
                             <span> : </span>
-                            <input type="number" name="esp" value="{{ old("disposal_asset.esp", $disposal_asset->esp ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="text" id="esp-display" value="{{ old("disposal_asset.esp", $disposal_asset->esp ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="hidden" name="esp" id="esp-value" value="{{ old("disposal_asset.esp", $disposal_asset->esp ?? '') }}">
                             @error('esp')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -173,7 +175,8 @@
                         <div class="mb-5 flex content-center">
                             <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Kurs <span class="text-red-900">*</span></label>
                             <span> : </span>
-                            <input type="number" name="kurs" value="{{ old('kurs', $disposal_asset->detailDisposals->first()?->kurs) }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="text" id="kurs-display" value="{{ old('kurs', $disposal_asset->detailDisposals->first()?->kurs) }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="hidden" name="kurs" id="kurs-value" value="{{ old('kurs', $disposal_asset->detailDisposals->first()?->kurs) }}">
                             @error('kurs')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -297,7 +300,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md">
                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button> {{-- Diubah dari Submit menjadi Update --}}
@@ -355,7 +357,7 @@
                     "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('api.disposal-asset') }}",
+                ajax: "{{ route('api.disposal-asset-find') }}",
                 autoWidth: false,
                 orderCellsTop: true,
                 columns: [
@@ -534,6 +536,52 @@
                     }
                 });
             });
+        }
+        function autoFormatCurrency(visibleInput, hiddenInput) {
+            // Inisialisasi nilai awal jika ada (dari old input)
+            if (visibleInput.value) {
+                const cleanValue = visibleInput.value.replace(/[^\d]/g, '');
+                const formattedValue = new Intl.NumberFormat('en-US').format(cleanValue);
+                visibleInput.value = formattedValue;
+                hiddenInput.value = cleanValue;
+            }
+
+            visibleInput.addEventListener('input', function(e) {
+                // 1. Ambil nilai input dan hapus semua karakter selain angka
+                let cleanValue = e.target.value.replace(/[^\d]/g, '');
+
+                // 2. Simpan nilai bersih ke input tersembunyi
+                hiddenInput.value = cleanValue;
+                
+                // 3. Format nilai yang terlihat dengan pemisah ribuan
+                if (cleanValue) {
+                    const formattedValue = new Intl.NumberFormat('en-US').format(cleanValue);
+                    e.target.value = formattedValue;
+                } else {
+                    e.target.value = '';
+                }
+            });
+        }
+
+        // Terapkan fungsi ke input Nilai Value
+        const nbvDisplay = document.getElementById('nbv-display');
+        const nbvValue = document.getElementById('nbv-value');
+        if (nbvDisplay && nbvValue) {
+            autoFormatCurrency(nbvDisplay, nbvValue);
+        }
+
+        // Terapkan fungsi ke input Nilai Jual Estimasi
+        const espDisplay = document.getElementById('esp-display');
+        const espValue = document.getElementById('esp-value');
+        if (espDisplay && espValue) {
+            autoFormatCurrency(espDisplay, espValue);
+        }
+
+        // Terapkan fungsi ke input Kurs
+        const kursDisplay = document.getElementById('kurs-display');
+        const kursValue = document.getElementById('kurs-value');
+        if (kursDisplay && kursValue) {
+            autoFormatCurrency(kursDisplay, kursValue);
         }
     });
 </script>
