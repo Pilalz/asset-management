@@ -99,7 +99,7 @@
             </ul>
         </div>
 
-        <form class="max-w mx-auto" action="{{ route('transfer-asset.store') }}" method="POST">
+        <form class="max-w mx-auto" action="{{ route('transfer-asset.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div id="default-tab-content">
                 <div class="hidden rounded-b-lg" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
@@ -160,6 +160,12 @@
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alasan <span class="text-red-900">*</span></label>
                             <textarea type="text" name="reason" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"></textarea>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="attachments">Upload Lampiran</label>
+                            <input name="attachments[]" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" id="attachments" type="file" multiple>
+                            <p class="mt-1 text-sm text-gray-500">Anda bisa melampirkan lebih dari satu file, satu file maksimal 5MB.</p>
                         </div>
 
                         <div class="mb-5">

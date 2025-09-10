@@ -13,6 +13,7 @@ use App\Models\Company;
 use App\Models\DetailRegister;
 use App\Models\Approval;
 use App\Scopes\CompanyScope;
+use Illuminate\Support\Facades\Storage;
 
 class RegisterAsset extends Model
 {
@@ -57,6 +58,11 @@ class RegisterAsset extends Model
         return $this->morphMany(Approval::class, 'approvable');
     }
 
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
@@ -65,6 +71,11 @@ class RegisterAsset extends Model
             // Hapus semua relasi anaknya terlebih dahulu
             $register_asset->detailRegisters()->delete();
             $register_asset->approvals()->delete();
+
+            foreach ($register_asset->attachments as $attachment) {
+                Storage::disk('public')->delete($attachment->file_path);
+            }
+            $register_asset->attachments()->delete();
         });
     }
 }

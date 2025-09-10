@@ -1,6 +1,21 @@
 <x-guest-layout>
+    @push('styles')
+        <style>
+            p{
+                font-size:12px !important;
+                color:gray !important;
+            }
+        </style>
+    @endpush
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
+
+        <div class="flex flex-col text-center justify-center mb-2">
+            <img src="{{ asset('images/logo.svg') }}" class="h-8 me-3 mt-2" alt="Asset Management Logo" />
+            <h1 class="font-bold text-lg mt-4">Welcome To Asset Management</h1>
+            <p class="font-xs">Create your account.</p>
+        </div>
 
         <!-- Name -->
         <div>
@@ -40,13 +55,16 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
+            <x-primary-button class="w-full inline-flex items-center justify-center px-4 py-2 bg-gray-700 border border-gray-300 rounded-md font-semibold text-xs shadow-sm hover:bg-gray-900 transition ease-in-out duration-150">
                 {{ __('Register') }}
             </x-primary-button>
+        </div>
+
+        <div class="text-sm text-center text-gray-500 mt-4">
+            Already registered?
+            <a class="font-medium text-blue-600 hover:underline dark:text-blue-500" href="{{ route('login') }}">
+                {{ __('Sign in') }}
+            </a>
         </div>
     </form>
 </x-guest-layout>

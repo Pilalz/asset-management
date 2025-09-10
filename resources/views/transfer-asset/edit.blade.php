@@ -86,7 +86,7 @@
     @endif
 
     <div class="p-5">
-        <form class="max-w mx-auto" action="{{ route('transfer-asset.update', $transfer_asset->id) }}" method="POST">
+        <form class="max-w mx-auto" action="{{ route('transfer-asset.update', $transfer_asset->id) }}" method="POST" enctype="multipart/form-data">
             <div class="border-b bg-white rounded-t-lg border-gray-200 dark:border-gray-700">
                 <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
                     <li class="me-2" role="presentation">
@@ -164,6 +164,27 @@
                                 @error('reason')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
+                            </div>
+
+                            <div class="mb-5">
+                                <label class="block mb-2 text-sm font-medium">Lampiran yang Sudah Ada</label>
+                                <div id="existing-attachments-list">
+                                    @foreach($transfer_asset->attachments as $attachment)
+                                        <div class="flex items-center justify-between p-2 border-b" id="attachment-{{ $attachment->id }}">
+                                            <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
+                                                {{ $attachment->original_filename }}
+                                            </a>
+                                            <button type="button" class="text-red-600 hover:text-red-900 remove-attachment-btn" data-id="{{ $attachment->id }}">Hapus</button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                {{-- Input tersembunyi untuk menampung ID yang akan dihapus --}}
+                                <div id="deleted-attachments-container"></div> 
+                            </div>
+
+                            <div class="mb-5">
+                                <label class="block mb-2 text-sm font-medium" for="attachments">Tambah Lampiran Baru</label>
+                                <input name="attachments[]" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" type="file" multiple>
                             </div>
 
                             <div class="mb-5">
@@ -287,6 +308,16 @@
                 </div>
 
                 <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md">
+                    @if ($errors->any())
+                        <div class="mb-4 p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">
+                            <span class="font-medium">Validation Failed!</span> Please check the errors below:
+                            <ul class="mt-1.5 list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
                     <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
                 </div>
@@ -523,6 +554,23 @@
                 });
             });
         }
+
+        document.getElementById('existing-attachments-list').addEventListener('click', function (e) {
+            if (e.target && e.target.matches('button.remove-attachment-btn')) {
+                const attachmentId = e.target.getAttribute('data-id');
+                const attachmentRow = document.getElementById('attachment-' + attachmentId);
+
+                // Buat input hidden untuk ID yang dihapus
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'deleted_attachments[]';
+                hiddenInput.value = attachmentId;
+                document.getElementById('deleted-attachments-container').appendChild(hiddenInput);
+
+                // Sembunyikan baris dari tampilan
+                attachmentRow.style.display = 'none';
+            }
+        });
     });
 </script>
 @endpush

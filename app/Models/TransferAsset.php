@@ -10,6 +10,7 @@ use App\Models\Location;
 use App\Models\Company;
 use App\Models\DetailTransfer;
 use App\Scopes\CompanyScope;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -50,6 +51,11 @@ class TransferAsset extends Model
         return $this->morphMany(Approval::class, 'approvable');
     }
 
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
     public function detailTransfers(): HasMany
     {
         return $this->hasMany(DetailTransfer::class, 'transfer_asset_id', 'id');
@@ -63,6 +69,11 @@ class TransferAsset extends Model
             // Hapus semua relasi anaknya terlebih dahulu
             $transfer_asset->detailTransfers()->delete();
             $transfer_asset->approvals()->delete();
+
+            foreach ($transfer_asset->attachments as $attachment) {
+                Storage::disk('public')->delete($attachment->file_path);
+            }
+            $transfer_asset->attachments()->delete();
         });
     }
 }

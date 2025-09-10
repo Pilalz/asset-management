@@ -20,6 +20,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\DepreciationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PersonInChargeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', 'onboard')->name('index');
         Route::get('/create', 'createCompany')->name('create');
         Route::post('/store', 'storeCompany')->name('store');
+        Route::get('/profile', 'editProfile')->name('edit');
+        Route::patch('/profile', 'update')->name('update');
+        Route::put('/profile/signature', 'updateSignature')->name('updateSignature');
+        Route::delete('/profile', 'destroy')->name('destroy');
     });
 
     // --- Core Application Resources ---
@@ -94,6 +99,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('disposal-asset', DisposalAssetController::class);
     Route::resource('company-user', CompanyUserController::class);
     Route::resource('company', CompanyController::class);
+    Route::resource('person-in-charge', PersonInChargeController::class);
 
     //Start Depre
     Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
@@ -127,6 +133,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/register-asset', [RegisterAssetController::class, 'datatables'])->name('api.register-asset');
     Route::get('api/transfer-asset', [TransferAssetController::class, 'datatables'])->name('api.transfer-asset');
     Route::get('api/disposal-asset', [DisposalAssetController::class, 'datatables'])->name('api.disposal-asset');
+    Route::get('api/person-in-charge', [PersonInChargeController::class, 'datatables'])->name('api.person-in-charge');
 
     Route::get('api/disposal-asset-find', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset-find');
 });

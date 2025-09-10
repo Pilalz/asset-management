@@ -8,7 +8,9 @@ use App\Models\Department;
 use App\Models\Location;
 use App\Models\AssetClass;
 use App\Models\Asset;
+use App\Models\Attachment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\DB;
@@ -58,6 +60,9 @@ class DisposalAssetController extends Controller
             //Validasi Detail Asset
             'asset_ids'     => 'required|string',
 
+            //Validasi Attachment
+            'attachments.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,xlsx|max:5120',
+
             //Validasi Approval
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
@@ -92,7 +97,7 @@ class DisposalAssetController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($validated, $assetIds, $approvalsToStore) {
+            DB::transaction(function () use ($validated, $request, $assetIds, $approvalsToStore) {
 
                 $assetsToDispose = Asset::whereIn('id', $assetIds)->get()->keyBy('id');
 
@@ -119,6 +124,19 @@ class DisposalAssetController extends Controller
                                 'njab'     => $asset->net_book_value,
                             ]);
                         }
+                    }
+                }
+
+                if ($request->hasFile('attachments')) {
+                    foreach ($request->file('attachments') as $file) {
+                        // Simpan file ke storage/app/public/attachments
+                        $filePath = $file->store('attachments', 'public');
+                        
+                        // Buat record di tabel attachments
+                        $disposalAsset->attachments()->create([
+                            'file_path' => $filePath,
+                            'original_filename' => $file->getClientOriginalName(),
+                        ]);
                     }
                 }
 
@@ -160,6 +178,11 @@ class DisposalAssetController extends Controller
             //Validasi Detail Asset
             'asset_ids'     => 'required|string',
 
+            //Validasi Attachments
+            'attachments.*' => 'nullable|file|mimes:pdf,jpg,png,xlsx|max:5120',
+            'deleted_attachments' => 'nullable|array',
+            'deleted_attachments.*' => 'integer|exists:attachments,id',
+
             //Validasi Approval
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
@@ -172,7 +195,7 @@ class DisposalAssetController extends Controller
         $assetIds = explode(',', $validated['asset_ids']);
 
         try {
-            DB::transaction(function () use ($validated, $assetIds, $disposalAsset) {
+            DB::transaction(function () use ($validated, $request, $assetIds, $disposalAsset) {
                 $disposalAsset->update([
                     'department_id' => $validated['department_id'],
                     'reason'        => $validated['reason'],
@@ -195,6 +218,25 @@ class DisposalAssetController extends Controller
                             'asset_id' => $asset->id,
                             'kurs'     => $validated['kurs'],
                             'njab'     => $asset->net_book_value,
+                        ]);
+                    }
+                }
+
+                if (!empty($validated['deleted_attachments'])) {
+                    $attachmentsToDelete = Attachment::find($validated['deleted_attachments']);
+                    foreach ($attachmentsToDelete as $attachment) {
+                        Storage::disk('public')->delete($attachment->file_path);
+                        $attachment->delete();
+                    }
+                }
+
+                // 2. Tambah lampiran baru
+                if ($request->hasFile('attachments')) {
+                    foreach ($request->file('attachments') as $file) {
+                        $filePath = $file->store('attachments', 'public');
+                        $disposalAsset->attachments()->create([
+                            'file_path' => $filePath,
+                            'original_filename' => $file->getClientOriginalName(),
                         ]);
                     }
                 }
@@ -236,7 +278,7 @@ class DisposalAssetController extends Controller
     public function show(DisposalAsset $disposal_asset)
     {
         // Eager load relasi untuk efisiensi
-        $disposal_asset->load('approvals.user', 'department', 'detailDisposals');
+        $disposal_asset->load('approvals.user', 'department', 'detailDisposals', 'attachments');
         
         $canApprove = false;
         $userApprovalStatus = null;

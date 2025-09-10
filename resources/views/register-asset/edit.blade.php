@@ -35,7 +35,7 @@
 
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg m-5 bg-white dark:bg-gray-900">
-            <form class="max-w mx-auto" action="{{ route('register-asset.update', $register_asset->id) }}" method="POST">
+            <form class="max-w mx-auto" action="{{ route('register-asset.update', $register_asset->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -208,6 +208,27 @@
                     @error('polish_no')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                </div>
+
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium">Lampiran yang Sudah Ada</label>
+                    <div id="existing-attachments-list">
+                        @foreach($register_asset->attachments as $attachment)
+                            <div class="flex items-center justify-between p-2 border-b" id="attachment-{{ $attachment->id }}">
+                                <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-600 hover:underline">
+                                    {{ $attachment->original_filename }}
+                                </a>
+                                <button type="button" class="text-red-600 hover:text-red-900 remove-attachment-btn" data-id="{{ $attachment->id }}">Hapus</button>
+                            </div>
+                        @endforeach
+                    </div>
+                    {{-- Input tersembunyi untuk menampung ID yang akan dihapus --}}
+                    <div id="deleted-attachments-container"></div> 
+                </div>
+
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium" for="attachments">Tambah Lampiran Baru</label>
+                    <input name="attachments[]" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" type="file" multiple>
                 </div>
 
                 <div class="mb-5">
@@ -548,6 +569,23 @@
         initializeRows();
         toggleCommissionDateVisibility();
         updateRowNumbers();
+
+        document.getElementById('existing-attachments-list').addEventListener('click', function (e) {
+            if (e.target && e.target.matches('button.remove-attachment-btn')) {
+                const attachmentId = e.target.getAttribute('data-id');
+                const attachmentRow = document.getElementById('attachment-' + attachmentId);
+
+                // Buat input hidden untuk ID yang dihapus
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'deleted_attachments[]';
+                hiddenInput.value = attachmentId;
+                document.getElementById('deleted-attachments-container').appendChild(hiddenInput);
+
+                // Sembunyikan baris dari tampilan
+                attachmentRow.style.display = 'none';
+            }
+        });
     });
 </script>
 @endpush

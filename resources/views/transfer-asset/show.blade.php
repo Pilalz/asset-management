@@ -155,6 +155,23 @@
             </div>
 
             <div class="mb-5">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Lampiran</label>
+                @if($transfer_asset->attachments->isNotEmpty())
+                    <ul class="list-disc list-inside pl-4">
+                        @foreach($transfer_asset->attachments as $attachment)
+                            <li>
+                                <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
+                                    {{ $attachment->original_filename }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="text-sm text-gray-500">Tidak ada lampiran.</p>
+                @endif
+            </div>
+
+            <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval List </label>
                 <div class="border-2 border-black rounded-lg p-4">
                     <div class="flex flex-row mb-2">

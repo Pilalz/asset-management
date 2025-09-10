@@ -7,8 +7,10 @@ use App\Models\TransferAsset;
 use App\Models\Asset;
 use App\Models\Location;
 use App\Models\Department;
+use App\Models\Attachment;
 use Illuminate\Support\Facades\Auth;
 use App\Scopes\CompanyScope;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -55,6 +57,9 @@ class TransferAssetController extends Controller
             //Validasi Detail Asset
             'asset_ids'     => 'required|string',
 
+            //Validasi Attachments
+            'attachments.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,xlsx|max:5120', // Maks 5MB per file
+
             //Validasi Approval
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
@@ -89,7 +94,7 @@ class TransferAssetController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($validated, $assetIds, $approvalsToStore) {
+            DB::transaction(function () use ($validated, $assetIds, $approvalsToStore, $request) {
 
                 $assetsToTransfer = Asset::whereIn('id', $assetIds)->get();
 
@@ -110,6 +115,19 @@ class TransferAssetController extends Controller
                         'origin_loc_id'         => $asset->location_id,
                         'destination_loc_id'    => $validated['destination_loc_id'],
                     ]);
+                }
+
+                if ($request->hasFile('attachments')) {
+                    foreach ($request->file('attachments') as $file) {
+                        // Simpan file ke storage/app/public/attachments
+                        $filePath = $file->store('attachments', 'public');
+                        
+                        // Buat record di tabel attachments
+                        $transferAsset->attachments()->create([
+                            'file_path' => $filePath,
+                            'original_filename' => $file->getClientOriginalName(),
+                        ]);
+                    }
                 }
 
                 foreach ($approvalsToStore as $approvalData) {
@@ -142,11 +160,16 @@ class TransferAssetController extends Controller
         $validated = $request->validate([
             'department_id'         => 'required|exists:departments,id',
             'destination_loc_id'    => 'required|exists:locations,id',
-            'reason'                => 'required',
+            'reason'                => 'required|string',
             'sequence'              => 'required',
 
             //Asset
             'asset_ids'          => 'required|string',
+
+            //Validasi Attachments
+            'attachments.*' => 'nullable|file|mimes:pdf,jpg,png,xlsx|max:5120',
+            'deleted_attachments' => 'nullable|array',
+            'deleted_attachments.*' => 'integer|exists:attachments,id',
 
             //Validasi Approval
             'approvals'                     => 'required|array|min:1',
@@ -160,7 +183,7 @@ class TransferAssetController extends Controller
         $assetIds = explode(',', $validated['asset_ids']);
 
         try {
-            DB::transaction(function () use ($validated, $transfer_asset, $assetIds) {
+            DB::transaction(function () use ($validated, $request, $transfer_asset, $assetIds) {
                 $transfer_asset->update([
                     'department_id'         => $validated['department_id'],
                     'destination_loc_id'    => $validated['destination_loc_id'],
@@ -176,6 +199,24 @@ class TransferAssetController extends Controller
                         'origin_loc_id'         => $asset->location_id,
                         'destination_loc_id'    => $validated['destination_loc_id'],
                     ]);
+                }
+
+                if (!empty($validated['deleted_attachments'])) {
+                    $attachmentsToDelete = Attachment::find($validated['deleted_attachments']);
+                    foreach ($attachmentsToDelete as $attachment) {
+                        Storage::disk('public')->delete($attachment->file_path);
+                        $attachment->delete();
+                    }
+                }
+
+                if ($request->hasFile('attachments')) {
+                    foreach ($request->file('attachments') as $file) {
+                        $filePath = $file->store('attachments', 'public');
+                        $transfer_asset->attachments()->create([
+                            'file_path' => $filePath,
+                            'original_filename' => $file->getClientOriginalName(),
+                        ]);
+                    }
                 }
 
                 $transfer_asset->approvals()->delete();
@@ -225,7 +266,7 @@ class TransferAssetController extends Controller
     public function show(TransferAsset $transfer_asset)
     {
         // Eager load relasi untuk efisiensi
-        $transfer_asset->load('approvals.user', 'department', 'destinationLocation', 'detailTransfers');
+        $transfer_asset->load('approvals.user', 'department', 'destinationLocation', 'detailTransfers', 'attachments');
         
         $canApprove = false;
         $userApprovalStatus = null;

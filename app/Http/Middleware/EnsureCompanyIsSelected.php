@@ -33,7 +33,7 @@ class EnsureCompanyIsSelected
             // 3. JIKA PENGGUNA TIDAK PUNYA PERUSAHAAN AKTIF
             else {
                 // Dan dia TIDAK sedang berada di halaman onboard...
-                if (!$request->routeIs('onboard.*')) {
+                if (!$request->routeIs('onboard.*', 'profile.destroy', 'profile.updateSignature', 'password.update', 'profile.update', 'logout')) {
                      // ...maka paksa arahkan ke halaman onboard.
                     return redirect()->route('onboard.index');
                 }

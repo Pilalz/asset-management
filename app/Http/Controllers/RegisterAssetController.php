@@ -11,6 +11,8 @@ use App\Models\AssetClass;
 use App\Models\AssetSubClass;
 use App\Models\Approval;
 use App\Models\CompanyUser;
+use App\Models\Attachment;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -68,6 +70,9 @@ class RegisterAssetController extends Controller
             'assets.*.specification'    => 'required|string',
             'assets.*.asset_name_id'    => 'required|exists:asset_names,id',
 
+            //Validasi Attachments
+            'attachments.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,xlsx|max:5120', // Maks 5MB per file
+
             //Validasi Approval
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
@@ -100,7 +105,7 @@ class RegisterAssetController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($validated, $approvalsToStore) {
+            DB::transaction(function () use ($validated, $request, $approvalsToStore) {
                 $registerAsset = RegisterAsset::create([
                     'form_no'       => $validated['form_no'],
                     'department_id' => $validated['department_id'],
@@ -115,6 +120,19 @@ class RegisterAssetController extends Controller
 
                 foreach ($validated['assets'] as $assetData) {
                     $registerAsset->detailRegisters()->create($assetData);
+                }
+
+                if ($request->hasFile('attachments')) {
+                    foreach ($request->file('attachments') as $file) {
+                        // Simpan file ke storage/app/public/attachments
+                        $filePath = $file->store('attachments', 'public');
+                        
+                        // Buat record di tabel attachments
+                        $registerAsset->attachments()->create([
+                            'file_path' => $filePath,
+                            'original_filename' => $file->getClientOriginalName(),
+                        ]);
+                    }
                 }
 
                 foreach ($approvalsToStore as $approvalData) {
@@ -159,6 +177,11 @@ class RegisterAssetController extends Controller
             'assets.*.specification'    => 'required|string',
             'assets.*.asset_name_id'    => 'required|exists:asset_names,id',
 
+            //Validasi Attachments
+            'attachments.*' => 'nullable|file|mimes:pdf,jpg,png,xlsx|max:5120',
+            'deleted_attachments' => 'nullable|array',
+            'deleted_attachments.*' => 'integer|exists:attachments,id',
+
             //Validasi Approval
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
@@ -169,7 +192,7 @@ class RegisterAssetController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($validated, $registerAsset) {
+            DB::transaction(function () use ($validated, $request, $registerAsset) {
                 $registerAsset->update([
                     'department_id' => $validated['department_id'],
                     'location_id'   => $validated['location_id'],
@@ -183,6 +206,25 @@ class RegisterAssetController extends Controller
                 if (isset($validated['assets'])) {
                     foreach ($validated['assets'] as $assetData) {
                         $registerAsset->detailRegisters()->create($assetData);
+                    }
+                }
+
+                if (!empty($validated['deleted_attachments'])) {
+                    $attachmentsToDelete = Attachment::find($validated['deleted_attachments']);
+                    foreach ($attachmentsToDelete as $attachment) {
+                        Storage::disk('public')->delete($attachment->file_path);
+                        $attachment->delete();
+                    }
+                }
+
+                // 2. Tambah lampiran baru
+                if ($request->hasFile('attachments')) {
+                    foreach ($request->file('attachments') as $file) {
+                        $filePath = $file->store('attachments', 'public');
+                        $registerAsset->attachments()->create([
+                            'file_path' => $filePath,
+                            'original_filename' => $file->getClientOriginalName(),
+                        ]);
                     }
                 }
 
@@ -233,7 +275,7 @@ class RegisterAssetController extends Controller
     public function show(RegisterAsset $register_asset)
     {
         // Eager load relasi untuk efisiensi
-        $register_asset->load('approvals.user', 'department', 'location', 'detailRegisters.assetName.assetSubClass.assetClass');
+        $register_asset->load('approvals.user', 'department', 'location', 'detailRegisters.assetName.assetSubClass.assetClass', 'attachments');
         
         $canApprove = false;
         $userApprovalStatus = null;

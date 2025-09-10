@@ -89,7 +89,7 @@
 
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
-            <form class="max-w mx-auto" action="{{ route('register-asset.store') }}" method="POST">
+            <form class="max-w mx-auto" action="{{ route('register-asset.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-5 flex content-center">
@@ -261,6 +261,12 @@
                     @error('polish_no')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                </div>
+
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="attachments">Upload Lampiran</label>
+                    <input name="attachments[]" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" id="attachments" type="file" multiple>
+                    <p class="mt-1 text-sm text-gray-500">Anda bisa melampirkan lebih dari satu file, satu file maksimal 5MB.</p>
                 </div>
 
                 <div class="mb-5">
