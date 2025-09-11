@@ -9,6 +9,7 @@ use App\Models\Location;
 use App\Models\AssetClass;
 use App\Models\Asset;
 use App\Models\Attachment;
+use App\Models\PersonInCharge;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -18,16 +19,15 @@ use Illuminate\Support\Facades\DB;
 class DisposalAssetController extends Controller
 {
     public function index()
-    {
-        $disposalassets = DisposalAsset::withCount('detailDisposals')->paginate(25);
-        
-        return view('disposal-asset.index', compact('disposalassets'));
+    {   
+        return view('disposal-asset.index');
     }
 
     public function create()
     {
         $departments = Department::all();
         $assetclasses = AssetClass::all();
+        $personsInCharge = PersonInCharge::all();
 
         $lastDisposalAsset = DisposalAsset::latest('id')->first();
         $seq = 1;
@@ -40,7 +40,7 @@ class DisposalAssetController extends Controller
         $formattedSeq = str_pad($seq, 5, '0', STR_PAD_LEFT);
         $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq ;
         
-        return view('disposal-asset.create', compact('departments', 'assetclasses', 'form_no'));
+        return view('disposal-asset.create', compact('departments', 'assetclasses', 'form_no', 'personsInCharge'));
     }
 
     public function store(Request $request)
@@ -67,7 +67,7 @@ class DisposalAssetController extends Controller
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
             'approvals.*.role'              => 'required|string|max:255',
-            'approvals.0.user_id'           => 'required|string|max:255',
+            'approvals.*.pic_id'           => 'required|string|max:255',
             'approvals.*.status'            => 'required|string|max:255',
             'approvals.0.approval_date'     => 'required|date',
         ]);
@@ -83,15 +83,12 @@ class DisposalAssetController extends Controller
                 $order = $index + 1;
             }
 
-            // Yang pertama ('Submitted by') otomatis approved
-            $isFirstApprover = ($index === 0);
-
             $approvalsToStore[] = [
                 'approval_action'   => $approvalData['approval_action'],
                 'role'              => $approvalData['role'],
-                'user_id'           => $isFirstApprover ? $approvalData['user_id'] : null,
-                'status'            => $isFirstApprover ? 'approved' : 'pending',
-                'approval_date'     => $isFirstApprover ? now() : null,
+                'pic_id'            => $approvalData['pic_id'],
+                'status'            => 'pending',
+                'approval_date'     => null,
                 'approval_order'    => $order,
             ];
         }
@@ -156,12 +153,13 @@ class DisposalAssetController extends Controller
     public function edit(DisposalAsset $disposal_asset)
     {
         $departments = Department::all();
+        $personsInCharge = PersonInCharge::all();
 
-        $disposal_asset->load('approvals.user', 'department', 'detailDisposals');
+        $disposal_asset->load('approvals.user', 'approvals.pic', 'department', 'detailDisposals');
 
         $selectedAssetIds = $disposal_asset->detailDisposals->pluck('asset_id');
 
-        return view('disposal-asset.edit', compact('disposal_asset', 'departments', 'selectedAssetIds'));
+        return view('disposal-asset.edit', compact('disposal_asset', 'departments', 'selectedAssetIds', 'personsInCharge'));
     }
 
     public function update(Request $request, DisposalAsset $disposalAsset)
@@ -187,9 +185,10 @@ class DisposalAssetController extends Controller
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
             'approvals.*.role'              => 'required|string|max:255',
-            'approvals.0.user_id'           => 'required|string|max:255',
+            'approvals.*.pic_id'            => 'required|string|max:255',
             'approvals.*.status'            => 'required|string|max:255',
-            'approvals.0.approval_date'     => 'required|date',
+            'approvals.*.approval_date'     => 'nullable|date',
+            'approvals.*.user_id'           => 'nullable',
         ]);
 
         $assetIds = explode(',', $validated['asset_ids']);
@@ -246,12 +245,13 @@ class DisposalAssetController extends Controller
                 foreach ($validated['approvals'] as $index => $approvalData) {
                     $isFirstApprover = ($index === 0);
                     $disposalAsset->approvals()->create([
-                        'approval_action'             => $approvalData['approval_action'],
-                        'role'     => $approvalData['role'],
+                        'approval_action'   => $approvalData['approval_action'],
+                        'role'              => $approvalData['role'],
                         'approval_order'    => $isSequence ? ($index + 1) : 1,
-                        'status'            => $isFirstApprover ? 'approved' : 'pending',
-                        'user_id' => $isFirstApprover ? Auth::id() : null,
-                        'approval_date'         => $isFirstApprover ? now() : null,
+                        'status'            => $approvalData['status'],
+                        'pic_id'            => $approvalData['pic_id'],
+                        'approval_date'     => $approvalData['approval_date'],
+                        'user_id'           => $approvalData['user_id'],
                     ]);
                 }
             });
@@ -278,7 +278,7 @@ class DisposalAssetController extends Controller
     public function show(DisposalAsset $disposal_asset)
     {
         // Eager load relasi untuk efisiensi
-        $disposal_asset->load('approvals.user', 'department', 'detailDisposals', 'attachments');
+        $disposal_asset->load('approvals.pic', 'department', 'detailDisposals', 'attachments');
         
         $canApprove = false;
         $userApprovalStatus = null;
@@ -304,7 +304,7 @@ class DisposalAssetController extends Controller
                 }
 
                 // Cek apakah user sudah pernah approve
-                if ($disposal_asset->approvals()->where('user_id', $user->id)->exists()) {
+                if ($disposal_asset->approvals()->where('status', 'approved')->where('user_id', $user->id)->exists()) {
                     $canApprove = false; // Override, pastikan tidak bisa approve dua kali
                     $userApprovalStatus = 'Anda sudah menyetujui formulir ini.';
                 }
@@ -347,8 +347,8 @@ class DisposalAssetController extends Controller
                 if ($approval) {
                     $approval->update([
                         'status' => 'approved',
-                        'user_id' => $user->id,
                         'approval_date' => now(),
+                        'user_id' => $user->id,
                     ]);
                 } else {
                     throw new \Exception("Approval yang valid tidak ditemukan untuk peran Anda.");

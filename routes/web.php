@@ -21,6 +21,7 @@ use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\DepreciationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PersonInChargeController;
+use App\Http\Controllers\InsuredController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +114,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
     //Start Profile
     Route::put('/profile/signature', [ProfileController::class, 'updateSignature'])->name('profile.updateSignature');
+    //Start Insured
+    Route::get('/insured', [InsuredController::class, 'index'])->name('insured.index');
 
     // --- Import Data ---
     Route::post('/asset-class/import', [AssetClassController::class, 'importExcel'])->name('asset-class.import');
@@ -134,6 +137,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/transfer-asset', [TransferAssetController::class, 'datatables'])->name('api.transfer-asset');
     Route::get('api/disposal-asset', [DisposalAssetController::class, 'datatables'])->name('api.disposal-asset');
     Route::get('api/person-in-charge', [PersonInChargeController::class, 'datatables'])->name('api.person-in-charge');
+    Route::get('api/insured', [InsuredController::class, 'datatables'])->name('api.insured');
 
     Route::get('api/disposal-asset-find', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset-find');
 });

@@ -12,6 +12,7 @@ use App\Models\AssetSubClass;
 use App\Models\Approval;
 use App\Models\CompanyUser;
 use App\Models\Attachment;
+use App\Models\PersonInCharge;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -24,9 +25,7 @@ class RegisterAssetController extends Controller
 {
     public function index()
     {
-        $registerassets = RegisterAsset::withCount('detailRegisters')->paginate(25);
-
-        return view('register-asset.index', compact('registerassets'));
+        return view('register-asset.index');
     }
 
     public function create()
@@ -34,6 +33,7 @@ class RegisterAssetController extends Controller
         $locations = Location::all();
         $departments = Department::all();
         $assetclasses = AssetClass::all();
+        $personsInCharge = PersonInCharge::all();
 
         $lastRegisterAsset = RegisterAsset::latest('id')->first();
         $seq = 1;
@@ -46,7 +46,7 @@ class RegisterAssetController extends Controller
         $formattedSeq = str_pad($seq, 5, '0', STR_PAD_LEFT);
         $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq ;
         
-        return view('register-asset.create', compact('locations', 'departments', 'assetclasses', 'form_no'));
+        return view('register-asset.create', compact('locations', 'departments', 'assetclasses', 'form_no', 'personsInCharge'));
     }
 
     public function store(Request $request)
@@ -77,7 +77,7 @@ class RegisterAssetController extends Controller
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
             'approvals.*.role'              => 'required|string|max:255',
-            'approvals.0.user_id'           => 'required|string|max:255',
+            'approvals.*.pic_id'           => 'required|string|max:255',
             'approvals.*.status'            => 'required|string|max:255',
             'approvals.0.approval_date'     => 'required|date',
         ]);
@@ -91,15 +91,12 @@ class RegisterAssetController extends Controller
                 $order = $index + 1;
             }
 
-            // Yang pertama ('Submitted by') otomatis approved
-            $isFirstApprover = ($index === 0);
-
             $approvalsToStore[] = [
                 'approval_action'   => $approvalData['approval_action'],
                 'role'              => $approvalData['role'],
-                'user_id'           => $isFirstApprover ? $approvalData['user_id'] : null,
-                'status'            => $isFirstApprover ? 'approved' : 'pending',
-                'approval_date'     => $isFirstApprover ? now() : null,
+                'pic_id'            => $approvalData['pic_id'],
+                'status'            => 'pending',
+                'approval_date'     => null,
                 'approval_order'    => $order,
             ];
         }
@@ -153,10 +150,11 @@ class RegisterAssetController extends Controller
         $locations = Location::all();
         $departments = Department::all();
         $assetclasses = AssetClass::all();
+        $personsInCharge = PersonInCharge::all();
 
-        $register_asset->load('approvals.user', 'department', 'location', 'detailRegisters.assetName.assetSubClass.assetClass');
+        $register_asset->load('approvals.user', 'approvals.pic', 'department', 'location', 'detailRegisters.assetName.assetSubClass.assetClass');
 
-        return view('register-asset.edit', compact('register_asset', 'locations', 'departments', 'assetclasses'));
+        return view('register-asset.edit', compact('register_asset', 'locations', 'departments', 'assetclasses', 'personsInCharge'));
     }
 
     public function update(Request $request, RegisterAsset $registerAsset)
@@ -186,9 +184,11 @@ class RegisterAssetController extends Controller
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
             'approvals.*.role'              => 'required|string|max:255',
-            'approvals.0.user_id'           => 'required|string|max:255',
+            'approvals.*.pic_id'            => 'required|string|max:255',
             'approvals.*.status'            => 'required|string|max:255',
-            'approvals.0.approval_date'     => 'required|date',
+            'approvals.*.approval_date'     => 'nullable|date',
+            'approvals.*.user_id'           => 'nullable',
+
         ]);
 
         try {
@@ -237,18 +237,10 @@ class RegisterAssetController extends Controller
                         'approval_action'   => $approvalData['approval_action'],
                         'role'              => $approvalData['role'],
                         'approval_order'    => $order,
-                        'status'            => 'pending',
-                        'user_id'           => null,
-                        'approval_date'     => null,
-                    ]);
-                }
-                
-                $firstApprover = $registerAsset->approvals()->orderBy('approval_order', 'asc')->first();
-                if ($firstApprover) {
-                    $firstApprover->update([
-                        'status' => 'approved',
-                        'user_id' => Auth::id(),
-                        'approval_date' => now()
+                        'status'            => $approvalData['status'],
+                        'pic_id'            => $approvalData['pic_id'],
+                        'approval_date'     => $approvalData['approval_date'],
+                        'user_id'           => $approvalData['user_id'],
                     ]);
                 }
             });
@@ -275,7 +267,7 @@ class RegisterAssetController extends Controller
     public function show(RegisterAsset $register_asset)
     {
         // Eager load relasi untuk efisiensi
-        $register_asset->load('approvals.user', 'department', 'location', 'detailRegisters.assetName.assetSubClass.assetClass', 'attachments');
+        $register_asset->load('approvals.pic', 'department', 'location', 'detailRegisters.assetName.assetSubClass.assetClass', 'attachments');
         
         $canApprove = false;
         $userApprovalStatus = null;
@@ -301,7 +293,7 @@ class RegisterAssetController extends Controller
                 }
 
                 // Cek apakah user sudah pernah approve
-                if ($register_asset->approvals()->where('user_id', $user->id)->exists()) {
+                if ($register_asset->approvals()->where('status', 'approved')->where('user_id', $user->id)->exists()) {
                     $canApprove = false; // Override, pastikan tidak bisa approve dua kali
                     $userApprovalStatus = 'Anda sudah menyetujui formulir ini.';
                 }
@@ -348,9 +340,8 @@ class RegisterAssetController extends Controller
                 if ($approval) {
                     $approval->update([
                         'status' => 'approved',
-                        'user_id' => $user->id,
-                        'signature_image'   => $user->signature,
                         'approval_date' => now(),
+                        'user_id' => $user->id,
                     ]);
                 } else {
                     throw new \Exception("Approval yang valid tidak ditemukan untuk peran Anda.");
