@@ -106,16 +106,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
     //Start Register
     Route::post('/register-asset/{register_asset}/approve', [RegisterAssetController::class, 'approve'])->name('register-asset.approve');
+    Route::get('/register-asset/{register_asset}/export-pdf', [RegisterAssetController::class, 'exportPdf'])->name('register-asset.exportPdf');
     //Start Transfer
     Route::post('/transfer-asset/{transfer_asset}/approve', [TransferAssetController::class, 'approve'])->name('transfer-asset.approve');
+    Route::get('/transfer-asset/{transfer_asset}/export-pdf', [TransferAssetController::class, 'exportPdf'])->name('transfer-asset.exportPdf');
     //Start Diposal
     Route::post('/disposal-asset/{disposal_asset}/approve', [DisposalAssetController::class, 'approve'])->name('disposal-asset.approve');
+    Route::get('/disposal-asset/{disposal_asset}/export-pdf', [DisposalAssetController::class, 'exportPdf'])->name('disposal-asset.exportPdf');
     //Start Company
     Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
     //Start Profile
     Route::put('/profile/signature', [ProfileController::class, 'updateSignature'])->name('profile.updateSignature');
     //Start Insured
     Route::get('/insured', [InsuredController::class, 'index'])->name('insured.index');
+    Route::get('/insured/show/{register_asset}', [InsuredController::class, 'show'])->name('insured.show');
 
     // --- Import Data ---
     Route::post('/asset-class/import', [AssetClassController::class, 'importExcel'])->name('asset-class.import');

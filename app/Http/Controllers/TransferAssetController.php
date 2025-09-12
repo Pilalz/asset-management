@@ -9,11 +9,15 @@ use App\Models\Location;
 use App\Models\Department;
 use App\Models\Attachment;
 use App\Models\PersonInCharge;
+
 use Illuminate\Support\Facades\Auth;
-use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+
+use App\Scopes\CompanyScope;
+
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransferAssetController extends Controller
 {
@@ -424,5 +428,25 @@ class TransferAssetController extends Controller
             })
             ->rawColumns(['action'])
             ->toJson();
+    }
+
+    public function exportPdf(TransferAsset $transfer_asset)
+    {
+        $transfer_asset->load(
+            'department', 
+            'destinationLocation', 
+            'detailTransfers', 
+            'approvals.user', 
+            'approvals.pic',
+            'company'
+        );
+
+        $pdf = Pdf::loadView('transfer-asset.pdf', ['transfer_asset' => $transfer_asset]);
+
+        $pdf->setPaper('a4', 'portrait');
+
+        $safeFilename = str_replace('/', '-', $transfer_asset->form_no);
+        
+        return $pdf->stream('Register-Asset-' . $safeFilename  . '.pdf');
     }
 }

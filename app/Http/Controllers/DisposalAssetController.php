@@ -10,11 +10,13 @@ use App\Models\AssetClass;
 use App\Models\Asset;
 use App\Models\Attachment;
 use App\Models\PersonInCharge;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DisposalAssetController extends Controller
 {
@@ -465,5 +467,24 @@ class DisposalAssetController extends Controller
             })
             ->rawColumns(['checkbox'])
             ->toJson();
+    }
+
+    public function exportPdf(DisposalAsset $disposal_asset)
+    {
+        $disposal_asset->load(
+            'department', 
+            'detailDisposals', 
+            'approvals.user', 
+            'approvals.pic',
+            'company'
+        );
+
+        $pdf = Pdf::loadView('disposal-asset.pdf', ['disposal_asset' => $disposal_asset]);
+
+        $pdf->setPaper('a4', 'portrait');
+
+        $safeFilename = str_replace('/', '-', $disposal_asset->form_no);
+        
+        return $pdf->stream('Register-Asset-' . $safeFilename  . '.pdf');
     }
 }

@@ -1,7 +1,6 @@
 @extends('layouts.main')
 
 @section('content')
-
     <div class="bg-white flex p-5 text-lg justify-between">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -31,6 +30,12 @@
                 </li>
             </ol>
         </nav>
+
+        <div class="flex gap-2 content-center">
+            <a href="{{ route('register-asset.exportPdf', $register_asset->id) }}" target="_blank" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-sm text-sm px-5 py-2.5">
+                Export PDF
+            </a>
+        </div>
     </div>
 
     @if (session('success'))

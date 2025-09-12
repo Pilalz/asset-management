@@ -13,13 +13,17 @@ use App\Models\Approval;
 use App\Models\CompanyUser;
 use App\Models\Attachment;
 use App\Models\PersonInCharge;
+
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use Yajra\DataTables\Facades\DataTables;
+
+use Carbon\Carbon;
 use App\Scopes\CompanyScope;
+use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RegisterAssetController extends Controller
 {
@@ -481,7 +485,26 @@ class RegisterAssetController extends Controller
                 );
             })
             ->rawColumns(['action'])
-            ->toJson();
+            ->toJson();        
+    }
+
+    public function exportPdf(RegisterAsset $register_asset)
+    {
+        $register_asset->load(
+            'department', 
+            'location', 
+            'detailRegisters.assetName.assetSubClass.assetClass', 
+            'approvals.user', 
+            'approvals.pic',
+            'company'
+        );
+
+        $pdf = Pdf::loadView('register-asset.pdf', ['register_asset' => $register_asset]);
+
+        $pdf->setPaper('a4', 'portrait');
+
+        $safeFilename = str_replace('/', '-', $register_asset->form_no);
         
+        return $pdf->stream('Register-Asset-' . $safeFilename  . '.pdf');
     }
 }

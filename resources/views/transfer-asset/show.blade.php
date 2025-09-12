@@ -31,6 +31,12 @@
                 </li>
             </ol>
         </nav>
+
+        <div class="flex gap-2 content-center">
+            <a href="{{ route('transfer-asset.exportPdf', $transfer_asset->id) }}" target="_blank" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-sm text-sm px-5 py-2.5">
+                Export PDF
+            </a>
+        </div>
     </div>
 
     @if (session('success'))
