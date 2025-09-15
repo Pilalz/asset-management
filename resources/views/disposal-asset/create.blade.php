@@ -263,13 +263,13 @@
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="text" name="approvals[0][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly placeholder="" />
+                                                <input type="text" name="approvals[0][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[0][status]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="date" name="approvals[0][approval_date]" value="{{ now()->toDateString() }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                                <input type="date" name="approvals[0][approval_date]" value="{{ now()->toDateString() }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[0][approval_date]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -305,13 +305,13 @@
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="text" name="approvals[1][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly placeholder="" />
+                                                <input type="text" name="approvals[1][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[1][status]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="date" name="approvals[1][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                                <input type="date" name="approvals[1][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[1][approval_date]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -347,13 +347,13 @@
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="text" name="approvals[2][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly placeholder="" />
+                                                <input type="text" name="approvals[2][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[2][status]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="date" name="approvals[2][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                                <input type="date" name="approvals[2][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[2][approval_date]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -389,13 +389,13 @@
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="text" name="approvals[3][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly placeholder="" />
+                                                <input type="text" name="approvals[3][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[3][status]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="date" name="approvals[3][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                                <input type="date" name="approvals[3][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[3][approval_date]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -431,13 +431,13 @@
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="text" name="approvals[4][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly placeholder="" />
+                                                <input type="text" name="approvals[4][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[4][status]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="date" name="approvals[4][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                                <input type="date" name="approvals[4][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[4][approval_date]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -473,13 +473,13 @@
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="text" name="approvals[5][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly placeholder="" />
+                                                <input type="text" name="approvals[5][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[5][status]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </td>
                                             <td class="px-2 py-4">
-                                                <input type="date" name="approvals[5][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                                <input type="date" name="approvals[5][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                 @error("approvals[5][approval_date]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror

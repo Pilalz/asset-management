@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('depreciations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('asset_id')->constrained('assets')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('type');
             $table->date('depre_date');
             $table->decimal('monthly_depre', 18, 0);
             $table->decimal('accumulated_depre', 18, 0);

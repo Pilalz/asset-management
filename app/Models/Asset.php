@@ -38,9 +38,12 @@ class Asset extends Model
         'start_depre_date',
         'acquisition_value',
         'current_cost',
-        'useful_life_month',
-        'accum_depre',
-        'net_book_value',
+        'commercial_useful_life_month',
+        'commercial_accum_depre',
+        'commercial_nbv',
+        'fiscal_useful_life_month',
+        'fiscal_accum_depre',
+        'fiscal_nbv',
         'company_id',
     ];
 

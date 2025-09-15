@@ -31,9 +31,12 @@ return new class extends Migration
             $table->date('start_depre_date')->nullable();
             $table->decimal('acquisition_value', 18, 0);
             $table->decimal('current_cost', 18, 0);
-            $table->integer('useful_life_month');
-            $table->decimal('accum_depre', 18, 0);
-            $table->decimal('net_book_value', 18, 0);
+            $table->integer('commercial_useful_life_month');
+            $table->decimal('commercial_accum_depre', 18, 0);
+            $table->decimal('commercial_nbv', 18, 0);
+            $table->integer('fiscal_useful_life_month');
+            $table->decimal('fiscal_accum_depre', 18, 0);
+            $table->decimal('fiscal_nbv', 18, 0);
             $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });

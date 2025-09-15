@@ -92,7 +92,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('asset', AssetController::class);
     Route::resource('assetLVA', AssetLowValueController::class);
     Route::resource('assetArrival', AssetArrivalController::class);
-    Route::resource('depreciation', DepreciationController::class);
+    Route::resource('depreciation', DepreciationController::class)->except('show');
     Route::resource('location', LocationController::class);
     Route::resource('department', DepartmentController::class);
     Route::resource('register-asset', RegisterAssetController::class);
@@ -104,6 +104,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     //Start Depre
     Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
+    Route::post('/depreciation/run-all', [DepreciationController::class, 'runAll'])->name('depreciation.runAll');
+    Route::get('/depreciation/status', [DepreciationController::class, 'getStatus'])->name('depreciation.status');
+    Route::post('/depreciation/clear-status', [DepreciationController::class, 'clearStatus'])->name('depreciation.clearStatus');
+    Route::get('/depreciation/fiscal', [DepreciationController::class, 'indexFiscal'])->name('depreciationFiscal.index');
     //Start Register
     Route::post('/register-asset/{register_asset}/approve', [RegisterAssetController::class, 'approve'])->name('register-asset.approve');
     Route::get('/register-asset/{register_asset}/export-pdf', [RegisterAssetController::class, 'exportPdf'])->name('register-asset.exportPdf');

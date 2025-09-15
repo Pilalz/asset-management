@@ -246,8 +246,8 @@
                     </li>
 
                     <li>
-                        <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs(['depreciation.*']) ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' }}" aria-controls="dropdown-depre" data-collapse-toggle="dropdown-depre" aria-expanded="{{ request()->routeIs(['depreciation.*']) ? 'true' : 'false' }}">
-                            <svg class="w-5 h-5 transition duration-75 {{ request()->routeIs(['depreciation.*']) ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs(['depreciation.*', 'depreciationFiscal.*']) ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' }}" aria-controls="dropdown-depre" data-collapse-toggle="dropdown-depre" aria-expanded="{{ request()->routeIs(['depreciation.*', 'depreciationFiscal.*']) ? 'true' : 'false' }}">
+                            <svg class="w-5 h-5 transition duration-75 {{ request()->routeIs(['depreciation.*', 'depreciationFiscal.*']) ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11v5m0 0 2-2m-2 2-2-2M3 6v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1Zm2 2v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8H5Z"/>
                             </svg>
                             <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap menu-text">Depreciation</span>
@@ -255,12 +255,12 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                             </svg>
                         </button>
-                        <ul id="dropdown-depre" class="{{ request()->routeIs(['depreciation.*']) ? '' : 'hidden' }} py-2 space-y-2">
+                        <ul id="dropdown-depre" class="{{ request()->routeIs(['depreciation.*', 'depreciationFiscal.*']) ? '' : 'hidden' }} py-2 space-y-2">
                             <li>
                                 <a href="{{ route('depreciation.index') }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text {{ request()->routeIs('depreciation.*') ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">Commercial</a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text">Fiscal</a>
+                                <a href="{{ route('depreciationFiscal.index') }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text {{ request()->routeIs('depreciationFiscal.*') ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">Fiscal</a>
                             </li>
                         </ul>
                     </li>
