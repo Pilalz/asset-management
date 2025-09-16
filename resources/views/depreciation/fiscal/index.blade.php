@@ -45,7 +45,7 @@
             </div>
             
 
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+            <table id="depreciationTable" class="w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     {{-- Baris Header Pertama --}}
                     <tr>
@@ -103,52 +103,5 @@
 @endsection
 
 @push('scripts')
-<script>
-    if (document.getElementById("assetSubClassTable") && typeof simpleDatatables.DataTable !== 'undefined') {
-        const dataTable = new simpleDatatables.DataTable("#assetSubClassTable", {
-            searchable: true,
-            sortable: true,
-            tableRender: (_data, table, type) => {
-                if (type === "print") {
-                    return table
-                }
-
-                const tHead = table.childNodes[0];
-                const columnHeaders = tHead.childNodes[0].childNodes; // Ini adalah TH dari baris header pertama
-                const filterHeaders = {
-                    nodeName: "TR",
-                    attributes: {
-                        class: "search-filtering-row"
-                    },
-                    childNodes: Array.from(columnHeaders).map(
-                        (_th, index) => {
-                            // Cek jika ini adalah kolom "Asset Class" (indeks 1)
-                            if (index === 1) { // Indeks 1 adalah kolom "Asset Class"
-                                return {
-                                    nodeName: "TH",
-                                    childNodes: [
-                                        {
-                                            nodeName: "INPUT",
-                                            attributes: {
-                                                class: "datatable-input",
-                                                type: "search",
-                                                "data-columns": "[" + index + "]",
-                                                placeholder: "Cari Asset Class..." // Tambahkan placeholder
-                                            }
-                                        }
-                                    ]
-                                };
-                            } else {
-                                // Untuk kolom lain, kembalikan TH kosong
-                                return { nodeName: "TH", childNodes: [] };
-                            }
-                        }
-                    )
-                }
-                tHead.childNodes.push(filterHeaders); // Menambahkan baris filter ke thead
-                return table;
-            }
-        });
-    }
-</script>
+    @vite('resources/js/pages/commercialDepre.js')
 @endpush

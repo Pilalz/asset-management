@@ -17,6 +17,7 @@ export default defineConfig({
                 'resources/js/pages/registerAsset.js',
                 'resources/js/pages/transferAsset.js',
                 'resources/js/pages/disposalAsset.js',
+                'resources/js/pages/commercialDepre.js',
                 //Signature Pad User
                 'resources/js/pages/profileSignature.js',
                 //Alert
