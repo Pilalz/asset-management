@@ -69,6 +69,8 @@ class AssetController extends Controller
     public function update(Request $request, Asset $asset)
     {
         $validatedData = $request->validate([
+            'asset_number' => 'required|string|max:255',
+            'asset_name_id' => 'required|exists:asset_names,id',
             'description' => 'required|string|max:255',
             'detail'  => 'max:255',
             'pareto'  => 'max:255',
@@ -82,15 +84,18 @@ class AssetController extends Controller
             'capitalized_date'  => 'required|date',
             'start_depre_date'  => 'required|date',
             'acquisition_value'  => 'required',
-            'current_cost'  => 'required',
-            'net_book_value'  => 'required',
         ]);
 
         $dataToUpdate = $validatedData;
 
+        $acquisitionValue = $validatedData['acquisition_value'];
+        $dataToUpdate['current_cost'] = $acquisitionValue;
+        $dataToUpdate['commercial_nbv'] = $acquisitionValue;
+        $dataToUpdate['fiscal_nbv'] = $acquisitionValue;
+
         $asset->update($dataToUpdate);
 
-        return redirect()->route('asset.fixed.index')->with('success', 'Data berhasil diperbarui!');
+        return redirect()->route('asset.index')->with('success', 'Data berhasil diperbarui!');
     }
 
     public function importExcel(Request $request)

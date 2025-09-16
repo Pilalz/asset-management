@@ -29,6 +29,16 @@ class RegisterAssetController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+        $userRole = CompanyUser::where('company_id', $user->last_active_company_id)
+            ->where('user_id', $user->id)
+            ->get();
+
+        $signRegister = Approval::where('role', $userRole)
+        ->where('status', 'pending')
+        ->get();
+        
+        
         return view('register-asset.index');
     }
 
@@ -297,7 +307,7 @@ class RegisterAssetController extends Controller
                 }
 
                 // Cek apakah user sudah pernah approve
-                if ($register_asset->approvals()->where('status', 'approved')->where('user_id', $user->id)->exists()) {
+                if ($register_asset->approvals()->where('status', 'approved')->where('role', $user->role)->exists()) {
                     $canApprove = false; // Override, pastikan tidak bisa approve dua kali
                     $userApprovalStatus = 'Anda sudah menyetujui formulir ini.';
                 }
@@ -427,9 +437,12 @@ class RegisterAssetController extends Controller
                 'start_depre_date' => null,
                 'acquisition_value' => 0,
                 'current_cost' => 0,
-                'useful_life_month' => $detail->assetName->commercial * 12,
-                'accum_depre' => 0,
-                'net_book_value' => 0,
+                'commercial_useful_life_month' => $detail->assetName->commercial * 12,
+                'commercial_accum_depre' => 0,
+                'commercial_nbv' => 0,
+                'fiscal_useful_life_month' => $detail->assetName->fiscal * 12,
+                'fiscal_accum_depre' => 0,
+                'fiscal_nbv' => 0,
                 'company_id' => $register_asset->company_id,
             ]);
         }

@@ -210,7 +210,7 @@
                 { data: 'department_name', name: 'department_name' },
                 { data: 'quantity', name: 'quantity' },
                 { data: 'capitalized_date', name: 'capitalized_date' },
-                { data: 'useful_life_month', name: 'useful_life_month' },
+                { data: 'commercial_useful_life_month', name: 'commercial_useful_life_month' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             order: [[0, 'asc']],

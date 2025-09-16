@@ -87,6 +87,37 @@
                             </svg>
                         </button>
 
+                        <!-- Notification -->
+                        <button type="button" class="p-1 relative inline-flex items-center text-sm bg-gray-800 rounded-full focus:ring-4 focus:outline-none focus:ring-gray-300" aria-expanded="false" data-dropdown-toggle="dropdown-notif">
+                            <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.133 12.632v-1.8a5.406 5.406 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.955.955 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z"/>
+                            </svg>
+                            <span class="sr-only">Notifications</span>
+                            @if($pendingApprovals->isNotEmpty())
+                                <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">{{ $pendingApprovals->count() }}</div>
+                            @endif
+                        </button>
+                        <!-- Dropdown Notif -->
+                         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm border border-gray-200 dark:bg-gray-700 dark:border-gray-600" id="dropdown-notif">
+                            <ul class="py-1" role="none">
+                                @forelse($pendingApprovals as $notification)
+                                    <li>
+                                        <a href="{{ $notification->show_url }}" class="flex flex-row gap-10 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
+                                            <div class="flex flex-col">
+                                                <p class="font-semibold">{{ $notification->form_type }}</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $notification->form_no }}</p>
+                                            </div>    
+                                            <div class="flex">
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $notification->form_date }}</p>
+                                            </div>
+                                        </a>
+                                    </li>
+                                @empty
+                                    <li class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">Tidak ada tugas persetujuan saat ini.</li>
+                                @endforelse
+                            </ul>
+                        </div>
+
                         <!-- Plus Icon -->
                         <div>
                             <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300" data-dropdown-toggle="dropdown-shortcut">

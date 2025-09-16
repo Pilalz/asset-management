@@ -33,7 +33,7 @@
 
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
-            <form class="max-w mx-auto" action="{{ route('asset.update', $asset->id) }}" method="POST">
+            <form class="max-w mx-auto" action="{{ route('assetArrival.update', $asset->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="flex flex-row gap-5 items-start">
@@ -48,29 +48,30 @@
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Class <span class="text-red-900">*</span></label>
-                            <input type="text" value="{{ old('asset_name_id', $asset->assetName->assetSubClass->assetClass->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            <input type="hidden" name="asset_name_id" value="{{ old('asset_name_id', $asset->assetName->id) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            @error('asset_name_id')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <select id="asset-class-select" name="asset_class_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option selected value="">Choose an Asset Class</option>
+                                @foreach($assetclasses as $assetclass)
+                                    <option value="{{ $assetclass->id }}" {{ (old('asset_class_id', $asset->assetName->assetSubClass->assetClass->id ?? '' ) == $assetclass->id) ? 'selected' : '' }}>
+                                        {{ $assetclass->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Sub Class <span class="text-red-900">*</span></label>
-                            <input type="text" value="{{ old('asset_name_id', $asset->assetName->assetSubClass->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            <input type="hidden" name="asset_name_id" value="{{ old('asset_name_id', $asset->assetName->id) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            @error('asset_name_id')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <select id="asset-sub-class-select" name="asset_sub_class_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="">Choose an Asset Sub Class</option>
+                                {{-- JavaScript akan mengisi pilihan di sini --}}
+                            </select>
                         </div>
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Name <span class="text-red-900">*</span></label>
-                            <input type="text" value="{{ old('asset_name_id', $asset->assetName->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            <input type="hidden" name="asset_name_id" value="{{ old('asset_name_id', $asset->assetName->id) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            @error('asset_name_id')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <select id="asset-name-select" name="asset_name_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="">Choose an Asset Name</option>
+                                {{-- JavaScript akan mengisi pilihan di sini --}}
+                            </select>
                         </div>
 
                         <div class="mb-5">
@@ -113,6 +114,8 @@
                             @enderror
                         </div>
 
+                    </div>
+                    <div class="w-1/2">
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sn Chassis </label>
                             <input type="text" name="sn_chassis" value="{{ old('sn_chassis', $asset->sn_chassis) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
@@ -121,8 +124,6 @@
                             @enderror
                         </div>
 
-                    </div>
-                    <div class="w-1/2">
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sn Engine </label>
                             <input type="text" name="sn_engine" value="{{ old('sn_engine', $asset->sn_engine) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
@@ -141,8 +142,14 @@
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location <span class="text-red-900">*</span></label>
-                            <input type="text" value="{{ old('location_id', $asset->location->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            <input type="hidden" name="location_id" value="{{ old('location_id', $asset->location->id) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <select name="location_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option selected value="">Choose a Location</option>
+                                @foreach($locations as $location)
+                                    <option value="{{ $location->id }}" {{ (old('location_id', $asset->location_id) == $location->id) ? 'selected' : '' }}>
+                                        {{ $location->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                             @error('location_id')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -150,8 +157,14 @@
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department <span class="text-red-900">*</span></label>
-                            <input type="text" value="{{ old('department_id', $asset->department->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            <input type="hidden" name="department_id" value="{{ old('department_id', $asset->department->id) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <select name="department_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option selected value="">Choose a Department</option>
+                                @foreach($departments as $department)
+                                    <option value="{{ $department->id }}" {{ (old('department_id', $asset->department_id) == $department->id) ? 'selected' : '' }}>
+                                        {{ $department->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                             @error('department_id')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -159,7 +172,7 @@
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity <span class="text-red-900">*</span></label>
-                            <input type="text" name="quantity" value="{{ old('quantity', $asset->quantity) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="number" name="quantity" value="{{ old('quantity', $asset->quantity) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             @error('quantity')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -207,14 +220,6 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Useful Life Month <span class="text-red-900">*</span></label>
-                            <input type="text" name="useful_life_month" value="{{ old('useful_life_month', $asset->useful_life_month) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                            @error('useful_life_month')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
                         </div>
 
                     </div>
@@ -290,6 +295,77 @@
             document.getElementById('acquisition_value-display'),
             document.getElementById('acquisition_value-value')
         );
+
+        //Asset Class, Asset Sub Class, Asset Name
+        const classSelect = document.getElementById('asset-class-select');
+        const subClassSelect = document.getElementById('asset-sub-class-select');
+        const nameSelect = document.getElementById('asset-name-select');
+
+        // Simpan nilai awal dari database untuk pemilihan otomatis
+        const initialSubClassId = "{{ old('asset_sub_class_id', $asset->assetName->assetSubClass->id ?? '') }}";
+        const initialNameId = "{{ old('asset_name_id', $asset->assetName->id ?? '') }}";
+
+        // Fungsi untuk memuat Sub Class berdasarkan Class ID
+        async function loadSubClasses(classId, selectedSubClassId = null) {
+            if (!classId) {
+                subClassSelect.innerHTML = '<option value="">Choose an Asset Sub Class</option>';
+                nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
+                return;
+            }
+            
+            const response = await fetch(`/api/asset-sub-classes-by-class/${classId}`);
+            const data = await response.json();
+            
+            subClassSelect.innerHTML = '<option value="">Choose an Asset Sub Class</option>';
+            data.forEach(sub => {
+                const option = new Option(sub.name, sub.id);
+                if (selectedSubClassId && selectedSubClassId == sub.id) {
+                    option.selected = true;
+                }
+                subClassSelect.add(option);
+            });
+
+            // Jika ada sub class yang terpilih, picu pemuatan asset name
+            if (selectedSubClassId) {
+                loadAssetNames(selectedSubClassId, initialNameId);
+            }
+        }
+
+        // Fungsi untuk memuat Asset Name berdasarkan Sub Class ID
+        async function loadAssetNames(subClassId, selectedNameId = null) {
+            if (!subClassId) {
+                nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
+                return;
+            }
+
+            const response = await fetch(`/api/asset-names-by-sub-class/${subClassId}`);
+            const data = await response.json();
+            
+            nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
+            data.forEach(name => {
+                const option = new Option(name.name, name.id);
+                if (selectedNameId && selectedNameId == name.id) {
+                    option.selected = true;
+                }
+                nameSelect.add(option);
+            });
+        }
+
+        // Event listener untuk dropdown Asset Class
+        classSelect.addEventListener('change', function () {
+            loadSubClasses(this.value);
+        });
+
+        // Event listener untuk dropdown Asset Sub Class
+        subClassSelect.addEventListener('change', function () {
+            loadAssetNames(this.value);
+        });
+
+        // --- Inisialisasi Saat Halaman Dimuat ---
+        // Jika ada nilai awal untuk Asset Class, muat Sub Class yang sesuai
+        if (classSelect.value) {
+            loadSubClasses(classSelect.value, initialSubClassId);
+        }
     });
 </script>
 @endpush

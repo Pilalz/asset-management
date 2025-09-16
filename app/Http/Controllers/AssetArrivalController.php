@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Asset;
+use App\Models\Location;
+use App\Models\Department;
+use App\Models\AssetClass;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 
@@ -16,7 +19,16 @@ class AssetArrivalController extends Controller
 
     public function edit(Asset $assetArrival)
     {      
-        return view('asset.arrival.edit', ['asset' => $assetArrival]);
+        $locations = Location::all();
+        $departments = Department::all();
+        $assetclasses = AssetClass::all();
+
+        return view('asset.arrival.edit', [
+            'asset' => $assetArrival,
+            'locations' => $locations,
+            'departments' => $departments,
+            'assetclasses' => $assetclasses
+        ]);
     }
 
     public function update(Request $request, Asset $assetArrival)
@@ -38,7 +50,6 @@ class AssetArrivalController extends Controller
             'capitalized_date'  => 'required|date',
             'start_depre_date'  => 'nullable|date',
             'acquisition_value'  => 'required',
-            'useful_life_month'  => 'required',
         ]);
 
         if ($assetArrival->asset_type === 'LVA') {
@@ -47,7 +58,8 @@ class AssetArrivalController extends Controller
 
         $validatedData['status'] = 'Active';
         $validatedData['current_cost'] = $validatedData['acquisition_value'];
-        $validatedData['net_book_value'] = $validatedData['acquisition_value'];
+        $validatedData['commercial_nbv'] = $validatedData['acquisition_value'];
+        $validatedData['fiscal_nbv'] = $validatedData['acquisition_value'];
 
         $assetArrival->update($validatedData);
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Asset;
+use App\Models\Location;
+use App\Models\Department;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 
@@ -22,7 +24,17 @@ class AssetLowValueController extends Controller
 
     public function edit(Asset $assetLVA)
     {      
-        return view('asset.low-value.edit', ['asset' => $assetLVA]);
+        $locations = Location::all();
+        $departments = Department::all();
+
+        return view(
+            'asset.low-value.edit', 
+            [
+                'asset' => $assetLVA,
+                'locations' => $locations,
+                'departments' => $departments
+                ]
+        );
     }
 
     public function update(Request $request, Asset $assetLVA)
@@ -76,6 +88,7 @@ class AssetLowValueController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($asset) {
                 return view('components.action-buttons-3-buttons', [
+                    'model'     => $asset,
                     'showUrl' => route('assetLVA.show', $asset->id),
                     'editUrl' => route('assetLVA.edit', $asset->id),
                     'deleteUrl' => route('asset.destroy', $asset->id)
