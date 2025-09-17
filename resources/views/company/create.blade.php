@@ -27,7 +27,7 @@
 
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg m-5 bg-white dark:bg-gray-900">
-            <form class="max-w mx-auto" action="{{ route('company.store') }}" method="POST">
+            <form class="max-w mx-auto" action="{{ route('company.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-5">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company Name <span class="text-red-900">*</span></label>
@@ -57,6 +57,38 @@
                 <div class="mb-5">
                     <input type="hidden" name="owner_id" value="{{ Auth::user()->id }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                     @error('owner_id')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium" for="logo_file">Upload New Logo</label>
+                    <input name="logo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg" id="logo_file" type="file">
+                    @error('logo')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium">Address</label>
+                    <textarea name="address" rows="3" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">{{ old('address', $company->address ?? '') }}</textarea>
+                    @error('address')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium">Phone</label>
+                    <input type="text" name="phone" value="{{ old('phone', $company->phone ?? '') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    @error('phone')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium">Fax</label>
+                    <input type="text" name="fax" value="{{ old('fax', $company->fax ?? '') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    @error('fax')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>

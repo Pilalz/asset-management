@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('alias');
             $table->string('code');
+            $table->string('logo')->nullable();
+            $table->text('address')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('tax')->nullable();
             $table->foreignId('owner_id')->constrained('users');
             $table->timestamps();
         });

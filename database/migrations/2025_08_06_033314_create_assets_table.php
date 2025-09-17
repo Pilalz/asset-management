@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('unit_no')->nullable();
             $table->string('sn_chassis')->nullable();
             $table->string('sn_engine')->nullable();
+            $table->date('production_year')->nullable();
             $table->string('po_no')->nullable();
             $table->foreignId('location_id')->constrained('locations');
             $table->foreignId('department_id')->constrained('departments');

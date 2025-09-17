@@ -56,7 +56,7 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
-                                Alias
+                                Kode
                                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                                 </svg>
@@ -64,7 +64,23 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
-                                Kode
+                                Address
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="flex items-center">
+                                Phone
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="flex items-center">
+                                Fax
                                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                                 </svg>
@@ -76,10 +92,18 @@
                 <tbody>
                     @forelse ($companies as $company)
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $loop->iteration }}</th>
-                            <td class="px-6 py-4">{{ $company->name }}</td>
-                            <td class="px-6 py-4">{{ $company->alias }}</td>
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $loop->iteration }}</th>                            
+                            <td scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                <img class="w-10 h-10 rounded-full" src="{{ Storage::url($company->logo) }}" alt="{{ $company->name }}">
+                                <div class="ps-3">
+                                    <div class="text-base font-semibold">{{ $company->name }}</div>
+                                    <div class="font-normal text-gray-500">{{ $company->alias }}</div>
+                                </div>  
+                            </td>
                             <td class="px-6 py-4">{{ $company->code }}</td>
+                            <td class="px-6 py-4">{{ $company->address ?? '-' }}</td>
+                            <td class="px-6 py-4">{{ $company->phone ?? '-' }}</td>
+                            <td class="px-6 py-4">{{ $company->fax ?? '-' }}</td>
                             <td>
                                 <div class="flex">
                                     <a href="{{ route('company.edit', $company->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">

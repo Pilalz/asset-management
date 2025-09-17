@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Asset;
 use App\Models\Location;
 use App\Models\Department;
+use App\Models\AssetClass;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 
@@ -26,20 +27,34 @@ class AssetLowValueController extends Controller
     {      
         $locations = Location::all();
         $departments = Department::all();
+        $assetclasses = AssetClass::all();
 
         return view(
             'asset.low-value.edit', 
             [
                 'asset' => $assetLVA,
                 'locations' => $locations,
-                'departments' => $departments
+                'departments' => $departments,
+                'assetclasses' => $assetclasses
                 ]
         );
     }
 
     public function update(Request $request, Asset $assetLVA)
     {
+        if ($request->asset_number === $assetLVA->asset_number){
+            $validAssetNumber = $request->validate([
+                'asset_number' => 'required|string|max:255',
+            ]);
+        }else{
+            $validAssetNumber = $request->validate([
+                'asset_number' => 'unique:assets,asset_number',
+            ]);
+        }
+
         $validatedData = $request->validate([
+            'asset_number' => 'required|string|max:255',
+            'asset_name_id' => 'required|exists:asset_names,id',
             'description' => 'required|string|max:255',
             'detail'  => 'max:255',
             'pareto'  => 'max:255',
@@ -53,10 +68,12 @@ class AssetLowValueController extends Controller
             'capitalized_date'  => 'required|date',
             'acquisition_value'  => 'required',
             'current_cost'  => 'required',
-            'net_book_value'  => 'required',
+            'commercial_nbv'  => 'required',
         ]);
 
         $dataToUpdate = $validatedData;
+
+        $validatedData['asset_number'] = $validAssetNumber['asset_number'];
 
         $assetLVA->update($dataToUpdate);
 

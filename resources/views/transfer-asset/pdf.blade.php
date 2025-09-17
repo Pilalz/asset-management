@@ -13,7 +13,14 @@
         .container { 
             width: 100%; 
             margin: 0 auto;
-            padding-top: 15px
+            padding-top: 5px;
+        }
+        .header-logo > table td, th {
+            border: 0px solid black;
+            border-bottom: 2px solid black;
+        }
+        .rightText {
+            text-align: right;
         }
         h3 { 
             text-align: center; 
@@ -59,6 +66,25 @@
 </head>
 <body>
     <div class="container">
+        <div class="header-logo">
+            <table>
+                <tr>
+                    <td>
+                        <div>
+                            @if($transfer_asset->company->logo)
+                                <img src="{{ public_path('storage/' . $transfer_asset->company->logo) }}" style="max-height: 60px;">
+                            @endif
+                        </div>
+                    </td>
+                    <td class="rightText">
+                        <p>{{ $transfer_asset->company->address ?? "-" }}</p>
+                        <p>Phone : {{ $transfer_asset->company->phone ?? "-" }}</p>
+                        <p>Fax : {{ $transfer_asset->company->fax ?? "-" }}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
         <h3>{{ $transfer_asset->company->name }}</h3>
         <h3>FORM PERPINDAHAN ASSET</h3> 
         <h3><i>ASSET REGISTER FORM</i></h3>

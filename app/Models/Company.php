@@ -19,6 +19,7 @@ use App\Models\RegisterAsset;
 use App\Models\TransferAsset;
 use App\Models\Depreciation;
 use App\Models\PersonInCharge;
+use Illuminate\Support\Facades\Storage;
 
 class Company extends Model
 {
@@ -28,6 +29,10 @@ class Company extends Model
         'name',
         'alias',
         'code',
+        'logo',
+        'address',
+        'phone',
+        'fax',
         'owner_id',
     ];
 
@@ -106,5 +111,14 @@ class Company extends Model
     public function personInCharges(): HasMany
     {
         return $this->hasMany(PersonInCharge::class, 'company_id', 'id');
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Company $company) {
+            if ($company->logo) {
+                Storage::disk('public')->delete($company->logo);
+            }
+        });
     }
 }

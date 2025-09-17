@@ -86,10 +86,6 @@ $(document).ready(function() {
                     return data;
                 }
             },
-            {
-                targets: 8, 
-                className: 'flex p-2'
-            }
         ],
 
         createdRow: function( row, data, dataIndex ) {

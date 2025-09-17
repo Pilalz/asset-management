@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
@@ -29,16 +30,20 @@ class CompanyController extends Controller
             'name' => 'required|string|max:255',
             'alias' => 'required|string|unique:companies,alias',
             'code' => 'required|string|unique:companies,code',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'address' => 'nullable|string',
+            'phone' => 'nullable|string|max:255',
+            'fax' => 'nullable|string|max:255',
         ]);
 
         $user = Auth::user();
+        $validated['owner_id'] = $user->id;
+        
+        if ($request->hasFile('logo')) {
+            $validated['logo'] = $request->file('logo')->store('company-logos', 'public');
+        }
 
-        $newCompany = Company::create([
-            'name' => $validated['name'],
-            'alias' => $validated['alias'],
-            'code' => $validated['code'],
-            'owner_id' => $user->id,
-        ]);
+        $newCompany = Company::create($validated);
 
         $newCompany->users()->attach($user->id, ['role' => 'Owner']);
 
@@ -58,19 +63,31 @@ class CompanyController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'alias' => 'required|string',
-            'code' => 'required|string',
+            'alias' => 'required|string|unique:companies,alias,' . $company->id,
+            'code' => 'required|string|unique:companies,code,' . $company->id,
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'address' => 'nullable|string',
+            'phone' => 'nullable|string|max:255',
+            'fax' => 'nullable|string|max:255',
         ]);
 
-        $dataToUpdate = $validatedData;
+        if ($request->hasFile('logo')) {
+            if ($company->logo) {
+                Storage::disk('public')->delete($company->logo);
+            }
+            $logoPath = $request->file('logo')->store('company-logos', 'public');
+            $validatedData['logo'] = $logoPath;
+        }
 
-        $company->update($dataToUpdate);
+        $company->update($validatedData);
 
         return redirect()->route('company.index')->with('success', 'Data berhasil diperbarui!');
     }
 
     public function destroy(Company $company)
     {
+
+
         $company->delete();
 
         return redirect()->route('company.index')->with('success', 'Data berhasil dihapus!');

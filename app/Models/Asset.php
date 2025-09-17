@@ -30,6 +30,7 @@ class Asset extends Model
         'unit_no',
         'sn_chassis',
         'sn_engine',
+        'production_year',
         'po_no',
         'location_id',
         'department_id',

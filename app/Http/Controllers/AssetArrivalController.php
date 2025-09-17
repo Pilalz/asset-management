@@ -43,6 +43,7 @@ class AssetArrivalController extends Controller
             'unit_no'  => 'max:255',
             'sn_chassis'  => 'max:255',
             'sn_engine'  => 'max:255',
+            'production_year'  => 'max:255',
             'po_no'  => 'required|string|max:255',
             'location_id'  => 'required|exists:locations,id',
             'department_id'  => 'required|exists:departments,id',
@@ -63,7 +64,7 @@ class AssetArrivalController extends Controller
 
         $assetArrival->update($validatedData);
 
-        return redirect()->route('asset.low-value.index')->with('success', 'Data berhasil diperbarui!');
+        return redirect()->route('assetLVA.index')->with('success', 'Data berhasil diperbarui!');
     }
 
     public function datatables(Request $request)

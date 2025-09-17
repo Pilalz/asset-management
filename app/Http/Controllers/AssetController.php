@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Asset;
 use App\Models\Depreciation;
+use App\Models\Location;
+use App\Models\Department;
+use App\Models\AssetClass;
 use App\Imports\AssetsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
@@ -61,13 +64,27 @@ class AssetController extends Controller
 
     public function edit(Asset $asset)
     {
+        $locations = Location::all();
+        $departments = Department::all();
+        $assetclasses = AssetClass::all();
+
         $asset->load('depreciations');        
 
-        return view('asset.fixed.edit', compact('asset'));
+        return view('asset.fixed.edit', compact('asset', 'locations', 'departments', 'assetclasses'));
     }
 
     public function update(Request $request, Asset $asset)
     {
+        if ($request->asset_number === $asset->asset_number){
+            $validAssetNumber = $request->validate([
+                'asset_number' => 'required|string|max:255',
+            ]);
+        }else{
+            $validAssetNumber = $request->validate([
+                'asset_number' => 'unique:assets,asset_number',
+            ]);
+        }
+
         $validatedData = $request->validate([
             'asset_number' => 'required|string|max:255',
             'asset_name_id' => 'required|exists:asset_names,id',
@@ -77,6 +94,7 @@ class AssetController extends Controller
             'unit_no'  => 'max:255',
             'sn_chassis'  => 'max:255',
             'sn_engine'  => 'max:255',
+            'production_year'  => 'max:255',
             'po_no'  => 'required|string|max:255',
             'location_id'  => 'required|exists:locations,id',
             'department_id'  => 'required|exists:departments,id',
@@ -84,14 +102,14 @@ class AssetController extends Controller
             'capitalized_date'  => 'required|date',
             'start_depre_date'  => 'required|date',
             'acquisition_value'  => 'required',
+            'current_cost'  => 'required',
+            'commercial_nbv'  => 'required',
+            'fiscal_nbv'  => 'required',
         ]);
 
         $dataToUpdate = $validatedData;
 
-        $acquisitionValue = $validatedData['acquisition_value'];
-        $dataToUpdate['current_cost'] = $acquisitionValue;
-        $dataToUpdate['commercial_nbv'] = $acquisitionValue;
-        $dataToUpdate['fiscal_nbv'] = $acquisitionValue;
+        $validatedData['asset_number'] = $validAssetNumber['asset_number'];
 
         $asset->update($dataToUpdate);
 

@@ -30,49 +30,12 @@
         </nav>
 
         <div class="flex gap-2">
-            <!-- Modal toggle -->
-            <button data-modal-target="import-modal" data-modal-toggle="import-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-            Import Data
-            </button>
-            <!-- Main modal -->
-            <div id="import-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div class="relative p-4 w-full max-w-md max-h-full">
-                    <!-- Modal content -->
-                    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-                        <!-- Modal header -->
-                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                Import Data Asset Class
-                            </h3>
-                            <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="import-modal">
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                </svg>
-                                <span class="sr-only">Close modal</span>
-                            </button>
-                        </div>
-                        <!-- Modal body -->
-                        <div class="p-4 md:p-5">
-                            <form action="{{ route('asset.import') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="mb-4">
-                                    <label for="excel_file" class="block mb-2 text-sm font-medium text-gray-900">Upload Excel File (.xlsx, .xls)</label>
-                                    <input type="file" name="excel_file" id="excel_file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" required>
-                                </div>   
-                                <div class="mb-4">
-                                    <p class="text-sm text-gray-600">
-                                        Pastikan file Excel Anda memiliki header pada baris pertama dengan nama kolom seperti: `id`, `name`.
-                                    </p>
-                                    <a href="/path/to/template.xlsx" class="text-blue-600 hover:underline">Download Template Excel</a>
-                                </div>
-                                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5">
-                                    Import Data
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <a href="{{ route('assetLVA.edit', $asset->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-sm text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">
+                <svg class="w-4 h-4 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                </svg>
+                Edit
+            </a>
         </div>
     </div>
     
@@ -118,14 +81,34 @@
                             <td>{{ ($asset->description == null) ? "-" : $asset->description }}</td>
                         </tr>
                         <tr>
+                            <td>Detail</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->detail == null) ? "-" : $asset->detail }}</td>
+                        </tr>
+                        <tr>
                             <td>Pareto</td>
                             <td class="px-2">:</td>
                             <td>{{ ($asset->pareto == null) ? "-" : $asset->pareto }}</td>
+                        </tr>
+                        <tr>
+                            <td>Unit No.</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->unit_no == null) ? "-" : $asset->unit_no }}</td>
                         </tr>
                     </table>
                 </div>
                 <div class="w-1/2">
                     <table>
+                        <tr>
+                            <td>SN Chassis</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->sn_chassis == null) ? "-" : $asset->sn_chassis }}</td>
+                        </tr>
+                        <tr>
+                            <td>SN Engine</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->sn_engine == null) ? "-" : $asset->sn_engine }}</td>
+                        </tr>
                         <tr>
                             <td>PO No</td>
                             <td class="px-2">:</td>
@@ -159,12 +142,12 @@
                         <tr>
                             <td>Useful Life Month</td>
                             <td class="px-2">:</td>
-                            <td>{{ ($asset->useful_life_month == null) ? "-" : $asset->useful_life_month }} Month</td>
+                            <td>{{ ($asset->commercial_useful_life_month == null) ? "-" : $asset->commercial_useful_life_month }} Month</td>
                         </tr>
                         <tr>
                             <td>Net Book Value</td>
                             <td class="px-2">:</td>
-                            <td>{{ '$ ' . number_format($asset->net_book_value, 0, '.', ',') }}</td>
+                            <td>{{ '$ ' . number_format($asset->commercial_nbv, 0, '.', ',') }}</td>
                         </tr>
                     </table>
                 </div>
