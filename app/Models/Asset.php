@@ -11,6 +11,8 @@ use App\Models\Company;
 use App\Models\Depreciation;
 use App\Models\DetailDisposal;
 use App\Models\DetailTransfer;
+use App\Models\Insurance;
+use App\Models\Claim;
 use App\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -86,6 +88,17 @@ class Asset extends Model
     public function detailTransfers(): HasMany
     {
         return $this->hasMany(DetailTransfer::class, 'asset_id', 'id');
+    }
+
+    public function detailInsurances(): BelongsToMany
+    {
+        return $this->belongsToMany(Insurance::class, 'detail_insurances');
+    }
+
+    public function detailClaims(): BelongsToMany
+    {
+        return $this->belongsToMany(Claim::class, 'detail_claims')
+                    ->withPivot('compensation');
     }
 
     protected static function booted(): void

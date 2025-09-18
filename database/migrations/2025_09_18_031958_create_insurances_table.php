@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('register_assets', function (Blueprint $table) {
+        Schema::create('insurances', function (Blueprint $table) {
             $table->id();
-            $table->string('form_no')->unique();
-            $table->foreignId('department_id')->constrained('departments');
-            $table->foreignId('location_id')->constrained('locations');
-            $table->string('asset_type');
-            $table->boolean('insured');
             $table->string('polish_no');
-            $table->string('sequence');
-            $table->string('status');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->string('instance_name')->nullable();
+            $table->integer('annual_premium')->nullable();
+            $table->integer('schedule')->nullable();
+            $table->date('next_payment')->nullable();
+            $table->string('status')->nullable();
             $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('register_assets');
+        Schema::dropIfExists('insurances');
     }
 };

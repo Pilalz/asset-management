@@ -106,14 +106,19 @@
                             <td>{{ ($asset->sn_engine == null) ? "-" : $asset->sn_engine }}</td>
                         </tr>
                         <tr>
-                            <td>PO No</td>
+                            <td>Production Year</td>
                             <td class="px-2">:</td>
-                            <td>{{ ($asset->po_no == null) ? "-" : $asset->po_no }}</td>
+                            <td>{{ $asset->production_year ? \Carbon\Carbon::parse($asset->production_year)->format('Y') : '-' }}</td>
                         </tr>
                     </table>
                 </div>
                 <div class="w-1/2">
                     <table>
+                        <tr>
+                            <td>PO No</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->po_no == null) ? "-" : $asset->po_no }}</td>
+                        </tr>
                         <tr>
                             <td>Location</td>
                             <td class="px-2">:</td>

@@ -129,6 +129,25 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+                        
+                        <div class="mb-5">
+                            <label for="production-year" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Production Year</label>
+                            <select name="production_year" id="production-year" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                                <option value="">Choose a Year</option>
+                                @for ($year = now()->year; $year >= now()->year - 20; $year--)
+                                    @php
+                                        // Ambil tahun dari database, pastikan null jika tidak ada data
+                                        $selectedDbYear = $asset->production_year ? \Carbon\Carbon::parse($asset->production_year)->format('Y') : null;
+                                    @endphp
+                                    <option value="{{ $year }}" {{ old('production_year', $selectedDbYear) == $year ? 'selected' : '' }}>
+                                        {{ $year }}
+                                    </option>
+                                @endfor
+                            </select>
+                            @error('production_year')
+                                <div class="text-danger mt-2 text-sm">{{ $message }}</div>
+                            @enderror
+                        </div>
 
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">PO No <span class="text-red-900">*</span></label>

@@ -33,8 +33,18 @@ class AssetArrivalController extends Controller
 
     public function update(Request $request, Asset $assetArrival)
     {
+        if ($request->asset_number === $assetArrival->asset_number){
+            $validAssetNumber = $request->validate([
+                'asset_number' => 'required|string|max:255',
+            ]);
+        }else{
+            $validAssetNumber = $request->validate([
+                'asset_number' => 'unique:assets,asset_number',
+            ]);
+        }
+
         $validatedData = $request->validate([
-            'asset_number' => 'unique:assets,asset_number',
+            'asset_number' => 'required|string|max:255',
             'asset_name_id' => 'exists:asset_names,id',
             'status' => 'required|string|max:255',
             'description' => 'required|string|max:255',
@@ -61,10 +71,11 @@ class AssetArrivalController extends Controller
         $validatedData['current_cost'] = $validatedData['acquisition_value'];
         $validatedData['commercial_nbv'] = $validatedData['acquisition_value'];
         $validatedData['fiscal_nbv'] = $validatedData['acquisition_value'];
+        $validatedData['asset_number'] = $validAssetNumber['asset_number'];
 
         $assetArrival->update($validatedData);
 
-        return redirect()->route('assetLVA.index')->with('success', 'Data berhasil diperbarui!');
+        return redirect()->route('assetArrival.index')->with('success', 'Data berhasil diperbarui!');
     }
 
     public function datatables(Request $request)

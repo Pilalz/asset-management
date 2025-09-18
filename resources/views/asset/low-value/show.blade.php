@@ -95,19 +95,24 @@
                             <td class="px-2">:</td>
                             <td>{{ ($asset->unit_no == null) ? "-" : $asset->unit_no }}</td>
                         </tr>
-                    </table>
-                </div>
-                <div class="w-1/2">
-                    <table>
                         <tr>
                             <td>SN Chassis</td>
                             <td class="px-2">:</td>
                             <td>{{ ($asset->sn_chassis == null) ? "-" : $asset->sn_chassis }}</td>
                         </tr>
+                    </table>
+                </div>
+                <div class="w-1/2">
+                    <table>
                         <tr>
                             <td>SN Engine</td>
                             <td class="px-2">:</td>
                             <td>{{ ($asset->sn_engine == null) ? "-" : $asset->sn_engine }}</td>
+                        </tr>
+                        <tr>
+                            <td>Production Year</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $asset->production_year ? \Carbon\Carbon::parse($asset->production_year)->format('Y') : '-' }}</td>
                         </tr>
                         <tr>
                             <td>PO No</td>
