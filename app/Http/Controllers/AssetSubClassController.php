@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\AssetClass;
 use App\Models\AssetSubClass;
-use App\Imports\AssetSubClassesImport;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
+use App\Imports\AssetSubClassesImport;
+use App\Exports\AssetSubClassesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AssetSubClassController extends Controller
 {
@@ -28,7 +30,6 @@ class AssetSubClassController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'class_id'  => 'required|string|max:255',
-            'name'  => 'required',
             'company_id'  => 'required',
         ]);
 
@@ -49,7 +50,6 @@ class AssetSubClassController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'class_id'  => 'required|string|max:255',
-            'name'  => 'required',
         ]);
 
         $dataToUpdate = $validatedData;
@@ -78,11 +78,20 @@ class AssetSubClassController extends Controller
             Excel::import(new AssetSubClassesImport, $request->file('excel_file'));
         } catch (\Exception $e) {
             // Jika terjadi error, kembali dengan pesan error
-            return redirect()->route('asset-sub-class.import.form')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+            return redirect()->route('asset-sub-class.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
         }
 
         // 3. Redirect kembali dengan pesan sukses
         return redirect()->route('asset-sub-class.index')->with('success', 'Data aset berhasil diimpor!');
+    }
+
+    public function exportExcel()
+    {
+        $companyName = session('active_company_id');
+        $companyName = Company::where('id', $companyName)->first();
+        $fileName = 'AssetSubClasses-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        
+        return Excel::download(new AssetSubClassesExport, $fileName);
     }
 
     public function datatables(Request $request)

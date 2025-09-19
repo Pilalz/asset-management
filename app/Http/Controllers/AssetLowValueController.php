@@ -7,8 +7,12 @@ use App\Models\Asset;
 use App\Models\Location;
 use App\Models\Department;
 use App\Models\AssetClass;
+use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
+use App\Imports\LVAImport;
+use App\Exports\LVAExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AssetLowValueController extends Controller
 {
@@ -79,6 +83,30 @@ class AssetLowValueController extends Controller
         $assetLVA->update($dataToUpdate);
 
         return redirect()->route('assetLVA.index')->with('success', 'Data berhasil diperbarui!');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        try {
+            Excel::import(new LVAImport, $request->file('excel_file'));
+        } catch (\Exception $e) {
+            return redirect()->route('assetLVA.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+        }
+        
+        return redirect()->route('assetLVA.index')->with('success', 'Data aset berhasil diimpor!');
+    }
+
+    public function exportExcel()
+    {
+        $companyName = session('active_company_id');
+        $companyName = Company::where('id', $companyName)->first();
+        $fileName = 'LowValueAsset-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        
+        return Excel::download(new LVAExport, $fileName);
     }
 
     public function datatables(Request $request)

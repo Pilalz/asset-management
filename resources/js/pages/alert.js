@@ -21,6 +21,6 @@ $(document).ready(function() {
         // (Opsional) Sembunyikan notifikasi secara otomatis setelah 5 detik
         setTimeout(() => {
             dismiss.hide();
-        }, 3000);
+        }, 5000);
     });
 })

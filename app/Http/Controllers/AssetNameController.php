@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\AssetSubClass;
 use App\Models\AssetClass;
 use App\Models\AssetName;
-use App\Imports\AssetNamesImport;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
+use App\Imports\AssetNamesImport;
+use App\Exports\AssetNamesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AssetNameController extends Controller
 {
@@ -85,10 +87,19 @@ class AssetNameController extends Controller
         try {
             Excel::import(new AssetNamesImport, $request->file('excel_file'));
         } catch (\Exception $e) {
-            return redirect()->route('asset-name.import.form')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+            return redirect()->route('asset-name.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
         }
 
         return redirect()->route('asset-name.index')->with('success', 'Data aset berhasil diimpor!');
+    }
+
+    public function exportExcel()
+    {
+        $companyName = session('active_company_id');
+        $companyName = Company::where('id', $companyName)->first();
+        $fileName = 'AssetName-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        
+        return Excel::download(new AssetNamesExport, $fileName);
     }
 
     public function datatables(Request $request)

@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AssetClass;
-use App\Imports\AssetClassesImport;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
+use App\Imports\AssetClassesImport;
+use App\Exports\AssetClassesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AssetClassController extends Controller
 {
@@ -77,6 +79,15 @@ class AssetClassController extends Controller
         }
 
         return redirect()->route('asset-class.index')->with('success', 'Data aset berhasil diimpor!');
+    }
+
+    public function exportExcel()
+    {
+        $companyName = session('active_company_id');
+        $companyName = Company::where('id', $companyName)->first();
+        $fileName = 'AssetClasses-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        
+        return Excel::download(new AssetClassesExport, $fileName);
     }
 
     public function datatables(Request $request)

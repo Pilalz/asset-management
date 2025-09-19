@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class AssetsImport implements ToModel, WithStartRow, WithValidation
+class LVAImport implements ToModel, WithStartRow, WithValidation
 {
     public function startRow(): int
     {
@@ -46,18 +46,17 @@ class AssetsImport implements ToModel, WithStartRow, WithValidation
             'department_id'                 => $row[11],
             'quantity'                      => $row[12],
             'capitalized_date'              => !empty($row[13]) ? Date::excelToDateTimeObject($row[13]) : null,
-            'start_depre_date'              => !empty($row[14]) ? Date::excelToDateTimeObject($row[14]) : null,
-            'acquisition_value'             => $row[15],
-            'current_cost'                  => $row[15],
+            'acquisition_value'             => $row[14],
+            'current_cost'                  => $row[14],
             'commercial_useful_life_month'  => $commercialUsefulLife,
             'commercial_accum_depre'        => 0,
-            'commercial_nbv'                => $row[15],
+            'commercial_nbv'                => $row[14],
             'fiscal_useful_life_month'      => $fiscalUsefulLife,
             'fiscal_accum_depre'            => 0,
-            'fiscal_nbv'                    => $row[15],
+            'fiscal_nbv'                    => $row[14],
             'company_id'                    => session('active_company_id'),
             'status'                        => 'Active',
-            'asset_type'                    => 'FA',
+            'asset_type'                    => 'LVA',
         ]);
     }
 
@@ -80,7 +79,6 @@ class AssetsImport implements ToModel, WithStartRow, WithValidation
             '12' => 'required',
             '13' => 'required',
             '14' => 'required',
-            '15' => 'required',
         ];
     }
 }

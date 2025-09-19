@@ -2,12 +2,12 @@
 
 namespace App\Imports;
 
-use App\Models\AssetClass;
+use App\Models\Department;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class AssetClassesImport implements ToModel, WithStartRow, WithValidation
+class DepartmentsImport implements ToModel, WithStartRow, WithValidation 
 {
     public function startRow(): int
     {
@@ -20,11 +20,11 @@ class AssetClassesImport implements ToModel, WithStartRow, WithValidation
     */
     public function model(array $row)
     {
-        return new AssetClass([
-            'name'       => $row[0],
-            'obj_id'     => $row[1],
-            'obj_acc'    => $row[2],
-            'company_id' => session('active_company_id'),
+
+        return new Department([
+            'name'                  => $row[0],
+            'description'           => $row[1],        
+            'company_id'            => session('active_company_id'),
         ]);
     }
 
@@ -32,8 +32,7 @@ class AssetClassesImport implements ToModel, WithStartRow, WithValidation
     {
         return [
             '0' => 'required|string|max:255',
-            '1' => 'required|max:255',
-            '2' => 'required|string|max:255',
+            '1' => 'nullable|string|max:255',
         ];
     }
 }

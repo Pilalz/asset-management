@@ -8,12 +8,15 @@ use App\Models\Depreciation;
 use App\Models\Location;
 use App\Models\Department;
 use App\Models\AssetClass;
-use App\Imports\AssetsImport;
-use Maatwebsite\Excel\Facades\Excel;
-use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
+use App\Models\Company;
+
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Yajra\DataTables\Facades\DataTables;
+use App\Scopes\CompanyScope;
+use App\Imports\AssetsImport;
+use App\Exports\AssetsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AssetController extends Controller
 {
@@ -128,7 +131,16 @@ class AssetController extends Controller
             return redirect()->route('asset.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
         }
         
-        return redirect()->route('asset.fixed.index')->with('success', 'Data aset berhasil diimpor!');
+        return redirect()->route('asset.index')->with('success', 'Data aset berhasil diimpor!');
+    }
+
+    public function exportExcel()
+    {
+        $companyName = session('active_company_id');
+        $companyName = Company::where('id', $companyName)->first();
+        $fileName = 'Fixed-Asset-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        
+        return Excel::download(new AssetsExport, $fileName);
     }
 
     public function datatables(Request $request)

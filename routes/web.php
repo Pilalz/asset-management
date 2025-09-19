@@ -85,6 +85,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/profile', 'destroy')->name('destroy');
     });
 
+    // --- Export Data ---
+    Route::get('/asset-class/export-excel', [AssetClassController::class, 'exportExcel'])->name('asset-class.export');
+    Route::get('/asset-sub-class/export-excel', [AssetSubClassController::class, 'exportExcel'])->name('asset-sub-class.export');
+    Route::get('/asset/export-excel', [AssetController::class, 'exportExcel'])->name('asset.export');
+    Route::get('/assetLVA/export-excel', [AssetLowValueController::class, 'exportExcel'])->name('assetLVA.export');
+    Route::get('/location/export-excel', [LocationController::class, 'exportExcel'])->name('location.export');
+    Route::get('/department/export-excel', [DepartmentController::class, 'exportExcel'])->name('department.export');
+
     // --- Core Application Resources ---
     Route::resource('asset-class', AssetClassController::class);
     Route::resource('asset-sub-class', AssetSubClassController::class);
@@ -93,8 +101,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('assetLVA', AssetLowValueController::class);
     Route::resource('assetArrival', AssetArrivalController::class);
     Route::resource('depreciation', DepreciationController::class)->except('show');
-    Route::resource('location', LocationController::class);
-    Route::resource('department', DepartmentController::class);
+    Route::resource('location', LocationController::class)->except('show');
+    Route::resource('department', DepartmentController::class)->except('show');
     Route::resource('register-asset', RegisterAssetController::class);
     Route::resource('transfer-asset', TransferAssetController::class);
     Route::resource('disposal-asset', DisposalAssetController::class);
@@ -128,6 +136,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/asset-sub-class/import', [AssetSubClassController::class, 'importExcel'])->name('asset-sub-class.import');
     Route::post('/asset-name/import', [AssetNameController::class, 'importExcel'])->name('asset-name.import');
     Route::post('/asset/import', [AssetController::class, 'importExcel'])->name('asset.import');
+    Route::post('/assetLVA/import', [AssetLowValueController::class, 'importExcel'])->name('assetLVA.import');
+    Route::post('/location/import', [LocationController::class, 'importExcel'])->name('location.import');
+    Route::post('/department/import', [DepartmentController::class, 'importExcel'])->name('department.import');
 
     // --- API Data Datatables ---
     Route::get('api/asset', [AssetController::class, 'datatables'])->name('api.asset');

@@ -5,12 +5,13 @@ namespace App\Imports;
 use App\Models\AssetName;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
-class AssetNamesImport implements ToModel, WithStartRow
+class AssetNamesImport implements ToModel, WithStartRow, WithValidation
 {
     public function startRow(): int
     {
-        return 2;
+        return 3;
     }
     /**
     * @param array $row
@@ -29,5 +30,19 @@ class AssetNamesImport implements ToModel, WithStartRow
             'lva'           => $row[6],
             'company_id'    => session('active_company_id'),
         ]);
+    }
+
+    public function rules(): array
+    {
+        return [
+            '0' => 'required|max:255',
+            '1' => 'required|string|max:255',
+            '2' => 'required',
+            '3' => 'required',
+            '4' => 'required',
+            '5' => 'required',
+            '6' => 'required',
+
+        ];
     }
 }
