@@ -43,10 +43,6 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/maintenance', function () {
-    return view('errors.503');
-});
-
 // Google Authentication Routes
 Route::controller(GoogleController::class)->group(function () {
     Route::get('/auth/google/redirect', 'redirectToGoogle')->name('auth.google');
