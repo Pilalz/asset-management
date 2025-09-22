@@ -43,6 +43,10 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('/maintenance', function () {
+    return view('errors.503');
+});
+
 // Google Authentication Routes
 Route::controller(GoogleController::class)->group(function () {
     Route::get('/auth/google/redirect', 'redirectToGoogle')->name('auth.google');
@@ -88,10 +92,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // --- Export Data ---
     Route::get('/asset-class/export-excel', [AssetClassController::class, 'exportExcel'])->name('asset-class.export');
     Route::get('/asset-sub-class/export-excel', [AssetSubClassController::class, 'exportExcel'])->name('asset-sub-class.export');
+    Route::get('/asset-name/export-excel', [AssetNameController::class, 'exportExcel'])->name('asset-name.export');
     Route::get('/asset/export-excel', [AssetController::class, 'exportExcel'])->name('asset.export');
     Route::get('/assetLVA/export-excel', [AssetLowValueController::class, 'exportExcel'])->name('assetLVA.export');
     Route::get('/location/export-excel', [LocationController::class, 'exportExcel'])->name('location.export');
     Route::get('/department/export-excel', [DepartmentController::class, 'exportExcel'])->name('department.export');
+    Route::get('/depreciation/export-excel', [DepreciationController::class, 'exportExcelCommercial'])->name('commercial.export');
+    Route::get('/depreciation/fiscal/export-excel', [DepreciationController::class, 'exportExcelFiscal'])->name('fiscal.export');
 
     // --- Core Application Resources ---
     Route::resource('asset-class', AssetClassController::class);
@@ -111,11 +118,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('person-in-charge', PersonInChargeController::class);
     Route::resource('insurance', InsuranceController::class);
 
-    //Start Depre
+    //Start Depre Commercial
     Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
     Route::post('/depreciation/run-all', [DepreciationController::class, 'runAll'])->name('depreciation.runAll');
     Route::get('/depreciation/status', [DepreciationController::class, 'getStatus'])->name('depreciation.status');
     Route::post('/depreciation/clear-status', [DepreciationController::class, 'clearStatus'])->name('depreciation.clearStatus');
+    //Start Depre Fiscal
     Route::get('/depreciation/fiscal', [DepreciationController::class, 'indexFiscal'])->name('depreciationFiscal.index');
     //Start Register
     Route::post('/register-asset/{register_asset}/approve', [RegisterAssetController::class, 'approve'])->name('register-asset.approve');

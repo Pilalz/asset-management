@@ -30,7 +30,7 @@ class AssetNameController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'sub_class_id' => 'required|string|max:255',
+            'sub_class_id' => 'required|string|exists:asset_sub_classes,id',
             'name'  => 'required|string|max:255',
             'grouping'  => 'required|string|max:255',
             'commercial'  => 'required',
@@ -55,7 +55,7 @@ class AssetNameController extends Controller
     public function update(Request $request, AssetName $asset_name)
     {
         $validatedData = $request->validate([
-            'sub_class_id' => 'required|string|max:255',
+            'sub_class_id' => 'required|string|exists:asset_sub_classes,id',
             'name'  => 'required|string|max:255',
             'grouping'  => 'required|string|max:255',
             'commercial'  => 'required',

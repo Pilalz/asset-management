@@ -31,32 +31,31 @@ class UserController extends Controller
 
     public function storeCompany(Request $request)
     {
-        // 1. Validasi input, owner_id tidak lagi diambil dari form
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|unique:companies,code', // Pastikan kode unik
+            'alias' => 'required|string|unique:companies,alias',
+            'code' => 'required|string|unique:companies,code',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'address' => 'nullable|string',
+            'phone' => 'nullable|string|max:255',
+            'fax' => 'nullable|string|max:255',
         ]);
 
         $user = Auth::user();
+        $validated['owner_id'] = $user->id;
 
-        // 2. Buat perusahaan baru, atur owner_id secara otomatis
-        $company = Company::create([
-            'name' => $validated['name'],
-            'code' => $validated['code'],
-            'owner_id' => $user->id,
-        ]);
+        if ($request->hasFile('logo')) {
+            $validated['logo'] = $request->file('logo')->store('company-logos', 'public');
+        }
 
-        // 3. (PALING PENTING) Hubungkan user ini ke perusahaan yang baru dibuat
-        $user->companies()->attach($company->id, ['role' => 'owner']);
+        $newCompany = Company::create($validated);
 
-        // 4. Atur perusahaan baru sebagai yang aktif di session
-        Session::put('active_company_id', $company->id);
+        $newCompany->users()->attach($user->id, ['role' => 'Owner']);
 
-        // Update juga last_active_company_id di database
-        $user->last_active_company_id = $company->id;
+        $user->last_active_company_id = $newCompany->id;
         $user->save();
+        Session::put('active_company_id', $newCompany->id);
 
-        // 5. Arahkan ke dashboard dengan pesan sukses
         return redirect()->route('dashboard')->with('success', 'Selamat datang! Perusahaan Anda berhasil dibuat.');
     }
 

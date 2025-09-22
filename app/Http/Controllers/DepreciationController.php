@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Depreciation;
 use App\Models\Asset;
+use App\Models\Company;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Jobs\RunBulkDepreciation;
+use App\Exports\CommercialDepreciationsExport;
+use App\Exports\FiscalDepreciationsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DepreciationController extends Controller
 {
@@ -262,5 +266,27 @@ class DepreciationController extends Controller
             Cache::forget('depreciation_status_' . $companyId);
         }
         return response()->json(['status' => 'cleared']);
+    }
+
+    public function exportExcelCommercial(Request $request)
+    {
+        $year = $request->input('year', now()->year);        
+
+        $companyName = session('active_company_id');
+        $companyName = Company::where('id', $companyName)->first();
+        $fileName = 'Commercial-Depreciations-'. $year. '-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        
+        return Excel::download(new CommercialDepreciationsExport($year), $fileName);
+    }
+
+    public function exportExcelFiscal(Request $request)
+    {
+        $year = $request->input('year', now()->year);        
+
+        $companyName = session('active_company_id');
+        $companyName = Company::where('id', $companyName)->first();
+        $fileName = 'Fiscal-Depreciations-'. $year. '-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        
+        return Excel::download(new FiscalDepreciationsExport($year), $fileName);
     }
 }

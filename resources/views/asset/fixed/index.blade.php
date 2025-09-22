@@ -51,7 +51,7 @@
 
         <div class="flex gap-2">
             <div id="depreciation-controls" class="flex items-center gap-4">
-                <div id="status-container" class="hidden flex items-center gap-2">
+                <div id="status-container" class="flex items-center gap-2">
                     <div role="status">
                         <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -282,6 +282,7 @@
             const runBtn = $('#run-all-btn');
             const statusContainer = $('#status-container');
             const statusText = $('#status-text');
+            const statusProgress = $('#status-progress');
             let pollingInterval = null;
 
             function stopPolling() {
@@ -291,40 +292,39 @@
                 }
             }
 
+            function updateUI(status, progress, message = '') {
+                if (status === 'running') {
+                    runBtn.prop('disabled', true).addClass('cursor-not-allowed bg-gray-400');
+                    statusContainer.removeClass('hidden');
+                    statusText.text('Sedang memproses...');
+                    statusProgress.text(Math.round(progress || 0) + '%');
+                } else {
+                    runBtn.prop('disabled', false).removeClass('cursor-not-allowed bg-gray-400');
+                    statusContainer.addClass('hidden');
+                    stopPolling();
+
+                    if (status === 'completed') {
+                        // Hanya tampilkan alert jika ada pesan (berarti job baru saja selesai)
+                        if (message) {
+                            alert(message);
+                            $('#assetTable').DataTable().ajax.reload(null, false);
+                            // Kirim request untuk membersihkan status dari cache
+                            $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" });
+                        }
+                    } else if (status === 'failed') {
+                        alert('Proses depresiasi gagal. Silakan cek log.');
+                        $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" });
+                    }
+                }
+            }
+
             function checkStatus() {
                 $.get("{{ route('depreciation.status') }}", { _: new Date().getTime() })
                     .done(function(data) {
-                        if (data.status === 'running') {
-                            runBtn.prop('disabled', true).addClass('cursor-not-allowed bg-gray-400');
-                            statusContainer.removeClass('hidden');
-                            statusText.text('Sedang memproses... (' + Math.round(data.progress || 0) + '%)');
-
-                            if (!pollingInterval) {
-                                pollingInterval = setInterval(checkStatus, 1500);
-                            }
-                        } else if (data.status === 'completed') {
-                            runBtn.prop('disabled', false).removeClass('cursor-not-allowed bg-gray-400');
-                            statusText.text('Selesai!');
-                            stopPolling();
-
-                            alert(data.message || 'Proses depresiasi selesai!');
-                            
-                            // Kirim request untuk membersihkan status
-                            $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" })
-                                .always(function() {
-                                    // Reset UI ke kondisi awal setelah cache dibersihkan
-                                    statusContainer.addClass('hidden');
-                                    $('#assetTable').DataTable().ajax.reload(null, false);
-                                });
-                        
-                        } else { // idle, failed, atau tidak ada
-                            runBtn.prop('disabled', false).removeClass('cursor-not-allowed bg-gray-400');
-                            statusContainer.addClass('hidden');
-                            stopPolling();
-                            if(data.status === 'failed') {
-                                alert('Proses depresiasi gagal: ' + (data.error || 'Silakan cek log.'));
-                                $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" });
-                            }
+                        updateUI(data.status, data.progress, data.message);
+                        // Mulai polling HANYA jika status masih berjalan
+                        if (data.status === 'running' && !pollingInterval) {
+                            pollingInterval = setInterval(checkStatus, 1500);
                         }
                     })
                     .fail(function() {
@@ -336,18 +336,18 @@
             runBtn.on('click', function() {
                 if (!confirm('Apakah Anda yakin ingin menjalankan depresiasi untuk semua aset?')) return;
 
-                runBtn.prop('disabled', true).addClass('cursor-not-allowed bg-gray-400');
-                statusContainer.removeClass('hidden');
+                updateUI('running', 0);
                 statusText.text('Mengirim permintaan...');
 
                 $.post("{{ route('depreciation.runAll') }}", { _token: "{{ csrf_token() }}" })
                     .done(function() {
-                        setTimeout(checkStatus, 500);
+                        if (!pollingInterval) {
+                           pollingInterval = setInterval(checkStatus, 1500);
+                        }
                     })
                     .fail(function(xhr) {
                         alert('Gagal memulai proses: ' + (xhr.responseJSON?.message || 'Error tidak diketahui.'));
-                        runBtn.prop('disabled', false).removeClass('cursor-not-allowed bg-gray-400');
-                        statusContainer.addClass('hidden');
+                        updateUI('idle');
                     });
             });
             

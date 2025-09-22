@@ -35,7 +35,7 @@ class AssetNamesImport implements ToModel, WithStartRow, WithValidation
     public function rules(): array
     {
         return [
-            '0' => 'required|max:255',
+            '0' => 'required|exists:asset_sub_classes,id',
             '1' => 'required|string|max:255',
             '2' => 'required',
             '3' => 'required',

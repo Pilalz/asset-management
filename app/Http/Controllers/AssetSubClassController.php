@@ -29,7 +29,7 @@ class AssetSubClassController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'class_id'  => 'required|string|max:255',
+            'class_id'  => 'required|string|exists:asset_classes,id',
             'company_id'  => 'required',
         ]);
 
@@ -49,7 +49,7 @@ class AssetSubClassController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'class_id'  => 'required|string|max:255',
+            'class_id'  => 'required|string|exists:asset_classes,id',
         ]);
 
         $dataToUpdate = $validatedData;
