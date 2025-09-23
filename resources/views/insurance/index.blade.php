@@ -63,11 +63,16 @@
                         <th scope="col" class="px-6 py-3">Start Date</th>
                         <th scope="col" class="px-6 py-3">End Date</th>
                         <th scope="col" class="px-6 py-3">Instance</th>
-                        <th scope="col" class="px-6 py-3">Annual Premium</th>
-                        <th scope="col" class="px-6 py-3">Schedule</th>
-                        <th scope="col" class="px-6 py-3">Next Payment</th>
+                        <th scope="col" class="px-6 py-3">Annual Payment</th>
+                        <!-- <th scope="col" class="px-6 py-3">Schedule</th> -->
+                        <!-- <th scope="col" class="px-6 py-3">Next Payment</th> -->
                         <th scope="col" class="px-6 py-3">Status</th>
                         <th scope="col" class="px-6 py-3">Actions</th>
+                    </tr>
+                    <tr id="filter-row">
+                        <th></th><th></th><th></th><th></th>
+                        <th></th><th></th><th></th><th></th>
+                        <!-- <th></th><th></th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -107,8 +112,8 @@
                     { data: 'end_date', name: 'end_date' },
                     { data: 'instance_name', name: 'instance_name' },
                     { data: 'annual_premium', name: 'annual_premium' },
-                    { data: 'schedule', name: 'schedule' },
-                    { data: 'next_payment', name: 'next_payment' },
+                    // { data: 'schedule', name: 'schedule' },
+                    // { data: 'next_payment', name: 'next_payment' },
                     { data: 'status', name: 'status' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ],
@@ -147,20 +152,20 @@
                         targets: 0,
                         className: 'px-6 py-4'
                     },
+                    // {
+                    //     targets: 6,
+                    //     render: function (data, type, row) {
+                    //         if (type === 'display') {
+                    //             if (data == null) {
+                    //                 return "-";
+                    //             }
+                    //             return data + ' (Month)';
+                    //         }
+                    //     return data;
+                    //     }
+                    // },
                     {
-                        targets: 6,
-                        render: function (data, type, row) {
-                            if (type === 'display') {
-                                if (data == null) {
-                                    return "-";
-                                }
-                                return data + ' (Month)';
-                            }
-                        return data;
-                        }
-                    },
-                    {
-                        targets: [2,3,7],
+                        targets: [2,3],
                         render: function (data, type, row) {
                             if (type === 'display') {
                                 if (!data) {
@@ -208,6 +213,19 @@
 
                 createdRow: function( row, data, dataIndex ) {
                     $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+
+                    var statusCell = $(row).find('td:eq(6)');
+
+                    // Tentukan class berdasarkan nilai 'data.status'
+                    let statusClass = '';
+                    if (data.status === 'Active') {
+                        statusClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                    } else {
+                        statusClass = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+                    }
+
+                    // Ubah konten sel menjadi span dengan class yang sesuai
+                    statusCell.html(`<span class="${statusClass} text-xs font-medium px-2.5 py-0.5 rounded">${data.status}</span>`);
                 },
             });
         }

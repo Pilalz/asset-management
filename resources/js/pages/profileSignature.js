@@ -7,7 +7,7 @@ if (document.getElementById('signature-pad')) {
     
     const canvas = document.getElementById('signature-pad');
     const signaturePad = new SignaturePad(canvas, {
-        backgroundColor: 'rgb(255, 255, 255)'
+        backgroundColor: 'rgb(255, 255, 255)',
     });
 
     const existingSignature = JSON.parse(canvas.getAttribute('data-signature'));

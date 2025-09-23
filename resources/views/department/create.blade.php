@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">

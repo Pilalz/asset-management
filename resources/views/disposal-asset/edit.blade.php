@@ -330,17 +330,20 @@
                                     <th scope="col" class="px-6 py-3">Capitalized Date</th>
                                     <th scope="col" class="px-6 py-3">Start Depre Date</th>
                                     <th scope="col" class="px-6 py-3">Acquisition Value</th>
-                                    <th scope="col" class="px-6 py-3">Useful Life Month</th>
-                                    <th scope="col" class="px-6 py-3">Accum Depre</th>
-                                    <th scope="col" class="px-6 py-3">Net Book Value</th>
+                                    <th scope="col" class="px-6 py-3">Commercial Useful Life Month</th>
+                                    <th scope="col" class="px-6 py-3">Commercial Accum Depre</th>
+                                    <th scope="col" class="px-6 py-3">Commercial Net Book Value</th>
+                                    <th scope="col" class="px-6 py-3">Fiscal Useful Life Month</th>
+                                    <th scope="col" class="px-6 py-3">Fiscal Accum Depre</th>
+                                    <th scope="col" class="px-6 py-3">Fiscal Net Book Value</th>
                                 </tr>
                                 <tr id="filter-row">
                                     <th><input type="hidden" name="asset_ids" id="selected-asset-ids"></th>
-                                    <th></th><th></th><th></th>
                                     <th></th><th></th><th></th><th></th>
                                     <th></th><th></th><th></th><th></th>
                                     <th></th><th></th><th></th><th></th>
-                                    <th></th><th></th>
+                                    <th></th><th></th><th></th><th></th>
+                                    <th></th><th></th><th></th><th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -428,9 +431,12 @@
                     { data: 'capitalized_date', name: 'capitalized_date' },
                     { data: 'start_depre_date', name: 'start_depre_date' },
                     { data: 'acquisition_value', name: 'acquisition_value' },
-                    { data: 'useful_life_month', name: 'useful_life_month' },
-                    { data: 'accum_depre', name: 'accum_depre' },
-                    { data: 'net_book_value', name: 'net_book_value' },
+                    { data: 'commercial_useful_life_month', name: 'commercial_useful_life_month' },
+                    { data: 'commercial_accum_depre', name: 'commercial_accum_depre' },
+                    { data: 'commercial_nbv', name: 'commercial_nbv' },
+                    { data: 'fiscal_useful_life_month', name: 'fiscal_useful_life_month' },
+                    { data: 'fiscal_accum_depre', name: 'fiscal_accum_depre' },
+                    { data: 'fiscal_nbv', name: 'fiscal_nbv' },
                 ],
                 order: [[0, 'asc']],
                 language: {
@@ -468,7 +474,7 @@
                         className: 'px-6 py-4'
                     },
                     {
-                        targets: 4, 
+                        targets: 5, 
                         render: function (data, type, row) {
                             if (type === 'display') {
                                 return 'Direct Ownership : ' + data;
@@ -477,7 +483,7 @@
                         }
                     },
                     {
-                        targets: [11, 12],
+                        targets: [12, 13],
                         render: function (data, type, row) {
                             if (type === 'display') {
                                 if (!data) {
@@ -502,7 +508,7 @@
                         }
                     },
                     {
-                        targets: [13, 15, 16], 
+                        targets: [14, 16, 17, 19, 20], 
                         render: function (data, type, row) {
                             if (type === 'display') {
                                 let number = parseFloat(data);

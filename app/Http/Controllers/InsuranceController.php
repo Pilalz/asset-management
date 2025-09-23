@@ -83,6 +83,7 @@ class InsuranceController extends Controller
             'polish_no'      => 'required|string|max:255|unique:insurances,polish_no,' . $insurance->id,
             'start_date'     => 'required|date',
             'end_date'       => 'required|date',
+            'next_payment'   => 'nullable|date',
             'instance_name'  => 'nullable|max:255',
             'annual_premium' => 'nullable|numeric',
             'schedule'       => 'nullable|integer|min:1|max:12',

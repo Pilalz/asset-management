@@ -1,8 +1,8 @@
 <header>
-    <h2 class="text-lg font-medium text-gray-900">
+    <h2 class="text-lg font-medium text-gray-900 dark:text-white">
         Your Signature
     </h2>
-    <p class="mt-1 text-sm text-gray-600">
+    <p class="mt-1 text-sm text-gray-600 dark:text-gray-100">
         Draw your signature below. This will be used for approvals.
     </p>
 </header>
@@ -10,7 +10,7 @@
 {{-- Menampilkan tanda tangan yang sudah ada --}}
 @if (Auth::user()->signature)
     <div class="mt-4">
-        <p class="text-sm font-medium text-gray-700">Current Signature:</p>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-100">Current Signature:</p>
         <div class="border rounded-md p-2 mt-1 inline-block">
             <img src="{{ Auth::user()->signature }}" alt="Your signature" class="h-16">
         </div>
@@ -18,7 +18,7 @@
 @endif
 
 <div class="mt-6 space-y-2">
-    <label for="signature">New Signature:</label>
+    <label for="signature" class="dark:text-white">New Signature:</label>
     <div class="border border-gray-400 rounded-md relative">
         <canvas id="signature-pad" class="w-full h-48 relative z-10" data-signature="{{ Auth::user()->signature ? json_encode(Auth::user()->signature) : 'null' }}"></canvas>
     </div>

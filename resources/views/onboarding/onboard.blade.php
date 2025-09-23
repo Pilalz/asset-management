@@ -49,7 +49,7 @@
                                         <a href="{{ route('company.edit', ['company' => $activeCompany->id]) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Setting Company</a>
                                     </li>
                                 @endif
-                                @if(isset($userCompanies) && $userCompanies->count() > 1)
+                                @if(isset($userCompanies) && $userCompanies->count() >= 1)
                                     <hr class="my-1 border-gray-200 dark:border-gray-600">
                                     <li class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">Switch Company</li>
                                     @foreach ($userCompanies as $company)

@@ -128,7 +128,7 @@
                     <td>{{ $detail->asset?->assetName?->name ?? "-" }}</td>                    
                     <td>{{ $detail->asset?->unit_no ?? "-" }}</td>
                     <td>{{ $detail->asset?->sn_engine ?? "-" }}</td>
-                    <td>{{ $detail->asset?->production_date ?? "-" }}</td>
+                    <td>{{ $detail->asset?->production_year ? \Carbon\Carbon::parse($detail->asset->production_year)->translatedFormat('Y') : "-" }}</td>
                     <td>{{ $detail->asset?->capitalized_date ? \Carbon\Carbon::parse($detail->asset->capitalized_date)->translatedFormat('d F Y') : "-" }}</td>
                     <td>{{ $detail->asset?->location?->name ?? "-" }}</td>
                 </tr>

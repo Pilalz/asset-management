@@ -45,10 +45,10 @@
                 <div class="mb-5">
                     <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role <span class="text-red-900">*</span></label>
                     <select id="role" name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option value="Admin" {{ $company_user->role == 'Admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="Staff" {{ $company_user->role == 'Staff' ? 'selected' : '' }}>Staff</option>
-                        <option value="Viewer" {{ $company_user->role == 'Viewer' ? 'selected' : '' }}>Viewer</option>
+                        <option value="User" {{ $company_user->role == 'User' ? 'selected' : '' }}>User</option>
                         <option value="User Manager" {{ $company_user->role == 'User Manager' ? 'selected' : '' }}>User Manager</option>
+                        <option value="Site Director" {{ $company_user->role == 'Site Director' ? 'selected' : '' }}>Site Director</option>
+                        <option value="Asset Management" {{ $company_user->role == 'Asset Management' ? 'selected' : '' }}>Asset Management</option>
                         <option value="CFO" {{ $company_user->role == 'CFO' ? 'selected' : '' }}>CFO</option>
                         <option value="Director" {{ $company_user->role == 'Director' ? 'selected' : '' }}>Director</option>
                     </select>

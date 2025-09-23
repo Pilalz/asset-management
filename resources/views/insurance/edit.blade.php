@@ -81,7 +81,7 @@
                         </div>
 
                         <div class="mb-5 flex content-center">
-                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Annual Premium </label>
+                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Annual Payment </label>
                             <span> : </span>
                             <input type="text" id="annual-display" value="{{ old('annual_premium', $insurance->annual_premium) }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
                             <input type="hidden" id="annual-value" name="annual_premium" value="{{ old('annual_premium', $insurance->annual_premium) }}" />
@@ -90,7 +90,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-5 flex content-center">
+                        <!-- <div class="mb-5 flex content-center">
                             <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Schedule </label>
                             <span> : </span>
                             <select name="schedule" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0">
@@ -104,7 +104,16 @@
                             @error('schedule')
                                 <div class="text-danger mt-2 text-sm">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> -->
+
+                        <!-- <div class="mb-5 flex content-center">
+                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Next Payment <span class="text-red-900">*</span></label>
+                            <span> : </span>
+                            <input type="date" name="next_payment" value="{{ old('next_payment', $insurance->next_payment) }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            @error('next_payment')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div> -->
 
                         <input type="hidden" name="company_id" value="{{ Auth::user()->last_active_company_id }}" required />
                     </div>

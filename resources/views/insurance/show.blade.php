@@ -25,12 +25,12 @@
         </nav>
 
         <div class="flex gap-2">
-            <a href="" type="button" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-sm text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700">
+            <!-- <a href="" type="button" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-sm text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700">
                 <svg class="w-4 h-4 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H5m12 0a1 1 0 0 1 1 1v2.6M17 8l-4-4M5 8a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.6M5 8l4-4 4 4m6 4h-4a2 2 0 1 0 0 4h4a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1Z"/>
                 </svg>
                 Claim
-            </a>
+            </a> -->
 
             <a href="{{ route('insurance.edit', $insurance->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-sm text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">
                 <svg class="w-4 h-4 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
@@ -44,50 +44,70 @@
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insurance Information </label>
-            <table class="mb-4">
-                <th>
-                    <tr>
-                        <td>Polish No.</td>
-                        <td>:</td>
-                        <td>{{ $insurance->polish_no }}</td>
-                    </tr>
-                    <tr>
-                        <td>Start Date</td>
-                        <td>:</td>
-                        <td>{{ $insurance->start_date ?? "-" }}</td>
-                    </tr>
-                    <tr>
-                        <td>End Date</td>
-                        <td>:</td>
-                        <td>{{ $insurance->end_date ?? "-" }}</td>
-                    </tr>
-                    <tr>
-                        <td>Instance Name</td>
-                        <td>:</td>
-                        <td>{{ $insurance->instance_name ?? "-" }}</td>
-                    </tr>
-                    <tr>
-                        <td>Annual Premium</td>
-                        <td>:</td>
-                        <td>{{ $insurance->annual_premium ?? "-" }}</td>
-                    </tr>
-                    <tr>
-                        <td>Schedule</td>
-                        <td>:</td>
-                        <td>{{ $insurance->schedule ?? "-" }}</td>
-                    </tr>
-                    <tr>
-                        <td>Next Payment</td>
-                        <td>:</td>
-                        <td>{{ $insurance->next_payment ?? "-" }}</td>
-                    </tr>
-                    <tr>
-                        <td>Status</td>
-                        <td>:</td>
-                        <td>{{ $insurance->status ?? "-" }}</td>
-                    </tr>
-                </th>
-            </table>
+            <div class="flex flex-row">
+                <div class="flex w-1/2">
+                    <table class="mb-4">
+                        <th>
+                            <tr>
+                                <td>Polish No.</td>
+                                <td class="px-2">:</td>
+                                <td>{{ $insurance->polish_no }}</td>
+                            </tr>
+                            <tr>
+                                <td>Start Date</td>
+                                <td class="px-2">:</td>
+                                <td>{{ $insurance->start_date ? \Carbon\Carbon::parse($insurance->start_date)->format('d F Y') : '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td>End Date</td>
+                                <td class="px-2">:</td>
+                                <td>{{ $insurance->end_date ? \Carbon\Carbon::parse($insurance->end_date)->format('d F Y') : '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td>Instance Name</td>
+                                <td class="px-2">:</td>
+                                <td>{{ $insurance->instance_name ?? "-" }}</td>
+                            </tr>
+                        </th>
+                    </table>
+                </div>
+                <div class="flex w-1/2">
+                    <table class="mb-4">
+                        <th>
+                            <tr>
+                                <td>Annual Premium</td>
+                                <td class="px-2">:</td>
+                                <td>${{ $insurance->annual_premium ? number_format($insurance->annual_premium, 0, '.', ',') : '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td>Schedule</td>
+                                <td class="px-2">:</td>
+                                <td>{{ $insurance->schedule ?? "-" }} Month</td>
+                            </tr>
+                            <tr>
+                                <td>Next Payment</td>
+                                <td class="px-2">:</td>
+                                <td>{{ $insurance->next_payment ? \Carbon\Carbon::parse($insurance->next_payment)->format('d F Y') : '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td>Status</td>
+                                <td class="px-2">:</td>
+                                @php
+                                    $insuredText = $insurance->status;
+                                    $insuredClass = '';
+
+                                    if ($insuredText === "Active") {
+                                        $insuredClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                                    } else { 
+                                        $insuredClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+                                    }
+                                @endphp
+                                <td><label class="{{ $insuredClass }} font-medium px-2 py-0.5 rounded">{{ $insurance->status ?? "-" }}</label></td>
+                            </tr>
+                        </th>
+                    </table>
+                </div>
+            </div>
 
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Data </label>

@@ -4,19 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Company;
+use App\Models\Asset;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use App\Scopes\CompanyScope;
 
 class CompanyController extends Controller
 {
     public function index()
     {
         $userId = Auth::id();
+        $companyId = session('active_company_id');
 
+        $countAsset = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('assets.company_id', $companyId)
+            ->where('status', 'Active')
+            ->count();
+            
         $companies = Company::where('owner_id', $userId)->paginate(25);
 
-        return view('company.index', compact('companies'));
+        return view('company.index', compact('companies', 'countAsset'));
     }
 
     public function create()
@@ -86,7 +95,8 @@ class CompanyController extends Controller
 
     public function destroy(Company $company)
     {
-
+        User::where('last_active_company_id', $company->id)
+        ->update(['last_active_company_id' => null]);
 
         $company->delete();
 
