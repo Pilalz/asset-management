@@ -10,6 +10,7 @@ use App\Scopes\CompanyScope;
 use App\Imports\LocationsImport;
 use App\Exports\LocationsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Gate;
 
 class LocationController extends Controller
 {
@@ -20,6 +21,8 @@ class LocationController extends Controller
 
     public function create()
     {
+        Gate::authorize('is-owner');
+
         return view('location.create');
     }
 

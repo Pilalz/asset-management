@@ -137,6 +137,8 @@
                             <ul class="py-1" role="none">
                                 <li>
                                     <a href="{{ route('company.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Create Company</a>
+                                    <a href="{{ route('register-asset.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Add Register Form</a>
+                                    <a href="{{ route('company-user.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Add Company User</a>
                                 </li>
                             </ul>
                         </div>
@@ -151,7 +153,7 @@
                         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
                             <div class="px-4 py-3" role="none">
                                 <p class="text-sm text-gray-900 dark:text-white" role="none">
-                                    {{ Auth::user()->name }}
+                                    {{ Auth::user()->name }} | {{ Auth::user()->role }}
                                 </p>
                                 <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
                                     {{ Auth::user()->email }}
@@ -222,9 +224,11 @@
                             </svg>
                         </button>
                         <ul id="dropdown-asset" class="{{ request()->routeIs(['asset.*', 'assetLVA.*', 'assetArrival.*']) ? '' : 'hidden' }} py-2 space-y-2">
-                            <li>
-                                <a href="{{ route('assetArrival.index') }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text {{ request()->routeIs('assetArrival.*') ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">Arrival</a>
-                            </li>
+                            @canany(['is-manage-assets', 'is-owner'])
+                                <li>
+                                    <a href="{{ route('assetArrival.index') }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text {{ request()->routeIs('assetArrival.*') ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">Arrival</a>
+                                </li>
+                            @endcanany
                             <li>
                                 <a href="{{ route('asset.index') }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 menu-text {{ request()->routeIs('asset.*') ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">Fixed Asset</a>
                             </li>
@@ -318,6 +322,7 @@
                         </a>
                     </li>
 
+                @canany(['is-manage-assets', 'is-owner'])
                     <li>
                         <a href="{{ route('person-in-charge.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('person-in-charge.*') ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white {{ request()->routeIs('person-in-charge.*') ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -326,6 +331,7 @@
                             <span class="flex-1 ms-3 whitespace-nowrap menu-text">Person In Charge</span>
                         </a>
                     </li>
+                @endcanany
 
                     <li>
                         <a href="{{ route('company.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('company.*') ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' }}">

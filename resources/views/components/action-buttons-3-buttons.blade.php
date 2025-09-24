@@ -8,6 +8,7 @@
         Show
     </a>
 
+@canany(['is-manage-assets', 'is-owner'])
     @if ($model->status === 'Approved')
         <button href="{{ $editUrl }}" type="button" class="text-white bg-gray-400 hover:bg-gray-400 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-gray-400 dark:hover:bg-gray-400 cursor-not-allowed" disable>
             <svg class="w-3.5 h-3.5 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
@@ -38,4 +39,5 @@
             </button>
         </div>
     </form>
+@endcanany
 </div>

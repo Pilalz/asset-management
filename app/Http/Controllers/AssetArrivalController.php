@@ -9,12 +9,17 @@ use App\Models\Department;
 use App\Models\AssetClass;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
+use Illuminate\Support\Facades\Gate;
 
 class AssetArrivalController extends Controller
 {
     public function index()
     {
-        return view('asset.arrival.index');
+        if (Gate::any(['is-owner', 'is-asset-management'])) {
+            return view('asset.arrival.index');
+        } else {
+            abort(403);
+        }
     }
 
     public function edit(Asset $assetArrival)

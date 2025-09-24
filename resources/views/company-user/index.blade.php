@@ -43,6 +43,7 @@
             </ol>
         </nav>
 
+    @canany(['is-manage-assets', 'is-owner'])
         <div class="flex">
             <a href="{{ route('company-user.create') }}" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg class="w-4 h-4 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -51,6 +52,7 @@
                 New Data
             </a>
         </div>
+    @endcanany
     </div>
     
     <div class="p-5">
@@ -62,7 +64,11 @@
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">Email</th>
                         <th scope="col" class="px-6 py-3">Role</th>
-                        <th scope="col" class="px-6 py-3">Actions</th>
+                        @canany(['is-manage-assets', 'is-owner'])
+                            <th scope="col" class="px-6 py-3">Actions</th>
+                        @else
+                            <th scope="col" class="px-6 py-3"></th>
+                        @endcanany
                     </tr>
                     <tr id="filter-row">
                         <th></th>
