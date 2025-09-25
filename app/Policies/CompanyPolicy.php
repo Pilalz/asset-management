@@ -39,6 +39,10 @@ class CompanyPolicy
      */
     public function update(User $user, Company $company): bool
     {
+        if ($user->role === 'Asset Management') {
+            return true;
+        }
+
         return $user->id == $company->owner_id;
     }
 

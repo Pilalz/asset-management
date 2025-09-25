@@ -10,31 +10,32 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use App\Scopes\CompanyScope;
+use Illuminate\Support\Facades\Gate;
 
 class CompanyController extends Controller
 {
     public function index()
     {
         $userId = Auth::id();
-        $companyId = session('active_company_id');
-
-        $countAsset = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('assets.company_id', $companyId)
-            ->where('status', 'Active')
-            ->count();
             
-        $companies = Company::where('owner_id', $userId)->paginate(25);
+        $companies = Company::join('company_users', 'companies.id', '=', 'company_users.company_id')
+            ->where('user_id', $userId)
+            ->get();
 
-        return view('company.index', compact('companies', 'countAsset'));
+        return view('company.index', compact('companies'));
     }
 
     public function create()
     {
+        Gate::authorize('is-dev');
+
         return view('company.create');
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('is-dev');
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'alias' => 'required|string|unique:companies,alias',
@@ -67,7 +68,14 @@ class CompanyController extends Controller
     {
         $this->authorize('update', $company);
 
-        return view('company.edit', compact('company'));
+        $companyId = session('active_company_id');
+
+        $countAsset = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('assets.company_id', $companyId)
+            ->where('status', 'Active')
+            ->count();
+
+        return view('company.edit', compact('company', 'countAsset'));
     }
 
     public function update(Request $request, Company $company)

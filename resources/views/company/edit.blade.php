@@ -96,5 +96,22 @@
                 <a href="{{ route('company.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
             </form>
         </div>
+
+    @can('is-dev')
+        <div class="relative overflow-x-auto shadow-md mt-4 py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
+            <form action="{{ route('company.destroy', $company->id) }}" method="POST" class="group">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                    onclick="return confirm('Terdapat {{$countAsset}} Asset di company ini, Apakah Anda yakin ingin menghapus data ini?')" 
+                    class="text-red-700 group-hover:text-white border border-red-700 group-hover:bg-red-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:border-red-500 dark:text-red-500 dark:group-hover:text-white dark:group-hover:bg-red-600">
+                    <svg class="w-3.5 h-3.5 me-2 text-red-700 dark:text-white group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                    </svg>
+                    Delete
+                </button>
+            </form>
+        </div>
+    @endcan
     </div>
 @endsection

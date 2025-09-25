@@ -28,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        Gate::define('is-dev', function (User $user) {
+            return $user->akses === 'Dev';
+        });
+
         Gate::define('is-owner', function (User $user) {
             return $user->role === 'Owner';
         });

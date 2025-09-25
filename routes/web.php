@@ -77,10 +77,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Routes for new users to create their first company.
     Route::controller(UserController::class)->prefix('onboard')->name('onboard.')->group(function () {
         Route::get('/', 'onboard')->name('index');
-        Route::get('/create', 'createCompany')->name('create');
-        Route::post('/store', 'storeCompany')->name('store');
-        Route::get('/profile', 'editProfile')->name('edit');
-        Route::patch('/profile', 'update')->name('update');
+        Route::get('/create', 'createCompany')->name('create')->middleware('can:is-dev');
+        Route::post('/store', 'storeCompany')->name('store')->middleware('can:is-dev');
+        Route::get('/profile', 'editProfile')->name('edit')->middleware('can:is-dev');
+        Route::patch('/profile', 'update')->name('update')->middleware('can:is-dev');
         Route::put('/profile/signature', 'updateSignature')->name('updateSignature');
         Route::delete('/profile', 'destroy')->name('destroy');
     });
