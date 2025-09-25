@@ -79,8 +79,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', 'onboard')->name('index');
         Route::get('/create', 'createCompany')->name('create')->middleware('can:is-dev');
         Route::post('/store', 'storeCompany')->name('store')->middleware('can:is-dev');
-        Route::get('/profile', 'editProfile')->name('edit')->middleware('can:is-dev');
-        Route::patch('/profile', 'update')->name('update')->middleware('can:is-dev');
+        Route::get('/profile', 'editProfile')->name('edit');
+        Route::patch('/profile', 'update')->name('update');
         Route::put('/profile/signature', 'updateSignature')->name('updateSignature');
         Route::delete('/profile', 'destroy')->name('destroy');
     });
