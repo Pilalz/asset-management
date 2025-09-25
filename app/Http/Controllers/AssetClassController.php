@@ -16,7 +16,7 @@ class AssetClassController extends Controller
 {
     public function index()
     {
-        return view('asset-class.index', compact('assetclasses'));
+        return view('asset-class.index');
     }
 
     public function create()
