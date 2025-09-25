@@ -102,7 +102,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('asset-name', AssetNameController::class);
     Route::resource('asset', AssetController::class);
     Route::resource('assetLVA', AssetLowValueController::class);
-    Route::resource('assetArrival', AssetArrivalController::class);
+    Route::resource('assetArrival', AssetArrivalController::class)->middleware('can:is-owner');
     Route::resource('depreciation', DepreciationController::class)->except('show');
     Route::resource('location', LocationController::class)->except('show');
     Route::resource('department', DepartmentController::class)->except('show');

@@ -8,7 +8,7 @@
                 color: #4B5563 !important;
             }
 
-            .apexcharts-canvas .dark .apexcharts-legend-text .apexcharts-theme-dark {
+            .dark .apexcharts-canvas .apexcharts-legend-text {
                 color: #E5E7EB !important; /* Warna abu-abu terang */
             }
 

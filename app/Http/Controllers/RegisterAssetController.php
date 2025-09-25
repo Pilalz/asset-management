@@ -24,6 +24,7 @@ use Carbon\Carbon;
 use App\Scopes\CompanyScope;
 use Yajra\DataTables\Facades\DataTables;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Gate;
 
 class RegisterAssetController extends Controller
 {
@@ -44,6 +45,8 @@ class RegisterAssetController extends Controller
 
     public function create()
     {
+        Gate::authorize('is-form-maker');
+
         $locations = Location::all();
         $departments = Department::all();
         $assetclasses = AssetClass::all();
@@ -161,6 +164,8 @@ class RegisterAssetController extends Controller
 
     public function edit(RegisterAsset $register_asset)
     {
+        Gate::authorize('is-form-maker');
+
         $locations = Location::all();
         $departments = Department::all();
         $assetclasses = AssetClass::all();

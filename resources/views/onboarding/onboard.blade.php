@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asset Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="flex flex-col h-screen bg-gray-100">
+<body class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
     <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div class="px-3 py-3 lg:px-5 lg:pl-3">
             <div class="flex items-center justify-between">
@@ -18,8 +17,12 @@
                             <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
                         </svg>
                     </button>
-                    <a href="https://flowbite.com" class="flex ms-2 md:me-24">
+                    <a href="{{ route('onboard.index') }}" class="flex ms-2 md:me-24 dark:hidden">
                         <img src="{{ asset('images/logo.svg') }}" class="h-8 me-3" alt="Asset Management Logo" />
+                        <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Asset Management</span>
+                    </a>
+                    <a href="{{ route('onboard.index') }}" class="hidden ms-2 md:me-24 dark:flex">
+                        <img src="{{ asset('images/logo-dark.svg') }}" class="h-8 me-3" alt="Asset Management Logo" />
                         <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Asset Management</span>
                     </a>
                 </div>
@@ -28,7 +31,7 @@
 
                         <!-- Tombol utama dropdown -->
                         <button type="button" aria-expanded="false" data-dropdown-toggle="dropdown-company">
-                            <div class="text-black hover:bg-gray-200 hover:rounded-md focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-4 py-2.5 text-center inline-flex items-center dark:text-white dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <div class="text-black hover:bg-gray-200 hover:rounded-md focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-4 py-2.5 text-center inline-flex items-center dark:text-white dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                                 {{ $activeCompany?->name ?? 'Choose Company' }}
                                 <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
@@ -80,7 +83,7 @@
                         </button>
 
                         <div>
-                            <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300" aria-expanded="false" data-dropdown-toggle="dropdown-action">
+                            <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:bg-gray-500" aria-expanded="false" data-dropdown-toggle="dropdown-action">
                                 <div class="flex justify-center items-center w-8 h-8 rounded-full">
                                     <svg class="w-[24px] h-[24px] text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
@@ -88,13 +91,10 @@
                                 </div>
                             </button>
                         </div>
-                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm border border-gray-800" id="dropdown-action">
+                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm border border-gray-800 dark:bg-gray-700" id="dropdown-action">
                             <ul class="py-1" role="none">
                                 <li>
-                                    <a href="{{ route('onboard.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Create Company</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
+                                    <a href="{{ route('onboard.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-500" role="menuitem">Create Company</a>
                                 </li>
                             </ul>
                         </div>
@@ -137,54 +137,48 @@
     </nav>
 
     <div class="flex pt-16">
-        <main class="size-full p-5 text-center">
+        <main class="size-full p-5 text-center dark:text-white">
             <h1>Anda belum memiliki atau tergabung dengan suatu perusahaan</h1>
         </main>
     </div>
 
     <script>
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const htmlElement = document.documentElement;
+        document.addEventListener('DOMContentLoaded', function () {
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+            const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
 
-        // Fungsi untuk menerapkan tema
-        function applyTheme(theme) {
-            if (theme === 'dark') {
-                htmlElement.classList.add('dark');
-                document.getElementById('theme-toggle-dark-icon').classList.remove('hidden');
-                document.getElementById('theme-toggle-light-icon').classList.add('hidden');
-            } else {
-                htmlElement.classList.remove('dark');
-                document.getElementById('theme-toggle-dark-icon').classList.add('hidden');
-                document.getElementById('theme-toggle-light-icon').classList.remove('hidden');
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    if(themeToggleDarkIcon) themeToggleDarkIcon.classList.remove('hidden');
+                    if(themeToggleLightIcon) themeToggleLightIcon.classList.add('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    if(themeToggleDarkIcon) themeToggleDarkIcon.classList.add('hidden');
+                    if(themeToggleLightIcon) themeToggleLightIcon.classList.remove('hidden');
+                }
             }
-        }
 
-        // Cek preferensi user saat halaman dimuat
-        const savedTheme = localStorage.getItem('color-theme');
-        if (savedTheme) {
-            applyTheme(savedTheme);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            applyTheme('dark');
-        } else {
-            applyTheme('light');
-        }
-
-        // Tangani klik tombol
-        themeToggleBtn.addEventListener('click', () => {
-            if (htmlElement.classList.contains('dark')) {
-                htmlElement.classList.remove('dark');
-                localStorage.setItem('color-theme', 'light');
-                applyTheme('light');
-            } else {
-                htmlElement.classList.add('dark');
-                localStorage.setItem('color-theme', 'dark');
+            const savedTheme = localStorage.getItem('color-theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+
+            if(themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', function() {
+                    const isDark = document.documentElement.classList.toggle('dark');
+                    const newTheme = isDark ? 'dark' : 'light';
+                    localStorage.setItem('color-theme', newTheme);
+                    applyTheme(newTheme);
+                });
             }
         });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
     @stack('scripts')
 </body>
 </html>

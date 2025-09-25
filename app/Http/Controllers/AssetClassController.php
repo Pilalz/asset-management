@@ -10,17 +10,19 @@ use App\Scopes\CompanyScope;
 use App\Imports\AssetClassesImport;
 use App\Exports\AssetClassesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Gate;
 
 class AssetClassController extends Controller
 {
     public function index()
     {
-        $assetclasses = AssetClass::paginate(25);
         return view('asset-class.index', compact('assetclasses'));
     }
 
     public function create()
     {
+        Gate::authorize('is-admin');
+
         return view('asset-class.create');
     }
 
@@ -40,6 +42,8 @@ class AssetClassController extends Controller
 
     public function edit(AssetClass $asset_class)
     {
+        Gate::authorize('is-admin');
+
         return view('asset-class.edit', compact('asset_class'));
     }
 

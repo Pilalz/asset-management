@@ -65,11 +65,15 @@ class CompanyController extends Controller
 
     public function edit(Company $company)
     {
+        $this->authorize('update', $company);
+
         return view('company.edit', compact('company'));
     }
 
     public function update(Request $request, Company $company)
     {
+        $this->authorize('update', $company);
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'alias' => 'required|string|unique:companies,alias,' . $company->id,

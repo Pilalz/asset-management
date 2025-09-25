@@ -29,7 +29,7 @@
             </ol>
         </nav>
 
-    @canany(['is-manage-assets', 'is-owner'])
+    @can('is-admin')
         <div class="flex gap-2">
             <a href="{{ route('assetLVA.edit', $asset->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-sm text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">
                 <svg class="w-4 h-4 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
@@ -38,7 +38,7 @@
                 Edit
             </a>
         </div>
-    @endcanany
+    @endcan
     </div>
     
     <div class="p-5">

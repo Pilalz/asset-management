@@ -15,11 +15,14 @@ use App\Jobs\RunBulkDepreciation;
 use App\Exports\CommercialDepreciationsExport;
 use App\Exports\FiscalDepreciationsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Gate;
 
 class DepreciationController extends Controller
 {
     public function depre(Asset $asset)
     {
+        Gate::authorize('is-admin');
+
         $periodsProcessed = 0;
 
         try {
@@ -230,6 +233,8 @@ class DepreciationController extends Controller
 
     public function runAll()
     {
+        Gate::authorize('is-admin');
+        
         $companyId = session('active_company_id');
         $jobId = 'depreciation_status_' . $companyId;
 

@@ -17,6 +17,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Gate;
 
 class DisposalAssetController extends Controller
 {
@@ -27,6 +28,8 @@ class DisposalAssetController extends Controller
 
     public function create()
     {
+        Gate::authorize('is-form-maker');
+
         $departments = Department::all();
         $assetclasses = AssetClass::all();
         $personsInCharge = PersonInCharge::all();
@@ -154,6 +157,8 @@ class DisposalAssetController extends Controller
 
     public function edit(DisposalAsset $disposal_asset)
     {
+        Gate::authorize('is-form-maker');
+        
         $departments = Department::all();
         $personsInCharge = PersonInCharge::all();
 

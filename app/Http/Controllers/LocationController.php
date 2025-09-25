@@ -21,13 +21,15 @@ class LocationController extends Controller
 
     public function create()
     {
-        Gate::authorize('is-owner');
-
+        Gate::authorize('is-admin');
+        
         return view('location.create');
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('is-admin');
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'max:255',
@@ -41,11 +43,15 @@ class LocationController extends Controller
 
     public function edit(Location $location)
     {
+        Gate::authorize('is-admin');
+        
         return view('location.edit', compact('location'));
     }
 
     public function update(Request $request, Location $location)
     {
+        Gate::authorize('is-admin');
+        
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'max:255'
@@ -60,6 +66,8 @@ class LocationController extends Controller
 
     public function destroy(Location $location)
     {
+        Gate::authorize('is-admin');
+        
         $location->delete();
 
         return redirect()->route('location.index')->with('success', 'Data berhasil dihapus!');

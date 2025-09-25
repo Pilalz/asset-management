@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
+use App\Models\Company;
+use App\Policies\CompanyPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,15 +29,15 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Gate::define('is-owner', function (User $user) {
-            return $user->role === 'owner';
+            return $user->role === 'Owner';
         });
 
-        Gate::define('is-asset-management', function (User $user) {
-            return $user->role === 'Asset Management';
+        Gate::define('is-admin', function (User $user) {
+            return in_array($user->role, ['Owner', 'Asset Management']);
         });
 
-        Gate::define('is-user', function (User $user) {
-            return $user->role === 'User';
+        Gate::define('is-form-maker', function (User $user) {
+            return in_array($user->role, ['Owner', 'Asset Management']);
         });
 
         // Gate untuk memeriksa apakah user adalah Admin
@@ -43,5 +45,7 @@ class AppServiceProvider extends ServiceProvider
         //     // Ganti 'admin@example.com' dengan logika Anda
         //     return $user->email === 'admin@example.com'; 
         // });
+
+        Gate::policy(Company::class, CompanyPolicy::class);
     }
 }

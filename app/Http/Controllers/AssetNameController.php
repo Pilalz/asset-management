@@ -12,6 +12,7 @@ use App\Scopes\CompanyScope;
 use App\Imports\AssetNamesImport;
 use App\Exports\AssetNamesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Gate;
 
 class AssetNameController extends Controller
 {
@@ -22,6 +23,8 @@ class AssetNameController extends Controller
 
     public function create()
     {
+        Gate::authorize('is-admin');
+
         $assetsubclasses = AssetSubClass::with('assetClass')->get();
 
         return view('asset-name.create', compact('assetsubclasses'));
@@ -47,6 +50,8 @@ class AssetNameController extends Controller
 
     public function edit(AssetName $asset_name)
     {
+        Gate::authorize('is-admin');
+        
         $assetsubclasses = AssetSubClass::with('assetClass')->get();
 
         return view('asset-name.edit', compact('asset_name', 'assetsubclasses'));

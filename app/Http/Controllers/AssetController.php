@@ -17,6 +17,7 @@ use App\Scopes\CompanyScope;
 use App\Imports\AssetsImport;
 use App\Exports\AssetsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Gate;
 
 class AssetController extends Controller
 {
@@ -67,6 +68,8 @@ class AssetController extends Controller
 
     public function edit(Asset $asset)
     {
+        Gate::authorize('is-admin');
+        
         $locations = Location::all();
         $departments = Department::all();
         $assetclasses = AssetClass::all();

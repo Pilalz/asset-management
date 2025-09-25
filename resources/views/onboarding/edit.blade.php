@@ -8,7 +8,7 @@
 
     @stack('styles')
 </head>
-<body class="flex flex-col h-screen bg-gray-100">
+<body class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
     <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div class="px-3 py-3 lg:px-5 lg:pl-3">
             <div class="flex items-center justify-between">
@@ -19,8 +19,12 @@
                             <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
                         </svg>
                     </button>
-                    <a href="https://flowbite.com" class="flex ms-2 md:me-24">
+                    <a href="{{ route('onboard.index') }}" class="flex ms-2 md:me-24 dark:hidden">
                         <img src="{{ asset('images/logo.svg') }}" class="h-8 me-3" alt="Asset Management Logo" />
+                        <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Asset Management</span>
+                    </a>
+                    <a href="{{ route('onboard.index') }}" class="hidden ms-2 md:me-24 dark:flex">
+                        <img src="{{ asset('images/logo-dark.svg') }}" class="h-8 me-3" alt="Asset Management Logo" />
                         <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Asset Management</span>
                     </a>
                 </div>
@@ -29,7 +33,7 @@
 
                         <!-- Tombol utama dropdown -->
                         <button type="button" aria-expanded="false" data-dropdown-toggle="dropdown-company">
-                            <div class="text-black hover:bg-gray-200 hover:rounded-md focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-4 py-2.5 text-center inline-flex items-center dark:text-white dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <div class="text-black hover:bg-gray-200 hover:rounded-md focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-4 py-2.5 text-center inline-flex items-center dark:text-white dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                                 {{ $activeCompany?->name ?? 'Choose Company' }}
                                 <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
@@ -50,7 +54,7 @@
                                         <a href="{{ route('company.edit', ['company' => $activeCompany->id]) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Setting Company</a>
                                     </li>
                                 @endif
-                                @if(isset($userCompanies) && $userCompanies->count() > 1)
+                                @if(isset($userCompanies) && $userCompanies->count() >= 1)
                                     <hr class="my-1 border-gray-200 dark:border-gray-600">
                                     <li class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">Switch Company</li>
                                     @foreach ($userCompanies as $company)
@@ -81,7 +85,7 @@
                         </button>
 
                         <div>
-                            <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300" aria-expanded="false" data-dropdown-toggle="dropdown-action">
+                            <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:bg-gray-500" aria-expanded="false" data-dropdown-toggle="dropdown-action">
                                 <div class="flex justify-center items-center w-8 h-8 rounded-full">
                                     <svg class="w-[24px] h-[24px] text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
@@ -89,13 +93,10 @@
                                 </div>
                             </button>
                         </div>
-                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm border border-gray-800" id="dropdown-action">
+                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm border border-gray-800 dark:bg-gray-700" id="dropdown-action">
                             <ul class="py-1" role="none">
                                 <li>
-                                    <a href="{{ route('onboard.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Create Company</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
+                                    <a href="{{ route('onboard.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-500" role="menuitem">Create Company</a>
                                 </li>
                             </ul>
                         </div>
@@ -118,7 +119,7 @@
                             </div>
                             <ul class="py-1" role="none">
                                 <li>
-                                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
+                                    <a href="{{ route('onboard.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
                                 </li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
@@ -152,27 +153,27 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg dark:bg-gray-800">
                 <div class="max-w-xl">
                     @include('profile.partials.update-profile-information-form')
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg dark:bg-gray-800">
                 <div class="max-w-xl">
                     @include('profile.partials.signature-user-form')
                 </div>
             </div>
 
             @if( Auth::user()->google_id === null )
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg dark:bg-gray-800">
                     <div class="max-w-xl">
                         @include('profile.partials.update-password-form')
                     </div>
                 </div>
             @endif
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg dark:bg-gray-800">
                 <div class="max-w-xl">
                     @include('profile.partials.delete-user-form')
                 </div>

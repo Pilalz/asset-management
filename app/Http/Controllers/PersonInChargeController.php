@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\PersonInCharge;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
+use Illuminate\Support\Facades\Gate;
 
 class PersonInChargeController extends Controller
 {
@@ -16,6 +17,8 @@ class PersonInChargeController extends Controller
 
     public function create()
     {
+        Gate::authorize('is-admin');
+
         return view('person-in-charge.create');
     }
 
@@ -34,6 +37,8 @@ class PersonInChargeController extends Controller
 
     public function edit(PersonInCharge $personInCharge)
     {
+        Gate::authorize('is-admin');
+
         return view('person-in-charge.edit', compact('personInCharge'));
     }
 

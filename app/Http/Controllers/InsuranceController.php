@@ -9,6 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
 
 class InsuranceController extends Controller
 {
@@ -26,6 +27,8 @@ class InsuranceController extends Controller
 
     public function create()
     {
+        Gate::authorize('is-admin');
+
         return view('insurance.create');
     }
 
@@ -70,6 +73,8 @@ class InsuranceController extends Controller
 
     public function edit(Insurance $insurance)
     {
+        Gate::authorize('is-admin');
+        
         $insurance->load('detailInsurances');
 
         $selectedAssetIds = $insurance->detailInsurances->pluck('id');

@@ -13,6 +13,7 @@ use App\Scopes\CompanyScope;
 use App\Imports\LVAImport;
 use App\Exports\LVAExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Gate;
 
 class AssetLowValueController extends Controller
 {
@@ -29,6 +30,8 @@ class AssetLowValueController extends Controller
 
     public function edit(Asset $assetLVA)
     {      
+        Gate::authorize('is-admin');
+        
         $locations = Location::all();
         $departments = Department::all();
         $assetclasses = AssetClass::all();

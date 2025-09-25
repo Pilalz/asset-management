@@ -11,6 +11,7 @@ use App\Scopes\CompanyScope;
 use App\Imports\AssetSubClassesImport;
 use App\Exports\AssetSubClassesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Gate;
 
 class AssetSubClassController extends Controller
 {
@@ -21,6 +22,8 @@ class AssetSubClassController extends Controller
 
     public function create()
     {
+        Gate::authorize('is-admin');
+
         $assetclasses = AssetClass::all();
         return view('asset-sub-class.create', compact('assetclasses'));
     }
@@ -40,6 +43,8 @@ class AssetSubClassController extends Controller
 
     public function edit(AssetSubClass $asset_sub_class)
     {
+        Gate::authorize('is-admin');
+
         $assetclasses = AssetClass::all();
 
         return view('asset-sub-class.edit', compact('asset_sub_class', 'assetclasses'));
@@ -68,20 +73,16 @@ class AssetSubClassController extends Controller
 
     public function importExcel(Request $request)
     {
-        // 1. Validasi file yang diupload
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls',
         ]);
 
         try {
-            // 2. Lakukan proses import
             Excel::import(new AssetSubClassesImport, $request->file('excel_file'));
         } catch (\Exception $e) {
-            // Jika terjadi error, kembali dengan pesan error
             return redirect()->route('asset-sub-class.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
         }
 
-        // 3. Redirect kembali dengan pesan sukses
         return redirect()->route('asset-sub-class.index')->with('success', 'Data aset berhasil diimpor!');
     }
 

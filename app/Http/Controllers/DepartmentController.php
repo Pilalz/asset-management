@@ -10,6 +10,7 @@ use App\Scopes\CompanyScope;
 use App\Imports\DepartmentsImport;
 use App\Exports\DepartmentsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Gate;
 
 class DepartmentController extends Controller
 {
@@ -21,6 +22,8 @@ class DepartmentController extends Controller
 
     public function create()
     {
+        Gate::authorize('is-admin');
+        
         return view('department.create');
     }
 
@@ -39,6 +42,8 @@ class DepartmentController extends Controller
 
     public function edit(Department $department)
     {
+        Gate::authorize('is-admin');
+        
         return view('department.edit', compact('department'));
     }
 
@@ -58,6 +63,8 @@ class DepartmentController extends Controller
 
     public function destroy(Department $department)
     {
+        Gate::authorize('is-admin');
+        
         $department->delete();
 
         return redirect()->route('department.index')->with('success', 'Data berhasil dihapus!');

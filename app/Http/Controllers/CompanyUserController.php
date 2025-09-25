@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
+use Illuminate\Support\Facades\Gate;
 
 class CompanyUserController extends Controller
 {
@@ -18,6 +19,8 @@ class CompanyUserController extends Controller
 
     public function create()
     {
+        Gate::authorize('is-admin');
+
         return view('company-user.create');
     }
 
@@ -48,6 +51,8 @@ class CompanyUserController extends Controller
 
     public function edit(CompanyUser $company_user)
     {
+        Gate::authorize('is-admin');
+        
         return view('company-user.edit', compact('company_user'));
     }
 

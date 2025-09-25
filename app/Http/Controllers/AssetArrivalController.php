@@ -15,11 +15,9 @@ class AssetArrivalController extends Controller
 {
     public function index()
     {
-        if (Gate::any(['is-owner', 'is-asset-management'])) {
-            return view('asset.arrival.index');
-        } else {
-            abort(403);
-        }
+        Gate::authorize('is-admin');
+
+        return view('asset.arrival.index');    
     }
 
     public function edit(Asset $assetArrival)

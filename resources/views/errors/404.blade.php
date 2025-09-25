@@ -21,7 +21,9 @@
             <img src="{{ asset('images/404-gif.gif') }}" class="max-w-xs md:max-w-lg mb-8" alt="Under Maintenance Illustration" />
             <h1 class="font-bold text-3xl md:text-5xl text-gray-800 mb-2">Page not found</h1>
             <p class="text-gray-500 text-lg">We've looked everywhere but couldn't find the page you were looking for.</p>
-            <a href="{{ route('dashboard') }}" class="underline">Go to Homepage</a>
+            <button onclick="window.history.back()" type="button" class="hover:underline hover:text-black">
+                Go to previous page
+            </button>
         </div>
     </div>
 </body>
