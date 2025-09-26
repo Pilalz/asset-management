@@ -41,6 +41,26 @@ class DashboardController extends Controller
             'series' => $assetCountByClass->pluck('asset_count')->all(),
         ];
 
-        return view('index', compact('assetLocData', 'assetClassData'));
+        //Asset Arrival
+        $assetArrival = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('status', 'Onboard')
+            ->where('assets.company_id', session('active_company_id'))
+            ->count();
+
+        //Fixed Asset
+        $assetFixed = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('status', 'Active')
+            ->where('asset_type', 'FA')
+            ->where('assets.company_id', session('active_company_id'))
+            ->count();
+
+        //Low Value Asset
+        $assetLVA = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('status', 'Active')
+            ->where('asset_type', 'LVA')
+            ->where('assets.company_id', session('active_company_id'))
+            ->count();
+
+        return view('index', compact('assetLocData', 'assetClassData', 'assetArrival', 'assetFixed', 'assetLVA'));
     }
 }

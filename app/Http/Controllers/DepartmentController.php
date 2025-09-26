@@ -30,7 +30,7 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:departments,name',
             'description' => 'max:255',
             'company_id'  => 'required',
         ]);
@@ -50,7 +50,7 @@ class DepartmentController extends Controller
     public function update(Request $request, Department $department)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:departments,name,' . $department->id,
             'description' => 'max:255'
         ]);
 

@@ -29,8 +29,8 @@ class AssetClassController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'obj_id' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:asset_classes,name',
+            'obj_id' => 'required|string|max:255|unique:asset_classes,obj_id',
             'obj_acc' => 'required|string|max:255',
             'company_id' => 'required|string|max:255',
         ]);
@@ -50,8 +50,8 @@ class AssetClassController extends Controller
     public function update(Request $request, AssetClass $asset_class)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'obj_id' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:asset_classes,name,' . $asset_class->id,
+            'obj_id' => 'required|string|max:255|unique:asset_classes,obj_id' . $asset_class->id,
             'obj_acc' => 'required|string|max:255',          
         ]);
 

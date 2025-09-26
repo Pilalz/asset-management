@@ -34,8 +34,8 @@ class AssetNameController extends Controller
     {
         $request->validate([
             'sub_class_id' => 'required|string|exists:asset_sub_classes,id',
-            'name'  => 'required|string|max:255',
-            'grouping'  => 'required|string|max:255',
+            'name'  => 'required|string|max:255|unique:asset_names,name',
+            'grouping'  => 'required|string|max:255|unique:asset_names,grouping',
             'commercial'  => 'required',
             'fiscal'  => 'required',
             'cost'  => 'required',
@@ -61,8 +61,8 @@ class AssetNameController extends Controller
     {
         $validatedData = $request->validate([
             'sub_class_id' => 'required|string|exists:asset_sub_classes,id',
-            'name'  => 'required|string|max:255',
-            'grouping'  => 'required|string|max:255',
+            'name'  => 'required|string|max:255|unique:asset_names,name,' . $asset_name->id,
+            'grouping'  => 'required|string|max:255|unique:asset_names,grouping,' .$asset_name->id,
             'commercial'  => 'required',
             'fiscal'  => 'required',
             'cost'  => 'required',

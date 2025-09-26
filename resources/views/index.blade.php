@@ -61,6 +61,56 @@
             </div>
         </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
+            <div class="flex items-center w-full bg-white rounded-lg shadow-md dark:bg-gray-800 p-4 md:p-6">
+                <div class="me-4">
+                    <svg class="w-10 h-10 text-black bg-gray-200 rounded-lg p-1 dark:text-white dark:bg-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v3c0 .5523.44772 1 1 1h10M3 15v-4m0 4h9m-9-4V6c0-.55228.44772-1 1-1h16c.5523 0 1 .44772 1 1v3M3 11h11m-2-.2079V19m3-4h1.9909M21 15c0 1.1046-.8954 2-2 2s-2-.8954-2-2 .8954-2 2-2 2 .8954 2 2Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="font-bold text-lg dark:text-white">
+                        Asset Arrival
+                    </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ $assetArrival }} assets
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center w-full bg-white rounded-lg shadow-md dark:bg-gray-800 p-4 md:p-6">
+                <div class="me-4">
+                    <svg class="w-10 h-10 text-black bg-gray-200 rounded-lg p-1 dark:text-white dark:bg-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v3c0 .5523.44772 1 1 1h16c.5523 0 1-.4477 1-1v-3M3 15V6c0-.55228.44772-1 1-1h16c.5523 0 1 .44772 1 1v9M3 15h18M8 15v4m4-4v4m4-4v4m-7-9h1.9909M15 10c0 1.1046-.8954 2-2 2s-2-.8954-2-2c0-1.10457.8954-2 2-2s2 .89543 2 2Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="font-bold text-lg dark:text-white">
+                        Fixed Asset
+                    </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ $assetFixed }} assets
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center w-full bg-white rounded-lg shadow-md dark:bg-gray-800 p-4 md:p-6">
+                <div class="me-4">
+                    <svg class="w-10 h-10 text-black bg-gray-200 rounded-lg p-1 dark:text-white dark:bg-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v3c0 .5523.44772 1 1 1h16c.5523 0 1-.4477 1-1v-3M3 15V6c0-.55228.44772-1 1-1h16c.5523 0 1 .44772 1 1v9M3 15h18M8 15v4m4-4v4m4-4v4m-7-9h1.9909M15 10c0 1.1046-.8954 2-2 2s-2-.8954-2-2c0-1.10457.8954-2 2-2s2 .89543 2 2Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="font-bold text-lg dark:text-white">
+                        Low Value Asset
+                    </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ $assetLVA }} assets
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection
 

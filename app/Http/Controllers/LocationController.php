@@ -31,7 +31,7 @@ class LocationController extends Controller
         Gate::authorize('is-admin');
         
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:locations,name',
             'description' => 'max:255',
             'company_id'  => 'required',
         ]);
@@ -53,7 +53,7 @@ class LocationController extends Controller
         Gate::authorize('is-admin');
         
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:locations,name,' . $location->id,
             'description' => 'max:255'
         ]);
 
