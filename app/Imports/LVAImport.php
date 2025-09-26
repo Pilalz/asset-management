@@ -6,6 +6,7 @@ use App\Models\Asset;
 use App\Models\AssetName;
 use App\Models\Location;
 use App\Models\Department;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -16,13 +17,20 @@ class LVAImport implements ToModel, WithStartRow, WithValidation
     private $assetNames;
     private $locations;
     private $departments;
+    private $companyId;
 
     public function __construct()
     {
-        // 1. Ambil semua data relasi sekali saja untuk menghindari query berulang di dalam loop.
-        $this->assetNames  = AssetName::all()->keyBy('name');
-        $this->locations   = Location::all()->keyBy('name');
-        $this->departments = Department::all()->keyBy('name');
+        $this->companyId = session('active_company_id');
+        $this->assetNames  = AssetName::where('company_id', $this->companyId)
+            ->get()
+            ->keyBy('name');
+        $this->locations   = Location::where('company_id', $this->companyId)
+            ->get()
+            ->keyBy('name');
+        $this->departments = Department::where('company_id', $this->companyId)
+            ->get()
+            ->keyBy('name');
     }
 
     public function startRow(): int
@@ -80,8 +88,13 @@ class LVAImport implements ToModel, WithStartRow, WithValidation
     public function rules(): array
     {
         return [
-            '0' => 'unique:assets,asset_number',
-            '1' => 'required|exists:asset_names,name',
+            '0' => [
+                Rule::unique('assets', 'asset_number')->where('company_id', $this->companyId),
+            ],
+            '1' => [
+                'required',
+                Rule::exists('asset_names', 'name')->where('company_id', $this->companyId),
+            ],
             '2' => 'required|string|max:255',
             '3' => 'nullable|string|max:255',
             '4' => 'nullable|string|max:255',
@@ -90,8 +103,14 @@ class LVAImport implements ToModel, WithStartRow, WithValidation
             '7' => 'nullable|string|max:255',
             '8' => 'nullable',
             '9' => 'nullable|string|max:255',
-            '10' => 'required|exists:locations,name',
-            '11' => 'required|exists:departments,name',
+            '10' => [
+                'required',
+                Rule::exists('locations', 'name')->where('company_id', $this->companyId),
+            ],
+            '11' => [
+                'required',
+                Rule::exists('departments', 'name')->where('company_id', $this->companyId),
+            ],
             '12' => 'required',
             '13' => 'required',
             '14' => 'required',

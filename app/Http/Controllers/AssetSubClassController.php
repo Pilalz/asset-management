@@ -12,6 +12,7 @@ use App\Imports\AssetSubClassesImport;
 use App\Exports\AssetSubClassesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class AssetSubClassController extends Controller
 {
@@ -30,9 +31,21 @@ class AssetSubClassController extends Controller
 
     public function store(Request $request)
     {
+        $companyId = $request->input('company_id');
+
         $request->validate([
-            'name' => 'required|string|max:255|unique:asset_sub_classes,name',
-            'class_id'  => 'required|string|exists:asset_classes,id',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('asset_sub_classes')->where('company_id', $companyId)
+            ],
+            'class_id'  => [
+                'required',
+                'string',
+                'max:255',
+                Rule::exists('asset_classes', 'id')->where('company_id', $companyId)
+            ],
             'company_id'  => 'required',
         ]);
 
@@ -52,9 +65,21 @@ class AssetSubClassController extends Controller
 
     public function update(Request $request, AssetSubClass $asset_sub_class)
     {
+        $companyId = $asset_sub_class->company_id;
+
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255|unique:asset_sub_classes,name,' . $asset_sub_class->id,
-            'class_id'  => 'required|string|exists:asset_classes,id',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('asset_sub_classes')->ignore($asset_sub_class->id)->where('company_id', $companyId)
+            ],
+            'class_id'  => [
+                'required',
+                'string',
+                'max:255',
+                Rule::exists('asset_classes', 'id')->where('company_id', $companyId)
+            ],
         ]);
 
         $dataToUpdate = $validatedData;

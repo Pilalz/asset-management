@@ -14,6 +14,7 @@ use App\Imports\LVAImport;
 use App\Exports\LVAExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class AssetLowValueController extends Controller
 {
@@ -49,18 +50,13 @@ class AssetLowValueController extends Controller
 
     public function update(Request $request, Asset $assetLVA)
     {
-        if ($request->asset_number === $assetLVA->asset_number){
-            $validAssetNumber = $request->validate([
-                'asset_number' => 'required|string|max:255',
-            ]);
-        }else{
-            $validAssetNumber = $request->validate([
-                'asset_number' => 'unique:assets,asset_number',
-            ]);
-        }
-
         $validatedData = $request->validate([
-            'asset_number' => 'required|string|max:255',
+            'asset_number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('assets')->ignore($assetLVA->id)->where('company_id', $assetLVA->company_id)
+            ],
             'asset_name_id' => 'required|exists:asset_names,id',
             'description' => 'required|string|max:255',
             'detail'  => 'max:255',
@@ -80,8 +76,6 @@ class AssetLowValueController extends Controller
         ]);
 
         $dataToUpdate = $validatedData;
-
-        $validatedData['asset_number'] = $validAssetNumber['asset_number'];
 
         $assetLVA->update($dataToUpdate);
 

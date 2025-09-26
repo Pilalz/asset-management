@@ -11,6 +11,7 @@ use App\Imports\LocationsImport;
 use App\Exports\LocationsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class LocationController extends Controller
 {
@@ -29,9 +30,14 @@ class LocationController extends Controller
     public function store(Request $request)
     {
         Gate::authorize('is-admin');
+
+        $companyId = $request->input('company_id');
         
         $request->validate([
-            'name' => 'required|string|max:255|unique:locations,name',
+            'name' => [
+                'required', 'string', 'max:255',                
+                Rule::unique('locations')->where('company_id', $companyId)
+            ],
             'description' => 'max:255',
             'company_id'  => 'required',
         ]);
@@ -51,9 +57,14 @@ class LocationController extends Controller
     public function update(Request $request, Location $location)
     {
         Gate::authorize('is-admin');
+
+        $companyId = $location->company_id;
         
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255|unique:locations,name,' . $location->id,
+            'name' => [
+                'required', 'string', 'max:255',
+                Rule::unique('locations')->ignore($location->id)->where('company_id', $companyId)
+            ],
             'description' => 'max:255'
         ]);
 

@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\AssetSubClass;
 use App\Models\AssetName;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -12,11 +13,14 @@ use Illuminate\Support\Facades\Cache;
 class AssetNamesImport implements ToModel, WithStartRow, WithValidation
 {
     private $assetSubClasses;
+    private $companyId;
 
     public function __construct()
     {
-        // 2. Ambil semua data AssetClass sekali saja untuk menghindari query berulang di dalam loop
-        $this->assetSubClasses = AssetSubClass::all()->keyBy('name');
+        $this->companyId = session('active_company_id');
+        $this->assetSubClasses = AssetSubClass::where('company_id', $this->companyId)
+            ->get()
+            ->keyBy('name');
     }
 
     public function startRow(): int
@@ -49,8 +53,16 @@ class AssetNamesImport implements ToModel, WithStartRow, WithValidation
     public function rules(): array
     {
         return [
-            '0' => 'required|exists:asset_sub_classes,name',
-            '1' => 'required|string|max:255|unique:asset_names,name',
+            '0' => [
+                'required',
+                Rule::exists('asset_sub_classes', 'name')->where('company_id', $this->companyId),
+            ],
+            '1' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('asset_names', 'name')->where('company_id', $this->companyId),
+            ],
             '2' => 'required',
             '3' => 'required',
             '4' => 'required',

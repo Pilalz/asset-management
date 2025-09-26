@@ -11,6 +11,7 @@ use App\Imports\DepartmentsImport;
 use App\Exports\DepartmentsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class DepartmentController extends Controller
 {
@@ -29,8 +30,14 @@ class DepartmentController extends Controller
 
     public function store(Request $request)
     {
+        $companyId = $request->input('company_id');
+
         $request->validate([
-            'name' => 'required|string|max:255|unique:departments,name',
+            'name' => [
+                'required', 'string', 'max:255',
+                // Buat 'name' unik HANYA di dalam perusahaan ini
+                Rule::unique('departments')->where('company_id', $companyId)
+            ],
             'description' => 'max:255',
             'company_id'  => 'required',
         ]);
@@ -49,8 +56,13 @@ class DepartmentController extends Controller
 
     public function update(Request $request, Department $department)
     {
+        $companyId = $department->company_id;
+
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255|unique:departments,name,' . $department->id,
+            'name' => [
+                'required', 'string', 'max:255',
+                Rule::unique('departments')->ignore($department->id)->where('company_id', $companyId)
+            ],
             'description' => 'max:255'
         ]);
 

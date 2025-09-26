@@ -18,6 +18,7 @@ use App\Imports\AssetsImport;
 use App\Exports\AssetsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class AssetController extends Controller
 {
@@ -81,18 +82,13 @@ class AssetController extends Controller
 
     public function update(Request $request, Asset $asset)
     {
-        if ($request->asset_number === $asset->asset_number){
-            $validAssetNumber = $request->validate([
-                'asset_number' => 'required|string|max:255',
-            ]);
-        }else{
-            $validAssetNumber = $request->validate([
-                'asset_number' => 'unique:assets,asset_number',
-            ]);
-        }
-
         $validatedData = $request->validate([
-            'asset_number' => 'required|string|max:255',
+            'asset_number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('assets')->ignore($asset->id)->where('company_id', $asset->company_id)
+            ],
             'asset_name_id' => 'required|exists:asset_names,id',
             'description' => 'required|string|max:255',
             'detail'  => 'max:255',
@@ -114,8 +110,6 @@ class AssetController extends Controller
         ]);
 
         $dataToUpdate = $validatedData;
-
-        $validatedData['asset_number'] = $validAssetNumber['asset_number'];
 
         $asset->update($dataToUpdate);
 

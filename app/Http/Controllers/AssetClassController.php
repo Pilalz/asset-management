@@ -11,6 +11,7 @@ use App\Imports\AssetClassesImport;
 use App\Exports\AssetClassesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class AssetClassController extends Controller
 {
@@ -28,9 +29,21 @@ class AssetClassController extends Controller
 
     public function store(Request $request)
     {
+        $companyId = $request->input('company_id', session('active_company_id'));
+
         $request->validate([
-            'name' => 'required|string|max:255|unique:asset_classes,name',
-            'obj_id' => 'required|string|max:255|unique:asset_classes,obj_id',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('asset_classes')->where('company_id', $companyId)
+            ],
+            'obj_id' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('asset_classes')->where('company_id', $companyId)
+            ],
             'obj_acc' => 'required|string|max:255',
             'company_id' => 'required|string|max:255',
         ]);
@@ -49,9 +62,21 @@ class AssetClassController extends Controller
 
     public function update(Request $request, AssetClass $asset_class)
     {
+        $companyId = $asset_class->company_id;
+
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255|unique:asset_classes,name,' . $asset_class->id,
-            'obj_id' => 'required|string|max:255|unique:asset_classes,obj_id' . $asset_class->id,
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('asset_classes')->ignore($asset_class->id)->where('company_id', $companyId)
+            ],
+            'obj_id' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('asset_classes')->ignore($asset_class->id)->where('company_id', $companyId)
+            ],
             'obj_acc' => 'required|string|max:255',          
         ]);
 

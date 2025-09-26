@@ -13,6 +13,7 @@ use App\Imports\AssetNamesImport;
 use App\Exports\AssetNamesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class AssetNameController extends Controller
 {
@@ -32,10 +33,21 @@ class AssetNameController extends Controller
 
     public function store(Request $request)
     {
+        $companyId = $request->input('company_id');
+
         $request->validate([
-            'sub_class_id' => 'required|string|exists:asset_sub_classes,id',
-            'name'  => 'required|string|max:255|unique:asset_names,name',
-            'grouping'  => 'required|string|max:255|unique:asset_names,grouping',
+            'sub_class_id' => [
+                'required',
+                Rule::exists('asset_sub_classes', 'id')->where('company_id', $companyId)
+            ],
+            'name' => [
+                'required', 'string', 'max:255',
+                Rule::unique('asset_names')->where('company_id', $companyId)
+            ],
+            'grouping' => [
+                'required', 'string', 'max:255',
+                Rule::unique('asset_names')->where('company_id', $companyId)
+            ],
             'commercial'  => 'required',
             'fiscal'  => 'required',
             'cost'  => 'required',
@@ -59,10 +71,21 @@ class AssetNameController extends Controller
 
     public function update(Request $request, AssetName $asset_name)
     {
+        $companyId = $asset_name->company_id;
+        
         $validatedData = $request->validate([
-            'sub_class_id' => 'required|string|exists:asset_sub_classes,id',
-            'name'  => 'required|string|max:255|unique:asset_names,name,' . $asset_name->id,
-            'grouping'  => 'required|string|max:255|unique:asset_names,grouping,' .$asset_name->id,
+            'sub_class_id' => [
+                'required',
+                Rule::exists('asset_sub_classes', 'id')->where('company_id', $companyId)
+            ],
+            'name' => [
+                'required', 'string', 'max:255',
+                Rule::unique('asset_names')->ignore($asset_name->id)->where('company_id', $companyId)
+            ],
+            'grouping' => [
+                'required', 'string', 'max:255',
+                Rule::unique('asset_names')->ignore($asset_name->id)->where('company_id', $companyId)
+            ],
             'commercial'  => 'required',
             'fiscal'  => 'required',
             'cost'  => 'required',
