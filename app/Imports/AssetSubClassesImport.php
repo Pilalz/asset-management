@@ -43,8 +43,8 @@ class AssetSubClassesImport implements ToModel, WithStartRow, WithValidation
     public function rules(): array
     {
         return [
-            '0' => 'required|string|exists:asset_sub_classes,name',
-            '1' => 'required|string|max:255',
+            '0' => 'required|string|exists:asset_classes,name',
+            '1' => 'required|string|max:255|unique:asset_sub_classes,name',
         ];
     }
 }

@@ -31,7 +31,7 @@ class DepartmentsImport implements ToModel, WithStartRow, WithValidation
     public function rules(): array
     {
         return [
-            '0' => 'required|string|max:255',
+            '0' => 'required|string|max:255|unique:departments,name',
             '1' => 'nullable|string|max:255',
         ];
     }

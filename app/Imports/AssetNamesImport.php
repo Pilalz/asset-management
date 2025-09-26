@@ -50,7 +50,7 @@ class AssetNamesImport implements ToModel, WithStartRow, WithValidation
     {
         return [
             '0' => 'required|exists:asset_sub_classes,name',
-            '1' => 'required|string|max:255',
+            '1' => 'required|string|max:255|unique:asset_names,name',
             '2' => 'required',
             '3' => 'required',
             '4' => 'required',
