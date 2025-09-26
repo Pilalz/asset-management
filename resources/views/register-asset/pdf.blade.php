@@ -68,8 +68,23 @@
                 <tr>
                     <td>
                         <div>
-                            @if($register_asset->company->logo)
-                                <img src="{{ public_path('storage/' . $register_asset->company->logo) }}" style="max-height: 60px;">
+                            @php
+                                $logoPath = $register_asset->company->logo;
+                                $imageData = null;
+                                if ($logoPath) {
+                                    $fullPath = public_path('storage/' . $logoPath);
+                                    if (file_exists($fullPath)) {
+                                        $type = mime_content_type($fullPath);
+                                        $data = file_get_contents($fullPath);
+                                        // Ubah data gambar menjadi format Base64
+                                        $imageData = 'data:' . $type . ';base64,' . base64_encode($data);
+                                    }
+                                }
+                            @endphp
+
+                            @if($imageData)
+                                {{-- Gunakan data Base64 sebagai src --}}
+                                <img src="{{ $imageData }}" style="max-height: 60px;">
                             @endif
                         </div>
                     </td>

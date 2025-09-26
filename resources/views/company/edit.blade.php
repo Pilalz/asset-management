@@ -97,7 +97,7 @@
             </form>
         </div>
 
-    @can('is-dev')
+    @canany(['is-dev', 'is-owner'])
         <div class="relative overflow-x-auto shadow-md mt-4 py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
             <form action="{{ route('company.destroy', $company->id) }}" method="POST" class="group">
                 @csrf
@@ -112,6 +112,6 @@
                 </button>
             </form>
         </div>
-    @endcan
+    @endcanany
     </div>
 @endsection

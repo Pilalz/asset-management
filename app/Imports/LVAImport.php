@@ -4,6 +4,8 @@ namespace App\Imports;
 
 use App\Models\Asset;
 use App\Models\AssetName;
+use App\Models\Location;
+use App\Models\Department;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -11,6 +13,18 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class LVAImport implements ToModel, WithStartRow, WithValidation
 {
+    private $assetNames;
+    private $locations;
+    private $departments;
+
+    public function __construct()
+    {
+        // 1. Ambil semua data relasi sekali saja untuk menghindari query berulang di dalam loop.
+        $this->assetNames  = AssetName::all()->keyBy('name');
+        $this->locations   = Location::all()->keyBy('name');
+        $this->departments = Department::all()->keyBy('name');
+    }
+
     public function startRow(): int
     {
         return 3;
@@ -22,9 +36,12 @@ class LVAImport implements ToModel, WithStartRow, WithValidation
     */
     public function model(array $row)
     {
-        $assetName = AssetName::find($row[1]);
+        $assetName   = $this->assetNames->get($row[1]);
+        $location    = $this->locations->get($row[10]);
+        $department  = $this->departments->get($row[11]);
+        
         $commercialUsefulLife = $assetName ? $assetName->commercial * 12 : 0;
-        $fiscalUsefulLife = $assetName ? $assetName->fiscal * 12 : 0;
+        $fiscalUsefulLife     = $assetName ? $assetName->fiscal * 12 : 0;
 
         $productionYear = null;
         if (!empty($row[8]) && is_numeric($row[8])) {
@@ -33,7 +50,7 @@ class LVAImport implements ToModel, WithStartRow, WithValidation
         
         return new Asset([
             'asset_number'                  => $row[0],
-            'asset_name_id'                 => $row[1],
+            'asset_name_id'                 => $assetName ? $assetName->id : null,
             'description'                   => $row[2],
             'detail'                        => $row[3] ?? null,
             'pareto'                        => $row[4] ?? null,
@@ -42,8 +59,8 @@ class LVAImport implements ToModel, WithStartRow, WithValidation
             'sn_engine'                     => $row[7] ?? null,
             'production_year'               => $productionYear,
             'po_no'                         => $row[9] ?? null,
-            'location_id'                   => $row[10],
-            'department_id'                 => $row[11],
+            'location_id'                   => $location ? $location->id : null,
+            'department_id'                 => $department ? $department->id : null,
             'quantity'                      => $row[12],
             'capitalized_date'              => !empty($row[13]) ? Date::excelToDateTimeObject($row[13]) : null,
             'acquisition_value'             => $row[14],
@@ -64,7 +81,7 @@ class LVAImport implements ToModel, WithStartRow, WithValidation
     {
         return [
             '0' => 'unique:assets,asset_number',
-            '1' => 'required|exists:asset_names,id',
+            '1' => 'required|exists:asset_names,name',
             '2' => 'required|string|max:255',
             '3' => 'nullable|string|max:255',
             '4' => 'nullable|string|max:255',
@@ -73,9 +90,8 @@ class LVAImport implements ToModel, WithStartRow, WithValidation
             '7' => 'nullable|string|max:255',
             '8' => 'nullable',
             '9' => 'nullable|string|max:255',
-            '10' => 'required|exists:locations,id',
-            '11' => 'required|exists:departments,id',
-            '11' => 'required|exists:departments,id',
+            '10' => 'required|exists:locations,name',
+            '11' => 'required|exists:departments,name',
             '12' => 'required',
             '13' => 'required',
             '14' => 'required',

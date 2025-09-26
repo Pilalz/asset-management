@@ -2,13 +2,23 @@
 
 namespace App\Imports;
 
+use App\Models\AssetSubClass;
 use App\Models\AssetName;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Illuminate\Support\Facades\Cache;
 
 class AssetNamesImport implements ToModel, WithStartRow, WithValidation
 {
+    private $assetSubClasses;
+
+    public function __construct()
+    {
+        // 2. Ambil semua data AssetClass sekali saja untuk menghindari query berulang di dalam loop
+        $this->assetSubClasses = AssetSubClass::all()->keyBy('name');
+    }
+
     public function startRow(): int
     {
         return 3;
@@ -20,8 +30,12 @@ class AssetNamesImport implements ToModel, WithStartRow, WithValidation
     */
     public function model(array $row)
     {
+
+        $assetSubClassName = $row[0];
+        $assetSubClass = $this->assetSubClasses->get($assetSubClassName);
+
         return new AssetName([
-            'sub_class_id'  => $row[0],
+            'sub_class_id'  => $assetSubClass ? $assetSubClass->id : null,
             'name'          => $row[1],
             'grouping'      => $row[2],
             'commercial'    => $row[3],
@@ -35,7 +49,7 @@ class AssetNamesImport implements ToModel, WithStartRow, WithValidation
     public function rules(): array
     {
         return [
-            '0' => 'required|exists:asset_sub_classes,id',
+            '0' => 'required|exists:asset_sub_classes,name',
             '1' => 'required|string|max:255',
             '2' => 'required',
             '3' => 'required',

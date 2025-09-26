@@ -11,14 +11,14 @@ $(document).ready(function() {
             // Menonaktifkan pengurutan pada kolom bulan
             "columnDefs": [
                 { "orderable": false, "targets": '_all' }, // Matikan sort untuk semua kolom
-                { "orderable": true, "targets": [1, 2, 3, 4, 5, 6] }  // Aktifkan kembali HANYA untuk Asset Name & Number
+                { "orderable": true, "targets": [1, 2, 3, 4, 5, 6] }
             ],
 
             // Mengatur bahasa (opsional)
             "language": {
                 "search": "Cari Company:",
                 "lengthMenu": "Tampilkan _MENU_ entri",
-                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ aset",
+                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ Company",
                 "paginate": {
                     "next": ">",
                     "previous": "<"
