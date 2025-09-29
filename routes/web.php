@@ -22,6 +22,7 @@ use App\Http\Controllers\DepreciationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PersonInChargeController;
 use App\Http\Controllers\InsuranceController;
+use App\Http\Controllers\HistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +114,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('company', CompanyController::class);
     Route::resource('person-in-charge', PersonInChargeController::class);
     Route::resource('insurance', InsuranceController::class);
+    Route::resource('history', HistoryController::class);
 
     //Start Depre Commercial
     Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
@@ -159,6 +161,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/disposal-asset', [DisposalAssetController::class, 'datatables'])->name('api.disposal-asset');
     Route::get('api/person-in-charge', [PersonInChargeController::class, 'datatables'])->name('api.person-in-charge');
     Route::get('api/insurance', [InsuranceController::class, 'datatables'])->name('api.insurance');
+    Route::get('api/history', [HistoryController::class, 'datatables'])->name('api.history');
 
     Route::get('api/disposal-asset-find', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset-find');
 });

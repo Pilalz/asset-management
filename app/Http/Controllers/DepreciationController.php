@@ -32,7 +32,7 @@ class DepreciationController extends Controller
 
                 foreach ($types as $type) {
                     // Tentukan nama kolom dinamis
-                    $usefulLifeCol = $type . '_useful_life';
+                    $usefulLifeCol = $type . '_useful_life_month';
                     $nbvCol        = $type . '_nbv';
                     $accumDepreCol = $type . '_accum_depre';
 

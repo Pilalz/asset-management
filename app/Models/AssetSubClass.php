@@ -10,10 +10,13 @@ use App\Models\AssetClass;
 use App\Models\AssetName;
 use App\Models\Company;
 use App\Scopes\CompanyScope;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class AssetSubClass extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'asset_sub_classes';
 
@@ -41,5 +44,17 @@ class AssetSubClass extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(function(string $eventName) {
+                $assetSubClass = $this->name;
+
+                return "Asset Sub Class '{$assetSubClass}' has been {$eventName}";
+            })
+            ->useLogName(session('active_company_id'))
+            ->logFillable();
     }
 }

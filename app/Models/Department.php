@@ -10,10 +10,13 @@ use App\Models\RegisterAsset;
 use App\Models\TransferAsset;
 use App\Models\Company;
 use App\Scopes\CompanyScope;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Department extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'departments';
 
@@ -46,5 +49,17 @@ class Department extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'description'])
+            ->setDescriptionForEvent(function(string $eventName) {
+                $department = $this->name;
+
+                return "Department '{$department}' has been {$eventName}";
+            })
+            ->useLogName(session('active_company_id'));
     }
 }

@@ -16,10 +16,13 @@ use App\Models\Claim;
 use App\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Asset extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $fillable = [
         'asset_number',
@@ -104,5 +107,18 @@ class Asset extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(function(string $eventName) {
+                $assetNumber = $this->asset_number;
+
+                return "Asset '{$assetNumber}' has been {$eventName}";
+            })
+            ->useLogName(session('active_company_id'))
+            ->logExcept(['commercial_accum_depre', 'fiscal_accum_depre', 'commercial_nbv', 'fiscal_nbv'])
+            ->logFillable();
     }
 }

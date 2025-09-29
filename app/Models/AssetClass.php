@@ -9,10 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\AssetSubClass;
 use App\Models\Company;
 use App\Scopes\CompanyScope;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class AssetClass extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $fillable = [
         'name',
@@ -34,5 +37,17 @@ class AssetClass extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(function(string $eventName) {
+                $assetClass = $this->name;
+
+                return "Asset Class '{$assetClass}' has been {$eventName}";
+            })
+            ->useLogName(session('active_company_id'))
+            ->logFillable();
     }
 }

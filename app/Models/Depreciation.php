@@ -8,10 +8,13 @@ use App\Models\Company;
 use App\Models\Asset;
 use App\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Depreciation extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'depreciations';
 
@@ -38,5 +41,18 @@ class Depreciation extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(function(string $eventName) {
+                $Asset = $this->asset->asset_number;
+
+                return "Depreciation Asset '{$Asset}' has been {$eventName}";
+            })
+            ->useLogName(session('active_company_id'))
+            ->logExcept(['commercial_accum_depre', 'fiscal_accum_depre', 'commercial_nbv', 'fiscal_nbv'])
+            ->logFillable();
     }
 }
