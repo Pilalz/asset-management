@@ -80,8 +80,18 @@ $(document).ready(function() {
             },
         });
 
-        $('#start_date, #end_date').change(function(){
+        $('#start_date, #end_date').on('change blur', function() {
             table.draw();
         });
+
+        $('#clear_date').on('click', function () {
+            // kosongkan value
+            $('#start_date').val('');
+            $('#end_date').val('');
+
+            // redraw DataTable tanpa filter tanggal
+            table.draw();
+        });
+
     }
 });

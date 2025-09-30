@@ -24,7 +24,7 @@
 <body class="bg-gray-100 dark:bg-gray-900">
     <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div class="px-3 py-3 lg:px-5 lg:pl-3">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center sm:justify-between justify-start">
                 <div class="flex items-center justify-start rtl:justify-end">
                     <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700">
                         <span class="sr-only">Open sidebar</span>
@@ -33,14 +33,17 @@
                         </svg>
                     </button>
                     
-                    <a href="{{ route('dashboard') }}" class="flex ms-2 md:me-24 dark:hidden">
-                        <img src="{{ asset('images/logo.svg') }}" class="h-8 me-3" alt="Asset Management Logo" />
-                        <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Asset Management</span>
-                    </a>
-                    <a href="{{ route('dashboard') }}" class="hidden ms-2 md:me-24 dark:flex">
-                        <img src="{{ asset('images/logo-dark.svg') }}" class="h-8 me-3" alt="Asset Management Logo" />
-                        <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Asset Management</span>
-                    </a>
+                    <div class="hidden sm:flex">
+                        <a href="{{ route('dashboard') }}" class="flex ms-2 md:me-24 dark:hidden">
+                            <img src="{{ asset('images/logo.svg') }}" class="h-8 me-3" alt="Asset Management Logo" />
+                            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Asset Management</span>
+                        </a>
+                        <a href="{{ route('dashboard') }}" class="hidden ms-2 md:me-24 dark:flex">
+                            <img src="{{ asset('images/logo-dark.svg') }}" class="h-8 me-3" alt="Asset Management Logo" />
+                            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Asset Management</span>
+                        </a>
+                    </div>
+
                 </div>
                 <div class="flex items-center">
                     <div class="flex items-center ms-3 gap-4">
@@ -96,7 +99,7 @@
                         </button>
 
                         <!-- Notification -->
-                        <button type="button" class="p-1 relative inline-flex items-center text-sm bg-gray-800 rounded-full focus:ring-4 focus:outline-none focus:ring-gray-300" aria-expanded="false" data-dropdown-toggle="dropdown-notif">
+                        <button type="button" class="p-1 relative inline-flex items-center text-sm bg-gray-800 rounded-full focus:ring-4 focus:outline-none focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-notif">
                             <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M17.133 12.632v-1.8a5.406 5.406 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.955.955 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z"/>
                             </svg>
@@ -128,7 +131,7 @@
 
                         <!-- Plus Icon -->
                         <div>
-                            <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300" data-dropdown-toggle="dropdown-shortcut">
+                            <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" data-dropdown-toggle="dropdown-shortcut">
                                 <div class="flex justify-center items-center w-8 h-8 rounded-full">
                                     <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
@@ -188,6 +191,18 @@
         <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
             <div class="justify-between h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800 flex flex-col">
                 <ul class="space-y-2 font-medium flex-grow">
+
+                    <li class="sm:hidden mb-4 border-b-2 p-4">
+                        <a href="{{ route('dashboard') }}" class="flex ms-2 dark:hidden">
+                            <img src="{{ asset('images/logo.svg') }}" class="h-6 me-3" alt="Asset Management Logo" />
+                            <span class="self-center text-md font-semibold whitespace-nowrap dark:text-white">Asset Management</span>
+                        </a>
+                        <a href="{{ route('dashboard') }}" class="hidden ms-2 dark:flex">
+                            <img src="{{ asset('images/logo-dark.svg') }}" class="h-6 me-3" alt="Asset Management Logo" />
+                            <span class="self-center text-md font-semibold whitespace-nowrap dark:text-white">Asset Management</span>
+                        </a>
+                    </li>
+                    
 
                     <li>
                         <a href="{{ route('dashboard') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('dashboard') ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' }}">

@@ -147,7 +147,12 @@
                     </div>
                     <input id="end_date" name="end" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
                 </div>
+                <span class="mx-2"></span>
+                <button id="clear_date" class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                    Clear
+                </button>
             </div>
+
 
             <table id="historyTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" data-url="{{ route('api.history') }}">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

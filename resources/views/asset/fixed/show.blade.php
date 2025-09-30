@@ -30,7 +30,7 @@
         </nav>
 
     @can('is-admin')
-        <div class="flex gap-2">
+        <div class="flex">
             <a href="{{ route('asset.edit', $asset->id) }}" type="button" class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-sm text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700">
                 <svg class="w-4 h-4 me-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
@@ -44,8 +44,8 @@
     <div class="p-5">
         <div class="shadow-md sm:rounded-lg bg-white p-4 dark:bg-gray-800">
             <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Asset Details</h2>
-            <div class="flex flex-row gap-8">
-                <div class="w-1/2">
+            <div class="flex flex-col sm:flex-row sm:gap-8">
+                <div class="w-full sm:w-1/2">
                     <table>
                         <tr>
                             <td>Asset Number</td>
@@ -114,7 +114,7 @@
                         </tr>
                     </table>
                 </div>
-                <div class="w-1/2">
+                <div class="w-full sm:w-1/2">
                     <table>
                         <tr>
                             <td>PO No</td>

@@ -44,8 +44,8 @@
     <div class="p-5">
         <div class="shadow-md sm:rounded-lg bg-white p-4 dark:bg-gray-800">
             <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Asset Details</h2>
-            <div class="flex flex-row gap-8">
-                <div class="w-1/2">
+            <div class="flex flex-col sm:flex-row sm:gap-8">
+                <div class="w-full sm:w-1/2">
                     <table>
                         <tr>
                             <td>Asset Number</td>
@@ -104,7 +104,7 @@
                         </tr>
                     </table>
                 </div>
-                <div class="w-1/2">
+                <div class="w-full sm:w-1/2">
                     <table>
                         <tr>
                             <td>SN Engine</td>
