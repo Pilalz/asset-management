@@ -11,12 +11,15 @@ use App\Models\Company;
 use App\Models\DetailTransfer;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 use Illuminate\Database\Eloquent\Model;
 
 class TransferAsset extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'transfer_assets';
 
@@ -75,5 +78,18 @@ class TransferAsset extends Model
             }
             $transfer_asset->attachments()->delete();
         });
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(function(string $eventName) {
+                $transferAsset = $this->form_no;
+
+                return "Form Transfer '{$transferAsset}' has been {$eventName}";
+            })
+            ->useLogName(session('active_company_id'))
+            ->logExcept(['status'])
+            ->logFillable();
     }
 }

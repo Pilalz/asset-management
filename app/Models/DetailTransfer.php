@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\TransferAsset;
 use App\Models\Location;
 use App\Models\Asset;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class DetailTransfer extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'detail_transfers';
 
@@ -42,5 +45,15 @@ class DetailTransfer extends Model
         return $this->belongsTo(Location::class, 'origin_loc_id');
     }
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(function(string $eventName) {
+                $detailTransfer = $this->transferAsset->form_no;
 
+                return "Asset has been {$eventName} in the transfer form '{$detailTransfer}'";
+            })
+            ->useLogName(session('active_company_id'))
+            ->logFillable();
+    }
 }

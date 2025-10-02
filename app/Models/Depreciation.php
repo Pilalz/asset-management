@@ -43,6 +43,11 @@ class Depreciation extends Model
         static::addGlobalScope(new CompanyScope);
     }
 
+    public function getAssetNameAttribute()
+    {
+        return $this->asset->asset_number ?? null;
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -52,7 +57,6 @@ class Depreciation extends Model
                 return "Depreciation Asset '{$Asset}' has been {$eventName}";
             })
             ->useLogName(session('active_company_id'))
-            ->logExcept(['commercial_accum_depre', 'fiscal_accum_depre', 'commercial_nbv', 'fiscal_nbv'])
-            ->logFillable();
+            ->logOnly(['asset_name', 'type', 'depre_date', 'monthly_depre', 'accumulated_depre', 'book_value']);
     }
 }

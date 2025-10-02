@@ -12,10 +12,13 @@ use App\Models\Company;
 use App\Models\DetailDisposal;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class DisposalAsset extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'disposal_assets';
 
@@ -70,5 +73,18 @@ class DisposalAsset extends Model
             }
             $disposal_asset->attachments()->delete();
         });
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(function(string $eventName) {
+                $disposalAsset = $this->form_no;
+
+                return "Form Disposal '{$disposalAsset}' has been {$eventName}";
+            })
+            ->useLogName(session('active_company_id'))
+            ->logExcept(['status'])
+            ->logFillable();
     }
 }

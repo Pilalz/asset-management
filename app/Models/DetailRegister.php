@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\RegisterAsset;
 use App\Models\AssetName;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class DetailRegister extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'detail_registers';
 
@@ -31,5 +34,17 @@ class DetailRegister extends Model
     public function assetName(): BelongsTo
     {
         return $this->belongsTo(AssetName::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(function(string $eventName) {
+                $detailRegister = $this->registerAsset->form_no;
+
+                return "Asset has been {$eventName} in the register form '{$detailRegister}'";
+            })
+            ->useLogName(session('active_company_id'))
+            ->logFillable();
     }
 }

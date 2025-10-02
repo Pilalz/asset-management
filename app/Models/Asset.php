@@ -109,6 +109,21 @@ class Asset extends Model
         static::addGlobalScope(new CompanyScope);
     }
 
+    public function getAssetNameNameAttribute()
+    {
+        return $this->assetName->name ?? null;
+    }
+
+    public function getLocationNameAttribute()
+    {
+        return $this->location->name ?? null;
+    }
+
+    public function getDepartmentNameAttribute()
+    {
+        return $this->department->name ?? null;
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -119,6 +134,10 @@ class Asset extends Model
             })
             ->useLogName(session('active_company_id'))
             ->logExcept(['commercial_accum_depre', 'fiscal_accum_depre', 'commercial_nbv', 'fiscal_nbv'])
-            ->logFillable();
+            ->logOnly([
+                'asset_number', 'asset_name_name', 'asset_type', 'status', 'description', 'detail', 'pareto', 'unit_no', 'sn_chassis',
+                'sn_engine', 'production_year', 'po_no', 'location_name', 'department_name', 'quantity', 'capitalized_date', 'start_depre_date',
+                'acquisition_value', 'current_cost', 'commercial_useful_life_month', 'fiscal_useful_life_month'
+            ]);
     }
 }

@@ -74,7 +74,7 @@ class DisposalAssetController extends Controller
             'approvals.*.role'              => 'required|string|max:255',
             'approvals.*.pic_id'           => 'required|string|max:255',
             'approvals.*.status'            => 'required|string|max:255',
-            'approvals.0.approval_date'     => 'required|date',
+            'approvals.0.approval_date'     => 'nullable|date',
         ]);
 
         $assetIds = explode(',', $validated['asset_ids']);

@@ -14,10 +14,13 @@ use App\Models\DetailRegister;
 use App\Models\Approval;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class RegisterAsset extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'register_assets';
 
@@ -77,5 +80,18 @@ class RegisterAsset extends Model
             }
             $register_asset->attachments()->delete();
         });
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(function(string $eventName) {
+                $registerAsset = $this->form_no;
+
+                return "Form Register '{$registerAsset}' has been {$eventName}";
+            })
+            ->useLogName(session('active_company_id'))
+            ->logExcept(['status'])
+            ->logFillable();
     }
 }

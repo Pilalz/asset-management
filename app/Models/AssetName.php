@@ -50,6 +50,11 @@ class AssetName extends Model
         static::addGlobalScope(new CompanyScope);
     }
 
+    public function getSubClassNameAttribute()
+    {
+        return $this->assetSubClass->name ?? null;
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -59,6 +64,6 @@ class AssetName extends Model
                 return "Asset Name '{$assetName}' has been {$eventName}";
             })
             ->useLogName(session('active_company_id'))
-            ->logFillable();
+            ->logOnly(['sub_class_name', 'name', 'grouping', 'commercial', 'fiscal', 'cost', 'lva']);
     }
 }
