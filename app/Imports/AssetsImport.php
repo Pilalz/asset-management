@@ -22,6 +22,7 @@ class AssetsImport implements ToModel, WithStartRow, WithValidation
     public function __construct()
     {
         $this->companyId = session('active_company_id');
+
         $this->assetNames  = AssetName::where('company_id', $this->companyId)
             ->get()
             ->keyBy('name');
@@ -107,11 +108,11 @@ class AssetsImport implements ToModel, WithStartRow, WithValidation
             '7' => 'nullable|string|max:255',
             '8' => 'nullable',
             '9' => 'nullable|string|max:255',
-            '11' => [
+            '10' => [
                 'required',
                 Rule::exists('locations', 'name')->where('company_id', $this->companyId),
             ],
-            '12' => [
+            '11' => [
                 'required',
                 Rule::exists('departments', 'name')->where('company_id', $this->companyId),
             ],
