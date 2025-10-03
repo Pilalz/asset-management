@@ -45,6 +45,26 @@ class DetailTransfer extends Model
         return $this->belongsTo(Location::class, 'origin_loc_id');
     }
 
+    public function getTransferNameAttribute()
+    {
+        return $this->transferAsset->form_no ?? null;
+    }
+
+    public function getAssetNameAttribute()
+    {
+        return $this->asset->asset_number ?? null;
+    }
+
+    public function getOriginLocNameAttribute()
+    {
+        return $this->originLocation->name ?? null;
+    }
+
+    public function getDestinationLocNameAttribute()
+    {
+        return $this->destinationLocation->name ?? null;
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -54,6 +74,6 @@ class DetailTransfer extends Model
                 return "Asset has been {$eventName} in the transfer form '{$detailTransfer}'";
             })
             ->useLogName(session('active_company_id'))
-            ->logFillable();
+            ->logOnly(['transfer_name', 'asset_name', 'origin_loc_name', 'destination_loc_name']);
     }
 }

@@ -53,6 +53,6 @@ class DetailDisposal extends Model
                 return "Asset has been {$eventName} in the disposal form '{$detailDisposal}'";
             })
             ->useLogName(session('active_company_id'))
-            ->logOnly(['disposal_asset_name', 'asset_name', 'kurs', 'njab']);
+            ->logOnly(['disposal_name', 'asset_name', 'kurs', 'njab']);
     }
 }

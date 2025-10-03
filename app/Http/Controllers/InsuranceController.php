@@ -40,7 +40,6 @@ class InsuranceController extends Controller
             'end_date' => 'required|date',
             'instance_name' => 'nullable|max:255',
             'annual_premium' => 'nullable',
-            'schedule' => 'nullable|integer|min:1|max:12',
             'company_id'  => 'required',
 
             //Validasi Detail Asset
@@ -49,19 +48,20 @@ class InsuranceController extends Controller
 
         $assetIds = explode(',', $validated['asset_ids']);
 
-        $startDate = Carbon::parse($validated['start_date']);
-        $scheduleMonths = (int) $validated['schedule'];
-        $nextPaymentDate = $startDate->addMonths($scheduleMonths);
-
         try {
-            DB::transaction(function () use ($validated, $assetIds, $nextPaymentDate) {
-
-                $validated['next_payment'] = $nextPaymentDate;
+            DB::transaction(function () use ($validated, $assetIds) {
                 $validated['status'] = 'Active';
-
                 $insurance = Insurance::create($validated);
-
                 $insurance->detailInsurances()->attach($assetIds);
+
+                $newAssetNames = $insurance->fresh()->detailInsurances()->pluck('asset_number')->toArray();
+
+                activity()
+                    ->performedOn($insurance) // subject_type, id
+                    ->causedBy(auth()->user()) // causer_id, type
+                    ->inLog(session('active_company_id')) 
+                    ->withProperty('attributes', ['assets' => $newAssetNames]) // Simpan daftar nama baru
+                    ->log("Created asset list for insurance polish '{$insurance->polish_no}'"); // description
 
             });
         } catch (\Exception $e) {
@@ -100,16 +100,23 @@ class InsuranceController extends Controller
         $assetIds = explode(',', $validated['asset_ids']);
 
         try {
-            DB::transaction(function () use ($validated, $insurance, $assetIds) {
-                
-                $startDate = Carbon::parse($validated['start_date']);
-                $scheduleMonths = (int) $validated['schedule'];
-                $validated['next_payment'] = $startDate->addMonths($scheduleMonths);
-                
+            DB::transaction(function () use ($validated, $insurance, $assetIds) {  
+                $oldAssetNames = $insurance->detailInsurances()->pluck('asset_number')->toArray();
+
                 $insurance->update($validated);
+                $result = $insurance->detailInsurances()->sync($assetIds);
 
-                $insurance->detailInsurances()->sync($assetIds);
+                $newAssetNames = $insurance->fresh()->detailInsurances()->pluck('asset_number')->toArray();
 
+                if (count($result['attached']) > 0 || count($result['detached']) > 0) {
+                    activity()
+                        ->performedOn($insurance) // subject_type, id
+                        ->causedBy(auth()->user()) // causer_id, type
+                        ->inLog(session('active_company_id')) 
+                        ->withProperty('old', ['assets' => $oldAssetNames]) // Simpan daftar nama lama
+                        ->withProperty('attributes', ['assets' => $newAssetNames]) // Simpan daftar nama baru
+                        ->log("Updated asset list for insurance polish '{$insurance->polish_no}'"); // description
+                }
             });
         } catch (\Exception $e) {
             return back()->with('error', 'Error updating data: ' . $e->getMessage())->withInput();

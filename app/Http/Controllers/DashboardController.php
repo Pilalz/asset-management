@@ -12,13 +12,24 @@ class DashboardController extends Controller
     public function index()
     {
         //Asset By Location
-        $assetCountByLocation = Asset::withoutGlobalScope(CompanyScope::class)
-            ->join('locations', 'assets.location_id', '=', 'locations.id')
-            ->select('locations.name as location_name', DB::raw('count(assets.id) as asset_count'))
-            ->where('assets.company_id', session('active_company_id'))
-            ->groupBy('locations.name')
-            ->orderBy('asset_count', 'desc')
+        $assets = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('company_id', session('active_company_id'))
+            ->with('location')
             ->get();
+
+        // Gunakan metode collection untuk mengelompokkan dan menghitung
+        $assetCountByLocation = $assets
+            ->groupBy(function ($asset) {
+                return $asset->location->name ?? 'No Location';
+            })
+            ->map(function ($group, $locationName) {
+                return [
+                    'location_name' => $locationName,
+                    'asset_count' => $group->count(),
+                ];
+            })
+            ->sortByDesc('asset_count')
+            ->values();
 
         $assetLocData = [
             'labels' => $assetCountByLocation->pluck('location_name')->all(),

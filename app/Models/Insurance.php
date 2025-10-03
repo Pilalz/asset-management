@@ -11,10 +11,13 @@ use App\Models\Company;
 use App\Models\Claim;
 use App\Models\Asset;
 use App\Scopes\CompanyScope;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Insurance extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'insurances';
 
@@ -48,5 +51,17 @@ class Insurance extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+	    ->setDescriptionForEvent(function(string $eventName) {
+                $insurance = $this->polish_no;
+
+                return "Insurance '{$insurance}' has been {$eventName}";
+            })
+            ->useLogName(session('active_company_id'))
+            ->logOnly(['polish_no', 'start_date', 'end_date', 'instance_name', 'annual_premium', 'status']);
     }
 }

@@ -75,6 +75,16 @@ class DisposalAsset extends Model
         });
     }
 
+    public function getDepartmentNameAttribute()
+    {
+        return $this->department->name ?? null;
+    }
+
+    public function getSequenceNameAttribute()
+    {
+        return $this->sequence == '1' ? 'Yes' : 'No';
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -85,6 +95,6 @@ class DisposalAsset extends Model
             })
             ->useLogName(session('active_company_id'))
             ->logExcept(['status'])
-            ->logFillable();
+            ->logOnly(['submit_date', 'form_no', 'department_name', 'reason', 'nbv', 'esp', 'sequence_name']);
     }
 }

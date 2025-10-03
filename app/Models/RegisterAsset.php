@@ -82,6 +82,26 @@ class RegisterAsset extends Model
         });
     }
 
+    public function getDepartmentNameAttribute()
+    {
+        return $this->department->name ?? null;
+    }
+
+    public function getLocationNameAttribute()
+    {
+        return $this->location->name ?? null;
+    }
+
+    public function getInsuredNameAttribute()
+    {
+        return $this->insured == 1 ? 'Yes' : 'No';
+    }
+
+    public function getSequenceNameAttribute()
+    {
+        return $this->sequence == 1 ? 'Yes' : 'No';
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -92,6 +112,6 @@ class RegisterAsset extends Model
             })
             ->useLogName(session('active_company_id'))
             ->logExcept(['status'])
-            ->logFillable();
+            ->logOnly(['form_no', 'department_name', 'location_name', 'asset_type', 'insured_name', 'polish_no', 'sequence_name']);
     }
 }

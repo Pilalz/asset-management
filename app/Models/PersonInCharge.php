@@ -42,6 +42,6 @@ class PersonInCharge extends Model
                 return "PIC '{$PIC}' has been {$eventName}";
             })
             ->useLogName(session('active_company_id'))
-            ->logFillable();
+            ->logOnly(['name', 'position']);
     }
 }

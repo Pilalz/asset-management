@@ -223,7 +223,7 @@ class DisposalAssetController extends Controller
                         $disposalAsset->detailDisposals()->create([
                             'asset_id' => $asset->id,
                             'kurs'     => $validated['kurs'],
-                            'njab'     => $asset->net_book_value,
+                            'njab'     => $asset->commercial_nbv,
                         ]);
                     }
                 }

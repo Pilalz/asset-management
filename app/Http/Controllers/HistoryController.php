@@ -49,7 +49,15 @@ class HistoryController extends Controller
                 if ($activity->properties->isEmpty()) return '-';
                 
                 $changes = '';
-                if ($activity->event === 'updated') {
+                if ($activity->subject_type === 'App\Models\Insurance' && $activity->event === null){
+                    if (explode(' ', $activity->description)[0] === "Created"){
+                        $changes .= '<strong>Created:</strong> ' . json_encode($activity->properties->get('attributes'));
+                    }
+                    elseif (explode(' ', $activity->description)[0] === "Updated"){
+                        $changes .= '<strong>Before:</strong> ' . json_encode($activity->properties->get('old')) . '<br>';
+                        $changes .= '<strong>After:</strong> ' . json_encode($activity->properties->get('attributes'));
+                    }
+                }elseif ($activity->event === 'updated') {
                     $changes .= '<strong>Before:</strong> ' . json_encode($activity->properties->get('old')) . '<br>';
                     $changes .= '<strong>After:</strong> ' . json_encode($activity->properties->get('attributes'));
                 } elseif ($activity->event === 'created') {

@@ -21,6 +21,7 @@ class AssetsImport implements ToModel, WithStartRow, WithValidation
 
     public function __construct()
     {
+        $this->companyId = session('active_company_id');
         $this->assetNames  = AssetName::where('company_id', $this->companyId)
             ->get()
             ->keyBy('name');
@@ -30,7 +31,6 @@ class AssetsImport implements ToModel, WithStartRow, WithValidation
         $this->departments = Department::where('company_id', $this->companyId)
             ->get()
             ->keyBy('name');
-        $this->companyId = session('active_company_id');
     }
 
     public function startRow(): int

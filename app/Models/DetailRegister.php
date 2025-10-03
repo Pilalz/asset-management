@@ -36,6 +36,16 @@ class DetailRegister extends Model
         return $this->belongsTo(AssetName::class);
     }
 
+    public function getRegisterNameAttribute()
+    {
+        return $this->registerAsset->form_no ?? null;
+    }
+
+    public function getAssetNameNameAttribute()
+    {
+        return $this->assetName->name ?? null;
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -45,6 +55,6 @@ class DetailRegister extends Model
                 return "Asset has been {$eventName} in the register form '{$detailRegister}'";
             })
             ->useLogName(session('active_company_id'))
-            ->logFillable();
+            ->logOnly(['register_name', 'po_no', 'invoice_no', 'commission_date', 'specification', 'asset_name_name']);
     }
 }
