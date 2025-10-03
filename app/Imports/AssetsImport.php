@@ -105,7 +105,7 @@ class AssetsImport implements ToModel, WithStartRow, WithValidation
             '4' => 'nullable|string|max:255',
             '5' => 'nullable|string|max:255',
             '6' => 'nullable|string|max:255',
-            '7' => 'nullable|string|max:255',
+            '7' => 'nullable|max:255',
             '8' => 'nullable',
             '9' => 'nullable|string|max:255',
             '10' => [
