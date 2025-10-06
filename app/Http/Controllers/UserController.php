@@ -35,6 +35,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'alias' => 'required|string|unique:companies,alias',
             'code' => 'required|string|unique:companies,code',
+            'currency' => 'required',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'address' => 'nullable|string',
             'phone' => 'nullable|string|max:255',

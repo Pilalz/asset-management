@@ -81,6 +81,14 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <div class="mb-5">
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User </label>
+                            <input type="text" name="user" value="{{ old('user', $asset->user) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                            @error('user')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                         
                         <div class="mb-5">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description <span class="text-red-900">*</span></label>
@@ -217,9 +225,13 @@
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acquisition Value <span class="text-red-900">*</span></label>
                                 <div class="relative ">
                                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
-                                        </svg>
+                                        @if($activeCompany->currency === 'USD')
+                                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                            </svg>
+                                        @elseif($activeCompany->currency === 'IDR')
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">Rp</span>
+                                        @endif
                                     </div>
                                     <input type="text" id="acquisition_value_display" value="{{ old('acquisition_value', $asset->acquisition_value) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                                     <input type="hidden" name="acquisition_value" id="acquisition_value_hidden" value="{{ old('acquisition_value', $asset->acquisition_value) }}">
@@ -249,9 +261,13 @@
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acquisition Value <span class="text-red-900">*</span></label>
                                 <div class="relative ">
                                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
-                                        </svg>
+                                        @if($activeCompany->currency === 'USD')
+                                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                            </svg>
+                                        @elseif($activeCompany->currency === 'IDR')
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">Rp</span>
+                                        @endif
                                     </div>
                                     <input type="text" id="acquisition_value_display" value="{{ old('acquisition_value', $asset->acquisition_value) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
                                     <input type="hidden" name="acquisition_value" value="{{ old('acquisition_value', $asset->acquisition_value) }}" />
@@ -266,9 +282,13 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current Cost <span class="text-red-900">*</span></label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
-                                    </svg>
+                                    @if($activeCompany->currency === 'USD')
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                        </svg>
+                                    @elseif($activeCompany->currency === 'IDR')
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Rp</span>
+                                    @endif
                                 </div>
                                 <input type="text" id="current_cost_display" value="{{ old('current_cost', $asset->current_cost) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
                                 <input type="hidden" id="current_cost_hidden" name="current_cost" value="{{ old('current_cost', $asset->current_cost) }}" />
@@ -290,11 +310,16 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Commercial Accum Depre <span class="text-red-900">*</span></label>
                             <div class="relative ">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
-                                    </svg>
+                                    @if($activeCompany->currency === 'USD')
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                        </svg>
+                                    @elseif($activeCompany->currency === 'IDR')
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Rp</span>
+                                    @endif
                                 </div>
-                                <input type="text" name="commercial_accum_depre" value="{{ old('commercial_accum_depre', $asset->commercial_accum_depre) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
+                                <input type="text" id="commercial_accum_display" value="{{ old('commercial_accum_depre', $asset->commercial_accum_depre) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
+                                <input type="hidden" id="commercial_accum_hiden" name="commercial_accum_depre" value="{{ old('commercial_accum_depre', $asset->commercial_accum_depre) }}" />
                                 @error('commercial_accum_depre')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -305,9 +330,13 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Commercial Net Book Value <span class="text-red-900">*</span></label>
                             <div class="relative ">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
-                                    </svg>
+                                    @if($activeCompany->currency === 'USD')
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                        </svg>
+                                    @elseif($activeCompany->currency === 'IDR')
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Rp</span>
+                                    @endif
                                 </div>
                                 <input type="text" id="commercial_nbv_display" value="{{ old('commercial_nbv', $asset->commercial_nbv) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
                                 <input type="hidden" id="commercial_nbv_hidden" name="commercial_nbv" value="{{ old('commercial_nbv', $asset->commercial_nbv) }}" />
@@ -329,11 +358,16 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fiscal Accum Depre <span class="text-red-900">*</span></label>
                             <div class="relative ">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
-                                    </svg>
+                                    @if($activeCompany->currency === 'USD')
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                        </svg>
+                                    @elseif($activeCompany->currency === 'IDR')
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Rp</span>
+                                    @endif
                                 </div>
-                                <input type="text" name="fiscal_accum_depre" value="{{ old('fiscal_accum_depre', $asset->fiscal_accum_depre) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
+                                <input type="text" id="fiscal_accum_display" value="{{ old('fiscal_accum_depre', $asset->fiscal_accum_depre) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
+                                <input type="hidden" id="fiscal_accum_hidden" name="fiscal_accum_depre" value="{{ old('fiscal_accum_depre', $asset->fiscal_accum_depre) }}" />
                                 @error('fiscal_accum_depre')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -344,9 +378,13 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fiscal Net Book Value <span class="text-red-900">*</span></label>
                             <div class="relative ">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
-                                    </svg>
+                                    @if($activeCompany->currency === 'USD')
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                                        </svg>
+                                    @elseif($activeCompany->currency === 'IDR')
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Rp</span>
+                                    @endif
                                 </div>
                                 <input type="text" id="fiscal_nbv_display" value="{{ old('fiscal_nbv', $asset->fiscal_nbv) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
                                 <input type="hidden" id="fiscal_nbv_hidden" name="fiscal_nbv" value="{{ old('fiscal_nbv', $asset->fiscal_nbv) }}" />
@@ -355,6 +393,15 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <div class="mb-5">
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Remaks </label>
+                            <input type="text" name="remaks" value="{{ old('remaks', $asset->remaks) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                            @error('remaks')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
                     </div>
                 </div>
 
@@ -445,16 +492,28 @@
         //Currency
         const acquisitionDisplay = document.getElementById('acquisition_value_display');
         const acquisitionHidden = document.getElementById('acquisition_value_hidden');
+
         const currentCostDisplay = document.getElementById('current_cost_display');
         const currentCostHidden = document.getElementById('current_cost_hidden');
+
         const commercialNbvDisplay = document.getElementById('commercial_nbv_display');
         const commercialNbvHidden = document.getElementById('commercial_nbv_hidden');
+
+        const commercialAccumDisplay = document.getElementById('commercial_accum_display');
+        const commercialAccumHidden = document.getElementById('commercial_accum_hidden');
+
         const fiscalNbvDisplay = document.getElementById('fiscal_nbv_display');
         const fiscalNbvHidden = document.getElementById('fiscal_nbv_hidden');
 
+        const fiscalAccumDisplay = document.getElementById('fiscal_accum_display');
+        const fiscalAccumHidden = document.getElementById('fiscal_accum_hidden');
+
         function formatRupiah(angka) {
+            const currencyCode = '{{ $activeCompany->currency ?? 'IDR' }}';
+            const locale = (currencyCode === 'USD') ? 'en-US' : 'id-ID';
+
             if (!angka || isNaN(angka)) return '';
-            return new Intl.NumberFormat('us-EN').format(angka);
+            return new Intl.NumberFormat(locale).format(angka);
         }
 
         function unformatRupiah(rupiahStr) {
@@ -469,7 +528,9 @@
             acquisitionDisplay.value = formattedValue;
             currentCostDisplay.value = formattedValue;
             commercialNbvDisplay.value = formattedValue;
+            commercialAccumDisplay.value = formattedValue;
             fiscalNbvDisplay.value = formattedValue;
+            fiscalAccumDisplay.value = formattedValue;
 
             // Perbarui semua input hidden
             acquisitionHidden.value = rawValue;

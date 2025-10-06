@@ -45,40 +45,32 @@ class LVAImport implements ToModel, WithStartRow, WithValidation
     public function model(array $row)
     {
         $assetName   = $this->assetNames->get($row[1]);
-        $location    = $this->locations->get($row[10]);
-        $department  = $this->departments->get($row[11]);
+        $location    = $this->locations->get($row[7]);
+        $department  = $this->departments->get($row[8]);
         
         $commercialUsefulLife = $assetName ? $assetName->commercial * 12 : 0;
         $fiscalUsefulLife     = $assetName ? $assetName->fiscal * 12 : 0;
-
-        $productionYear = null;
-        if (!empty($row[8]) && is_numeric($row[8])) {
-            $productionYear = $row[8] . '-01-01';
-        }
         
         return new Asset([
             'asset_number'                  => $row[0],
             'asset_name_id'                 => $assetName ? $assetName->id : null,
             'description'                   => $row[2],
             'detail'                        => $row[3] ?? null,
-            'pareto'                        => $row[4] ?? null,
-            'unit_no'                       => $row[5] ?? null,
-            'sn_chassis'                    => $row[6] ?? null,
-            'sn_engine'                     => $row[7] ?? null,
-            'production_year'               => $productionYear,
-            'po_no'                         => $row[9] ?? null,
+            'sn'                            => $row[4] ?? null,
+            'user'                          => $row[5] ?? null,
+            'po_no'                         => $row[6] ?? null,
             'location_id'                   => $location ? $location->id : null,
             'department_id'                 => $department ? $department->id : null,
-            'quantity'                      => $row[12],
-            'capitalized_date'              => !empty($row[13]) ? Date::excelToDateTimeObject($row[13]) : null,
-            'acquisition_value'             => $row[14],
-            'current_cost'                  => $row[14],
+            'quantity'                      => $row[9],
+            'capitalized_date'              => !empty($row[10]) ? Date::excelToDateTimeObject($row[10]) : null,
+            'acquisition_value'             => $row[11],
+            'current_cost'                  => $row[11],
             'commercial_useful_life_month'  => $commercialUsefulLife,
             'commercial_accum_depre'        => 0,
-            'commercial_nbv'                => $row[14],
+            'commercial_nbv'                => $row[11],
             'fiscal_useful_life_month'      => $fiscalUsefulLife,
             'fiscal_accum_depre'            => 0,
-            'fiscal_nbv'                    => $row[14],
+            'fiscal_nbv'                    => $row[11],
             'company_id'                    => session('active_company_id'),
             'status'                        => 'Active',
             'asset_type'                    => 'LVA',
@@ -100,20 +92,17 @@ class LVAImport implements ToModel, WithStartRow, WithValidation
             '4' => 'nullable|string|max:255',
             '5' => 'nullable|string|max:255',
             '6' => 'nullable|string|max:255',
-            '7' => 'nullable|string|max:255',
-            '8' => 'nullable',
-            '9' => 'nullable|string|max:255',
-            '10' => [
+            '7' => [
                 'required',
                 Rule::exists('locations', 'name')->where('company_id', $this->companyId),
             ],
-            '11' => [
+            '8' => [
                 'required',
                 Rule::exists('departments', 'name')->where('company_id', $this->companyId),
             ],
-            '12' => 'required',
-            '13' => 'required',
-            '14' => 'required',
+            '9' => 'required',
+            '10' => 'required',
+            '11' => 'required',
         ];
     }
 }

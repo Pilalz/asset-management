@@ -33,6 +33,7 @@ class Company extends Model
         'address',
         'phone',
         'fax',
+        'currency',
         'owner_id',
     ];
 

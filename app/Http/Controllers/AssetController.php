@@ -89,24 +89,26 @@ class AssetController extends Controller
                 'max:255',
                 Rule::unique('assets')->ignore($asset->id)->where('company_id', $asset->company_id)
             ],
-            'asset_name_id' => 'required|exists:asset_names,id',
-            'description' => 'required|string|max:255',
-            'detail'  => 'max:255',
-            'pareto'  => 'max:255',
-            'unit_no'  => 'max:255',
-            'sn_chassis'  => 'max:255',
-            'sn_engine'  => 'max:255',
-            'production_year'  => 'max:255',
-            'po_no'  => 'required|string|max:255',
-            'location_id'  => 'required|exists:locations,id',
-            'department_id'  => 'required|exists:departments,id',
-            'quantity'  => 'required',
+            'asset_name_id'     => 'required|exists:asset_names,id',
+            'description'       => 'required|string|max:255',
+            'detail'            => 'max:255',
+            'pareto'            => 'max:255',
+            'unit_no'           => 'max:255',
+            'user'              => 'nullable',
+            'sn_chassis'        => 'max:255',
+            'sn_engine'         => 'max:255',
+            'production_year'   => 'max:255',
+            'po_no'             => 'required|string|max:255',
+            'location_id'       => 'required|exists:locations,id',
+            'department_id'     => 'required|exists:departments,id',
+            'quantity'          => 'required',
             'capitalized_date'  => 'required|date',
             'start_depre_date'  => 'required|date',
-            'acquisition_value'  => 'required',
-            'current_cost'  => 'required',
-            'commercial_nbv'  => 'required',
-            'fiscal_nbv'  => 'required',
+            'acquisition_value' => 'required',
+            'current_cost'      => 'required',
+            'commercial_nbv'    => 'required',
+            'fiscal_nbv'        => 'required',
+            'remaks'            => 'nullable',
         ]);
 
         $dataToUpdate = $validatedData;
@@ -150,6 +152,7 @@ class AssetController extends Controller
                         ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
                         ->join('locations', 'assets.location_id', '=', 'locations.id')
                         ->join('departments', 'assets.department_id', '=', 'departments.id')
+                        ->join('companies', 'assets.company_id', '=', 'companies.id')
                         ->where('assets.asset_type', '=', 'FA')
                         ->where('assets.status', '=', 'Active')
                         ->where('assets.company_id', $companyId)
@@ -159,6 +162,7 @@ class AssetController extends Controller
                             'asset_classes.obj_acc as asset_class_obj',
                             'locations.name as location_name',
                             'departments.name as department_name',
+                            'companies.currency as currency_code',
                         ]);
 
         return DataTables::eloquent($query)
@@ -170,6 +174,9 @@ class AssetController extends Controller
                     'editUrl' => route('asset.edit', $asset->id),
                     'deleteUrl' => route('asset.destroy', $asset->id)
                 ])->render();
+            })
+            ->addColumn('currency', function($asset) {
+                return $asset->currency_code ?? 'USD';
             })
             ->filterColumn('asset_name_name', function($query, $keyword) {
                 $query->where('asset_names.name', 'like', "%{$keyword}%");

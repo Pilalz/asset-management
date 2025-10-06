@@ -10,6 +10,7 @@ use App\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Support\Facades\Log;
 
 class Depreciation extends Model
 {
@@ -52,7 +53,14 @@ class Depreciation extends Model
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(function(string $eventName) {
-                $Asset = $this->asset->asset_number;
+                Log::info('Activity Log Check:', [
+                    'event' => $eventName,
+                    'depreciation_id' => $this->id,
+                    'asset_id' => $this->asset_id,
+                ]);
+
+                $asset = Asset::find($this->asset_id);
+                $Asset = $asset ? $asset->asset_number : 'an unknown asset';
 
                 return "Depreciation Asset '{$Asset}' has been {$eventName}";
             })

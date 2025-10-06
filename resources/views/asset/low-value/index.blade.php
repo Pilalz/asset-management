@@ -195,8 +195,10 @@
                             <th scope="col" class="px-6 py-3">Status</th>
                             <th scope="col" class="px-6 py-3">Asset Name</th>
                             <th scope="col" class="px-6 py-3">Obj Acc</th>
+                            <th scope="col" class="px-6 py-3">User</th>
                             <th scope="col" class="px-6 py-3">Description</th>
-                            <th scope="col" class="px-6 py-3">Pareto</th>
+                            <th scope="col" class="px-6 py-3">Detail</th>
+                            <th scope="col" class="px-6 py-3">SN</th>
                             <th scope="col" class="px-6 py-3">PO No</th>
                             <th scope="col" class="px-6 py-3">Location</th>
                             <th scope="col" class="px-6 py-3">Department</th>
@@ -212,6 +214,7 @@
                             <th></th><th></th><th></th><th></th>
                             <th></th><th></th><th></th><th></th>
                             <th></th><th></th><th></th><th></th>
+                            <th></th><th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -277,8 +280,10 @@
                 { data: 'status', name: 'status' },
                 { data: 'asset_name_name', name: 'asset_name_name' },
                 { data: 'asset_class_obj', name: 'asset_class_obj' },
+                { data: 'user', name: 'user' },
                 { data: 'description', name: 'description' },
-                { data: 'pareto', name: 'pareto' },
+                { data: 'detail', name: 'detail' },
+                { data: 'sn', name: 'sn' },
                 { data: 'po_no', name: 'po_no' },
                 { data: 'location_name', name: 'location_name' },
                 { data: 'department_name', name: 'department_name' },
@@ -333,7 +338,7 @@
                     }
                 },
                 {
-                    targets: 11,
+                    targets: 13,
                     render: function (data, type, row) {
                         if (type === 'display') {
                             if (!data) {
@@ -355,7 +360,7 @@
                     }
                 },
                 {
-                    targets: [12, 14], 
+                    targets: [14, 16], 
                     render: function (data, type, row) {
                         if (type === 'display') {
                             let number = parseFloat(data);

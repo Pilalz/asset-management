@@ -21,6 +21,8 @@ return new class extends Migration
             $table->longText('detail')->nullable();
             $table->string('pareto')->nullable();
             $table->string('unit_no')->nullable();
+            $table->string('user')->nullable();
+            $table->string('sn')->nullable();
             $table->string('sn_chassis')->nullable();
             $table->string('sn_engine')->nullable();
             $table->date('production_year')->nullable();
@@ -38,6 +40,7 @@ return new class extends Migration
             $table->integer('fiscal_useful_life_month');
             $table->decimal('fiscal_accum_depre', 18, 0);
             $table->decimal('fiscal_nbv', 18, 0);
+            $table->longText('remaks');
             $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });

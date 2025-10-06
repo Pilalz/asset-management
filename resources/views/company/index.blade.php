@@ -98,6 +98,7 @@
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">Role</th>
                         <th scope="col" class="px-6 py-3">Kode</th>
+                        <th scope="col" class="px-6 py-3">Currency</th>
                         <th scope="col" class="px-6 py-3">Address</th>
                         <th scope="col" class="px-6 py-3">Phone</th>
                         <th scope="col" class="px-6 py-3">Fax</th>
@@ -116,6 +117,7 @@
                             </td>
                             <td class="px-6 py-4">{{ $company->role }}</td>
                             <td class="px-6 py-4">{{ $company->code }}</td>
+                            <td class="px-6 py-4">{{ $company->currency }}</td>
                             <td class="px-6 py-4">{{ $company->address ?? '-' }}</td>
                             <td class="px-6 py-4">{{ $company->phone ?? '-' }}</td>
                             <td class="px-6 py-4">{{ $company->fax ?? '-' }}</td>

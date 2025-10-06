@@ -115,9 +115,13 @@ class RunBulkDepreciation implements ShouldQueue
                         $currentAccumulatedDepre += $finalDepreciationAmount;
 
                         Depreciation::create([
-                            'asset_id' => $asset->id, 'type' => $type, 'depre_date' => $date->endOfMonth(),
-                            'monthly_depre' => $finalDepreciationAmount, 'accumulated_depre' => $currentAccumulatedDepre,
-                            'book_value' => $currentBookValue, 'company_id' => $asset->company_id,
+                            'asset_id' => $asset->id, 
+                            'type' => $type, 
+                            'depre_date' => $date->endOfMonth(),
+                            'monthly_depre' => $finalDepreciationAmount, 
+                            'accumulated_depre' => $currentAccumulatedDepre,
+                            'book_value' => $currentBookValue, 
+                            'company_id' => $asset->company_id,
                         ]);
                         
                         $processedCount++;

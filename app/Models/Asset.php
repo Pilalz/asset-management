@@ -33,6 +33,8 @@ class Asset extends Model
         'detail',
         'pareto',
         'unit_no',
+        'user',
+        'sn',
         'sn_chassis',
         'sn_engine',
         'production_year',
@@ -50,6 +52,7 @@ class Asset extends Model
         'fiscal_useful_life_month',
         'fiscal_accum_depre',
         'fiscal_nbv',
+        'remaks',
         'company_id',
     ];
 
