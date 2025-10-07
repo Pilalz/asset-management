@@ -46,18 +46,14 @@ class Depreciation extends Model
 
     public function getAssetNameAttribute()
     {
-        return $this->asset->asset_number ?? null;
+        $asset = Asset::find($this->asset_id);
+        return $asset ? $asset->asset_number : null;
     }
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(function(string $eventName) {
-                Log::info('Activity Log Check:', [
-                    'event' => $eventName,
-                    'depreciation_id' => $this->id,
-                    'asset_id' => $this->asset_id,
-                ]);
 
                 $asset = Asset::find($this->asset_id);
                 $Asset = $asset ? $asset->asset_number : 'an unknown asset';

@@ -71,8 +71,7 @@ class AssetArrivalController extends Controller
         if ($assetArrival->asset_type === 'LVA') {
             $validatedData['start_depre_date'] = null;
         }
-
-        $validatedData['status'] = 'Active';
+        
         $validatedData['current_cost'] = $validatedData['acquisition_value'];
         $validatedData['commercial_nbv'] = $validatedData['acquisition_value'];
         $validatedData['fiscal_nbv'] = $validatedData['acquisition_value'];

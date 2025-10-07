@@ -25,8 +25,6 @@ class AssetName extends Model
         'grouping',
         'commercial',
         'fiscal',
-        'cost',
-        'lva',
         'company_id',
     ];
 
@@ -64,6 +62,6 @@ class AssetName extends Model
                 return "Asset Name '{$assetName}' has been {$eventName}";
             })
             ->useLogName(session('active_company_id'))
-            ->logOnly(['sub_class_name', 'name', 'grouping', 'commercial', 'fiscal', 'cost', 'lva']);
+            ->logOnly(['sub_class_name', 'name', 'grouping', 'commercial', 'fiscal']);
     }
 }

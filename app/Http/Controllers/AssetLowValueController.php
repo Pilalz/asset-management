@@ -65,6 +65,7 @@ class AssetLowValueController extends Controller
             'user'              => 'nullable',
             'sn_chassis'        => 'max:255',
             'sn_engine'         => 'max:255',
+            'sn'                => 'max:255',
             'production_year'   => 'max:255',
             'po_no'             => 'required|string|max:255',
             'location_id'       => 'required|exists:locations,id',
@@ -74,6 +75,7 @@ class AssetLowValueController extends Controller
             'acquisition_value' => 'required',
             'current_cost'      => 'required',
             'commercial_nbv'    => 'required',
+            'fiscal_nbv'        => 'required',
             'remaks'            => 'nullable'
         ]);
 
@@ -118,6 +120,7 @@ class AssetLowValueController extends Controller
                         ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
                         ->join('locations', 'assets.location_id', '=', 'locations.id')
                         ->join('departments', 'assets.department_id', '=', 'departments.id')
+                        ->join('companies', 'assets.company_id', '=', 'companies.id')
                         ->where('assets.asset_type', '=', 'LVA')
                         ->where('assets.status', '=', 'Active')
                         ->where('assets.company_id', $companyId)
@@ -127,6 +130,7 @@ class AssetLowValueController extends Controller
                             'asset_classes.obj_acc as asset_class_obj',
                             'locations.name as location_name',
                             'departments.name as department_name',
+                            'companies.currency as currency_code',
                         ]);
 
         return DataTables::eloquent($query)
@@ -138,6 +142,9 @@ class AssetLowValueController extends Controller
                     'editUrl' => route('assetLVA.edit', $asset->id),
                     'deleteUrl' => route('asset.destroy', $asset->id)
                 ])->render();
+            })
+            ->addColumn('currency', function($asset) {
+                return $asset->currency_code ?? 'USD';
             })
             ->filterColumn('asset_name_name', function($query, $keyword) {
                 $query->where('asset_names.name', 'like', "%{$keyword}%");

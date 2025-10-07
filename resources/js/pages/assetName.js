@@ -27,8 +27,6 @@ $(document).ready(function() {
             { data: 'grouping', name: 'grouping' },
             { data: 'commercial', name: 'commercial' },
             { data: 'fiscal', name: 'fiscal' },
-            { data: 'cost', name: 'cost' },
-            { data: 'lva', name: 'lva' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [[0, 'asc']],
@@ -72,16 +70,6 @@ $(document).ready(function() {
                 render: function (data, type, row) {
                     if (type === 'display') {
                         return data + ' (Years)';
-                    }
-                    return data;
-                }
-            },
-            {
-                targets: [6, 7], 
-                className: 'p-2',
-                render: function (data, type, row) {
-                    if (type === 'display') {
-                        return data + ' (USD)';
                     }
                     return data;
                 }

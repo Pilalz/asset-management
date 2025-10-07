@@ -43,9 +43,15 @@
     
     <div class="p-5">
         <div class="shadow-md sm:rounded-lg bg-white p-4 dark:bg-gray-800">
-            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Asset Details</h2>
-            <div class="flex flex-col sm:flex-row sm:gap-8">
-                <div class="w-full sm:w-1/2">
+            <h1 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Asset Details</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Basic Asset Information
+                    </h2>
+                </div>
+
+                <div>
                     <table>
                         <tr>
                             <td>Asset Number</td>
@@ -72,11 +78,49 @@
                             <td class="px-2">:</td>
                             <td>{{ $asset->assetName?->name ?? 'N/A' }}</td>
                         </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <table>
                         <tr>
                             <td>Obj Acc</td>
                             <td class="px-2">:</td>
                             <td>Direct Ownership : {{ $asset->assetName?->assetSubClass?->assetClass?->obj_acc ?? 'N/A' }}</td>
                         </tr>
+                        <tr>
+                            <td>Location</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->location->name == null) ? "-" : $asset->location->name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Department</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->department->name == null) ? "-" : $asset->department->name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Quantity</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->quantity == null) ? "-" : $asset->quantity }}</td>
+                        </tr>
+                        <tr>
+                            <td>User</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->user == null) ? "-" : $asset->user }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>                    
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Details & Specifications
+                    </h2>
+                </div>
+
+                <div>
+                    <table>
                         <tr>
                             <td>Description</td>
                             <td class="px-2">:</td>
@@ -97,44 +141,48 @@
                             <td class="px-2">:</td>
                             <td>{{ ($asset->unit_no == null) ? "-" : $asset->unit_no }}</td>
                         </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <table>
                         <tr>
                             <td>SN Chassis</td>
                             <td class="px-2">:</td>
                             <td>{{ ($asset->sn_chassis == null) ? "-" : $asset->sn_chassis }}</td>
                         </tr>
-                    </table>
-                </div>
-                <div class="w-full sm:w-1/2">
-                    <table>
                         <tr>
                             <td>SN Engine</td>
                             <td class="px-2">:</td>
                             <td>{{ ($asset->sn_engine == null) ? "-" : $asset->sn_engine }}</td>
                         </tr>
                         <tr>
+                            <td>Serial Number</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->sn == null) ? "-" : $asset->sn }}</td>
+                        </tr>
+                        <tr>
                             <td>Production Year</td>
                             <td class="px-2">:</td>
                             <td>{{ $asset->production_year ? \Carbon\Carbon::parse($asset->production_year)->format('Y') : '-' }}</td>
                         </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Financial Information
+                    </h2>
+                </div>
+
+                <div>
+                    <table>
                         <tr>
                             <td>PO No</td>
                             <td class="px-2">:</td>
                             <td>{{ ($asset->po_no == null) ? "-" : $asset->po_no }}</td>
-                        </tr>
-                        <tr>
-                            <td>Location</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->location->name == null) ? "-" : $asset->location->name }}</td>
-                        </tr>
-                        <tr>
-                            <td>Department</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->department->name == null) ? "-" : $asset->department->name }}</td>
-                        </tr>
-                        <tr>
-                            <td>Quantity</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->quantity == null) ? "-" : $asset->quantity }}</td>
                         </tr>
                         <tr>
                             <td>Capitalized Date</td>
@@ -142,23 +190,63 @@
                             <td>{{ $asset->capitalized_date ? \Carbon\Carbon::parse($asset->capitalized_date)->format('d F Y') : '-' }}</td>
                         </tr>
                         <tr>
-                            <td>Acquisition Value</td>
+                            <td>Start Depre Date</td>
                             <td class="px-2">:</td>
-                            <td>{{ '$ ' . number_format($asset->acquisition_value, 0, '.', ',') }}</td>
+                            <td>{{ $asset->start_depre_date ? \Carbon\Carbon::parse($asset->start_depre_date)->format('d F Y') : '-' }}</td>
                         </tr>
                         <tr>
-                            <td>Useful Life Month</td>
+                            <td>Acquisition Value</td>
+                            <td class="px-2">:</td>
+                            <td>{{ format_currency($asset->acquisition_value) }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <table>
+                        <tr>
+                            <td>Commercial Useful Life Month</td>
                             <td class="px-2">:</td>
                             <td>{{ ($asset->commercial_useful_life_month == null) ? "-" : $asset->commercial_useful_life_month }} Month</td>
                         </tr>
                         <tr>
-                            <td>Net Book Value</td>
+                            <td>Commercial Net Book Value</td>
                             <td class="px-2">:</td>
-                            <td>{{ '$ ' . number_format($asset->commercial_nbv, 0, '.', ',') }}</td>
+                            <td>{{ format_currency($asset->commercial_nbv) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Fiscal Useful Life Month</td>
+                            <td class="px-2">:</td>
+                            <td>{{ ($asset->fiscal_useful_life_month == null) ? "-" : $asset->fiscal_useful_life_month }} Month</td>
+                        </tr>
+                        <tr>
+                            <td>Fiscal Net Book Value</td>
+                            <td class="px-2">:</td>
+                            <td>{{ format_currency($asset->fiscal_nbv) }}</td>
                         </tr>
                     </table>
                 </div>
             </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-x-6 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Remaks
+                    </h2>
+                </div>
+
+                <div>
+                    <table>
+                        <tr>
+                            <td>Remaks :</td>
+                        </tr>
+                        <tr>
+                            <td>{{ ($asset->remaks == null) ? "-" : $asset->remaks }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
         <div class="shadow-md sm:rounded-lg mt-3 bg-white p-4 dark:bg-gray-800">

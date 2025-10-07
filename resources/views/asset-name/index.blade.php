@@ -208,8 +208,6 @@
                         <th scope="col" class="px-6 py-3">Asset Grouping</th>
                         <th scope="col" class="px-6 py-3">Commercial Life</th>
                         <th scope="col" class="px-6 py-3">Fiscal Life</th>
-                        <th scope="col" class="px-6 py-3">Cost</th>
-                        <th scope="col" class="px-6 py-3">LVA</th>
                         @can('is-admin')
                             <th scope="col" class="px-6 py-3">Actions</th>
                         @else
@@ -218,8 +216,7 @@
                     </tr>
                     <tr id="filter-row">
                         <th></th><th></th><th></th><th></th>
-                        <th></th><th></th><th></th><th></th>
-                        <th></th>
+                        <th></th><th></th><th></th>
                     </tr>
                 </thead>
                 <tbody>

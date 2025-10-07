@@ -50,8 +50,6 @@ class AssetNameController extends Controller
             ],
             'commercial'  => 'required',
             'fiscal'  => 'required',
-            'cost'  => 'required',
-            'lva'  => 'required',
             'company_id'  => 'required',
         ]);
 
@@ -88,8 +86,6 @@ class AssetNameController extends Controller
             ],
             'commercial'  => 'required',
             'fiscal'  => 'required',
-            'cost'  => 'required',
-            'lva'  => 'required',
         ]);
 
         $dataToUpdate = $validatedData;

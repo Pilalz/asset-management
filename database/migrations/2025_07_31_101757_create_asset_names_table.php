@@ -18,8 +18,6 @@ return new class extends Migration
             $table->string('grouping');
             $table->integer('commercial');
             $table->integer('fiscal');
-            $table->integer('cost');
-            $table->integer('lva');
             $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });

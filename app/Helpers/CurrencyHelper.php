@@ -28,6 +28,10 @@ if (!function_exists('format_currency')) {
 
         // Gunakan kelas NumberFormatter bawaan PHP untuk format yang benar
         $formatter = new \NumberFormatter('id_ID', \NumberFormatter::CURRENCY);
+
+        if ($currencyCode === 'IDR') {
+            $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 0);
+        }
         
         return $formatter->formatCurrency($amount, $currencyCode);
     }

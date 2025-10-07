@@ -36,7 +36,7 @@
             <form class="max-w mx-auto" action="{{ route('assetArrival.update', $asset->id) }}" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
                     <div class="md:col-span-2">
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
                             Basic Asset Information
@@ -79,16 +79,91 @@
                         </select>
                     </div>
 
-                    <div class="mb-5">
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status <span class="text-red-900">*</span></label>
-                        <input type="text" name="status" value="{{ old('status', $asset->status) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
-                        @error('status')
+                    @if ($asset->asset_type === 'FA')
+                        <div>
+                            <label for="status-select" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status <span class="text-red-900">*</span></label>
+                            <select name="status" class="status-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option selected value="">Choose Status</option>
+                                <option value="Active">Active</option>
+                                <option value="Breakdown">Breakdown</option>
+                                <option value="RFU">RFU</option>
+                                <option value="Scrap">Scrap</option>
+                                <option value="Sold">Sold</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            @error('status')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    @elseif ($asset->asset_type === 'LVA')
+                        <div>
+                            <label for="status-select" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status <span class="text-red-900">*</span></label>
+                            <select name="status" class="status-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option selected value="Active">Active</option>
+                                <option value="Broken">Broken</option>
+                                <option value="Missing">Missing</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            @error('status')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    @endif
+
+                    <!-- hidden input for status -->
+                    <div id="other-status-wrapper" class="hidden">
+                        <label for="other-status-input" class="block mb-2 text-sm font-medium">Please specify other status</label>
+                        <input type="text" id="other-status-input" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location <span class="text-red-900">*</span></label>
+                        <select name="location_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option selected value="">Choose a Location</option>
+                            @foreach($locations as $location)
+                                <option value="{{ $location->id }}" {{ (old('location_id', $asset->location_id) == $location->id) ? 'selected' : '' }}>
+                                    {{ $location->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('location_id')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department <span class="text-red-900">*</span></label>
+                        <select name="department_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option selected value="">Choose a Department</option>
+                            @foreach($departments as $department)
+                                <option value="{{ $department->id }}" {{ (old('department_id', $asset->department_id) == $department->id) ? 'selected' : '' }}>
+                                    {{ $department->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('department_id')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User </label>
+                        <input type="text" name="user" value="{{ old('user', $asset->user) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                        @error('user')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity <span class="text-red-900">*</span></label>
+                        <input type="number" name="quantity" value="{{ old('quantity', $asset->quantity) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                        @error('quantity')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
                     <div class="md:col-span-2">
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
                             Details & Specifications
@@ -155,9 +230,19 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    @if($asset->asset_type === 'LVA')
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Serial Number </label>
+                        <input type="text" name="sn" value="{{ old('sn', $asset->sn) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                        @error('sn')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @endif
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
                     <div class="md:col-span-2">
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
                             Financial Information
@@ -172,7 +257,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-5">
+                    <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acquisition Value <span class="text-red-900">*</span></label>
                         <div class="relative ">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
@@ -193,7 +278,7 @@
                     </div>
 
                     @if ($asset->depreciations->count() == 0)
-                        <div class="mb-5">
+                        <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900">*</span></label>
                             <input type="date" name="capitalized_date" id="capitalized_date" value="{{ old('capitalized_date', $asset->capitalized_date?->format('Y-m-d')) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             @error('capitalized_date')
@@ -201,7 +286,7 @@
                             @enderror
                         </div>
                     @else
-                        <div class="mb-5">
+                        <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900">*</span></label>
                             <input type="date" name="capitalized_date" value="{{ old('capitalized_date', $asset->capitalized_date?->format('Y-m-d')) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             @error('capitalized_date')
@@ -211,7 +296,7 @@
                     @endif
 
                     @if ($asset->asset_type === 'FA')
-                        <div class="mb-5">
+                        <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start Depre Date <span class="text-red-900">*</span></label>
                             <input type="date" name="start_depre_date" id="start_depre_date" value="{{ old('start_depre_date', $asset->start_depre_date?->format('Y-m-d')) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                             @error('start_depre_date')
@@ -221,62 +306,14 @@
                     @endif
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-x-6 gap-y-5 mb-5">
                     <div class="md:col-span-2">
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                            Location & Status
+                            Remaks
                         </h2>
                     </div>
 
-                    <div class="mb-5">
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location <span class="text-red-900">*</span></label>
-                        <select name="location_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option selected value="">Choose a Location</option>
-                            @foreach($locations as $location)
-                                <option value="{{ $location->id }}" {{ (old('location_id', $asset->location_id) == $location->id) ? 'selected' : '' }}>
-                                    {{ $location->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('location_id')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-5">
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department <span class="text-red-900">*</span></label>
-                        <select name="department_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option selected value="">Choose a Department</option>
-                            @foreach($departments as $department)
-                                <option value="{{ $department->id }}" {{ (old('department_id', $asset->department_id) == $department->id) ? 'selected' : '' }}>
-                                    {{ $department->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('department_id')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-5">
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User </label>
-                        <input type="text" name="user" value="{{ old('user', $asset->user) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                        @error('user')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-5">
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity <span class="text-red-900">*</span></label>
-                        <input type="number" name="quantity" value="{{ old('quantity', $asset->quantity) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                        @error('quantity')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 gap-x-6 gap-y-5">
-                    <div class="mb-5">
+                    <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Remaks </label>
                         <input type="text" name="remaks" value="{{ old('remaks', $asset->remaks) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         @error('remaks')
@@ -430,6 +467,24 @@
         // Jika ada nilai awal untuk Asset Class, muat Sub Class yang sesuai
         if (classSelect.value) {
             loadSubClasses(classSelect.value, initialSubClassId);
+        }
+
+        const statusSelect = document.querySelector('.status-select');
+        const otherStatusWrapper = document.getElementById('other-status-wrapper');
+        const otherStatusInput = document.getElementById('other-status-input');
+
+        if (statusSelect && otherStatusWrapper && otherStatusInput) {
+            statusSelect.addEventListener('change', function () {
+                if (this.value === 'Other') {
+                    otherStatusWrapper.classList.remove('hidden');
+                    otherStatusInput.setAttribute('name', 'status');
+                    statusSelect.removeAttribute('name');
+                } else {
+                    otherStatusWrapper.classList.add('hidden');
+                    statusSelect.setAttribute('name', 'status');
+                    otherStatusInput.removeAttribute('name');
+                }
+            });
         }
     });
 </script>

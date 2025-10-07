@@ -111,6 +111,45 @@
             </div>
         </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-1 mt-5">
+            <div class="w-full bg-white rounded-lg shadow-md dark:bg-gray-800 p-4 md:p-6">
+
+                <div class="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700 overflow-y-auto h-9/10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Asset Remaks</h5>
+                        <!-- <a href="#" class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
+                            View all
+                        </a> -->
+                        <p class="text-sm font-medium">Total : <span class="text-sm font-medium text-blue-600 dark:text-blue-500">{{ $assetRemaksCount }}</span></p>
+                    </div>
+                    <div class="flow-root">
+                        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @foreach($assetRemaks as $assetRemaks)
+                                <li class="py-3 sm:py-4">
+                                    <div class="flex items-center">
+                                        <!-- <div class="shrink-0">
+                                            <img class="w-8 h-8 rounded-full" src="" alt="">
+                                        </div> -->
+                                        <div class="flex-1 min-w-0 ms-4">
+                                            <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                                {{ $assetRemaks->asset_number }}
+                                            </p>
+                                            <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                {{ $assetRemaks->remaks }}
+                                            </p>
+                                        </div>
+                                        <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                            {{ $assetRemaks->asset_type }}
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection
 

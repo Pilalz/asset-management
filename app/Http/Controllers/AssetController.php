@@ -154,7 +154,8 @@ class AssetController extends Controller
                         ->join('departments', 'assets.department_id', '=', 'departments.id')
                         ->join('companies', 'assets.company_id', '=', 'companies.id')
                         ->where('assets.asset_type', '=', 'FA')
-                        ->where('assets.status', '=', 'Active')
+                        ->where('assets.status', '!=', 'Sold')
+                        ->where('assets.status', '!=', 'Onboard')
                         ->where('assets.company_id', $companyId)
                         ->select([
                             'assets.*',

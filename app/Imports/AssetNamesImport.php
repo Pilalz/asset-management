@@ -44,8 +44,6 @@ class AssetNamesImport implements ToModel, WithStartRow, WithValidation
             'grouping'      => $row[2],
             'commercial'    => $row[3],
             'fiscal'        => $row[4],
-            'cost'          => $row[5],
-            'lva'           => $row[6],
             'company_id'    => session('active_company_id'),
         ]);
     }
@@ -66,8 +64,6 @@ class AssetNamesImport implements ToModel, WithStartRow, WithValidation
             '2' => 'required',
             '3' => 'required',
             '4' => 'required',
-            '5' => 'required',
-            '6' => 'required',
 
         ];
     }

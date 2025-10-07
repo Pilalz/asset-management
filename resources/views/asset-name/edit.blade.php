@@ -87,24 +87,6 @@
                 <small class="text-xs text-gray-400">Dalam satuan tahun</small>
             </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cost <span class="text-red-900">*</span></label>
-                <input type="number" name="cost" value="{{ old('cost', $asset_name->cost) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="1000" required />
-                @error('cost')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-                <small class="text-xs text-gray-400">Satuan USD</small>
-            </div>
-
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">LVA <span class="text-red-900">*</span></label>
-                <input type="number" name="lva" value="{{ old('lva', $asset_name->lva) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="1000" required />
-                @error('lva')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-                <small class="text-xs text-gray-400">Satuan USD</small>
-            </div>
-
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button> {{-- Diubah dari Submit menjadi Update --}}
             <a href="{{ route('asset-name.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
         </form>

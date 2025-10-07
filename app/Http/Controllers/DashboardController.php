@@ -14,6 +14,8 @@ class DashboardController extends Controller
         //Asset By Location
         $assets = Asset::withoutGlobalScope(CompanyScope::class)
             ->where('company_id', session('active_company_id'))
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
             ->with('location')
             ->get();
 
@@ -43,6 +45,8 @@ class DashboardController extends Controller
             ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
             ->select('asset_classes.name as class_name', DB::raw('count(assets.id) as asset_count'))
             ->where('assets.company_id', session('active_company_id'))
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
             ->groupBy('asset_classes.name')
             ->orderBy('asset_count', 'desc')
             ->get();
@@ -60,18 +64,35 @@ class DashboardController extends Controller
 
         //Fixed Asset
         $assetFixed = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('status', 'Active')
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
             ->where('asset_type', 'FA')
             ->where('assets.company_id', session('active_company_id'))
             ->count();
 
         //Low Value Asset
         $assetLVA = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('status', 'Active')
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
             ->where('asset_type', 'LVA')
             ->where('assets.company_id', session('active_company_id'))
             ->count();
 
-        return view('index', compact('assetLocData', 'assetClassData', 'assetArrival', 'assetFixed', 'assetLVA'));
+        //Asset Remaks
+        $assetRemaks = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.remaks', '!=', null)
+            ->where('assets.company_id', session('active_company_id'))
+            ->get();
+
+        $assetRemaksCount = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.remaks', '!=', null)
+            ->where('assets.company_id', session('active_company_id'))
+            ->count();
+
+        return view('index', compact('assetLocData', 'assetClassData', 'assetArrival', 'assetFixed', 'assetLVA', 'assetRemaks', 'assetRemaksCount'));
     }
 }

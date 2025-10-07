@@ -30,8 +30,6 @@ class AssetNamesExport implements FromCollection, WithHeadings, WithMapping
             'Asset Grouping',
             'Commercial Life',
             'Fiscal Life',
-            'Cost',
-            'LVA',
         ];
     }
 
@@ -45,8 +43,6 @@ class AssetNamesExport implements FromCollection, WithHeadings, WithMapping
             $assetName->grouping,
             $assetName->commercial,
             $assetName->fiscal,
-            $assetName->cost,
-            $assetName->lva,
         ];
     }
 }
