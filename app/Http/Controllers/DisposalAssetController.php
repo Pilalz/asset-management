@@ -373,7 +373,7 @@ class DisposalAssetController extends Controller
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
 
-        return redirect()->route('disposal-asset.index')->with('success', 'Formulir berhasil disetujui.');
+        return back()->with('success', 'Formulir berhasil disetujui.');
     }
 
     private function finalizeAssetDisposal(DisposalAsset $disposal_asset)
@@ -397,12 +397,15 @@ class DisposalAssetController extends Controller
         $companyId = session('active_company_id');
 
         $query = DisposalAsset::withoutGlobalScope(CompanyScope::class)
-                        ->with(['department'])
+                        ->with(['department', 'company'])
                         ->withCount('detailDisposals')
                         ->where('company_id', $companyId);
 
         return DataTables::of($query)
             ->addIndexColumn()
+            ->addColumn('currency', function($disposalAsset) {
+                return $disposalAsset->company->currency ?? 'USD';
+            })
             ->addColumn('department_name', function($disposalAsset) {
                 return $disposalAsset->department->name ?? '-';
             })
@@ -410,7 +413,7 @@ class DisposalAssetController extends Controller
                 return $disposalAsset->detail_disposals_count . ' Asset(s)';
             })
             ->addColumn('action', function ($disposal_assets) {
-                return view('components.action-buttons-3-buttons', [
+                return view('action-form-buttons', [
                     'model'     => $disposal_assets,
                     'showUrl' => route('disposal-asset.show', $disposal_assets->id),
                     'editUrl' => route('disposal-asset.edit', $disposal_assets->id),
@@ -443,6 +446,7 @@ class DisposalAssetController extends Controller
                         ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
                         ->join('locations', 'assets.location_id', '=', 'locations.id')
                         ->join('departments', 'assets.department_id', '=', 'departments.id')
+                        ->join('companies', 'assets.company_id', '=', 'companies.id')
                         ->where('assets.status', '=', 'Active')
                         ->where('assets.company_id', $companyId)
                         ->select([
@@ -451,10 +455,14 @@ class DisposalAssetController extends Controller
                             'asset_classes.obj_acc as asset_class_obj',
                             'locations.name as location_name',
                             'departments.name as department_name',
+                            'companies.currency as currency_code',
                         ]);
 
         return DataTables::eloquent($query)
             ->addIndexColumn()
+            ->addColumn('currency', function($asset) {
+                return $asset->currency_code ?? 'USD';
+            })
             ->addColumn('checkbox', function ($asset) {
                 return '<input type="checkbox" class="asset-checkbox" value="' . $asset->id . '">';
             })
@@ -490,6 +498,6 @@ class DisposalAssetController extends Controller
 
         $safeFilename = str_replace('/', '-', $disposal_asset->form_no);
         
-        return $pdf->stream('Register-Asset-' . $safeFilename  . '.pdf');
+        return $pdf->stream('Disposal-Asset-' . $safeFilename  . '.pdf');
     }
 }

@@ -124,11 +124,12 @@ class RegisterAssetController extends Controller
                     'form_no'       => $validated['form_no'],
                     'department_id' => $validated['department_id'],
                     'location_id'   => $validated['location_id'],
-                    'asset_type'   => $validated['asset_type'],
+                    'asset_type'    => $validated['asset_type'],
                     'insured'       => ($validated['insured'] == 'Y') ? 1 : 0,
-                    'polish_no'   => $validated['polish_no'],
+                    'polish_no'     => $validated['polish_no'],
                     'sequence'      => ($validated['sequence'] == 'Y') ? 1 : 0,
                     'status'        => 'Waiting',
+                    'is_canceled'   => 0,
                     'company_id'    => $validated['company_id'],
                 ]);
 
@@ -273,14 +274,16 @@ class RegisterAssetController extends Controller
     public function destroy(RegisterAsset $register_asset)
     {
         try {
-            $register_asset->delete();
+            $register_asset->update([
+                    'is_canceled'      => 1,
+                ]);
 
         } catch (\Exception $e) {
             return redirect()->route('register-asset.index')
                 ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
 
-        return redirect()->route('register-asset.index')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('register-asset.index')->with('success', 'Data berhasil dibatalkan!');
     }
 
     public function show(RegisterAsset $register_asset)
@@ -378,7 +381,7 @@ class RegisterAssetController extends Controller
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
 
-        return redirect()->route('register-asset.index')->with('success', 'Formulir berhasil disetujui.');
+        return back()->with('success', 'Formulir berhasil disetujui.');
     }
 
     // private function generateAssetNumber($companyId, $assetNameId)
@@ -460,6 +463,7 @@ class RegisterAssetController extends Controller
         $query = RegisterAsset::withoutGlobalScope(CompanyScope::class)
                         ->with(['department', 'location'])
                         ->withCount('detailRegisters')
+                        ->where('is_canceled', 0)
                         ->where('company_id', $companyId);
 
         return DataTables::of($query)
@@ -471,7 +475,7 @@ class RegisterAssetController extends Controller
                 return $registerAsset->location->name ?? '-';
             })
             ->addColumn('action', function ($register_assets) {
-                return view('components.action-buttons-3-buttons', [
+                return view('action-form-buttons', [
                     'model'     => $register_assets,
                     'showUrl' => route('register-asset.show', $register_assets->id),
                     'editUrl' => route('register-asset.edit', $register_assets->id),

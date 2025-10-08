@@ -145,9 +145,9 @@
                             @foreach ($months as $monthKey => $monthName)
                                 {{-- Cek apakah ada data untuk aset ini di bulan ini --}}
                                 @if (isset($data['schedule'][$monthKey]))
-                                    <td class="px-2 py-4 border text-right">${{ number_format($data['schedule'][$monthKey]->monthly_depre, 0, '.', ',') }}</td>
-                                    <td class="px-2 py-4 border text-right">${{ number_format($data['schedule'][$monthKey]->accumulated_depre, 0, '.', ',') }}</td>
-                                    <td class="px-2 py-4 border text-right">${{ number_format($data['schedule'][$monthKey]->book_value, 0, '.', ',') }}</td>
+                                    <td class="px-2 py-4 border text-right">{{ format_currency($data['schedule'][$monthKey]->monthly_depre) }}</td>
+                                    <td class="px-2 py-4 border text-right">{{ format_currency($data['schedule'][$monthKey]->accumulated_depre) }}</td>
+                                    <td class="px-2 py-4 border text-right">{{ format_currency($data['schedule'][$monthKey]->book_value) }}</td>
                                 @else
                                     {{-- Jika tidak ada data, buat sel kosong --}}
                                     <td class="px-2 py-4 border"></td>

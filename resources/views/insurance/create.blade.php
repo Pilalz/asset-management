@@ -311,7 +311,7 @@
                         }
                     },
                     {
-                        targets: [13, 15, 16], 
+                        targets: [14, 16, 17], 
                         render: function (data, type, row) {
                             if (type === 'display') {
                                 let number = parseFloat(data);
@@ -320,9 +320,15 @@
                                     return data;
                                 }
 
-                                return number.toLocaleString('en-US', {
+                                const currencyCode = row.currency || 'USD'; 
+                                let locale = 'en-US';
+                                if (currencyCode === 'IDR') {
+                                    locale = 'id-ID';
+                                }
+
+                                return number.toLocaleString(locale, {
                                     style: 'currency',
-                                    currency: 'USD',
+                                    currency: currencyCode,
                                     minimumFractionDigits: 0,
                                     maximumFractionDigits: 0
                                 });
@@ -398,10 +404,13 @@
         }
 
         function autoFormatCurrency(visibleInput, hiddenInput) {
+            const currencyCode = '{{ $activeCompany->currency ?? 'IDR' }}';
+            const locale = (currencyCode === 'USD') ? 'en-US' : 'id-ID';
+
             // Inisialisasi nilai awal jika ada (dari old input)
             if (visibleInput.value) {
                 const cleanValue = visibleInput.value.replace(/[^\d]/g, '');
-                const formattedValue = new Intl.NumberFormat('en-US').format(cleanValue);
+                const formattedValue = new Intl.NumberFormat(locale).format(cleanValue);
                 visibleInput.value = formattedValue;
                 hiddenInput.value = cleanValue;
             }
@@ -415,7 +424,7 @@
                 
                 // 3. Format nilai yang terlihat dengan pemisah ribuan
                 if (cleanValue) {
-                    const formattedValue = new Intl.NumberFormat('en-US').format(cleanValue);
+                    const formattedValue = new Intl.NumberFormat(locale).format(cleanValue);
                     e.target.value = formattedValue;
                 } else {
                     e.target.value = '';

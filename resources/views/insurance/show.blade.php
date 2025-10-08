@@ -79,7 +79,7 @@
                             <tr>
                                 <td>Annual Premium</td>
                                 <td class="px-2">:</td>
-                                <td>${{ $insurance->annual_premium ? number_format($insurance->annual_premium, 0, '.', ',') : '-' }}</td>
+                                <td>{{ $insurance->annual_premium ? format_currency($insurance->annual_premium) : '-' }}</td>
                             </tr>
                             <tr>
                                 <td>Schedule</td>

@@ -701,9 +701,15 @@
                                     return data;
                                 }
 
-                                return number.toLocaleString('en-US', {
+                                const currencyCode = row.currency || 'USD'; 
+                                let locale = 'en-US';
+                                if (currencyCode === 'IDR') {
+                                    locale = 'id-ID';
+                                }
+
+                                return number.toLocaleString(locale, {
                                     style: 'currency',
-                                    currency: 'USD',
+                                    currency: currencyCode,
                                     minimumFractionDigits: 0,
                                     maximumFractionDigits: 0
                                 });
@@ -780,9 +786,12 @@
 
         function autoFormatCurrency(visibleInput, hiddenInput) {
             // Inisialisasi nilai awal jika ada (dari old input)
+            const currencyCode = '{{ $activeCompany->currency ?? 'IDR' }}';
+            const locale = (currencyCode === 'USD') ? 'en-US' : 'id-ID';
+
             if (visibleInput.value) {
                 const cleanValue = visibleInput.value.replace(/[^\d]/g, '');
-                const formattedValue = new Intl.NumberFormat('en-US').format(cleanValue);
+                const formattedValue = new Intl.NumberFormat(locale).format(cleanValue);
                 visibleInput.value = formattedValue;
                 hiddenInput.value = cleanValue;
             }
@@ -796,7 +805,7 @@
                 
                 // 3. Format nilai yang terlihat dengan pemisah ribuan
                 if (cleanValue) {
-                    const formattedValue = new Intl.NumberFormat('en-US').format(cleanValue);
+                    const formattedValue = new Intl.NumberFormat(locale).format(cleanValue);
                     e.target.value = formattedValue;
                 } else {
                     e.target.value = '';

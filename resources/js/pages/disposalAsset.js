@@ -103,9 +103,15 @@ $(document).ready(function() {
                                 return data;
                             }
 
-                            return number.toLocaleString('en-US', {
+                            const currencyCode = row.currency || 'USD'; 
+                            let locale = 'en-US';
+                            if (currencyCode === 'IDR') {
+                                locale = 'id-ID';
+                            }
+
+                            return number.toLocaleString(locale, {
                                 style: 'currency',
-                                currency: 'USD',
+                                currency: currencyCode,
                                 minimumFractionDigits: 0,
                                 maximumFractionDigits: 0
                             });

@@ -26,9 +26,9 @@
 
                 @foreach ($months as $monthKey => $monthName)
                     @if (isset($data['schedule'][$monthKey]))
-                        <td style="text-align: right;">{{ number_format($data['schedule'][$monthKey]->monthly_depre, 0, '.', ',') }}</td>
-                        <td style="text-align: right;">{{ number_format($data['schedule'][$monthKey]->accumulated_depre, 0, '.', ',') }}</td>
-                        <td style="text-align: right;">{{ number_format($data['schedule'][$monthKey]->book_value, 0, '.', ',') }}</td>
+                        <td style="text-align: right;">{{ format_currency($data['schedule'][$monthKey]->monthly_depre) }}</td>
+                        <td style="text-align: right;">{{ format_currency($data['schedule'][$monthKey]->accumulated_depre) }}</td>
+                        <td style="text-align: right;">{{ format_currency($data['schedule'][$monthKey]->book_value) }}</td>
                     @else
                         <td></td>
                         <td></td>

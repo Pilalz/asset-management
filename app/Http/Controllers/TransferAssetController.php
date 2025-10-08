@@ -359,7 +359,7 @@ class TransferAssetController extends Controller
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
 
-        return redirect()->route('transfer-asset.index')->with('success', 'Formulir berhasil disetujui.');
+        return back()->with('success', 'Formulir berhasil disetujui.');
     }
 
     private function finalizeAssetTransfer(TransferAsset $transfer_asset)
@@ -400,7 +400,7 @@ class TransferAssetController extends Controller
                 return $transferAsset->detail_transfers_count . ' Asset(s)';
             })
             ->addColumn('action', function ($transfer_assets) {
-                return view('components.action-buttons-3-buttons', [
+                return view('action-form-buttons', [
                     'model'     => $transfer_assets,
                     'showUrl' => route('transfer-asset.show', $transfer_assets->id),
                     'editUrl' => route('transfer-asset.edit', $transfer_assets->id),

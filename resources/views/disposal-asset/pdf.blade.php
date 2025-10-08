@@ -142,14 +142,25 @@
                     <td>Alasan Pelepasan <i>(Reason of Disposal)</i></td>
                     <td>: {{ $disposal_asset->reason }}</td>
                 </tr>
-                <tr>
-                    <td>Nilai Buku <i>(Nett Book Value)</i></td>
-                    <td>: Rp {{ number_format($disposal_asset->nbv, 0, ',', '.') }}</td>
-                </tr>
-                <tr>
-                    <td>Nilai Jual Estimasi <i>(Estimated Selling Price)</i></td>
-                    <td>: Rp {{ number_format($disposal_asset->esp, 0, ',', '.') }}</td>
-                </tr>
+                @if($activeCompany->currency === 'USD')
+                    <tr>
+                        <td>Nilai Buku <i>(Nett Book Value)</i></td>
+                        <td>: $ {{ number_format($disposal_asset->nbv, 0, '.', ',') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Nilai Jual Estimasi <i>(Estimated Selling Price)</i></td>
+                        <td>: $ {{ number_format($disposal_asset->esp, 0, '.', ',') }}</td>
+                    </tr>
+                @elseif($activeCompany->currency === 'IDR')
+                    <tr>
+                        <td>Nilai Buku <i>(Nett Book Value)</i></td>
+                        <td>: Rp {{ number_format($disposal_asset->nbv, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Nilai Jual Estimasi <i>(Estimated Selling Price)</i></td>
+                        <td>: Rp {{ number_format($disposal_asset->esp, 0, ',', '.') }}</td>
+                    </tr>
+                @endif
             </table>
         </div>
 

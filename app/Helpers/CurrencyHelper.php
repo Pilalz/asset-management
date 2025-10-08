@@ -32,6 +32,9 @@ if (!function_exists('format_currency')) {
         if ($currencyCode === 'IDR') {
             $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 0);
         }
+        elseif ($currencyCode === 'USD') {
+            $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 0);
+        }
         
         return $formatter->formatCurrency($amount, $currencyCode);
     }

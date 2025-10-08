@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('polish_no');
             $table->string('sequence');
             $table->string('status');
+            $table->boolean('is_canceled');
             $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });

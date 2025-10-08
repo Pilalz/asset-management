@@ -119,17 +119,31 @@
                 <p class="w-auto px-1 border-b border-gray-700 text-sm text-gray-900">{{ $disposal_asset->reason }}</p>
             </div>
 
-            <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku </label>
-                <span> : </span>
-                <p class="ml-1 text-sm text-gray-900">$ {{ number_format($disposal_asset->nbv, 0, '.', ',') }}</p>
-            </div>
+            @if($activeCompany->currency === 'USD')
+                <div class="mb-5 flex content-center">
+                    <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku </label>
+                    <span> : </span>
+                    <p class="ml-1 text-sm text-gray-900">$ {{ number_format($disposal_asset->nbv, 0, '.', ',') }}</p>
+                </div>
 
-            <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi </label>
-                <span> : </span>
-                <p class="ml-1 text-sm text-gray-900">$ {{ number_format($disposal_asset->esp, 0, '.', ',') }}</p>
-            </div>
+                <div class="mb-5 flex content-center">
+                    <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi </label>
+                    <span> : </span>
+                    <p class="ml-1 text-sm text-gray-900">$ {{ number_format($disposal_asset->esp, 0, '.', ',') }}</p>
+                </div>
+            @elseif($activeCompany->currency === 'IDR')
+                <div class="mb-5 flex content-center">
+                    <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku </label>
+                    <span> : </span>
+                    <p class="ml-1 text-sm text-gray-900">Rp {{ number_format($disposal_asset->nbv, 0, ',', '.') }}</p>
+                </div>
+
+                <div class="mb-5 flex content-center">
+                    <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi </label>
+                    <span> : </span>
+                    <p class="ml-1 text-sm text-gray-900">Rp {{ number_format($disposal_asset->esp, 0, ',', '.') }}</p>
+                </div>
+            @endif
 
             <!-- Asset List -->
             <div class="mb-5">
@@ -141,8 +155,13 @@
                                 <th scope="col" class="px-2 py-3">No</th>
                                 <th scope="col" class="px-2 py-3">Asset</th>
                                 <th scope="col" class="px-2 py-3">Kurs</th>
-                                <th scope="col" class="px-2 py-3">NJAB (USDT)</th>
-                                <th scope="col" class="px-2 py-3">NJAB (IDR)</th>
+                                @if($activeCompany->currency === 'USD')
+                                    <th scope="col" class="px-2 py-3">NJAB (USD)</th>
+                                    <th scope="col" class="px-2 py-3">NJAB (IDR)</th>
+                                @elseif($activeCompany->currency === 'IDR')
+                                    <th scope="col" class="px-2 py-3">NJAB (IDR)</th>
+                                    <th scope="col" class="px-2 py-3">NJAB (USD)</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody id="asset-list-body">
@@ -151,8 +170,13 @@
                                     <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white asset-row-number text-center">{{ $loop->iteration }}</td>
                                     <td class="px-2 py-4">{{ $detail->asset->assetName->name }} - {{ $detail->asset->description }}</td>
                                     <td class="px-2 py-4">Rp {{ number_format($detail->kurs, 0, ',', '.') }}</td>
-                                    <td class="px-2 py-4">$ {{ number_format($detail->njab, 0, '.', ',') }}</td>
-                                    <td class="px-2 py-4">Rp {{ number_format(($detail->kurs * $detail->njab), 0, ',', '.') }}</td>
+                                    @if($activeCompany->currency === 'USD')
+                                        <td class="px-2 py-4">$ {{ number_format($detail->njab, 0, '.', ',') }}</td>
+                                        <td class="px-2 py-4">Rp {{ number_format(($detail->kurs * $detail->njab), 0, ',', '.') }}</td>
+                                    @elseif($activeCompany->currency === 'IDR')
+                                        <td class="px-2 py-4">Rp {{ number_format($detail->njab, 0, ',', '.') }}</td>
+                                        <td class="px-2 py-4">$ {{ number_format(($detail->njab / $detail->kurs), 0, '.', ',') }}</td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -230,6 +254,7 @@
                     </table>
                 </div>
             </div>
+
             <div class="flex gap-2 content-center">
                 <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
                 @if ($canApprove)
@@ -240,52 +265,58 @@
                         class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5">
                         Approve & Sign
                     </button>
-                @else
-                    <p class="flex items-center">{{ $userApprovalStatus }}</p>
-                @endif
 
-                <div id="confirmation-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                    <div class="relative p-4 w-full max-w-md max-h-full">
-                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                            <div class="p-4 md:p-5 text-center">
-                                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                </svg>
-                                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                                    Apakah Anda yakin ingin menyetujui formulir ini?
-                                </h3>
-                                
-                                {{-- Tombol ini yang akan men-submit form --}}
-                                <button id="confirm-approve-btn" data-modal-hide="confirmation-modal" type="button" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                                    Ya, saya yakin
-                                </button>
-                                <button data-modal-hide="confirmation-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 ...">
-                                    Batal
-                                </button>
+                    <div id="confirmation-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                        <div class="relative p-4 w-full max-w-md max-h-full">
+                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                <div class="p-4 md:p-5 text-center">
+                                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                    </svg>
+                                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                        Apakah Anda yakin ingin menyetujui formulir ini?
+                                    </h3>
+                                    
+                                    {{-- Tombol ini yang akan men-submit form --}}
+                                    <button id="confirm-approve-btn" data-modal-hide="confirmation-modal" type="button" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                        Ya, saya yakin
+                                    </button>
+                                    <button data-modal-hide="confirmation-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 ...">
+                                        Batal
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <form id="approve-form" action="{{ route('disposal-asset.approve', $disposal_asset) }}" method="POST" class="hidden">
-                    @csrf
-                </form>
-
+                    <form id="approve-form" action="{{ route('disposal-asset.approve', $disposal_asset) }}" method="POST" class="hidden">
+                        @csrf
+                    </form>
+                @else
+                    <p class="flex items-center">{{ $userApprovalStatus }}</p>
+                @endif
             </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const confirmBtn = document.getElementById('confirm-approve-btn');
-        const approveForm = document.getElementById('approve-form');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-        if(confirmBtn && approveForm) {
-            confirmBtn.addEventListener('click', function() {
-                approveForm.submit();
-            });
-        }
-    });
-</script>
+            if (typeof initFlowbite !== 'undefined') {
+                initFlowbite();
+            }
+            
+            const confirmBtn = document.getElementById('confirm-approve-btn');
+            const approveForm = document.getElementById('approve-form');
+
+            if(confirmBtn && approveForm) {
+                confirmBtn.addEventListener('click', function() {
+                    approveForm.submit();
+                });
+            }
+        });
+    </script>
+
+    @vite('resources/js/pages/alert.js')
 @endpush

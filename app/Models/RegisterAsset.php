@@ -33,6 +33,7 @@ class RegisterAsset extends Model
         'polish_no',
         'sequence',
         'status',
+        'is_canceled',
         'company_id',
     ];
 

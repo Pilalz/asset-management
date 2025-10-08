@@ -137,12 +137,16 @@ class InsuranceController extends Controller
         $companyId = session('active_company_id');
 
         $query = Insurance::withoutGlobalScope(CompanyScope::class)
-                          ->select('insurances.*');
+                          ->join('companies', 'insurances.company_id', '=', 'companies.id')
+                          ->select('insurances.*', 'companies.currency as currency_code',);
 
         $query->where('insurances.company_id', $companyId);
 
         return DataTables::eloquent($query)
             ->addIndexColumn()
+            ->addColumn('currency', function($insurance) {
+                return $insurance->currency_code ?? 'USD';
+            })
             ->addColumn('action', function ($insurance) {
                 return view('components.action-buttons-3-buttons', [
                     'model'     => $insurance,
