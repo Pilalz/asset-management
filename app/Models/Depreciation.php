@@ -46,21 +46,18 @@ class Depreciation extends Model
 
     public function getAssetNameAttribute()
     {
-        $asset = Asset::find($this->asset_id);
-        return $asset ? $asset->asset_number : null;
+        $asset = Asset::withoutGlobalScope(CompanyScope::class)->find($this->asset_id);
+        return $asset ?->asset_number ?? 'unknown asset';
     }
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->setDescriptionForEvent(function(string $eventName) {
+            ->setDescriptionForEvent(function (string $eventName) {
 
-                $asset = Asset::find($this->asset_id);
-                $Asset = $asset ? $asset->asset_number : 'an unknown asset';
-
-                return "Depreciation Asset '{$Asset}' has been {$eventName}";
+                return "Depreciation Asset has been {$eventName}";
             })
-            ->useLogName(session('active_company_id'))
-            ->logOnly(['asset_name', 'type', 'depre_date', 'monthly_depre', 'accumulated_depre', 'book_value']);
+            ->useLogName($this->company_id ?? session('active_company_id'))
+            ->logOnly(['asset_id', 'type', 'depre_date', 'monthly_depre', 'accumulated_depre', 'book_value']);
     }
 }

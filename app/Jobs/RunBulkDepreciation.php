@@ -41,7 +41,7 @@ class RunBulkDepreciation implements ShouldQueue
 
         try {
             $assetsToDepreciate = Asset::withoutGlobalScope(CompanyScope::class)
-                ->where('status', 'Active')
+                ->whereNotIn('status', ['Sold', 'Disposal'])
                 ->where('asset_type', 'FA')
                 ->where('start_depre_date', '<=', now())
                 ->where('company_id', $this->companyId)

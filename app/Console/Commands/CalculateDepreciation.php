@@ -45,7 +45,7 @@ class CalculateDepreciation extends Command
 
             // Ambil semua aset yang aktif, relevan, dan belum lunas untuk TIPE INI
             $assetsToDepreciate = Asset::withoutGlobalScope(CompanyScope::class)
-                ->where('status', 'Active')
+                ->whereNotIn('status', ['Sold', 'Disposed'])
                 ->where('asset_type', 'FA')
                 ->where('start_depre_date', '<=', now())
                 ->where($usefulLifeCol, '>', 0) // Pastikan masa manfaat valid untuk tipe ini
