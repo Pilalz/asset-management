@@ -54,10 +54,13 @@ class Depreciation extends Model
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(function (string $eventName) {
+                
+                $asset = Asset::withoutGlobalScope(CompanyScope::class)->find($this->asset_id);
+                $assetNumber = $asset->asset_number;
 
-                return "Depreciation Asset has been {$eventName}";
+                return "Depreciation Asset '{$assetNumber}' has been {$eventName}";
             })
             ->useLogName($this->company_id ?? session('active_company_id'))
-            ->logOnly(['asset_id', 'type', 'depre_date', 'monthly_depre', 'accumulated_depre', 'book_value']);
+            ->logOnly(['asset_name', 'type', 'depre_date', 'monthly_depre', 'accumulated_depre', 'book_value']);
     }
 }

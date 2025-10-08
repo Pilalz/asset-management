@@ -135,7 +135,7 @@ class Asset extends Model
 
                 return "Asset '{$assetNumber}' has been {$eventName}";
             })
-            ->useLogName(session('active_company_id'))
+            ->useLogName($this->company_id ?? session('active_company_id'))
             ->logExcept(['commercial_accum_depre', 'fiscal_accum_depre', 'commercial_nbv', 'fiscal_nbv'])
             ->logOnly([
                 'asset_number', 'asset_name_name', 'asset_type', 'status', 'description', 'detail', 'pareto', 'unit_no', 'sn_chassis',
