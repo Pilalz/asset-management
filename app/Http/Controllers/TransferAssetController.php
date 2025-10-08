@@ -400,7 +400,7 @@ class TransferAssetController extends Controller
                 return $transferAsset->detail_transfers_count . ' Asset(s)';
             })
             ->addColumn('action', function ($transfer_assets) {
-                return view('action-form-buttons', [
+                return view('components.action-form-buttons', [
                     'model'     => $transfer_assets,
                     'showUrl' => route('transfer-asset.show', $transfer_assets->id),
                     'editUrl' => route('transfer-asset.edit', $transfer_assets->id),

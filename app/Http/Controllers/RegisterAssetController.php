@@ -475,7 +475,7 @@ class RegisterAssetController extends Controller
                 return $registerAsset->location->name ?? '-';
             })
             ->addColumn('action', function ($register_assets) {
-                return view('action-form-buttons', [
+                return view('components.action-form-buttons', [
                     'model'     => $register_assets,
                     'showUrl' => route('register-asset.show', $register_assets->id),
                     'editUrl' => route('register-asset.edit', $register_assets->id),

@@ -413,7 +413,7 @@ class DisposalAssetController extends Controller
                 return $disposalAsset->detail_disposals_count . ' Asset(s)';
             })
             ->addColumn('action', function ($disposal_assets) {
-                return view('action-form-buttons', [
+                return view('components.action-form-buttons', [
                     'model'     => $disposal_assets,
                     'showUrl' => route('disposal-asset.show', $disposal_assets->id),
                     'editUrl' => route('disposal-asset.edit', $disposal_assets->id),
