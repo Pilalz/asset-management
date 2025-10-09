@@ -509,7 +509,9 @@ class DisposalAssetController extends Controller
                         ->join('locations', 'assets.location_id', '=', 'locations.id')
                         ->join('departments', 'assets.department_id', '=', 'departments.id')
                         ->join('companies', 'assets.company_id', '=', 'companies.id')
-                        ->where('assets.status', '=', 'Active')
+                        ->where('assets.status', '!=', 'Sold')
+                        ->where('assets.status', '!=', 'Onboard')
+                        ->where('assets.status', '!=', 'Disposal')
                         ->where('assets.company_id', $companyId)
                         ->select([
                             'assets.*',

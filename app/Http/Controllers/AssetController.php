@@ -163,6 +163,7 @@ class AssetController extends Controller
                         ->where('assets.asset_type', '=', 'FA')
                         ->where('assets.status', '!=', 'Sold')
                         ->where('assets.status', '!=', 'Onboard')
+                        ->where('assets.status', '!=', 'Disposal')
                         ->where('assets.company_id', $companyId)
                         ->select([
                             'assets.*',

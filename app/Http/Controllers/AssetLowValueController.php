@@ -122,6 +122,9 @@ class AssetLowValueController extends Controller
                         ->join('departments', 'assets.department_id', '=', 'departments.id')
                         ->join('companies', 'assets.company_id', '=', 'companies.id')
                         ->where('assets.asset_type', '=', 'LVA')
+                        ->where('assets.status', '!=', 'Sold')
+                        ->where('assets.status', '!=', 'Onboard')
+                        ->where('assets.status', '!=', 'Disposal')
                         ->where('assets.status', '=', 'Active')
                         ->where('assets.company_id', $companyId)
                         ->select([

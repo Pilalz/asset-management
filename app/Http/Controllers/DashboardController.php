@@ -16,6 +16,7 @@ class DashboardController extends Controller
             ->where('company_id', session('active_company_id'))
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
             ->with('location')
             ->get();
 
@@ -47,6 +48,7 @@ class DashboardController extends Controller
             ->where('assets.company_id', session('active_company_id'))
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
             ->groupBy('asset_classes.name')
             ->orderBy('asset_count', 'desc')
             ->get();
@@ -66,6 +68,7 @@ class DashboardController extends Controller
         $assetFixed = Asset::withoutGlobalScope(CompanyScope::class)
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
             ->where('asset_type', 'FA')
             ->where('assets.company_id', session('active_company_id'))
             ->count();
@@ -74,6 +77,7 @@ class DashboardController extends Controller
         $assetLVA = Asset::withoutGlobalScope(CompanyScope::class)
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
             ->where('asset_type', 'LVA')
             ->where('assets.company_id', session('active_company_id'))
             ->count();
@@ -82,6 +86,7 @@ class DashboardController extends Controller
         $assetRemaks = Asset::withoutGlobalScope(CompanyScope::class)
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
             ->where('assets.remaks', '!=', null)
             ->where('assets.company_id', session('active_company_id'))
             ->get();
@@ -89,6 +94,7 @@ class DashboardController extends Controller
         $assetRemaksCount = Asset::withoutGlobalScope(CompanyScope::class)
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
             ->where('assets.remaks', '!=', null)
             ->where('assets.company_id', session('active_company_id'))
             ->count();
