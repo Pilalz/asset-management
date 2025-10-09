@@ -51,7 +51,7 @@
 
         <div class="flex gap-2">
             <div id="depreciation-controls" class="flex items-center gap-4">
-                <div id="status-container" class="flex items-center gap-2">
+                <div id="status-container" class="hidden flex items-center gap-2">
                     <div role="status">
                         <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -284,68 +284,78 @@
             const runBtn = $('#run-all-btn');
             const statusContainer = $('#status-container');
             const statusText = $('#status-text');
-            const statusProgress = $('#status-progress');
-            let pollingInterval = null;
+            
+            let eventSource = null; // Variabel untuk menyimpan koneksi EventSource
 
-            function stopPolling() {
-                if (pollingInterval) {
-                    clearInterval(pollingInterval);
-                    pollingInterval = null;
+            // Fungsi untuk memulai mendengarkan pembaruan dari server
+            function listenForUpdates() {
+                // Tutup koneksi lama jika ada
+                if (eventSource) {
+                    eventSource.close();
                 }
+
+                // Buka koneksi baru ke stream
+                eventSource = new EventSource("{{ route('depreciation.stream') }}");
+
+                // Fungsi ini akan berjalan setiap kali server mengirim data
+                eventSource.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+
+                    if (!data) {
+                        eventSource.close();
+                        updateUI('idle');
+                        return;
+                    }
+
+                    // Update UI berdasarkan status yang diterima
+                    updateUI(data.status, data.progress, data.message, data.error);
+
+                    // Jika proses selesai atau gagal, tutup koneksi
+                    if (data.status === 'completed' || data.status === 'failed') {
+                        eventSource.close();
+                    }
+                };
+
+                // Tangani error koneksi
+                eventSource.onerror = function() {
+                    console.error("Koneksi SSE gagal. Menutup koneksi.");
+                    eventSource.close();
+                    updateUI('idle');
+                };
             }
 
-            function updateUI(status, progress, message = '') {
+            // Fungsi terpusat untuk memperbarui tampilan
+            function updateUI(status, progress = 0, message = '', error = '') {
                 if (status === 'running') {
                     runBtn.prop('disabled', true).addClass('cursor-not-allowed bg-gray-400');
                     statusContainer.removeClass('hidden');
-                    statusText.text('Sedang memproses...');
-                    statusProgress.text(Math.round(progress || 0) + '%');
+                    statusText.text('Sedang memproses... (' + Math.round(progress) + '%)');
                 } else {
                     runBtn.prop('disabled', false).removeClass('cursor-not-allowed bg-gray-400');
                     statusContainer.addClass('hidden');
-                    stopPolling();
-
+                    
                     if (status === 'completed') {
-                        // Hanya tampilkan alert jika ada pesan (berarti job baru saja selesai)
-                        if (message) {
-                            alert(message);
-                            $('#assetTable').DataTable().ajax.reload(null, false);
-                            // Kirim request untuk membersihkan status dari cache
-                            $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" });
-                        }
+                        alert(message || 'Proses depresiasi selesai!');
+                        $('#assetTable').DataTable().ajax.reload(null, false);
+                        $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" });
                     } else if (status === 'failed') {
-                        alert('Proses depresiasi gagal. Silakan cek log.');
+                        alert('Proses depresiasi gagal: ' + error);
                         $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" });
                     }
                 }
             }
-
-            function checkStatus() {
-                $.get("{{ route('depreciation.status') }}", { _: new Date().getTime() })
-                    .done(function(data) {
-                        updateUI(data.status, data.progress, data.message);
-                        // Mulai polling HANYA jika status masih berjalan
-                        if (data.status === 'running' && !pollingInterval) {
-                            pollingInterval = setInterval(checkStatus, 1500);
-                        }
-                    })
-                    .fail(function() {
-                        statusText.text('Gagal memeriksa status.');
-                        stopPolling();
-                    });
-            }
-
+            
+            // Event listener untuk tombol "Run All"
             runBtn.on('click', function() {
                 if (!confirm('Apakah Anda yakin ingin menjalankan depresiasi untuk semua aset?')) return;
 
                 updateUI('running', 0);
                 statusText.text('Mengirim permintaan...');
 
-                $.post("{{ route('depreciation.runAll') }}", { _token: "{{ csrf_token() }}" })
+                $.post("{{ route('depreciation.runAll') }}")
                     .done(function() {
-                        if (!pollingInterval) {
-                           pollingInterval = setInterval(checkStatus, 1500);
-                        }
+                        // Setelah job berhasil dimulai, mulai mendengarkan
+                        listenForUpdates();
                     })
                     .fail(function(xhr) {
                         alert('Gagal memulai proses: ' + (xhr.responseJSON?.message || 'Error tidak diketahui.'));
@@ -353,7 +363,13 @@
                     });
             });
             
-            checkStatus();
+            // Cek status saat halaman pertama kali dimuat
+            $.get("{{ route('depreciation.status') }}").done(function(data) {
+                if (data && data.status === 'running') {
+                    // Jika job sudah berjalan, langsung mulai mendengarkan
+                    listenForUpdates();
+                }
+            });
 
             //TABLE
             $('#assetTable thead tr:eq(0) th').each(function(i) {

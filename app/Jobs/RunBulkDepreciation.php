@@ -72,7 +72,7 @@ class RunBulkDepreciation implements ShouldQueue
             }
 
             if ($totalOperations === 0) {
-                Cache::put($this->jobId, ['status' => 'completed', 'progress' => 100, 'message' => 'Semua asset sudah terdepresiasi.'], now()->addHour());
+                Cache::put($this->jobId, ['status' => 'completed', 'progress' => 100, 'message' => 'Tidak ada asset yang perlu di depresiasi.'], now()->addHour());
                 return;
             }
 

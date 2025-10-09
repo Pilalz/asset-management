@@ -102,6 +102,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/depreciation/run-all', [DepreciationController::class, 'runAll'])->name('depreciation.runAll');
     Route::get('/depreciation/status', [DepreciationController::class, 'getStatus'])->name('depreciation.status');
     Route::post('/depreciation/clear-status', [DepreciationController::class, 'clearStatus'])->name('depreciation.clearStatus');
+    Route::get('/depreciation/stream', [DepreciationController::class, 'stream'])->name('depreciation.stream');
     //Start Depre Fiscal
     Route::get('/depreciation/fiscal', [DepreciationController::class, 'indexFiscal'])->name('depreciationFiscal.index');
     //Start Register

@@ -16,6 +16,7 @@ use App\Exports\CommercialDepreciationsExport;
 use App\Exports\FiscalDepreciationsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DepreciationController extends Controller
 {
@@ -271,6 +272,42 @@ class DepreciationController extends Controller
             Cache::forget('depreciation_status_' . $companyId);
         }
         return response()->json(['status' => 'cleared']);
+    }
+
+    public function stream()
+    {
+        $companyId = session('active_company_id');
+        if (!$companyId) {
+            return; // Hentikan jika tidak ada company
+        }
+        $jobId = 'depreciation_status_' . $companyId;
+
+        return new StreamedResponse(function() use ($jobId) {
+            $lastStatus = null;
+
+            while (true) {
+                $currentStatus = Cache::get($jobId);
+
+                // Kirim data hanya jika statusnya berubah
+                if ($currentStatus !== $lastStatus) {
+                    echo "data: " . json_encode($currentStatus) . "\n\n";
+                    ob_flush();
+                    flush();
+                    $lastStatus = $currentStatus;
+                }
+
+                // Jika job selesai, gagal, atau tidak ada, tutup koneksi
+                if (!$currentStatus || in_array($currentStatus['status'], ['completed', 'failed'])) {
+                    break;
+                }
+                
+                sleep(1); // Tunggu 1 detik sebelum memeriksa lagi
+            }
+        }, 200, [
+            'Content-Type' => 'text/event-stream',
+            'X-Accel-Buffering' => 'no',
+            'Cache-Control' => 'no-cache',
+        ]);
     }
 
     public function exportExcelCommercial(Request $request)
