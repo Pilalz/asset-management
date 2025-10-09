@@ -8,6 +8,7 @@ use App\Models\Depreciation;
 use App\Models\Location;
 use App\Models\Department;
 use App\Models\AssetClass;
+use App\Models\AssetName;
 use App\Models\Company;
 
 use Carbon\Carbon;
@@ -110,6 +111,12 @@ class AssetController extends Controller
             'fiscal_nbv'        => 'required',
             'remaks'            => 'nullable',
         ]);
+
+        $assetNameID = $validatedData['asset_name_id'];
+        $assetName = AssetName::find($assetNameID);
+
+        $validatedData['commercial_useful_life_month'] = $assetName->commercial * 12;
+        $validatedData['fiscal_useful_life_month'] = $assetName->fiscal * 12;
 
         $dataToUpdate = $validatedData;
 

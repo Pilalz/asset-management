@@ -7,6 +7,7 @@ use App\Models\Asset;
 use App\Models\Location;
 use App\Models\Department;
 use App\Models\AssetClass;
+use App\Models\AssetName;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Gate;
@@ -71,6 +72,12 @@ class AssetArrivalController extends Controller
         if ($assetArrival->asset_type === 'LVA') {
             $validatedData['start_depre_date'] = null;
         }
+
+        $assetNameID = $validatedData['asset_name_id'];
+        $assetName = AssetName::find($assetNameID);
+
+        $validatedData['commercial_useful_life_month'] = $assetName->commercial * 12;
+        $validatedData['fiscal_useful_life_month'] = $assetName->fiscal * 12;
         
         $validatedData['current_cost'] = $validatedData['acquisition_value'];
         $validatedData['commercial_nbv'] = $validatedData['acquisition_value'];
