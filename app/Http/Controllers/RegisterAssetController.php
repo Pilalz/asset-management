@@ -29,18 +29,13 @@ use Illuminate\Support\Facades\Gate;
 class RegisterAssetController extends Controller
 {
     public function index()
-    {
-        $user = Auth::user();
-        $userRole = CompanyUser::where('company_id', $user->last_active_company_id)
-            ->where('user_id', $user->id)
-            ->get();
-
-        $signRegister = Approval::where('role', $userRole)
-        ->where('status', 'pending')
-        ->get();
-        
-        
+    {        
         return view('register-asset.index');
+    }
+
+    public function trash()
+    {
+        return view('register-asset.canceled');
     }
 
     public function create()
@@ -129,7 +124,6 @@ class RegisterAssetController extends Controller
                     'polish_no'     => $validated['polish_no'],
                     'sequence'      => ($validated['sequence'] == 'Y') ? 1 : 0,
                     'status'        => 'Waiting',
-                    'is_canceled'   => 0,
                     'company_id'    => $validated['company_id'],
                 ]);
 
@@ -274,16 +268,28 @@ class RegisterAssetController extends Controller
     public function destroy(RegisterAsset $register_asset)
     {
         try {
-            $register_asset->update([
-                    'is_canceled'      => 1,
-                ]);
+            $register_asset->delete();
 
         } catch (\Exception $e) {
             return redirect()->route('register-asset.index')
-                ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+                ->with('error', 'Gagal membatalkan data: ' . $e->getMessage());
         }
 
         return redirect()->route('register-asset.index')->with('success', 'Data berhasil dibatalkan!');
+    }
+
+    public function restore($id)
+    {
+        try {
+            $register_asset = RegisterAsset::onlyTrashed()->findOrFail($id);
+            $register_asset->restore();
+
+        } catch (\Exception $e) {
+            return redirect()->route('register-asset.index')
+                ->with('error', 'Gagal memulihkan data: ' . $e->getMessage());
+        }
+
+        return redirect()->route('register-asset.trash')->with('success', 'Data berhasil dipulihkan!');
     }
 
     public function show(RegisterAsset $register_asset)
@@ -463,7 +469,6 @@ class RegisterAssetController extends Controller
         $query = RegisterAsset::withoutGlobalScope(CompanyScope::class)
                         ->with(['department', 'location'])
                         ->withCount('detailRegisters')
-                        ->where('is_canceled', 0)
                         ->where('company_id', $companyId);
 
         return DataTables::of($query)
@@ -480,6 +485,58 @@ class RegisterAssetController extends Controller
                     'showUrl' => route('register-asset.show', $register_assets->id),
                     'editUrl' => route('register-asset.edit', $register_assets->id),
                     'deleteUrl' => route('register-asset.destroy', $register_assets->id)
+                ])->render();
+            })
+            ->filterColumn('department_name', function($query, $keyword) {
+                $query->whereHas('department', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('location_name', function($query, $keyword) {
+                $query->whereHas('location', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderColumn('department_name', function ($query, $order) {
+                $query->orderBy(
+                    Department::select('name')
+                        ->whereColumn('departments.id', 'register_assets.department_id'),
+                    $order
+                );
+            })
+            ->orderColumn('location_name', function ($query, $order) {
+                $query->orderBy(
+                    Location::select('name')
+                        ->whereColumn('locations.id', 'register_assets.location_id'),
+                    $order
+                );
+            })
+            ->rawColumns(['action'])
+            ->toJson();        
+    }
+
+    public function datatablesCanceled(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = RegisterAsset::withoutGlobalScope(CompanyScope::class)
+                        ->with(['department', 'location'])
+                        ->withCount('detailRegisters')
+                        ->onlyTrashed()
+                        ->where('company_id', $companyId);
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('department_name', function($registerAsset) {
+                return $registerAsset->department->name ?? '-';
+            })
+            ->addColumn('location_name', function($registerAsset) {
+                return $registerAsset->location->name ?? '-';
+            })
+            ->addColumn('action', function ($register_assets) {
+                return view('components.action-form-canceled-buttons', [
+                    'model'     => $register_assets,
+                    'restoreUrl' => route('register-asset.restore', $register_assets->id)
                 ])->render();
             })
             ->filterColumn('department_name', function($query, $keyword) {

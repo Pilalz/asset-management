@@ -27,6 +27,11 @@ class TransferAssetController extends Controller
         return view('transfer-asset.index');
     }
 
+    public function trash()
+    {
+        return view('transfer-asset.canceled');
+    }
+
     public function create()
     {
         Gate::authorize('is-form-maker');
@@ -256,10 +261,24 @@ class TransferAssetController extends Controller
 
         } catch (\Exception $e) {
             return redirect()->route('transfer-asset.index')
-                ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+                ->with('error', 'Gagal membatalkan data: ' . $e->getMessage());
         }
 
-        return redirect()->route('transfer-asset.index')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('transfer-asset.index')->with('success', 'Data berhasil dibatalkan!');
+    }
+
+    public function restore($id)
+    {
+        try {
+            $transfer_asset = TransferAsset::onlyTrashed()->findOrFail($id);
+            $transfer_asset->restore();
+
+        } catch (\Exception $e) {
+            return redirect()->route('transfer-asset.index')
+                ->with('error', 'Gagal memulihkan data: ' . $e->getMessage());
+        }
+
+        return redirect()->route('transfer-asset.trash')->with('success', 'Data berhasil dipulihkan!');
     }
 
     public function show(TransferAsset $transfer_asset)
@@ -405,6 +424,61 @@ class TransferAssetController extends Controller
                     'showUrl' => route('transfer-asset.show', $transfer_assets->id),
                     'editUrl' => route('transfer-asset.edit', $transfer_assets->id),
                     'deleteUrl' => route('transfer-asset.destroy', $transfer_assets->id)
+                ])->render();
+            })
+            ->filterColumn('destination_location_name', function($query, $keyword) {
+                $query->whereHas('destinationLocation', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('department_name', function($query, $keyword) {
+                $query->whereHas('department', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderColumn('destination_location_name', function ($query, $order) {
+                $query->orderBy(
+                    Location::select('name')
+                        ->whereColumn('locations.id', 'transfer_assets.destination_loc_id'),
+                    $order
+                );
+            })
+            ->orderColumn('department_name', function ($query, $order) {
+                $query->orderBy(
+                    Department::select('name')
+                        ->whereColumn('departments.id', 'transfer_assets.department_id'),
+                    $order
+                );
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+    }
+
+    public function datatablesCanceled(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = TransferAsset::withoutGlobalScope(CompanyScope::class)
+                        ->with(['destinationLocation', 'department'])
+                        ->withCount('detailTransfers')
+                        ->onlyTrashed()
+                        ->where('company_id', $companyId);
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('destination_location_name', function($transferAsset) {
+                return $transferAsset->destinationLocation->name ?? '-';
+            })
+            ->addColumn('department_name', function($transferAsset) {
+                return $transferAsset->department->name ?? '-';
+            })
+            ->addColumn('asset_quantity', function($transferAsset) {
+                return $transferAsset->detail_transfers_count . ' Asset(s)';
+            })
+            ->addColumn('action', function ($transfer_assets) {
+                return view('components.action-form-canceled-buttons', [
+                    'model'     => $transfer_assets,
+                    'restoreUrl' => route('transfer-asset.restore', $transfer_assets->id),
                 ])->render();
             })
             ->filterColumn('destination_location_name', function($query, $keyword) {

@@ -26,6 +26,11 @@ class DisposalAssetController extends Controller
         return view('disposal-asset.index');
     }
 
+    public function trash()
+    {
+        return view('disposal-asset.canceled');
+    }
+
     public function create()
     {
         Gate::authorize('is-form-maker');
@@ -276,10 +281,24 @@ class DisposalAssetController extends Controller
 
         } catch (\Exception $e) {
             return redirect()->route('disposal-asset.index')
-                ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+                ->with('error', 'Gagal membatalkan data: ' . $e->getMessage());
         }
 
-        return redirect()->route('disposal-asset.index')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('disposal-asset.index')->with('success', 'Data berhasil dibatalkan!');
+    }
+
+    public function restore($id)
+    {
+        try {
+            $disposal_asset = DisposalAsset::onlyTrashed()->findOrFail($id);
+            $disposal_asset->restore();
+
+        } catch (\Exception $e) {
+            return redirect()->route('disposal-asset.index')
+                ->with('error', 'Gagal memulihkan data: ' . $e->getMessage());
+        }
+
+        return redirect()->route('disposal-asset.trash')->with('success', 'Data berhasil dipulihkan!');
     }
 
     public function show(DisposalAsset $disposal_asset)
@@ -418,6 +437,49 @@ class DisposalAssetController extends Controller
                     'showUrl' => route('disposal-asset.show', $disposal_assets->id),
                     'editUrl' => route('disposal-asset.edit', $disposal_assets->id),
                     'deleteUrl' => route('disposal-asset.destroy', $disposal_assets->id)
+                ])->render();
+            })
+            ->filterColumn('department_name', function($query, $keyword) {
+                $query->whereHas('department', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderColumn('department_name', function ($query, $order) {
+                $query->orderBy(
+                    Department::select('name')
+                        ->whereColumn('departments.id', 'disposal_assets.department_id'),
+                    $order
+                );
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+    }
+
+    public function datatablesCanceled(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $query = DisposalAsset::withoutGlobalScope(CompanyScope::class)
+                        ->with(['department', 'company'])
+                        ->withCount('detailDisposals')
+                        ->onlyTrashed()
+                        ->where('company_id', $companyId);
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('currency', function($disposalAsset) {
+                return $disposalAsset->company->currency ?? 'USD';
+            })
+            ->addColumn('department_name', function($disposalAsset) {
+                return $disposalAsset->department->name ?? '-';
+            })
+            ->addColumn('asset_quantity', function($disposalAsset) {
+                return $disposalAsset->detail_disposals_count . ' Asset(s)';
+            })
+            ->addColumn('action', function ($disposal_assets) {
+                return view('components.action-form-canceled-buttons', [
+                    'model'     => $disposal_assets,
+                    'restoreUrl' => route('disposal-asset.restore', $disposal_assets->id)
                 ])->render();
             })
             ->filterColumn('department_name', function($query, $keyword) {

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Department;
 use App\Models\Location;
 use App\Models\Company;
@@ -21,6 +22,7 @@ class RegisterAsset extends Model
 {
     use HasFactory;
     use LogsActivity;
+    use SoftDeletes;
 
     protected $table = 'register_assets';
 
@@ -33,7 +35,6 @@ class RegisterAsset extends Model
         'polish_no',
         'sequence',
         'status',
-        'is_canceled',
         'company_id',
     ];
 

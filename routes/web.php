@@ -97,6 +97,33 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/depreciation/export-excel', [DepreciationController::class, 'exportExcelCommercial'])->name('commercial.export');
     Route::get('/depreciation/fiscal/export-excel', [DepreciationController::class, 'exportExcelFiscal'])->name('fiscal.export');
 
+    //Start Depre Commercial
+    Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
+    Route::post('/depreciation/run-all', [DepreciationController::class, 'runAll'])->name('depreciation.runAll');
+    Route::get('/depreciation/status', [DepreciationController::class, 'getStatus'])->name('depreciation.status');
+    Route::post('/depreciation/clear-status', [DepreciationController::class, 'clearStatus'])->name('depreciation.clearStatus');
+    //Start Depre Fiscal
+    Route::get('/depreciation/fiscal', [DepreciationController::class, 'indexFiscal'])->name('depreciationFiscal.index');
+    //Start Register
+    Route::post('/register-asset/{register_asset}/approve', [RegisterAssetController::class, 'approve'])->name('register-asset.approve');
+    Route::get('/register-asset/{register_asset}/export-pdf', [RegisterAssetController::class, 'exportPdf'])->name('register-asset.exportPdf');
+    Route::get('/register-asset/trash', [RegisterAssetController::class, 'trash'])->name('register-asset.trash');
+    Route::put('/register-asset/{register_asset}/restore', [RegisterAssetController::class, 'restore'])->name('register-asset.restore');
+    //Start Transfer
+    Route::post('/transfer-asset/{transfer_asset}/approve', [TransferAssetController::class, 'approve'])->name('transfer-asset.approve');
+    Route::get('/transfer-asset/{transfer_asset}/export-pdf', [TransferAssetController::class, 'exportPdf'])->name('transfer-asset.exportPdf');
+    Route::get('/transfer-asset/trash', [TransferAssetController::class, 'trash'])->name('transfer-asset.trash');
+    Route::put('/transfer-asset/{transfer_asset}/restore', [TransferAssetController::class, 'restore'])->name('transfer-asset.restore');
+    //Start Diposal
+    Route::post('/disposal-asset/{disposal_asset}/approve', [DisposalAssetController::class, 'approve'])->name('disposal-asset.approve');
+    Route::get('/disposal-asset/{disposal_asset}/export-pdf', [DisposalAssetController::class, 'exportPdf'])->name('disposal-asset.exportPdf');
+    Route::get('/disposal-asset/trash', [DisposalAssetController::class, 'trash'])->name('disposal-asset.trash');
+    Route::put('/disposal-asset/{disposal_asset}/restore', [DisposalAssetController::class, 'restore'])->name('disposal-asset.restore');
+    //Start Company
+    Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
+    //Start Profile
+    Route::put('/profile/signature', [ProfileController::class, 'updateSignature'])->name('profile.updateSignature');
+
     // --- Core Application Resources ---
     Route::resource('asset-class', AssetClassController::class);
     Route::resource('asset-sub-class', AssetSubClassController::class);
@@ -115,27 +142,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('person-in-charge', PersonInChargeController::class);
     Route::resource('insurance', InsuranceController::class);
     Route::resource('history', HistoryController::class);
-
-    //Start Depre Commercial
-    Route::post('/asset/depre/{asset}', [DepreciationController::class, 'depre'])->name('depreciation.depre');
-    Route::post('/depreciation/run-all', [DepreciationController::class, 'runAll'])->name('depreciation.runAll');
-    Route::get('/depreciation/status', [DepreciationController::class, 'getStatus'])->name('depreciation.status');
-    Route::post('/depreciation/clear-status', [DepreciationController::class, 'clearStatus'])->name('depreciation.clearStatus');
-    //Start Depre Fiscal
-    Route::get('/depreciation/fiscal', [DepreciationController::class, 'indexFiscal'])->name('depreciationFiscal.index');
-    //Start Register
-    Route::post('/register-asset/{register_asset}/approve', [RegisterAssetController::class, 'approve'])->name('register-asset.approve');
-    Route::get('/register-asset/{register_asset}/export-pdf', [RegisterAssetController::class, 'exportPdf'])->name('register-asset.exportPdf');
-    //Start Transfer
-    Route::post('/transfer-asset/{transfer_asset}/approve', [TransferAssetController::class, 'approve'])->name('transfer-asset.approve');
-    Route::get('/transfer-asset/{transfer_asset}/export-pdf', [TransferAssetController::class, 'exportPdf'])->name('transfer-asset.exportPdf');
-    //Start Diposal
-    Route::post('/disposal-asset/{disposal_asset}/approve', [DisposalAssetController::class, 'approve'])->name('disposal-asset.approve');
-    Route::get('/disposal-asset/{disposal_asset}/export-pdf', [DisposalAssetController::class, 'exportPdf'])->name('disposal-asset.exportPdf');
-    //Start Company
-    Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
-    //Start Profile
-    Route::put('/profile/signature', [ProfileController::class, 'updateSignature'])->name('profile.updateSignature');
 
     // --- Import Data ---
     Route::post('/asset-class/import', [AssetClassController::class, 'importExcel'])->name('asset-class.import');
@@ -157,8 +163,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/department', [DepartmentController::class, 'datatables'])->name('api.department');
     Route::get('api/company-user', [CompanyUserController::class, 'datatables'])->name('api.company-user');
     Route::get('api/register-asset', [RegisterAssetController::class, 'datatables'])->name('api.register-asset');
+    Route::get('api/register-asset-canceled', [RegisterAssetController::class, 'datatablesCanceled'])->name('api.register-asset-canceled');
     Route::get('api/transfer-asset', [TransferAssetController::class, 'datatables'])->name('api.transfer-asset');
+    Route::get('api/transfer-asset-canceled', [TransferAssetController::class, 'datatablesCanceled'])->name('api.transfer-asset-canceled');
     Route::get('api/disposal-asset', [DisposalAssetController::class, 'datatables'])->name('api.disposal-asset');
+    Route::get('api/disposal-asset-canceled', [DisposalAssetController::class, 'datatablesCanceled'])->name('api.disposal-asset-canceled');
     Route::get('api/person-in-charge', [PersonInChargeController::class, 'datatables'])->name('api.person-in-charge');
     Route::get('api/insurance', [InsuranceController::class, 'datatables'])->name('api.insurance');
     Route::get('api/history', [HistoryController::class, 'datatables'])->name('api.history');
