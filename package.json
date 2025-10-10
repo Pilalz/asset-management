@@ -20,6 +20,8 @@
     "dependencies": {
         "apexcharts": "^3.54.1",
         "datatables.net-dt": "^2.3.3",
+        "datatables.net-fixedcolumns-dt": "^5.0.5",
+        "datatables.net-fixedheader-dt": "^4.0.4",
         "flowbite": "^3.1.2",
         "jquery": "^3.7.1",
         "signature_pad": "^5.0.10"

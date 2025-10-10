@@ -25,7 +25,7 @@
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                         </svg>
-                        <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Create</span>
+                        <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Detail</span>
                     </div>
                 </li>
             </ol>
@@ -94,34 +94,150 @@
 
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Basic Information
+                    </h2>
+                </div>
+
+                <div>
+                    <table class="text-md text-gray-900 dark:text-white">
+                        <tr>
+                            <td class="font-medium">Nomor Formulir</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $register_asset->form_no }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">Department</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $register_asset->department->name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">Location</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $register_asset->location->name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">Asset Type</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $register_asset->asset_type }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Asset List
+                    </h2>
+                </div>
+
+                <div>
+                    <table class="text-md text-gray-900 dark:text-white">
+                        <tr>
+                            <td class="font-medium">Insured</td>
+                            <td class="px-2">:</td>
+                            <td>
+                                @php
+                                    $insuredText = $register_asset->insured;
+                                    $insuredClass = '';
+
+                                    if ($insuredText == 0) {
+                                        $insuredClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+                                    } elseif ($insuredText == 1) {
+                                        $insuredClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                                    } else { 
+                                        $insuredClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+                                    }
+                                @endphp
+                                <span class="{{ $insuredClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->insured == 1) ? "Yes" : "No" }}</span>
+                            </td>
+                        </tr>
+                        @if($register_asset->insured == 1)
+                            <tr>
+                                <td class="font-medium">Polish No</td>
+                                <td class="px-2">:</td>
+                                <td>{{ $register_asset->polish_no }}</td>
+                            </tr>
+                        @endif
+                    </table>
+                </div>
+
+                <!-- <div class="md:col-span-2">
+                    <div class="mb-5">
+                        @php
+                            $insuredText = $register_asset->insured;
+                            $insuredClass = '';
+
+                            if ($insuredText == 0) {
+                                $insuredClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+                            } elseif ($insuredText == 1) {
+                                $insuredClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                            } else { 
+                                $insuredClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+                            }
+                        @endphp
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured  :  <span class="{{ $insuredClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->insured == 1) ? "Yes" : "No" }}</span></label>
+                    </div>
+
+                    @if($register_asset->insured == 1)
+                        <div class="mb-5 flex content-center">
+                            <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Polish No. </label>
+                            <span> : </span>
+                            <p class="ml-1 text-sm text-gray-900">{{ $register_asset->polish_no }}</p>
+                        </div>
+                    @endif
+
+                    <div class="mb-5">
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Lampiran</label>
+                        @if($register_asset->attachments->isNotEmpty())
+                            <ul class="list-disc list-inside pl-4">
+                                @foreach($register_asset->attachments as $attachment)
+                                    <li>
+                                        <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
+                                            {{ $attachment->original_filename }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p class="text-sm text-gray-500">Tidak ada lampiran.</p>
+                        @endif
+                    </div>
+                </div> -->
+
+
+            </div>
             
-            <div class="mb-5 flex content-center">
+            <!-- <div class="mb-5 flex content-center">
                 <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir</label>
                 <span>:</span>
                 <span class="flex ml-1 text-sm text-gray-900">{{ $register_asset->form_no }}</span>
-            </div>
+            </div> -->
 
-            <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Select Department </label>
+            <!-- <div class="mb-5 flex content-center">
+                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Department </label>
                 <span> : </span>
                 <p class="ml-1 text-sm text-gray-900">{{ $register_asset->department->name }}</p>
-            </div>
+            </div> -->
 
-            <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Select Location </label>
+            <!-- <div class="mb-5 flex content-center">
+                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Location </label>
                 <span> : </span>
                 <p class="ml-1 text-sm text-gray-900">{{ $register_asset->location->name }}</p>
-            </div>
+            </div> -->
 
-            <div class="mb-5 flex content-center">
+            <!-- <div class="mb-5 flex content-center">
                 <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Asset Type </label>
                 <span> : </span>
                 <p class="ml-1 text-sm text-gray-900">{{ $register_asset->asset_type }}</p>
-            </div>
+            </div> -->
 
             <!-- Asset List -->
             <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset List </label>
+                <!-- <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset List </label> -->
                 <div class="border-2 border-black rounded-lg p-4">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -152,47 +268,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-
-            <div class="mb-5">
-                @php
-                    $insuredText = $register_asset->insured;
-                    $insuredClass = '';
-
-                    if ($insuredText == 0) {
-                        $insuredClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
-                    } elseif ($insuredText == 1) {
-                        $insuredClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-                    } else { 
-                        $insuredClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
-                    }
-                @endphp
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured  :  <span class="{{ $insuredClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->insured == 1) ? "Yes" : "No" }}</span></label>
-            </div>
-
-            @if($register_asset->insured == 1)
-                <div class="mb-5 flex content-center">
-                    <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Polish No. </label>
-                    <span> : </span>
-                    <p class="ml-1 text-sm text-gray-900">{{ $register_asset->polish_no }}</p>
-                </div>
-            @endif
-
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Lampiran</label>
-                @if($register_asset->attachments->isNotEmpty())
-                    <ul class="list-disc list-inside pl-4">
-                        @foreach($register_asset->attachments as $attachment)
-                            <li>
-                                <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
-                                    {{ $attachment->original_filename }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p class="text-sm text-gray-500">Tidak ada lampiran.</p>
-                @endif
             </div>
 
             <div class="mb-5">
