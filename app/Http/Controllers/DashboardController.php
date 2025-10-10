@@ -99,6 +99,20 @@ class DashboardController extends Controller
             ->where('assets.company_id', session('active_company_id'))
             ->count();
 
+        //Sum Depre by Asset Class
+        $depreByClass = Asset::withoutGlobalScope(CompanyScope::class)
+            ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+            ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+            ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+            ->select('asset_classes.obj_id', DB::raw('sum(assets.commercial_accum_depre) as commercial_depre_sum'), DB::raw('sum(assets.fiscal_accum_depre) as fiscal_depre_sum'))
+            ->where('assets.company_id', session('active_company_id'))
+            ->where('assets.asset_type', 'FA')
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
+            ->groupBy('asset_classes.obj_id')
+            ->get();
+
         return view('index', compact('assetLocData', 'assetClassData', 'assetArrival', 'assetFixed', 'assetLVA', 'assetRemaks', 'assetRemaksCount'));
     }
 }

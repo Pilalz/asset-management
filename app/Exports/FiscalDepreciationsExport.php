@@ -35,7 +35,7 @@ class FiscalDepreciationsExport implements FromView, ShouldAutoSize
         ->whereBetween('depre_date', [$startDate, $endDate])
         ->where('type', 'fiscal')
         ->whereHas('asset', function ($query) {
-            $query->where('status', 'Active')->where('asset_type', 'FA');
+            $query->where('status', '!=', 'Onboard')->where('status', '!=', 'Disposal')->where('status', '!=', 'Sold')->where('asset_type', 'FA');
         })
         ->orderBy('asset_id')->orderBy('depre_date')->get();
 

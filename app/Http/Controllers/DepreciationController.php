@@ -123,7 +123,7 @@ class DepreciationController extends Controller
             ])
             ->whereBetween('depre_date', [$startDate, $endDate])
             ->whereHas('asset', function ($query) {
-                $query->where('status', 'Active');
+                $query->where('status', '!=', 'Onboard')->where('status', '!=', 'Disposal')->where('status', '!=', 'Sold');
             })
             ->whereHas('asset', function ($query) {
                 $query->where('asset_type', 'FA');
@@ -185,7 +185,7 @@ class DepreciationController extends Controller
             ])
             ->whereBetween('depre_date', [$startDate, $endDate])
             ->whereHas('asset', function ($query) {
-                $query->where('status', 'Active');
+                $query->where('status', '!=', 'Onboard')->where('status', '!=', 'Disposal')->where('status', '!=', 'Sold');
             })
             ->whereHas('asset', function ($query) {
                 $query->where('asset_type', 'FA');

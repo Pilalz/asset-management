@@ -17,7 +17,9 @@ class LVAExport implements FromCollection, WithHeadings, WithMapping
     {
         return Asset::withoutGlobalScope(CompanyScope::class)
                 ->where('company_id', session('active_company_id'))
-                ->where('status', 'Active')
+                ->where('status', '!=', 'Onboard')
+                ->where('status', '!=', 'Disposal')
+                ->where('status', '!=', 'Sold')
                 ->where('asset_type', 'LVA')
                 ->get();
     }

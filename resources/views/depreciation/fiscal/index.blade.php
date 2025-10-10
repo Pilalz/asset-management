@@ -99,7 +99,7 @@
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white p-4">
             {{-- Form untuk filter tahun jika perlu --}}
             <div class="mb-4 flex flex-row content-center">
-                <form method="GET" action="{{ route('depreciation.index') }}">
+                <form method="GET" action="{{ route('depreciationFiscal.index') }}">
                     <label for="year" class="">Tampilkan Tahun:</label>
                     <select name="year" id="year" onchange="this.form.submit()" class="py-2 px-0 w-24 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                         @for ($y = now()->year; $y >= 2020; $y--)
