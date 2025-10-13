@@ -96,167 +96,205 @@
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
             
-            <div class="mb-5 flex content-center">
-                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Tanggal Pengajuan </label>
-                <span> : </span>
-                <p class="flex ml-1 text-sm text-gray-900">{{ $disposal_asset->submit_date }}</p>
-            </div>
-
-            <div class="mb-5 flex content-center">
-                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir</label>
-                <span>:</span>
-                <span class="flex ml-1 text-sm text-gray-900">{{ $disposal_asset->form_no }}</span>
-            </div>
-
-            <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Department </label>
-                <span> : </span>
-                <p class="ml-1 text-sm text-gray-900">{{ $disposal_asset->department->name }}</p>
-            </div>
-
-            <div class="mb-5">
-                <label class="block mb-2 w-40 text-sm font-medium text-gray-900 dark:text-white">Alasan :</label>
-                <p class="w-auto px-1 border-b border-gray-700 text-sm text-gray-900">{{ $disposal_asset->reason }}</p>
-            </div>
-
-            @if($activeCompany->currency === 'USD')
-                <div class="mb-5 flex content-center">
-                    <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku </label>
-                    <span> : </span>
-                    <p class="ml-1 text-sm text-gray-900">$ {{ number_format($disposal_asset->nbv, 0, '.', ',') }}</p>
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-1">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Basic Information
+                    </h2>
                 </div>
 
-                <div class="mb-5 flex content-center">
-                    <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi </label>
-                    <span> : </span>
-                    <p class="ml-1 text-sm text-gray-900">$ {{ number_format($disposal_asset->esp, 0, '.', ',') }}</p>
-                </div>
-            @elseif($activeCompany->currency === 'IDR')
-                <div class="mb-5 flex content-center">
-                    <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku </label>
-                    <span> : </span>
-                    <p class="ml-1 text-sm text-gray-900">Rp {{ number_format($disposal_asset->nbv, 0, ',', '.') }}</p>
+                <div>
+                    <table class="text-sm text-gray-900 dark:text-white">
+                        <tr>
+                            <td class="font-medium">Tanggal Pengajuan</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $disposal_asset->submit_date }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">Nomor Formulir</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $disposal_asset->form_no }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">Department</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $disposal_asset->department->name }}</td>
+                        </tr>                    
+                    </table>
                 </div>
 
-                <div class="mb-5 flex content-center">
-                    <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi </label>
-                    <span> : </span>
-                    <p class="ml-1 text-sm text-gray-900">Rp {{ number_format($disposal_asset->esp, 0, ',', '.') }}</p>
+                <div>
+                    <label class="block mb-2 w-40 text-sm font-medium text-gray-900 dark:text-white">Alasan :</label>
+                    <p class="w-auto px-1 border-b border-gray-700 text-sm text-gray-900">{{ $disposal_asset->reason }}</p>
                 </div>
-            @endif
 
-            <!-- Asset List -->
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset List </label>
-                <div class="border-2 border-black rounded-lg p-4">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <div>
+                    <table class="text-sm text-gray-900 dark:text-white">
+                        @if($activeCompany->currency === 'USD')
                             <tr>
-                                <th scope="col" class="px-2 py-3">No</th>
-                                <th scope="col" class="px-2 py-3">Asset</th>
-                                <th scope="col" class="px-2 py-3">Kurs</th>
-                                @if($activeCompany->currency === 'USD')
-                                    <th scope="col" class="px-2 py-3">NJAB (USD)</th>
-                                    <th scope="col" class="px-2 py-3">NJAB (IDR)</th>
-                                @elseif($activeCompany->currency === 'IDR')
-                                    <th scope="col" class="px-2 py-3">NJAB (IDR)</th>
-                                    <th scope="col" class="px-2 py-3">NJAB (USD)</th>
-                                @endif
+                                <td class="font-medium">Nilai Buku</td>
+                                <td class="px-2">:</td>
+                                <td>$ {{ number_format($disposal_asset->nbv, 0, '.', ',') }}</td>
                             </tr>
-                        </thead>
-                        <tbody id="asset-list-body">
-                            @foreach($disposal_asset->detailDisposals as $detail)
-                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 asset-row">
-                                    <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white asset-row-number text-center">{{ $loop->iteration }}</td>
-                                    <td class="px-2 py-4">{{ $detail->asset->assetName->name }} - {{ $detail->asset->description }}</td>
-                                    <td class="px-2 py-4">Rp {{ number_format($detail->kurs, 0, ',', '.') }}</td>
-                                    @if($activeCompany->currency === 'USD')
-                                        <td class="px-2 py-4">$ {{ number_format($detail->njab, 0, '.', ',') }}</td>
-                                        <td class="px-2 py-4">Rp {{ number_format(($detail->kurs * $detail->njab), 0, ',', '.') }}</td>
-                                    @elseif($activeCompany->currency === 'IDR')
-                                        <td class="px-2 py-4">Rp {{ number_format($detail->njab, 0, ',', '.') }}</td>
-                                        <td class="px-2 py-4">$ {{ number_format(($detail->njab / $detail->kurs), 0, '.', ',') }}</td>
-                                    @endif
-                                </tr>
-                            @endforeach
-                        </tbody>
+                            <tr>
+                                <td class="font-medium">Nilai Jual Estimasi</td>
+                                <td class="px-2">:</td>
+                                <td>$ {{ number_format($disposal_asset->esp, 0, '.', ',') }}</td>
+                            </tr>
+                        @elseif($activeCompany->currency === 'IDR')
+                            <tr>
+                                <td class="font-medium">Nilai Buku</td>
+                                <td class="px-2">:</td>
+                                <td>Rp {{ number_format($disposal_asset->nbv, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <td class="font-medium">Nilai Jual Estimasi</td>
+                                <td class="px-2">:</td>
+                                <td>Rp {{ number_format($disposal_asset->esp, 0, ',', '.') }}</td>
+                            </tr>
+                        @endif
                     </table>
                 </div>
             </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Lampiran</label>
-                @if($disposal_asset->attachments->isNotEmpty())
-                    <ul class="list-disc list-inside pl-4">
-                        @foreach($disposal_asset->attachments as $attachment)
-                            <li>
-                                <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
-                                    {{ $attachment->original_filename }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p class="text-sm text-gray-500">Tidak ada lampiran.</p>
-                @endif
-            </div>
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Asset List
+                    </h2>
+                </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval List </label>
-                <div class="border-2 border-black rounded-lg p-4">
-                    
-                    <div class="flex flex-row mb-2">
-                        @php
-                            $sequenceText = $disposal_asset->sequence;
-                            $sequenceClass = '';
-
-                            if ($sequenceText == 0) {
-                                $sequenceClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
-                            } elseif ($sequenceText == 1) {
-                                $sequenceClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-                            } else { 
-                                $sequenceClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
-                            }
-                        @endphp
-                        <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence  :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($disposal_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
+                <!-- Asset List -->
+                <div>                    
+                    <div class="border-2 border-black rounded-lg p-4">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="px-2 py-3">No</th>
+                                        <th scope="col" class="px-2 py-3">Asset</th>
+                                        <th scope="col" class="px-2 py-3">Kurs</th>
+                                        @if($activeCompany->currency === 'USD')
+                                            <th scope="col" class="px-2 py-3">NJAB (USD)</th>
+                                            <th scope="col" class="px-2 py-3">NJAB (IDR)</th>
+                                        @elseif($activeCompany->currency === 'IDR')
+                                            <th scope="col" class="px-2 py-3">NJAB (IDR)</th>
+                                            <th scope="col" class="px-2 py-3">NJAB (USD)</th>
+                                        @endif
+                                    </tr>
+                                </thead>
+                                <tbody id="asset-list-body">
+                                    @foreach($disposal_asset->detailDisposals as $detail)
+                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 asset-row">
+                                            <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white asset-row-number text-center">{{ $loop->iteration }}</td>
+                                            <td class="px-2 py-4">{{ $detail->asset->assetName->name }} - {{ $detail->asset->description }}</td>
+                                            <td class="px-2 py-4">Rp {{ number_format($detail->kurs, 0, ',', '.') }}</td>
+                                            @if($activeCompany->currency === 'USD')
+                                                <td class="px-2 py-4">$ {{ number_format($detail->njab, 0, '.', ',') }}</td>
+                                                <td class="px-2 py-4">Rp {{ number_format(($detail->kurs * $detail->njab), 0, ',', '.') }}</td>
+                                            @elseif($activeCompany->currency === 'IDR')
+                                                <td class="px-2 py-4">Rp {{ number_format($detail->njab, 0, ',', '.') }}</td>
+                                                <td class="px-2 py-4">$ {{ number_format(($detail->njab / $detail->kurs), 0, '.', ',') }}</td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                </div>
+            </div>
 
-                    <hr class="mb-2">
-                    
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
-                                <th scope="col" class="px-2 py-3">Name</th>
-                                <th scope="col" class="px-2 py-3">Signature</th>
-                                <th scope="col" class="px-2 py-3">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="approval-list-body">
-                            @foreach($disposal_asset->approvals->sortBy('approval_order') as $approv)
-                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                    <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
-                                    <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
-                                    <td class="px-2 py-4">{{ $approv->pic?->name ?? "-" }}</td>
-                                    @if ($approv->status == 'approved' && $approv->user->signature)
-                                        <td class="px-2 py-4 status-pending">
-                                            <div class="signature-container">
-                                                <img src="{{ $approv->user->signature }}" alt="Signature" class="h-12">
-                                            </div>
-                                        </td>
-                                    @else
-                                        <td class="px-2 py-4 status-pending">{{ $approv->status}}</td>
-                                    @endif
-                                    <td class="px-2 py-4">{{ $approv->approval_date }}</td>
-                                </tr>
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-1">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Attachment List
+                    </h2>
+                </div>
+
+                <div>
+                    @if($disposal_asset->attachments->isNotEmpty())
+                        <ul class="list-disc list-inside pl-4">
+                            @foreach($disposal_asset->attachments as $attachment)
+                                <li>
+                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
+                                        {{ $attachment->original_filename }}
+                                    </a>
+                                </li>
                             @endforeach
-                        </tbody>
-                    </table>
+                        </ul>
+                    @else
+                        <p class="text-sm text-gray-500">Tidak ada lampiran.</p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Approval
+                    </h2>
+                </div>
+
+                <div>
+                    <div class="border-2 border-black rounded-lg p-4">
+                        
+                        <div class="flex flex-row mb-2">
+                            @php
+                                $sequenceText = $disposal_asset->sequence;
+                                $sequenceClass = '';
+
+                                if ($sequenceText == 0) {
+                                    $sequenceClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+                                } elseif ($sequenceText == 1) {
+                                    $sequenceClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                                } else { 
+                                    $sequenceClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+                                }
+                            @endphp
+                            <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence  :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($disposal_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
+                        </div>
+
+                        <hr class="mb-2">
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
+                                        <th scope="col" class="px-2 py-3">Name</th>
+                                        <th scope="col" class="px-2 py-3">Signature</th>
+                                        <th scope="col" class="px-2 py-3">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="approval-list-body">
+                                    @foreach($disposal_asset->approvals->sortBy('approval_order') as $approv)
+                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
+                                            <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
+                                            <td class="px-2 py-4">{{ $approv->pic?->name ?? "-" }}</td>
+                                            @if ($approv->status == 'approved' && $approv->user->signature)
+                                                <td class="px-2 py-4 status-pending">
+                                                    <div class="signature-container">
+                                                        <img src="{{ $approv->user->signature }}" alt="Signature" class="h-12">
+                                                    </div>
+                                                </td>
+                                            @else
+                                                <td class="px-2 py-4 status-pending">{{ $approv->status}}</td>
+                                            @endif
+                                            <td class="px-2 py-4">{{ $approv->approval_date }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="flex gap-2 content-center">
-                <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
+                <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Back</a>
+
                 @if ($canApprove)
                     <button
                         type="button" 

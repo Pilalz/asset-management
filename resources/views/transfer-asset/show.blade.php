@@ -95,91 +95,121 @@
 
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
-            <div class="mb-5 flex content-center">
-                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Tanggal Pengajuan </label>
-                <span> : </span>
-                <p class="flex ml-1 text-sm text-gray-900">{{ $transfer_asset->submit_date }}</p>
-            </div>
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-1">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Basic Information
+                    </h2>
+                </div>
 
-            <div class="mb-5 flex content-center">
-                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir </label>
-                <span> : </span>
-                <p class="flex ml-1 text-sm text-gray-900">{{ $transfer_asset->form_no }}</p>
-            </div>
-
-            <div class="mb-5 flex content-center">
-                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Department </label>
-                <span> : </span>
-                <p class="flex ml-1 text-sm text-gray-900">{{ $transfer_asset->department->name }}</p>
-            </div>
-
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Data </label>
-                <div class="border-2 border-black rounded-lg p-4">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" class="px-2 py-3">Asset Number</th>
-                                <th scope="col" class="px-2 py-3">Asset Name</th>
-                                <th scope="col" class="px-2 py-3">Description</th>
-                                <th scope="col" class="px-2 py-3">ID Pareto</th>
-                                <th scope="col" class="px-2 py-3">No. Unit</th>
-                                <th scope="col" class="px-2 py-3">No. Mesin</th>
-                                <th scope="col" class="px-2 py-3">No. Engine</th>
-                                <th scope="col" class="px-2 py-3">Tahun Akuisisi</th>
-                                <th scope="col" class="px-2 py-3">Location</th>
-                            </tr>
-                        </thead>
-                        <tbody id="asset-data-body">
-                            @foreach($transfer_asset->detailTransfers as $detail)
-                                <tr>
-                                    <td class="p-4">{{ $detail->asset?->asset_number ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->asset?->assetName->name ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->asset?->description ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->asset?->pareto ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->asset?->unit_no ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->asset?->sn_chassis ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->asset?->sn_engine ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->asset?->capitalized_date->format('Y') }}</td>
-                                    <td class="p-4">{{ $detail->originLocation->name ?? "-" }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
+                <div>
+                    <table class="text-sm text-gray-900 dark:text-white">
+                        <tr>
+                            <td class="font-medium">Tanggal Pengajuan</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $transfer_asset->submit_date }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">Nomor Formulir</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $transfer_asset->form_no }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">Department</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $transfer_asset->department->name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">Destination Location</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $transfer_asset->destinationLocation->name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">Alasan</td>
+                            <td class="px-2">:</td>
+                            <td>{{ $transfer_asset->reason }}</td>
+                        </tr>
                     </table>
                 </div>
             </div>
 
-            <div class="mb-5 flex content-center">
-                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Destination Location </label>
-                <span> : </span>
-                <p class="flex ml-1 text-sm text-gray-900">{{ $transfer_asset->destinationLocation->name }}</p>
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Asset List
+                    </h2>
+                </div>
+
+                <div>
+                    <div class="border-2 border-black rounded-lg p-4">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="px-2 py-3">Asset Number</th>
+                                        <th scope="col" class="px-2 py-3">Asset Name</th>
+                                        <th scope="col" class="px-2 py-3">Description</th>
+                                        <th scope="col" class="px-2 py-3">ID Pareto</th>
+                                        <th scope="col" class="px-2 py-3">No. Unit</th>
+                                        <th scope="col" class="px-2 py-3">No. Mesin</th>
+                                        <th scope="col" class="px-2 py-3">No. Engine</th>
+                                        <th scope="col" class="px-2 py-3">Tahun Akuisisi</th>
+                                        <th scope="col" class="px-2 py-3">Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="asset-data-body">
+                                    @foreach($transfer_asset->detailTransfers as $detail)
+                                        <tr class="border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <td class="p-4">{{ $detail->asset?->asset_number ?? "-" }}</td>
+                                            <td class="p-4">{{ $detail->asset?->assetName->name ?? "-" }}</td>
+                                            <td class="p-4">{{ $detail->asset?->description ?? "-" }}</td>
+                                            <td class="p-4">{{ $detail->asset?->pareto ?? "-" }}</td>
+                                            <td class="p-4">{{ $detail->asset?->unit_no ?? "-" }}</td>
+                                            <td class="p-4">{{ $detail->asset?->sn_chassis ?? "-" }}</td>
+                                            <td class="p-4">{{ $detail->asset?->sn_engine ?? "-" }}</td>
+                                            <td class="p-4">{{ $detail->asset?->capitalized_date->format('Y') }}</td>
+                                            <td class="p-4">{{ $detail->originLocation->name ?? "-" }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 w-40 text-sm font-medium text-gray-900 dark:text-white">Alasan :</label>
-                <p class="w-auto px-1 border-b border-gray-700 text-sm text-gray-900">{{ $transfer_asset->reason }}</p>
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Attachment List
+                    </h2>
+                </div>
+
+                <div>
+                    @if($transfer_asset->attachments->isNotEmpty())
+                        <ul class="list-disc list-inside pl-4">
+                            @foreach($transfer_asset->attachments as $attachment)
+                                <li>
+                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
+                                        {{ $attachment->original_filename }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-sm text-gray-500">Tidak ada lampiran.</p>
+                    @endif
+                </div>
             </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Lampiran</label>
-                @if($transfer_asset->attachments->isNotEmpty())
-                    <ul class="list-disc list-inside pl-4">
-                        @foreach($transfer_asset->attachments as $attachment)
-                            <li>
-                                <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
-                                    {{ $attachment->original_filename }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p class="text-sm text-gray-500">Tidak ada lampiran.</p>
-                @endif
-            </div>
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Approval
+                    </h2>
+                </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval List </label>
-                <div class="border-2 border-black rounded-lg p-4">
+                <div>
                     <div class="flex flex-row mb-2">
                         @php
                             $sequenceText = $transfer_asset->sequence;
@@ -195,40 +225,46 @@
                         @endphp
                         <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence  :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($transfer_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
                     </div>
-                    <hr class="mb-2">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
-                                <th scope="col" class="px-2 py-3">Name</th>
-                                <th scope="col" class="px-2 py-3">Signature</th>
-                                <th scope="col" class="px-2 py-3">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="approval-list-body">
-                            @foreach($transfer_asset->approvals->sortBy('approval_order') as $approv)
-                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                    <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
-                                    <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
-                                    <td class="px-2 py-4">{{ $approv->pic?->name ?? "-" }}</td>
-                                    @if ($approv->status == 'approved' && $approv->user->signature)
-                                        <td class="px-2 py-4 status-pending">
-                                            <div class="signature-container">
-                                                <img src="{{ $approv->user->signature }}" alt="Signature" class="h-12">
-                                            </div>
-                                        </td>
-                                    @else
-                                        <td class="px-2 py-4 status-pending">{{ $approv->status}}</td>
-                                    @endif
-                                    <td class="px-2 py-4">{{ $approv->approval_date ?? "-" }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+
+                    <div class="mt-3 border-2 border-black rounded-lg p-4">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
+                                        <th scope="col" class="px-2 py-3">Name</th>
+                                        <th scope="col" class="px-2 py-3">Signature</th>
+                                        <th scope="col" class="px-2 py-3">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="approval-list-body">
+                                    @foreach($transfer_asset->approvals->sortBy('approval_order') as $approv)
+                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
+                                            <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
+                                            <td class="px-2 py-4">{{ $approv->pic?->name ?? "-" }}</td>
+                                            @if ($approv->status == 'approved' && $approv->user->signature)
+                                                <td class="px-2 py-4 status-pending">
+                                                    <div class="signature-container">
+                                                        <img src="{{ $approv->user->signature }}" alt="Signature" class="h-12">
+                                                    </div>
+                                                </td>
+                                            @else
+                                                <td class="px-2 py-4 status-pending">{{ $approv->status}}</td>
+                                            @endif
+                                            <td class="px-2 py-4">{{ $approv->approval_date ?? "-" }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div class="flex gap-2 content-center">
-                <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
+                <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Back</a>
+
                 @if ($canApprove)
                     <button
                         type="button" 

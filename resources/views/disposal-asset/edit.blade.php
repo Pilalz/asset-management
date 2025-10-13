@@ -106,212 +106,237 @@
                 <div class="hidden rounded-b-lg" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
                     <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-900">
 
-                        <div class="mb-5 flex content-center">
-                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Tanggal Pengajuan <span class="text-red-900">*</span></label>
-                            <span> : </span>
-                            <p class="w-full px-2">{{ old("disposal_asset.submit_date", $disposal_asset->submit_date ?? '') }}</p>
-                            <input type="hidden" name="submit_date" value="{{ old("disposal_asset.submit_date", $disposal_asset->submit_date ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-                            @error('submit_date')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-5 flex content-center">
-                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900">*</span></label>
-                            <span> : </span>
-                            <p class="w-full px-2">{{ old('form_no', $disposal_asset->form_no) }}</p>
-                            <input type="hidden" name="form_no" value="{{ old('form_no', $disposal_asset->form_no) }}" class="px-1 w-64 text-sm text-gray-900 appearance-none dark:text-white" readonly/>
-                            @error('form_no')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-5 flex content-center">
-                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
-                            <span> : </span>
-                            <select name="department_id" id="department-select" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                                <option selected value="">Choose a Department</option>
-                                @foreach($departments as $department)
-                                    <option value="{{ $department->id }}" {{ (old('department_id', $disposal_asset->department_id) == $department->id) ? 'selected' : '' }}>
-                                        {{ $department->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('department_id')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alasan <span class="text-red-900">*</span></label>
-                            <textarea type="text" name="reason" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                                {{ old("disposal_asset.reason", $disposal_asset->reason ?? '') }}
-                            </textarea>
-                            @error('reason')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-5 flex content-center">
-                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku <span class="text-red-900">*</span></label>
-                            <span> : </span>
-                            <input type="text" id="nbv-display" value="{{ old("disposal_asset.nbv", $disposal_asset->nbv ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
-                            <input type="hidden" name="nbv" id="nbv-value" value="{{ old("disposal_asset.nbv", $disposal_asset->nbv ?? '') }}"/>
-                            @error('nbv')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-5 flex content-center">
-                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi <span class="text-red-900">*</span></label>
-                            <span> : </span>
-                            <input type="text" id="esp-display" value="{{ old("disposal_asset.esp", $disposal_asset->esp ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
-                            <input type="hidden" name="esp" id="esp-value" value="{{ old("disposal_asset.esp", $disposal_asset->esp ?? '') }}">
-                            @error('esp')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-5 flex content-center">
-                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Kurs <span class="text-red-900">*</span></label>
-                            <span> : </span>
-                            <input type="text" id="kurs-display" value="{{ old('kurs', $disposal_asset->detailDisposals->first()?->kurs) }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
-                            <input type="hidden" name="kurs" id="kurs-value" value="{{ old('kurs', $disposal_asset->detailDisposals->first()?->kurs) }}">
-                            @error('kurs')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium">Lampiran yang Sudah Ada</label>
-                            <div id="existing-attachments-list">
-                                @foreach($disposal_asset->attachments as $attachment)
-                                    <div class="flex items-center justify-between p-2 border-b" id="attachment-{{ $attachment->id }}">
-                                        <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-600 hover:underline">
-                                            {{ $attachment->original_filename }}
-                                        </a>
-                                        <button type="button" class="text-red-600 hover:text-red-900 remove-attachment-btn" data-id="{{ $attachment->id }}">Hapus</button>
-                                    </div>
-                                @endforeach
+                        <div class="grid grid-cols-1 gap-y-5 mb-5">
+                            <div class="md:col-span-1">
+                                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                                    Basic Information
+                                </h2>
                             </div>
-                            {{-- Input tersembunyi untuk menampung ID yang akan dihapus --}}
-                            <div id="deleted-attachments-container"></div> 
+
+                            <div class="flex content-center">
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Tanggal Pengajuan <span class="text-red-900">*</span></label>
+                                <span> : </span>
+                                <p class="w-full px-2">{{ old("disposal_asset.submit_date", $disposal_asset->submit_date ?? '') }}</p>
+                                <input type="hidden" name="submit_date" value="{{ old("disposal_asset.submit_date", $disposal_asset->submit_date ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                @error('submit_date')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="flex content-center">
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900">*</span></label>
+                                <span> : </span>
+                                <p class="w-full px-2">{{ old('form_no', $disposal_asset->form_no) }}</p>
+                                <input type="hidden" name="form_no" value="{{ old('form_no', $disposal_asset->form_no) }}" class="px-1 w-64 text-sm text-gray-900 appearance-none dark:text-white" readonly/>
+                                @error('form_no')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="flex content-center">
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
+                                <span> : </span>
+                                <select name="department_id" id="department-select" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                    <option selected value="">Choose a Department</option>
+                                    @foreach($departments as $department)
+                                        <option value="{{ $department->id }}" {{ (old('department_id', $disposal_asset->department_id) == $department->id) ? 'selected' : '' }}>
+                                            {{ $department->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('department_id')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alasan <span class="text-red-900">*</span></label>
+                                <textarea type="text" name="reason" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                    {{ old("disposal_asset.reason", $disposal_asset->reason ?? '') }}
+                                </textarea>
+                                @error('reason')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="flex content-center">
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku <span class="text-red-900">*</span></label>
+                                <span> : </span>
+                                <input type="text" id="nbv-display" value="{{ old("disposal_asset.nbv", $disposal_asset->nbv ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                                <input type="hidden" name="nbv" id="nbv-value" value="{{ old("disposal_asset.nbv", $disposal_asset->nbv ?? '') }}"/>
+                                @error('nbv')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="flex content-center">
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi <span class="text-red-900">*</span></label>
+                                <span> : </span>
+                                <input type="text" id="esp-display" value="{{ old("disposal_asset.esp", $disposal_asset->esp ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                                <input type="hidden" name="esp" id="esp-value" value="{{ old("disposal_asset.esp", $disposal_asset->esp ?? '') }}">
+                                @error('esp')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="flex content-center">
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Kurs <span class="text-red-900">*</span></label>
+                                <span> : </span>
+                                <input type="text" id="kurs-display" value="{{ old('kurs', $disposal_asset->detailDisposals->first()?->kurs) }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                                <input type="hidden" name="kurs" id="kurs-value" value="{{ old('kurs', $disposal_asset->detailDisposals->first()?->kurs) }}">
+                                @error('kurs')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
-                        <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium" for="attachments">Tambah Lampiran Baru</label>
-                            <input name="attachments[]" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" type="file" multiple>
-                        </div>
+                        <div class="grid grid-cols-1 gap-y-5 mb-5">
+                            <div class="md:col-span-1">
+                                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                                    Attachment List
+                                </h2>
+                            </div>
 
-                        <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval List <span class="text-red-900">*</span></label>
-                            <div class="border-2 border-black rounded-lg p-4">
-                                
-                                <div class="flex flex-row mb-2">
-                                    <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
-                                    <div class="flex items-center pr-4">
-                                        <input id="sequence-yes" name="sequence" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $disposal_asset->sequence) === '1' ? 'checked' : '' }}>
-                                        <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <input id="sequence-no" name="sequence" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $disposal_asset->sequence) === '0' ? 'checked' : '' }}>
-                                        <label for="sequence-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
-                                    </div>
-                                    @error('sequence')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                            <div>
+                                <label class="block mb-2 text-sm font-medium">Existing Attachments</label>
+                                <div id="existing-attachments-list">
+                                    @foreach($disposal_asset->attachments as $attachment)
+                                        <div class="flex items-center justify-between p-2 border-b" id="attachment-{{ $attachment->id }}">
+                                            <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-600 hover:underline">
+                                                {{ $attachment->original_filename }}
+                                            </a>
+                                            <button type="button" class="text-red-600 hover:text-red-900 remove-attachment-btn" data-id="{{ $attachment->id }}">Hapus</button>
+                                        </div>
+                                    @endforeach
                                 </div>
+                                {{-- Input tersembunyi untuk menampung ID yang akan dihapus --}}
+                                <div id="deleted-attachments-container"></div> 
+                            </div>
 
-                                <hr class="mb-2">
-                                
-                                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                        <tr class="text-center">
-                                            <th scope="col" colspan="2" class="px-2 py-3">Persetujuan Approval</th>
-                                            <th scope="col" class="px-2 py-3">Name</th>
-                                            <th scope="col" class="px-2 py-3">Signature</th>
-                                            <th scope="col" class="px-2 py-3">Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="approval-list-body">
-                                        @php $initialApprovals = old('approvals', $disposal_asset->approvals); @endphp
-                                        @foreach($initialApprovals as $index => $approvalData)
-                                            @php
-                                                $isObject = is_object($approvalData);
-                                                
-                                                $action = old("approvals.$index.approval_action", $isObject ? $approvalData->approval_action : ($approvalData['approval_action'] ?? ''));
-                                                $role = old("approvals.$index.role", $isObject ? $approvalData->role : ($approvalData['role'] ?? ''));
-                                                $picId = old("approvals.$index.pic_id", $isObject ? $approvalData->pic_id : ($approvalData['pic_id'] ?? ''));
-                                                $status = old("approvals.$index.status", $isObject ? $approvalData->status : ($approvalData['status'] ?? 'Pending'));
-                                                $date = old("approvals.$index.approval_date", $isObject ? ($approvalData->approval_date ? \Carbon\Carbon::parse($approvalData->approval_date)->format('Y-m-d') : '') : ($approvalData['approval_date'] ?? ''));
-                                            @endphp
-                                            <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    <input type="text" name="approvals[{{$index}}][approval_action]" value="{{ $action }}" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
-                                                    @error("approvals[{{$index}}][approval_action]")
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </th>   
-                                                <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    <input type="text" name="approvals[{{$index}}][role]" value="{{ $role }}" class="approval-role border border-white focus:ring-0 focus:border-white-600" readonly/>
-                                                    @error("approvals[{{$index}}][role]")
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </th>
+                            <div>
+                                <label class="block mb-2 text-sm font-medium">Add New Attachment</label>
+                                <input name="attachments[]" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" type="file" multiple>
+                            </div>
+                        </div>
 
-                                                @if ($status === 'pending')
-                                                    <td class="px-2 py-4">
-                                                        <select name="approvals[{{$index}}][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                                                            <option value="">Pilih Nama</option>
-                                                            @foreach($personsInCharge as $pic)
-                                                                <option value="{{ $pic->id }}" 
-                                                                        data-role="{{ $pic->position }}"
-                                                                        {{ $picId == $pic->id ? 'selected' : '' }}>
-                                                                    {{ $pic->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error("approvals[{{$index}}][pic_id]")
-                                                            <div class="text-danger">{{ $message }}</div>
-                                                        @enderror
-                                                    </td>
-                                                @else
-                                                    <td class="px-2 py-4">
-                                                        <input type="text" name="approvals[{{$index}}][pic_id]" value="{{ $isObject ? ($approvalData->pic->name ?? '') : '' }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
-                                                        <input type="hidden" name="approvals[{{$index}}][pic_id]" value="{{ $picId }}" />
-                                                        @error("approvals[{{$index}}][pic_id]")
-                                                            <div class="text-danger">{{ $message }}</div>
-                                                        @enderror
-                                                    </td>
-                                                @endif
+                        <div class="grid grid-cols-1 gap-y-5 mb-5">
+                            <div class="md:col-span-1">
+                                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                                    Approval List
+                                </h2>
+                            </div>
 
-                                                <td class="px-2 py-4">
-                                                    <input type="text" name="approvals[{{$index}}][status]" value="{{ $status }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly placeholder="" />
-                                                    @error("approvals[{{$index}}][status]")
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </td>
-                                                <td class="px-2 py-4">
-                                                    @if($status === 'approved')
-                                                        <input type="date" name="approvals[{{$index}}][approval_date]" value="{{ $date }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-                                                        @error("approvals[{{$index}}][approval_date]")
-                                                            <div class="text-danger">{{ $message }}</div>
-                                                        @enderror
-                                                    @else 
-                                                        <input type="date" name="approvals[{{$index}}][approval_date]" value="{{ $date }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
-                                                        @error("approvals[{{$index}}][approval_date]")
-                                                            <div class="text-danger">{{ $message }}</div>
-                                                        @enderror
-                                                    @endif
-                                                    <input type="hidden" name="approvals[{{$index}}][user_id]" value="{{ old("approvals.$index.user_id", $isObject ? $approvalData->user_id : ($approvalData['user_id'] ?? '')) }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
-                                                    @error("approvals[{{$index}}][user_id]")
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                            <div>
+                                <div class="border-2 border-black rounded-lg p-4">
+                                    
+                                    <div class="flex flex-row mb-2">
+                                        <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
+                                        <div class="flex items-center pr-4">
+                                            <input id="sequence-yes" name="sequence" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $disposal_asset->sequence) === '1' ? 'checked' : '' }}>
+                                            <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="sequence-no" name="sequence" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $disposal_asset->sequence) === '0' ? 'checked' : '' }}>
+                                            <label for="sequence-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
+                                        </div>
+                                        @error('sequence')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <hr class="mb-2">
+                                    
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                                <tr class="text-center">
+                                                    <th scope="col" colspan="2" class="px-2 py-3">Persetujuan Approval</th>
+                                                    <th scope="col" class="px-2 py-3">Name</th>
+                                                    <th scope="col" class="px-2 py-3">Signature</th>
+                                                    <th scope="col" class="px-2 py-3">Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="approval-list-body">
+                                                @php $initialApprovals = old('approvals', $disposal_asset->approvals); @endphp
+                                                @foreach($initialApprovals as $index => $approvalData)
+                                                    @php
+                                                        $isObject = is_object($approvalData);
+                                                        
+                                                        $action = old("approvals.$index.approval_action", $isObject ? $approvalData->approval_action : ($approvalData['approval_action'] ?? ''));
+                                                        $role = old("approvals.$index.role", $isObject ? $approvalData->role : ($approvalData['role'] ?? ''));
+                                                        $picId = old("approvals.$index.pic_id", $isObject ? $approvalData->pic_id : ($approvalData['pic_id'] ?? ''));
+                                                        $status = old("approvals.$index.status", $isObject ? $approvalData->status : ($approvalData['status'] ?? 'Pending'));
+                                                        $date = old("approvals.$index.approval_date", $isObject ? ($approvalData->approval_date ? \Carbon\Carbon::parse($approvalData->approval_date)->format('Y-m-d') : '') : ($approvalData['approval_date'] ?? ''));
+                                                    @endphp
+                                                    <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                        <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                            <input type="text" name="approvals[{{$index}}][approval_action]" value="{{ $action }}" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                            @error("approvals[{{$index}}][approval_action]")
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        </th>   
+                                                        <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                            <input type="text" name="approvals[{{$index}}][role]" value="{{ $role }}" class="approval-role border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                            @error("approvals[{{$index}}][role]")
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        </th>
+
+                                                        @if ($status === 'pending')
+                                                            <td class="px-2 py-4">
+                                                                <select name="approvals[{{$index}}][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                                    <option value="">Pilih Nama</option>
+                                                                    @foreach($personsInCharge as $pic)
+                                                                        <option value="{{ $pic->id }}" 
+                                                                                data-role="{{ $pic->position }}"
+                                                                                {{ $picId == $pic->id ? 'selected' : '' }}>
+                                                                            {{ $pic->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                                @error("approvals[{{$index}}][pic_id]")
+                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                @enderror
+                                                            </td>
+                                                        @else
+                                                            <td class="px-2 py-4">
+                                                                <input type="text" name="approvals[{{$index}}][pic_id]" value="{{ $isObject ? ($approvalData->pic->name ?? '') : '' }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                                <input type="hidden" name="approvals[{{$index}}][pic_id]" value="{{ $picId }}" />
+                                                                @error("approvals[{{$index}}][pic_id]")
+                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                @enderror
+                                                            </td>
+                                                        @endif
+
+                                                        <td class="px-2 py-4">
+                                                            <input type="text" name="approvals[{{$index}}][status]" value="{{ $status }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly placeholder="" />
+                                                            @error("approvals[{{$index}}][status]")
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        </td>
+                                                        <td class="px-2 py-4">
+                                                            @if($status === 'approved')
+                                                                <input type="date" name="approvals[{{$index}}][approval_date]" value="{{ $date }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                                                @error("approvals[{{$index}}][approval_date]")
+                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                @enderror
+                                                            @else 
+                                                                <input type="date" name="approvals[{{$index}}][approval_date]" value="{{ $date }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                                @error("approvals[{{$index}}][approval_date]")
+                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                @enderror
+                                                            @endif
+                                                            <input type="hidden" name="approvals[{{$index}}][user_id]" value="{{ old("approvals.$index.user_id", $isObject ? $approvalData->user_id : ($approvalData['user_id'] ?? '')) }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
+                                                            @error("approvals[{{$index}}][user_id]")
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -376,9 +401,10 @@
                     </div>
                 </div>
             </div>
-            <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md">
-                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button> {{-- Diubah dari Submit menjadi Update --}}
-                <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
+
+            <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md flex flex-col gap-2 sm:flex-row">
+                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
+                <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Cancel</a>
             </div>
         </form>
     </div>

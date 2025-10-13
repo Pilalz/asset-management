@@ -1,6 +1,20 @@
 @extends('layouts.main')
 
 @section('content')
+    @push('styles')
+        <style>
+            /* Beri garis batas kanan pada kontainer kolom yang dibekukan */
+            th.dtfc-fixed-left th.dtfc-fixed-start th.dt-orderable-none table.dtfc-scrolling-start table.dtfc-scrolling-left{
+                border: 1px solid #d1d5db !important; /* Warna border abu-abu standar */
+                color: red !important;
+            }
+
+            /* Penyesuaian untuk tema gelap */
+            .dark th.dtfc-fixed-left .dtfc-fixed-start .dt-orderable-none .dtfc-scrolling-start .dtfc-scrolling-left{
+                border: 1px solid #4b5563 !important; /* Warna border abu-abu gelap */
+            }
+        </style>
+    @endpush
     <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">

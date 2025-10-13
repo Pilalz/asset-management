@@ -94,6 +94,7 @@
 
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
+
             <div class="grid grid-cols-1 gap-y-5 mb-5">
                 <div class="md:col-span-2">
                     <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
@@ -102,7 +103,7 @@
                 </div>
 
                 <div>
-                    <table class="text-md text-gray-900 dark:text-white">
+                    <table class="text-sm text-gray-900 dark:text-white">
                         <tr>
                             <td class="font-medium">Nomor Formulir</td>
                             <td class="px-2">:</td>
@@ -135,7 +136,7 @@
                 </div>
 
                 <div>
-                    <table class="text-md text-gray-900 dark:text-white">
+                    <table class="text-sm text-gray-900 dark:text-white">
                         <tr>
                             <td class="font-medium">Insured</td>
                             <td class="px-2">:</td>
@@ -163,117 +164,74 @@
                             </tr>
                         @endif
                     </table>
-                </div>
 
-                <!-- <div class="md:col-span-2">
-                    <div class="mb-5">
-                        @php
-                            $insuredText = $register_asset->insured;
-                            $insuredClass = '';
-
-                            if ($insuredText == 0) {
-                                $insuredClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
-                            } elseif ($insuredText == 1) {
-                                $insuredClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-                            } else { 
-                                $insuredClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
-                            }
-                        @endphp
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured  :  <span class="{{ $insuredClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->insured == 1) ? "Yes" : "No" }}</span></label>
-                    </div>
-
-                    @if($register_asset->insured == 1)
-                        <div class="mb-5 flex content-center">
-                            <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Polish No. </label>
-                            <span> : </span>
-                            <p class="ml-1 text-sm text-gray-900">{{ $register_asset->polish_no }}</p>
+                    <div class="mt-3 border-2 border-black rounded-lg p-4">
+                        <div class="relative overflow-x-auto">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="px-2 py-3">No</th>
+                                        <th scope="col" class="px-2 py-3">PO No.</th>
+                                        <th scope="col" class="px-2 py-3">Invoice No.</th>
+                                        <th scope="col" class="px-2 py-3">Commission Date</th>
+                                        <th scope="col" class="px-2 py-3">Specification</th>
+                                        <th scope="col" class="px-2 py-3">Asset Class</th>
+                                        <th scope="col" class="px-2 py-3">Asset Sub Class</th>
+                                        <th scope="col" class="px-2 py-3">Asset Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="asset-list-body">
+                                    @foreach($register_asset->detailRegisters as $detail)
+                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 asset-row">
+                                            <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white asset-row-number text-center">{{ $loop->iteration }}</td>
+                                            <td class="px-2 py-4">{{ $detail->po_no }}</td>
+                                            <td class="px-2 py-4">{{ $detail->invoice_no }}</td>
+                                            <td class="px-2 py-4">{{ $detail->commission_date }}</td>
+                                            <td class="px-2 py-4">{{ $detail->specification }}</td>
+                                            <td class="px-2 py-4">{{ $detail->assetName->assetSubClass->assetClass->name }}</td>
+                                            <td class="px-2 py-4">{{ $detail->assetName->assetSubClass->name }}</td>
+                                            <td class="px-2 py-4">{{ $detail->assetName->name }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                    @endif
-
-                    <div class="mb-5">
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Lampiran</label>
-                        @if($register_asset->attachments->isNotEmpty())
-                            <ul class="list-disc list-inside pl-4">
-                                @foreach($register_asset->attachments as $attachment)
-                                    <li>
-                                        <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
-                                            {{ $attachment->original_filename }}
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <p class="text-sm text-gray-500">Tidak ada lampiran.</p>
-                        @endif
                     </div>
-                </div> -->
-
-
-            </div>
-            
-            <!-- <div class="mb-5 flex content-center">
-                <label class="flex w-40 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir</label>
-                <span>:</span>
-                <span class="flex ml-1 text-sm text-gray-900">{{ $register_asset->form_no }}</span>
-            </div> -->
-
-            <!-- <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Department </label>
-                <span> : </span>
-                <p class="ml-1 text-sm text-gray-900">{{ $register_asset->department->name }}</p>
-            </div> -->
-
-            <!-- <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Location </label>
-                <span> : </span>
-                <p class="ml-1 text-sm text-gray-900">{{ $register_asset->location->name }}</p>
-            </div> -->
-
-            <!-- <div class="mb-5 flex content-center">
-                <label class="w-40 text-sm font-medium text-gray-900 dark:text-white">Asset Type </label>
-                <span> : </span>
-                <p class="ml-1 text-sm text-gray-900">{{ $register_asset->asset_type }}</p>
-            </div> -->
-
-            <!-- Asset List -->
-            <div class="mb-5">
-                <!-- <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset List </label> -->
-                <div class="border-2 border-black rounded-lg p-4">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" class="px-2 py-3">No</th>
-                                <th scope="col" class="px-2 py-3">PO No.</th>
-                                <th scope="col" class="px-2 py-3">Invoice No.</th>
-                                <th scope="col" class="px-2 py-3">Commission Date</th>
-                                <th scope="col" class="px-2 py-3">Specification</th>
-                                <th scope="col" class="px-2 py-3">Asset Class</th>
-                                <th scope="col" class="px-2 py-3">Asset Sub Class</th>
-                                <th scope="col" class="px-2 py-3">Asset Name</th>
-                            </tr>
-                        </thead>
-                        <tbody id="asset-list-body">
-                            @foreach($register_asset->detailRegisters as $detail)
-                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 asset-row">
-                                    <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white asset-row-number text-center">{{ $loop->iteration }}</td>
-                                    <td class="px-2 py-4">{{ $detail->po_no }}</td>
-                                    <td class="px-2 py-4">{{ $detail->invoice_no }}</td>
-                                    <td class="px-2 py-4">{{ $detail->commission_date }}</td>
-                                    <td class="px-2 py-4">{{ $detail->specification }}</td>
-                                    <td class="px-2 py-4">{{ $detail->assetName->assetSubClass->assetClass->name }}</td>
-                                    <td class="px-2 py-4">{{ $detail->assetName->assetSubClass->name }}</td>
-                                    <td class="px-2 py-4">{{ $detail->assetName->name }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval List </label>
-                <div class="border-2 border-black rounded-lg p-4">
-                    
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Attachment List
+                    </h2>
+                </div>
+
+                <div>
+                    @if($register_asset->attachments->isNotEmpty())
+                        <ul class="list-disc list-inside pl-4">
+                            @foreach($register_asset->attachments as $attachment)
+                                <li>
+                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
+                                        {{ $attachment->original_filename }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-sm text-gray-500">Tidak ada lampiran.</p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        Approval
+                    </h2>
+                </div>
+
+                <div>
                     <div class="flex flex-row mb-2">
                         @php
                             $sequenceText = $register_asset->sequence;
@@ -290,41 +248,45 @@
                         <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence  :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
                     </div>
 
-                    <hr class="mb-2">
-                    
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
-                                <th scope="col" class="px-2 py-3">Name</th>
-                                <th scope="col" class="px-2 py-3">Signature</th>
-                                <th scope="col" class="px-2 py-3">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="approval-list-body">
-                            @foreach($register_asset->approvals->sortBy('approval_order') as $approv)
-                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                    <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
-                                    <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
-                                    <td class="px-2 py-4">{{ $approv->pic?->name ?? "-" }}</td>
-                                    @if ($approv->status == 'approved' && $approv->user->signature)
-                                        <td class="px-2 py-4 status-pending">
-                                            <div class="signature-container">
-                                                <img src="{{ $approv->user->signature }}" alt="Signature" class="h-12">
-                                            </div>
-                                        </td>
-                                    @else
-                                        <td class="px-2 py-4 status-pending">{{ $approv->status}}</td>
-                                    @endif
-                                    <td class="px-2 py-4">{{ $approv->approval_date }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="mt-3 border-2 border-black rounded-lg p-4">
+                        <div class="relative overflow-x-auto">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
+                                        <th scope="col" class="px-2 py-3">Name</th>
+                                        <th scope="col" class="px-2 py-3">Signature</th>
+                                        <th scope="col" class="px-2 py-3">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="approval-list-body">
+                                    @foreach($register_asset->approvals->sortBy('approval_order') as $approv)
+                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
+                                            <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
+                                            <td class="px-2 py-4">{{ $approv->pic?->name ?? "-" }}</td>
+                                            @if ($approv->status == 'approved' && $approv->user->signature)
+                                                <td class="px-2 py-4 status-pending">
+                                                    <div class="signature-container">
+                                                        <img src="{{ $approv->user->signature }}" alt="Signature" class="h-12">
+                                                    </div>
+                                                </td>
+                                            @else
+                                                <td class="px-2 py-4 status-pending">{{ $approv->status}}</td>
+                                            @endif
+                                            <td class="px-2 py-4">{{ $approv->approval_date }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div class="flex gap-2 content-center">
-                <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
+                <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Back</a>
+
                 @if ($canApprove)
                     <button
                         type="button" 
@@ -362,7 +324,6 @@
                 @else
                     <p class="flex items-center">{{ $userApprovalStatus }}</p>
                 @endif
-
             </div>
         </div>
     </div>
