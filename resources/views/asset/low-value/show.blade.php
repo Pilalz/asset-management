@@ -42,7 +42,7 @@
     </div>
     
     <div class="p-5">
-        <div class="shadow-md sm:rounded-lg bg-white p-4 dark:bg-gray-800">
+        <div class="shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
             <h1 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Asset Details</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
                 <div class="md:col-span-2">
@@ -249,7 +249,7 @@
 
         </div>
 
-        <div class="shadow-md sm:rounded-lg mt-3 bg-white p-4 dark:bg-gray-800">
+        <div class="shadow-md rounded-lg mt-3 bg-white p-4 dark:bg-gray-800">
             <a href="{{ route('assetLVA.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
         </div>
     </div>

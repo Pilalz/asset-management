@@ -86,7 +86,7 @@
     @endif
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
             <form class="max-w mx-auto" action="{{ route('assetLVA.update', $asset->id) }}" method="POST">
                 @csrf
                 @method('PUT')

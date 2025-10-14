@@ -96,7 +96,7 @@
     @endif
     
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white p-4 dark:bg-gray-800">
+        <div class="relative overflow-x-auto shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
             {{-- Form untuk filter tahun jika perlu --}}
             <div class="mb-4 flex flex-row content-center">
                 <form method="GET" action="{{ route('depreciationFiscal.index') }}">

@@ -33,7 +33,7 @@
         </nav>
     </div>
 
-    <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg m-5 bg-white dark:bg-gray-900">
+    <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg m-5 bg-white dark:bg-gray-900">
         <form class="max-w mx-auto" action="{{ route('register-asset.update', $register_asset->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')

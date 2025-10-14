@@ -94,7 +94,7 @@
     @endif
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
             <div class="grid grid-cols-1 gap-y-5 mb-5">
                 <div class="md:col-span-1">
                     <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">

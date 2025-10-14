@@ -44,7 +44,7 @@
     </div>
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insurance Information </label>
             <div class="flex flex-row">
                 <div class="flex w-1/2">

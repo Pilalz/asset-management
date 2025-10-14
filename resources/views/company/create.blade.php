@@ -26,7 +26,7 @@
     </div>
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 sm:rounded-lg bg-white dark:bg-gray-900">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
             <form class="max-w mx-auto" action="{{ route('company.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-5">
@@ -105,8 +105,10 @@
                     @enderror
                 </div>
 
-                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
-                <a href="{{ route('company.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
+                <div class="flex flex-col gap-2 sm:flex-row">
+                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
+                    <a href="{{ route('company.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Cancel</a>
+                </div>
             </form>
         </div>
     </div>

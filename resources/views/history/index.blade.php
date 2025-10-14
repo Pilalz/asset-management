@@ -128,7 +128,7 @@
     @endif
     
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white p-4">
+        <div class="relative overflow-x-auto shadow-md rounded-lg bg-white p-4">
             <div id="date-range-picker" date-rangepicker class="flex items-center mb-4">
                 <div class="relative">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">

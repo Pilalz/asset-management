@@ -6,7 +6,7 @@
             /* Beri garis batas kanan pada kontainer kolom yang dibekukan */
             th.dtfc-fixed-left th.dtfc-fixed-start th.dt-orderable-none table.dtfc-scrolling-start table.dtfc-scrolling-left{
                 border: 1px solid #d1d5db !important; /* Warna border abu-abu standar */
-                color: red !important;
+                background: red !important;
             }
 
             /* Penyesuaian untuk tema gelap */
@@ -110,7 +110,7 @@
     @endif
     
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white p-4 dark:bg-gray-800">
+        <div class="relative overflow-x-auto shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
             {{-- Form untuk filter tahun jika perlu --}}
             <div class="mb-4 flex flex-row content-center">
                 <form method="GET" action="{{ route('depreciation.index') }}">
