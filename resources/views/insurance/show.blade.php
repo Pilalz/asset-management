@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -44,11 +44,11 @@
     </div>
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insurance Information </label>
             <div class="flex flex-row">
                 <div class="flex w-1/2">
-                    <table class="mb-4">
+                    <table class="mb-4 dark:text-gray-200">
                         <th>
                             <tr>
                                 <td>Polish No.</td>
@@ -114,8 +114,8 @@
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Data </label>
                 <div class="border-2 border-black rounded-lg p-4">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                             <tr>
                                 <th scope="col" class="px-2 py-3">Asset Number</th>
                                 <th scope="col" class="px-2 py-3">Asset Name</th>
@@ -148,7 +148,7 @@
             </div> 
             
             <div class="flex gap-2 content-center">
-                <a href="{{ route('insurance.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
+                <a href="{{ route('insurance.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200">Back</a>
             </div>
         </div>
     </div>

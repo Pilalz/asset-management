@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -88,11 +88,11 @@
     @endif
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
             <form class="max-w mx-auto" action="{{ route('register-asset.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="grid grid-cols-1 gap-y-5 mb-5 dark:text-white">
                     <div class="md:col-span-1">
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
                             Basic Information
@@ -112,7 +112,7 @@
                     <div class="flex content-center">
                         <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
                         <span> : </span>
-                        <select name="department_id" id="department-select" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                        <select name="department_id" id="department-select" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                             <option selected value="">Choose a Department</option>
                             @foreach($departments as $department)
                                 <option value="{{ $department->id }}" {{ old('department_id') == $department->id ? 'selected' : '' }}>
@@ -128,7 +128,7 @@
                     <div class="flex content-center">
                         <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Location <span class="text-red-900">*</span></label>
                         <span> : </span>
-                        <select name="location_id" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                        <select name="location_id" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                             <option selected value="">Choose a Location</option>
                             @foreach($locations as $location)
                                 <option value="{{ $location->id }}" {{ old('location_id') == $location->id ? 'selected' : '' }}>
@@ -142,7 +142,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-y-5 mb-5">
+                <div class="grid grid-cols-1 gap-y-5 mb-5 dark:text-white">
                     <div class="md:col-span-1">
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
                             Asset List
@@ -168,7 +168,7 @@
                     </div>
 
                     <div>
-                        <div class="border-2 border-black rounded-lg p-4">
+                        <div class="border-2 border-black rounded-lg p-4 dark:border-gray-400">
                             <div class="overflow-x-auto">
                                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -214,7 +214,7 @@
                                                     @enderror
                                                 </td>
                                                 <td class="px-2 py-4">
-                                                    <select name="assets[{{ $index }}][asset_class_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-class-select">
+                                                    <select name="assets[{{ $index }}][asset_class_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-class-select">
                                                         <option value="">Choose Asset Class</option>
                                                         @foreach($assetclasses as $class)
                                                             <option value="{{ $class->id }}" {{ old("assets.$index.asset_class_id", $assetData['asset_class_id'] ?? '') == $class->id ? 'selected' : '' }}>
@@ -227,7 +227,7 @@
                                                     @enderror
                                                 </td>
                                                 <td class="px-2 py-4">
-                                                    <select name="assets[{{ $index }}][asset_sub_class_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-sub-class-select">
+                                                    <select name="assets[{{ $index }}][asset_sub_class_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-sub-class-select">
                                                         <option value="">Choose Asset Sub Class</option>
                                                     </select>
                                                     @error("assets.$index.asset_sub_class_id")
@@ -235,7 +235,7 @@
                                                     @enderror
                                                 </td>
                                                 <td class="px-2 py-4">
-                                                    <select name="assets[{{ $index }}][asset_name_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-name-select">
+                                                    <select name="assets[{{ $index }}][asset_name_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-name-select">
                                                         <option value="">Choose Asset Name</option>
                                                     </select>
                                                     @error("assets.$index.asset_name_id")
@@ -301,7 +301,7 @@
                     </div>
 
                     <div>
-                        <div class="border-2 border-black rounded-lg p-4">
+                        <div class="border-2 border-black rounded-lg p-4 dark:border-gray-400">
                             
                             <div class="flex flex-row mb-2">
                                 <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
@@ -322,7 +322,7 @@
                             
                             <div class="overflow-x-auto">
                                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                         <tr class="text-center">
                                             <th scope="col" colspan="2" class="px-2 py-3">Persetujuan Approval</th>
                                             <th scope="col" class="px-2 py-3">Name</th>
@@ -334,19 +334,19 @@
                                         
                                         <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <input type="text" name="approvals[0][approval_action]" value="Submitted by" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                <input type="text" name="approvals[0][approval_action]" value="Submitted by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                 @error("approvals[0][approval_action]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </th>   
                                             <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <input type="text" name="approvals[0][role]" value="Asset Management" class="approval-role border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                <input type="text" name="approvals[0][role]" value="Asset Management" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                 @error("approvals[0][role]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </th>
                                             <td class="px-2 py-4">
-                                                <select name="approvals[0][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                <select name="approvals[0][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                     <option value="">Pilih Nama</option>
                                                     @foreach($personsInCharge as $pic)
                                                         {{-- Tambahkan atribut data-role di sini --}}
@@ -377,19 +377,19 @@
 
                                         <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <input type="text" name="approvals[1][approval_action]" value="Checked by" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                <input type="text" name="approvals[1][approval_action]" value="Checked by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                 @error("approvals[1][approval_action]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </th>
                                             <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <input type="text" name="approvals[1][role]" value="User Manager" class="approval-role border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                <input type="text" name="approvals[1][role]" value="User Manager" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                 @error("approvals[1][role]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </th>
                                             <td class="px-2 py-4">
-                                                <select name="approvals[1][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                <select name="approvals[1][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                     <option value="">Pilih Nama</option>
                                                     @foreach($personsInCharge as $pic)
                                                         {{-- Tambahkan atribut data-role di sini --}}
@@ -420,19 +420,19 @@
 
                                         <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <input type="text" name="approvals[2][approval_action]" value="Approved by" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                <input type="text" name="approvals[2][approval_action]" value="Approved by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                 @error("approvals[2][approval_action]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </th>
                                             <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <input type="text" name="approvals[2][role]" value="CFO" class="approval-role border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                <input type="text" name="approvals[2][role]" value="CFO" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                 @error("approvals[2][role]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </th>
                                             <td class="px-2 py-4">
-                                                <select name="approvals[2][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                <select name="approvals[2][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                     <option value="">Pilih Nama</option>
                                                     @foreach($personsInCharge as $pic)
                                                         {{-- Tambahkan atribut data-role di sini --}}
@@ -463,19 +463,19 @@
 
                                         <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <input type="text" name="approvals[3][approval_action]" value="Approved by" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                <input type="text" name="approvals[3][approval_action]" value="Approved by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                 @error("approvals[3][approval_action]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </th>
                                             <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <input type="text" name="approvals[3][role]" value="Director" class="approval-role border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                <input type="text" name="approvals[3][role]" value="Director" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                 @error("approvals[3][role]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </th>
                                             <td class="px-2 py-4">
-                                                <select name="approvals[3][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                <select name="approvals[3][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                     <option value="">Pilih Nama</option>
                                                     @foreach($personsInCharge as $pic)
                                                         {{-- Tambahkan atribut data-role di sini --}}
@@ -525,7 +525,7 @@
 
                 <div class="flex flex-col gap-2 sm:flex-row">
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
-                    <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Cancel</a>
+                    <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
                 </div>
             </form>
         </div>

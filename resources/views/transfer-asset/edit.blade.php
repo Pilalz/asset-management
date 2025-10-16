@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-400 dark:hover:text-white">
@@ -87,7 +87,7 @@
 
     <div class="p-5">
         <form class="max-w mx-auto" action="{{ route('transfer-asset.update', $transfer_asset->id) }}" method="POST" enctype="multipart/form-data">
-            <div class="border-b bg-white rounded-t-lg border-gray-200 dark:border-gray-700">
+            <div class="border-b bg-white rounded-t-lg border-gray-200 dark:border-gray-700 dark:bg-gray-800">
                 <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
                     <li class="me-2" role="presentation">
                         <button class="inline-block p-4 border-b-2 rounded-t-lg" id="formulir-tab" data-tabs-target="#formulir" type="button" role="tab" aria-controls="formulir" aria-selected="false">Form <span class="text-red-900">*</span></button>
@@ -102,9 +102,9 @@
             @method('PUT')
             <div id="default-tab-content">
                 <div class="hidden rounded-b-lg" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
-                    <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-900">
+                    <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-800">
 
-                        <div class="grid grid-cols-1 gap-y-5 mb-5">
+                        <div class="grid grid-cols-1 gap-y-5 mb-5 dark:text-white">
                             <div class="md:col-span-1">
                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
                                     Basic Information
@@ -134,7 +134,7 @@
                             <div class="flex content-center">
                                 <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Department <span class="text-red-900">*</span></label>
                                 <span> : </span>
-                                <select name="department_id" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                <select name="department_id" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                     @foreach($departments as $department)
                                         <option value="{{ $department->id }}" 
                                             {{ old('department_id', $transfer_asset->department_id) == $department->id ? 'selected' : '' }}>
@@ -150,7 +150,7 @@
                             <div class="flex content-center">
                                 <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Destination Location <span class="text-red-900">*</span></label>
                                 <span> : </span>
-                                <select name="destination_loc_id" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                <select name="destination_loc_id" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                     <option selected value="">Choose a Location</option>
                                     @foreach($locations as $location)
                                         <option value="{{ $location->id }}" {{ (old('destination_loc_id', $transfer_asset->destination_loc_id) == $location->id) ? 'selected' : '' }}>
@@ -182,11 +182,11 @@
                             </div>
 
                             <div>
-                                <label class="block mb-2 text-sm font-medium">Existing Attachments</label>
+                                <label class="block mb-2 text-sm font-medium dark:text-gray-200">Existing Attachments</label>
                                 <div id="existing-attachments-list">
                                     @foreach($transfer_asset->attachments as $attachment)
                                         <div class="flex items-center justify-between p-2 border-b" id="attachment-{{ $attachment->id }}">
-                                            <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
+                                            <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline dark:text-blue-400">
                                                 {{ $attachment->original_filename }}
                                             </a>
                                             <button type="button" class="text-red-600 hover:text-red-900 remove-attachment-btn" data-id="{{ $attachment->id }}">Hapus</button>
@@ -198,7 +198,7 @@
                             </div>
 
                             <div>
-                                <label class="block mb-2 text-sm font-medium">Add New Attachment</label>
+                                <label class="block mb-2 text-sm font-medium dark:text-gray-200">Add New Attachment</label>
                                 <input name="attachments[]" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" type="file" multiple>
                             </div>
                         </div>
@@ -211,7 +211,7 @@
                             </div>
 
                             <div>
-                                <div class="border-2 border-black rounded-lg p-4">
+                                <div class="border-2 border-black rounded-lg p-4 dark:border-gray-400">
                                     
                                     <div class="flex flex-row mb-2">
                                         <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
@@ -231,8 +231,8 @@
                                     <hr class="mb-2">
                                     
                                     <div class="overflow-x-auto">
-                                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                                 <tr class="text-center">
                                                     <th scope="col" colspan="2" class="px-2 py-3">Persetujuan Approval</th>
                                                     <th scope="col" class="px-2 py-3">Name</th>
@@ -245,13 +245,13 @@
                                                 @foreach($initialApprovals as $index => $approvalData)
                                                     <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                         <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                            <input type="text" name="approvals[{{$index}}][approval_action]" value="{{ old("approvals.$index.approval_action", $approvalData->approval_action ?? '') }}" class="border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                            <input type="text" name="approvals[{{$index}}][approval_action]" value="{{ old("approvals.$index.approval_action", $approvalData->approval_action ?? '') }}" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                             @error("approvals[{{$index}}][approval_action]")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
                                                         </th>   
                                                         <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                            <input type="text" name="approvals[{{$index}}][role]" value="{{ old("approvals.$index.role", $approvalData->role ?? '') }}" class="approval-role border border-white focus:ring-0 focus:border-white-600" readonly/>
+                                                            <input type="text" name="approvals[{{$index}}][role]" value="{{ old("approvals.$index.role", $approvalData->role ?? '') }}" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                             @error("approvals[{{$index}}][role]")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
@@ -259,7 +259,7 @@
 
                                                         @if ($approvalData->status === "pending")
                                                             <td class="px-2 py-4">
-                                                                <select name="approvals[{{$index}}][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                                <select name="approvals[{{$index}}][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                                     <option value="">Pilih Nama</option>
                                                                     @foreach($personsInCharge as $pic)
                                                                         {{-- Tambahkan atribut data-role di sini --}}
@@ -276,7 +276,7 @@
                                                             </td>
                                                         @else
                                                             <td class="px-2 py-4">
-                                                                <input type="text" name="approvals[{{$index}}][pic_id]" value="{{ old("approvals.$index.pic_id", $approvalData->pic->name ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                                <input type="text" name="approvals[{{$index}}][pic_id]" value="{{ old("approvals.$index.pic_id", $approvalData->pic->name ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                                 <input type="hidden" name="approvals[{{$index}}][pic_id]" value="{{ old("approvals.$index.pic_id", $approvalData->pic_id ?? '') }}" />
                                                                 @error("approvals[{{$index}}][pic_id]")
                                                                     <div class="text-danger">{{ $message }}</div>
@@ -333,8 +333,8 @@
 
                 <div class="hidden rounded-b-lg" id="asset" role="tabpanel" aria-labelledby="asset-tab">
                     <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-900">
-                        <table id="assetTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <table id="assetTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                 <tr>
                                     <th scope="col" class="px-6 py-3"><input type="checkbox" id="select-all-assets"></th>
                                     <th scope="col" class="px-6 py-3">No</th>
@@ -373,12 +373,12 @@
                             </tbody>
                         </table>
                         <div class="p-4">
-                            <span id="selected-count-display" class="font-bold">0 asset(s) selected</span>
+                            <span id="selected-count-display" class="font-bold dark:text-gray-200">0 asset(s) selected</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md flex flex-col gap-2 sm:flex-row">
+                <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md flex flex-col gap-2 sm:flex-row dark:bg-gray-800">
                     @if ($errors->any())
                         <div class="mb-4 p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">
                             <span class="font-medium">Validation Failed!</span> Please check the errors below:
@@ -392,7 +392,7 @@
 
                     <div class="flex flex-col gap-2 sm:flex-row">
                         <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
-                        <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Cancel</a>
+                        <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
                     </div>
                 </div>
             </div>

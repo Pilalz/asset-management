@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -94,7 +94,7 @@
     @endif
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
             
             <div class="grid grid-cols-1 gap-y-5 mb-5">
                 <div class="md:col-span-1">
@@ -125,7 +125,7 @@
 
                 <div>
                     <label class="block mb-2 w-40 text-sm font-medium text-gray-900 dark:text-white">Alasan :</label>
-                    <p class="w-auto px-1 border-b border-gray-700 text-sm text-gray-900">{{ $disposal_asset->reason }}</p>
+                    <p class="w-auto px-1 border-b border-gray-700 text-sm text-gray-900 dark:text-white">{{ $disposal_asset->reason }}</p>
                 </div>
 
                 <div>
@@ -166,10 +166,10 @@
 
                 <!-- Asset List -->
                 <div>                    
-                    <div class="border-2 border-black rounded-lg p-4">
+                    <div class="border-2 border-black rounded-lg p-4 dark:border-gray-400">
                         <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                     <tr>
                                         <th scope="col" class="px-2 py-3">No</th>
                                         <th scope="col" class="px-2 py-3">Asset</th>
@@ -217,14 +217,14 @@
                         <ul class="list-disc list-inside pl-4">
                             @foreach($disposal_asset->attachments as $attachment)
                                 <li>
-                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
+                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline dark:text-blue-400">
                                         {{ $attachment->original_filename }}
                                     </a>
                                 </li>
                             @endforeach
                         </ul>
                     @else
-                        <p class="text-sm text-gray-500">Tidak ada lampiran.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-300">Tidak ada lampiran.</p>
                     @endif
                 </div>
             </div>
@@ -237,7 +237,7 @@
                 </div>
 
                 <div>
-                    <div class="border-2 border-black rounded-lg p-4">
+                    <div class="border-2 border-black rounded-lg p-4 dark:border-gray-400">
                         
                         <div class="flex flex-row mb-2">
                             @php
@@ -258,8 +258,8 @@
                         <hr class="mb-2">
                         
                         <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                     <tr>
                                         <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
                                         <th scope="col" class="px-2 py-3">Name</th>
@@ -276,7 +276,7 @@
                                             @if ($approv->status == 'approved' && $approv->user->signature)
                                                 <td class="px-2 py-4 status-pending">
                                                     <div class="signature-container">
-                                                        <img src="{{ $approv->user->signature }}" alt="Signature" class="h-12">
+                                                        <img src="{{ $approv->user->signature }}" alt="Signature" class="h-12 dark:invert">
                                                     </div>
                                                 </td>
                                             @else
@@ -293,7 +293,7 @@
             </div>
 
             <div class="flex gap-2 content-center">
-                <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Back</a>
+                <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Back</a>
 
                 @if ($canApprove)
                     <button

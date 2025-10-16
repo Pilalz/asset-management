@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -93,7 +93,7 @@
     @endif
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
 
             <div class="grid grid-cols-1 gap-y-5 mb-5">
                 <div class="md:col-span-2">
@@ -165,10 +165,10 @@
                         @endif
                     </table>
 
-                    <div class="mt-3 border-2 border-black rounded-lg p-4">
+                    <div class="mt-3 border-2 border-black rounded-lg p-4 dark:border-gray-400">
                         <div class="relative overflow-x-auto">
-                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                     <tr>
                                         <th scope="col" class="px-2 py-3">No</th>
                                         <th scope="col" class="px-2 py-3">PO No.</th>
@@ -209,10 +209,10 @@
 
                 <div>
                     @if($register_asset->attachments->isNotEmpty())
-                        <ul class="list-disc list-inside pl-4">
+                        <ul class="list-disc list-inside pl-4 dark:text-gray-200">
                             @foreach($register_asset->attachments as $attachment)
                                 <li>
-                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
+                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline dark:text-blue-400">
                                         {{ $attachment->original_filename }}
                                     </a>
                                 </li>
@@ -248,10 +248,10 @@
                         <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence  :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($register_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
                     </div>
 
-                    <div class="mt-3 border-2 border-black rounded-lg p-4">
+                    <div class="mt-3 border-2 border-black rounded-lg p-4 dark:border-gray-400">
                         <div class="relative overflow-x-auto">
-                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                     <tr>
                                         <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
                                         <th scope="col" class="px-2 py-3">Name</th>
@@ -285,7 +285,7 @@
             </div>
 
             <div class="flex gap-2 content-center">
-                <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Back</a>
+                <a href="{{ route('register-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200">Back</a>
 
                 @if ($canApprove)
                     <button
@@ -311,7 +311,7 @@
                                     <button id="confirm-approve-btn" data-modal-hide="confirmation-modal" type="button" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                                         Ya, saya yakin
                                     </button>
-                                    <button data-modal-hide="confirmation-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 ...">
+                                    <button data-modal-hide="confirmation-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100">
                                         Batal
                                     </button>
                                 </div>
@@ -322,7 +322,7 @@
                         @csrf
                     </form>
                 @else
-                    <p class="flex items-center">{{ $userApprovalStatus }}</p>
+                    <p class="flex items-center dark:text-gray-200">{{ $userApprovalStatus }}</p>
                 @endif
             </div>
         </div>

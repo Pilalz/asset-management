@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -94,7 +94,7 @@
     @endif
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
             <div class="grid grid-cols-1 gap-y-5 mb-5">
                 <div class="md:col-span-1">
                     <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
@@ -141,10 +141,10 @@
                 </div>
 
                 <div>
-                    <div class="border-2 border-black rounded-lg p-4">
+                    <div class="border-2 border-black rounded-lg p-4 dark:border-gray-400">
                         <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                     <tr>
                                         <th scope="col" class="px-2 py-3">Asset Number</th>
                                         <th scope="col" class="px-2 py-3">Asset Name</th>
@@ -190,7 +190,7 @@
                         <ul class="list-disc list-inside pl-4">
                             @foreach($transfer_asset->attachments as $attachment)
                                 <li>
-                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline">
+                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-blue-800 hover:underline dark:text-blue-400">
                                         {{ $attachment->original_filename }}
                                     </a>
                                 </li>
@@ -226,10 +226,10 @@
                         <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence  :  <span class="{{ $sequenceClass }} font-medium px-2 py-0.5 rounded">{{ ($transfer_asset->sequence == 1) ? "Yes" : "No" }}</span></label>
                     </div>
 
-                    <div class="mt-3 border-2 border-black rounded-lg p-4">
+                    <div class="mt-3 border-2 border-black rounded-lg p-4 dark:border-gray-400">
                         <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                     <tr>
                                         <th scope="col" colspan="2" class="text-center px-2 py-3">Persetujuan Approval</th>
                                         <th scope="col" class="px-2 py-3">Name</th>
@@ -263,7 +263,7 @@
             </div>
 
             <div class="flex gap-2 content-center">
-                <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Back</a>
+                <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Back</a>
 
                 @if ($canApprove)
                     <button

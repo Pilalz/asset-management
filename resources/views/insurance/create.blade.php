@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -26,7 +26,7 @@
 
     <div class="p-5">
 
-        <div class="border-b bg-white rounded-t-lg border-gray-200 dark:border-gray-700">
+        <div class="border-b bg-white rounded-t-lg border-gray-200 dark:border-gray-700 dark:bg-gray-800">
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
                 <li class="me-2" role="presentation">
                     <button class="inline-block p-4 border-b-2 rounded-t-lg" id="formulir-tab" data-tabs-target="#formulir" type="button" role="tab" aria-controls="formulir" aria-selected="false">Form <span class="text-red-900">*</span></button>
@@ -40,13 +40,13 @@
         <form class="max-w mx-auto" action="{{ route('insurance.store') }}" method="POST">
             <div id="default-tab-content">
                 <div class="hidden rounded-b-lg" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
-                    <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-900">
+                    <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-800 dark:text-white">
                         @csrf
 
                         <div class="mb-5 flex content-center">
                             <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Polish No. <span class="text-red-900">*</span></label>
                             <span> : </span>
-                            <input type="text" name="polish_no" value="{{ old('polish_no') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="text" name="polish_no" value="{{ old('polish_no') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:text-white focus:ring-0"/>
                             @error('polish_no')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -55,7 +55,7 @@
                         <div class="mb-5 flex content-center">
                             <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Start Date <span class="text-red-900">*</span></label>
                             <span> : </span>
-                            <input type="date" name="start_date" value="{{ old('start_date') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="date" name="start_date" value="{{ old('start_date') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:text-white focus:ring-0"/>
                             @error('start_date')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -64,7 +64,7 @@
                         <div class="mb-5 flex content-center">
                             <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">End Date <span class="text-red-900">*</span></label>
                             <span> : </span>
-                            <input type="date" name="end_date" value="{{ old('end_date') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="date" name="end_date" value="{{ old('end_date') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:text-white focus:ring-0"/>
                             @error('end_date')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -73,7 +73,7 @@
                         <div class="mb-5 flex content-center">
                             <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Instance Name </label>
                             <span> : </span>
-                            <input type="text" name="instance_name" value="{{ old('instance_name') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="text" name="instance_name" value="{{ old('instance_name') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:text-white focus:ring-0"/>
                             @error('instance_name')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -82,7 +82,7 @@
                         <div class="mb-5 flex content-center">
                             <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Annual Payment </label>
                             <span> : </span>
-                            <input type="text" id="annual-display" value="{{ old('annual_premium') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:text-white focus:ring-0"/>
+                            <input type="text" id="annual-display" value="{{ old('annual_premium') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:text-white focus:ring-0"/>
                             <input type="hidden" id="annual-value" name="annual_premium" value="{{ old('annual_premium') }}" />
                             @error('annual_premium')
                                 <div class="text-danger">{{ $message }}</div>
@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="hidden rounded-b-lg" id="asset" role="tabpanel" aria-labelledby="asset-tab">
-                    <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-900">
+                    <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-800">
                         <table id="assetTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -147,13 +147,13 @@
                             </tbody>
                         </table>
                         <div class="p-4">
-                            <span id="selected-count-display" class="font-bold">0 asset(s) selected</span>
+                            <span id="selected-count-display" class="font-bold dark:text-white">0 asset(s) selected</span>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md">
+            <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md dark:bg-gray-800">
                 @if ($errors->any())
                     <div class="mb-4 p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">
                         <span class="font-medium">Validation Failed!</span> Please check the errors below:
@@ -167,7 +167,7 @@
 
                 <div class="flex flex-col gap-2 sm:flex-row">
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
-                    <a href="{{ route('insurance.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Cancel</a>
+                    <a href="{{ route('insurance.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
                 </div>
             </div>
         </form>
