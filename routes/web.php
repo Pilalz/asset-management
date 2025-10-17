@@ -174,4 +174,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/history', [HistoryController::class, 'datatables'])->name('api.history');
 
     Route::get('api/disposal-asset-find', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset-find');
+    Route::get('api/company-users/search', [PersonInChargeController::class, 'search'])->name('api.company-users.search');
 });

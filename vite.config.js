@@ -27,6 +27,8 @@ export default defineConfig({
                 'resources/js/pages/profileSignature.js',
                 //Alert
                 'resources/js/pages/alert.js',
+                //PIC Seach
+                'resources/js/pages/picSearch.js',
             ],
             refresh: true,
         }),

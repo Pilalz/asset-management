@@ -30,9 +30,20 @@
             <form class="max-w mx-auto" action="{{ route('person-in-charge.update', $personInCharge->id) }}" method="POST">
                 @csrf
                 @method('PUT')
+
+                <div class="mb-5">
+                    <label for="select-user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Search User by Email or Name</label>
+                    <select id="select-user" 
+                            placeholder="Ketik minimal 3 huruf..." 
+                            data-search-url="{{ route('api.company-users.search') }}"
+                            data-preselected='@json(['id' => $personInCharge->user->id, 'name' => $personInCharge->user->name, 'email' => $personInCharge->user->email])'>
+                    </select>
+                    <input type="hidden" name="user_id" id="user_id">
+                </div>
+
                 <div class="mb-5">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name <span class="text-red-900">*</span></label>
-                    <input type="text" name="name" value="{{ old('name', $personInCharge->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                    <input type="text" name="name" id="name" value="{{ old('name', $personInCharge->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                 </div>
 
                 <div class="mb-5">
@@ -58,3 +69,8 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    @vite('resources/js/pages/picSearch.js')
+    @vite('resources/js/pages/alert.js')
+@endpush

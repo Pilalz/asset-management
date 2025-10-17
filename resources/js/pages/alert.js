@@ -11,7 +11,6 @@ $(document).ready(function() {
             duration: 1000,
             timing: 'ease-out',
             onHide: (context, targetEl) => {
-                console.log(`Element dengan ID ${targetEl.id} telah disembunyikan.`);
             }
         };
 

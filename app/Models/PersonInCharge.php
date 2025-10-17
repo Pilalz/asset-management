@@ -20,12 +20,18 @@ class PersonInCharge extends Model
     protected $fillable = [
         'name',
         'position',
+        'user_id',
         'company_id',
     ];
 
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     protected static function booted(): void

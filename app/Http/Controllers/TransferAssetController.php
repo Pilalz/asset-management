@@ -352,7 +352,9 @@ class TransferAssetController extends Controller
                     ->when($transfer_asset->sequence === 1, function ($query) use ($nextApprover) {
                         return $query->where('approval_order', $nextApprover->approval_order);
                     })
-                    ->first();
+                    ->get();
+
+                    dd($approval);
 
                 if ($approval) {
                     $approval->update([

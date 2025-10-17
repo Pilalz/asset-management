@@ -3,11 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Asset;
-use App\Models\Depreciation;
-use App\Models\Location;
-use Carbon\Carbon;
-use App\Scopes\CompanyScope;
+use App\Models\Company;
+use App\Jobs\RunBulkDepreciation;
 
 class CalculateDepreciation extends Command
 {
@@ -30,81 +27,24 @@ class CalculateDepreciation extends Command
      */
     public function handle()
     {
-        $this->info('Starting monthly depreciation calculation...');
+        
+        $this->info('Dispatching monthly depreciation jobs for all active companies...');
 
-        $today = Carbon::now()->endOfMonth();
-        $types = ['commercial', 'fiscal'];
+        // Ambil semua ID perusahaan yang aktif
+        $companyIds = Company::pluck('id');
 
-        foreach ($types as $type) {
-            $this->info("Processing '{$type}' depreciation for {$today->format('F Y')}...");
-
-            // Tentukan nama kolom dinamis berdasarkan tipe
-            $usefulLifeCol = $type . '_useful_life_month';
-            $accumDepreCol = $type . '_accum_depre';
-            $nbvCol        = $type . '_nbv';
-
-            // Ambil semua aset yang aktif, relevan, dan belum lunas untuk TIPE INI
-            $assetsToDepreciate = Asset::withoutGlobalScope(CompanyScope::class)
-                ->whereNotIn('status', ['Sold', 'Disposed'])
-                ->where('asset_type', 'FA')
-                ->where('start_depre_date', '<=', now())
-                ->where($usefulLifeCol, '>', 0) // Pastikan masa manfaat valid untuk tipe ini
-                ->whereColumn($accumDepreCol, '<', 'acquisition_value') // Cek jika belum lunas untuk tipe ini
-                ->get();
-
-            if ($assetsToDepreciate->isEmpty()) {
-                $this->line("No assets to depreciate for '{$type}' type this month.");
-                continue; // Lanjut ke tipe berikutnya
-            }
-
-            foreach ($assetsToDepreciate as $asset) {
-                // Cek apakah depresiasi untuk TIPE ini sudah pernah dijalankan
-                $alreadyRun = Depreciation::withoutGlobalScope(CompanyScope::class)
-                    ->where('asset_id', $asset->id)
-                    ->where('type', $type) // <-- Pengecekan baru
-                    ->whereYear('depre_date', $today->year)
-                    ->whereMonth('depre_date', $today->month)
-                    ->exists();
-
-                if ($alreadyRun) {
-                    $this->line("Skipping asset #{$asset->asset_number}: '{$type}' depreciation already run.");
-                    continue;
-                }
-
-                // Lakukan kalkulasi menggunakan kolom dinamis
-                $monthlyDepre = $asset->acquisition_value / $asset->$usefulLifeCol;
-                $newAccumDepre = $asset->$accumDepreCol + $monthlyDepre;
-                $newBookValue = $asset->acquisition_value - $newAccumDepre;
-
-                // Jangan biarkan book value menjadi negatif
-                if ($newBookValue < 0) {
-                    $monthlyDepre += $newBookValue;
-                    $newBookValue = 0;
-                    $newAccumDepre = $asset->acquisition_value;
-                }
-
-                // Simpan record depresiasi baru dengan menyertakan tipe
-                Depreciation::create([
-                    'asset_id'          => $asset->id,
-                    'type'              => $type, // <-- Simpan jenisnya
-                    'depre_date'        => $today,
-                    'monthly_depre'     => $monthlyDepre,
-                    'accumulated_depre' => $newAccumDepre,
-                    'book_value'        => $newBookValue,
-                    'company_id'        => $asset->company_id,
-                ]);
-
-                // Update nilai di tabel aset utama menggunakan kolom dinamis
-                $asset->update([
-                    $accumDepreCol => $newAccumDepre,
-                    $nbvCol        => $newBookValue,
-                ]);
-
-                $this->info("Success for asset #{$asset->asset_number} ({$type}).");
-            }
+        if ($companyIds->isEmpty()) {
+            $this->info('No active companies found.');
+            return 0;
         }
 
-        $this->info('Monthly depreciation calculation finished.');
+        // Kirim satu job untuk setiap perusahaan ke dalam antrian
+        foreach ($companyIds as $companyId) {
+            RunBulkDepreciation::dispatch($companyId);
+            $this->info("Job dispatched for Company ID: {$companyId}");
+        }
+
+        $this->info('All depreciation jobs have been dispatched successfully.');
         return 0;
     }
 }

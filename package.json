@@ -24,6 +24,7 @@
         "datatables.net-fixedheader-dt": "^4.0.4",
         "flowbite": "^3.1.2",
         "jquery": "^3.7.1",
-        "signature_pad": "^5.0.10"
+        "signature_pad": "^5.0.10",
+        "tom-select": "^2.4.3"
     }
 }

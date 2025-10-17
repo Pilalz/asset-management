@@ -11,6 +11,7 @@ use App\Models\CompanyUser;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Scopes\UserCompanyScope;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
@@ -86,5 +87,10 @@ class User extends Authenticatable
                 return $companyUser?->role; // Mengembalikan nama role (string) atau null
             }
         );
+    }
+
+    public function personInCharge(): HasOne
+    {
+        return $this->hasOne(PersonInCharge::class);
     }
 }

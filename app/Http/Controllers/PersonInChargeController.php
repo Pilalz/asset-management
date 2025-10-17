@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PersonInCharge;
+use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Gate;
@@ -27,6 +28,7 @@ class PersonInChargeController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'max:255',
+            'user_id' => 'required',
             'company_id'  => 'required',
         ]);
 
@@ -39,6 +41,8 @@ class PersonInChargeController extends Controller
     {
         Gate::authorize('is-admin');
 
+        $personInCharge->load('user');
+
         return view('person-in-charge.edit', compact('personInCharge'));
     }
 
@@ -46,7 +50,8 @@ class PersonInChargeController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'position' => 'required|string|max:255'
+            'position' => 'required|string|max:255',
+            'user_id' => 'required'
         ]);
 
         $dataToUpdate = $validatedData;
@@ -82,5 +87,29 @@ class PersonInChargeController extends Controller
             })
             ->rawColumns(['action'])
             ->toJson();
+    }
+
+    public function search(Request $request)
+    {
+        $companyId = session('active_company_id');
+        $searchTerm = $request->query('q', '');
+
+        // Hanya cari jika ada input dan panjangnya minimal 3 karakter
+        if (!$companyId || strlen($searchTerm) < 3) {
+            return response()->json([]);
+        }
+
+        $users = User::query()
+            ->whereHas('companies', function($query) use ($companyId) {
+                $query->where('companies.id', $companyId);
+            })
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'like', "%{$searchTerm}%")
+                      ->orWhere('email', 'like', "%{$searchTerm}%");
+            })
+            ->limit(10)
+            ->get(['id', 'name', 'email']);
+
+        return response()->json($users);
     }
 }

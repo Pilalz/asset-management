@@ -84,8 +84,17 @@
             <form class="max-w mx-auto" action="{{ route('person-in-charge.store') }}" method="POST">
                 @csrf
                 <div class="mb-5">
+                    <label for="select-user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Search User by Email or Name</label>
+                    <select id="select-user" 
+                            placeholder="Ketik minimal 3 huruf..." 
+                            data-search-url="{{ route('api.company-users.search') }}">
+                    </select>
+                    <input type="hidden" name="user_id" id="user_id">
+                </div>
+
+                <div class="mb-5">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name <span class="text-red-900">*</span></label>
-                    <input type="name" name="name" value="{{ old('name') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                    <input type="name" name="name" id="name" value="{{ old('name') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                     @error('name')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -111,9 +120,14 @@
 
                 <div class="flex flex-col gap-2 sm:flex-row">
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
-                    <a href="{{ route('person-in-charge.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
+                    <a href="{{ route('person-in-charge.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    @vite('resources/js/pages/picSearch.js')
+    @vite('resources/js/pages/alert.js')
+@endpush
