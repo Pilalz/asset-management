@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Registrasi Aset - {{ $disposal_asset->form_no }}</title>
+    <title>Form Disposal Aset - {{ $disposal_asset->form_no }}</title>
     <style>
         body { 
             font-family: 'Helvetica', sans-serif; 
@@ -11,13 +11,15 @@
             padding: 10px;
         }
         .container { 
-            width: 100%; 
+            height: 1000px;
             margin: 0 auto; 
-            padding-top: 15px
+        }
+        .container2 { 
+            height: 100vh;
+            margin: 0 auto; 
         }
         .header-logo > table td, th {
             border: 0px solid black;
-            border-bottom: 2px solid black;
         }
         .rightText {
             text-align: right;
@@ -31,7 +33,7 @@
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin-top: 20px; 
+            margin-top: 5px; 
         }
         th { 
             border: 1px solid black; 
@@ -44,12 +46,12 @@
             text-align: left; 
         }
         .header-info { 
-            margin-bottom: 20px; 
+            margin-bottom: 5px; 
         }
         .header-info table { 
             width: 50%; 
             border: none; 
-            margin: 30px 0 30px 0;
+            margin: 10px 0 10px 0;
         }
         .header-info td { 
             border: none; 
@@ -57,6 +59,7 @@
         }
         .approval-table td { 
             text-align:center; 
+            margin:15px 0 0 0;
         }
         .approval-table img { 
             max-height: 40px; 
@@ -106,42 +109,52 @@
             </table>
         </div>
 
-        <p><strong>1. Data Asset <i>(Asset Data)</i></strong></p>
-        <table>
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Nomor Asset <br> <i>(Asset No.)</i></th>
-                    <th>Nama Asset <br> <i>(Asset Name)</i></th>
-                    <th>No. Unit <br> <i>(Unit No.)</i></th>
-                    <th>No. Mesin <br> <i>(Machine No.)</i></th>
-                    <th>Tahun Produksi <br> <i>(Manufacturing Date)</i></th>
-                    <th>Tahun Pembelian <br> <i>(Year Of Purchase)</i></th>
-                    <th>Lokasi Unit <br> <i>(Unit Location)</i></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($disposal_asset->detailDisposals as $detail)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $detail->asset?->asset_number ?? "-" }}</td>
-                    <td>{{ $detail->asset?->assetName?->name ?? "-" }}</td>                    
-                    <td>{{ $detail->asset?->unit_no ?? "-" }}</td>
-                    <td>{{ $detail->asset?->sn_engine ?? "-" }}</td>
-                    <td>{{ $detail->asset?->production_year ? \Carbon\Carbon::parse($detail->asset->production_year)->translatedFormat('Y') : "-" }}</td>
-                    <td>{{ $detail->asset?->capitalized_date ? \Carbon\Carbon::parse($detail->asset->capitalized_date)->translatedFormat('d F Y') : "-" }}</td>
-                    <td>{{ $detail->asset?->location?->name ?? "-" }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
         <div class="header-info">
             <table>
+                <tr>
+                    <td><p><strong>1. Data Asset <i>(Asset Data)</i></strong></p></td>
+                </tr>
+                <tr>
+                    <td>Nomor Asset <i>(Asset No.)</i></td>
+                    <td>: Terlampir</td>
+                </tr>
+                <tr>
+                    <td>Nama Asset <i>(Asset Name)</i></td>
+                    <td>: Terlampir</td>
+                </tr>
+                <tr>
+                    <td>No. Unit <i>(Unit No.)</i></td>
+                    <td>: Terlampir</td>
+                </tr>
+                <tr>
+                    <td>No. Mesin <i>(Machine No.)</i></td>
+                    <td>: Terlampir</td>
+                </tr>
+                <tr>
+                    <td>No. Engine <i>(Engine No.)</i></td>
+                    <td>: Terlampir</td>
+                </tr>
+                <tr>
+                    <td>Tahun Produksi <i>(Manufacturing Date)</i></td>
+                    <td>: Terlampir</td>
+                </tr>
+                <tr>
+                    <td>Tahun Pembelian <i>(Year Of Purchase)</i></td>
+                    <td>: Terlampir</td>
+                </tr>
+                <tr>
+                    <td>Lokasi Unit <i>(Unit Location)</i></td>
+                    <td>: Terlampir</td>
+                </tr>
                 <tr>
                     <td>Alasan Pelepasan <i>(Reason of Disposal)</i></td>
                     <td>: {{ $disposal_asset->reason }}</td>
                 </tr>
+            </table>
+        </div>
+
+        <div class="header-info">
+            <table>
                 @if($activeCompany->currency === 'USD')
                     <tr>
                         <td>Nilai Buku <i>(Nett Book Value)</i></td>
@@ -191,7 +204,36 @@
                 @endforeach
             </tbody>
         </table>
-
+    </div>
+    <div class="container2">
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Nomor Asset <br> <i>(Asset No.)</i></th>
+                    <th>Nama Asset <br> <i>(Asset Name)</i></th>
+                    <th>No. Unit <br> <i>(Unit No.)</i></th>
+                    <th>No. Mesin <br> <i>(Machine No.)</i></th>
+                    <th>Tahun Produksi <br> <i>(Manufacturing Date)</i></th>
+                    <th>Tahun Pembelian <br> <i>(Year Of Purchase)</i></th>
+                    <th>Lokasi Unit <br> <i>(Unit Location)</i></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($disposal_asset->detailDisposals as $detail)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $detail->asset?->asset_number ?? "-" }}</td>
+                    <td>{{ $detail->asset?->assetName?->name ?? "-" }}</td>                    
+                    <td>{{ $detail->asset?->unit_no ?? "-" }}</td>
+                    <td>{{ $detail->asset?->sn_engine ?? "-" }}</td>
+                    <td>{{ $detail->asset?->production_year ? \Carbon\Carbon::parse($detail->asset->production_year)->translatedFormat('Y') : "-" }}</td>
+                    <td>{{ $detail->asset?->capitalized_date ? \Carbon\Carbon::parse($detail->asset->capitalized_date)->translatedFormat('d F Y') : "-" }}</td>
+                    <td>{{ $detail->asset?->location?->name ?? "-" }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

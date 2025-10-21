@@ -26,25 +26,13 @@ class CompanyUserController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'email' => 'required|email|exists:users,email',
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
             'role' => 'required|string',
+            'company_id' => 'required'
         ]);
 
-        $userToAdd = User::where('email', $validated['email'])->first();
-        $activeCompanyId = Session::get('active_company_id');
-        
-        $isAlreadyMember = CompanyUser::where('user_id', $userToAdd->id)->where('company_id', $activeCompanyId)->exists();
-
-        if ($isAlreadyMember) {
-            return redirect()->back()->withInput()->with('error', 'User ini sudah menjadi anggota perusahaan.');
-        }
-
-        CompanyUser::create([
-            'user_id' => $userToAdd->id,
-            'company_id' => $activeCompanyId,
-            'role' => $validated['role'],
-        ]);
+        CompanyUser::create($request->all());
 
         return redirect()->route('company-user.index')->with('success', 'Data berhasil ditambah');
     }
@@ -103,5 +91,29 @@ class CompanyUserController extends Controller
             })
             ->rawColumns(['action'])
             ->toJson();
+    }
+
+    public function search(Request $request)
+    {
+        $companyId = session('active_company_id');
+        $searchTerm = $request->query('q', '');
+
+        // Hanya cari jika ada input dan panjangnya minimal 3 karakter
+        if (!$companyId || strlen($searchTerm) < 3) {
+            return response()->json([]);
+        }
+
+        $users = User::query()
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'like', "%{$searchTerm}%")
+                      ->orWhere('email', 'like', "%{$searchTerm}%");
+            })
+            ->whereDoesntHave('companies', function($query) use ($companyId) {
+                $query->where('companies.id', $companyId);
+            })
+            ->limit(10)
+            ->get(['id', 'name', 'email']);
+
+        return response()->json($users);
     }
 }

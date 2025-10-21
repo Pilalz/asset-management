@@ -14,7 +14,6 @@ use Spatie\Activitylog\LogOptions;
 class CompanyUser extends Pivot
 {
     use HasFactory;
-    use LogsActivity;
 
     protected $table = 'company_users';
 
@@ -68,29 +67,5 @@ class CompanyUser extends Pivot
                 $user->update(['last_active_company_id' => $companyUser->company_id]);
             }
         });
-    }
-
-    public function getUserNameAttribute()
-    {
-        return $this->user->name ?? null;
-    }
-
-    public function getCompanyNameAttribute()
-    {
-        return $this->company->name ?? null;
-    }
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->setDescriptionForEvent(function(string $eventName) {
-                $userName = $this->user->name;
-                $company = $this->company->name;
-
-                return "User '{$userName}' has been {$eventName} to {$company}";
-            })
-            ->useLogName(session('active_company_id'))
-            ->logExcept(['status'])
-            ->logOnly(['user_name', 'company_name', 'role']);
     }
 }

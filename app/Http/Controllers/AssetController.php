@@ -25,7 +25,29 @@ class AssetController extends Controller
 {
     public function index()
     {
-        return view('asset.fixed.index');
+        $currentYear = Carbon::now()->year;
+        $currentMonth = Carbon::now()->month;
+
+        // Query untuk mencari aset yang belum terdepresiasi bulan ini
+        $assetsNotDepreciated = Asset::query()
+            
+            // === Kriteria A: Aset ini harus aktif dan bisa didepresiasi ===
+            ->where('asset_type', 'FA')
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
+            ->where('commercial_nbv', '>', 0) // Memastikan aset belum lunas
+            ->where('start_depre_date', '<=', now()) // Memastikan sudah waktunya didepresiasi
+            
+            // === Kriteria B: Aset ini BELUM memiliki catatan depresiasi untuk bulan ini ===
+            ->whereDoesntHave('depreciations', function ($query) use ($currentYear, $currentMonth) {
+                $query->where('type', 'commercial')
+                    ->whereYear('depre_date', $currentYear)
+                    ->whereMonth('depre_date', $currentMonth);
+            })
+            ->get();
+            // dd($assetsNotDepreciated);
+        return view('asset.fixed.index', compact('assetsNotDepreciated'));
     }
 
     public function show(Request $request, Asset $asset)

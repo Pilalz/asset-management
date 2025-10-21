@@ -35,7 +35,7 @@
                     <label for="select-user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Search User by Email or Name</label>
                     <select id="select-user" 
                             placeholder="Ketik minimal 3 huruf..." 
-                            data-search-url="{{ route('api.company-users.search') }}"
+                            data-search-url="{{ route('api.pic-users.search') }}"
                             data-preselected='@json(['id' => $personInCharge->user->id, 'name' => $personInCharge->user->name, 'email' => $personInCharge->user->email])'>
                     </select>
                     <input type="hidden" name="user_id" id="user_id">

@@ -84,11 +84,12 @@
             <form class="max-w mx-auto" action="{{ route('company-user.store') }}" method="POST">
                 @csrf
                 <div class="mb-5">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email User <span class="text-red-900">*</span></label>
-                    <input type="email" name="email" value="{{ old('email') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="user@gmail.com" required />
-                    @error('email')
-                        <div class="text-danger">{{ $message }}</div>
-                    @enderror
+                    <label for="select-user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Search User by Email or Name</label>
+                    <select id="select-user" 
+                            placeholder="Ketik minimal 3 huruf..." 
+                            data-search-url="{{ route('api.users.search') }}">
+                    </select>
+                    <input type="hidden" name="user_id" id="user_id">
                 </div>
 
                 <div class="mb-5">
@@ -109,6 +110,17 @@
                 
                 <input type="hidden" name="company_id" value="{{ Auth::user()->last_active_company_id }}" required />
 
+                @if ($errors->any())
+                    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                        <span class="font-medium">Validasi Gagal!</span> Mohon periksa error di bawah ini:
+                        <ul class="mt-1.5 list-disc list-inside">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <div class="flex flex-col gap-2 sm:flex-row">
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
                     <a href="{{ route('company-user.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
@@ -117,3 +129,8 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    @vite('resources/js/pages/userSearch.js')
+    @vite('resources/js/pages/alert.js')
+@endpush
