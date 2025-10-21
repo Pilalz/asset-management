@@ -9,6 +9,7 @@ use App\Models\Location;
 use App\Models\Department;
 use App\Models\Attachment;
 use App\Models\PersonInCharge;
+use App\Models\Approval;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -285,6 +286,24 @@ class TransferAssetController extends Controller
     {
         // Eager load relasi untuk efisiensi
         $transfer_asset->load('approvals.pic', 'department', 'destinationLocation', 'detailTransfers', 'attachments');
+
+        $user = Auth::user();
+
+        $approval = $transfer_asset->approvals()
+            ->where('role', $user->role)
+            ->where('status', 'pending')
+            ->get();
+
+        $approval1 = PersonInCharge::find($approval[0]->pic_id);
+        $approval1 = PersonInCharge::where('user_id', $approval1->user_id)->get();
+
+        if(count($approval1) > 1){
+            $approval = Approval::where('status', 'pending')
+                ->where('approvable_type', $approval[0]->approvable_type)
+                ->where('approvable_id', $approval[0]->approvable_id)
+                ->whereIn('pic_id', [$approval1[0]->id, $approval1[1]->id])
+                ->get();
+        }
         
         $canApprove = false;
         $userApprovalStatus = null;
@@ -318,7 +337,7 @@ class TransferAssetController extends Controller
                 $userApprovalStatus = 'Anda tidak memiliki role di perusahaan ini.';
             }
         }
-        return view('transfer-asset.show', compact('transfer_asset', 'canApprove', 'userApprovalStatus'));
+        return view('transfer-asset.show', compact('transfer_asset', 'canApprove', 'userApprovalStatus', 'approval'));
     }
 
     public function approve(Request $request, TransferAsset $transfer_asset)
@@ -354,17 +373,29 @@ class TransferAssetController extends Controller
                     })
                     ->get();
 
-                    dd($approval);
+                $approval1 = PersonInCharge::find($approval[0]->pic_id);
+                $approval1 = PersonInCharge::where('user_id', $approval1->user_id)->get();
 
-                if ($approval) {
-                    $approval->update([
-                        'status' => 'approved',
-                        'approval_date' => now(),
-                        'user_id' => $user->id,
-                    ]);
-                } else {
-                    // Throw exception jika approval tidak ditemukan, untuk membatalkan transaksi
-                    throw new \Exception("Approval yang valid tidak ditemukan untuk peran Anda.");
+                if(count($approval1) > 1){
+                    $approval = Approval::where('status', 'pending')
+                        ->where('approvable_type', $approval[0]->approvable_type)
+                        ->where('approvable_id', $approval[0]->approvable_id)
+                        ->whereIn('pic_id', [$approval1[0]->id, $approval1[1]->id])
+                        ->get();
+                        dd($approval);
+                }
+                else{
+                    dd("1");
+                    if ($approval) {
+                        $approval->update([
+                            'status' => 'approved',
+                            'approval_date' => now(),
+                            'user_id' => $user->id,
+                        ]);
+                    } else {
+                        // Throw exception jika approval tidak ditemukan, untuk membatalkan transaksi
+                        throw new \Exception("Approval yang valid tidak ditemukan untuk peran Anda.");
+                    }
                 }
 
                 // 2. Cek apakah semua approval sudah selesai

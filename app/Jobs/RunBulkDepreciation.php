@@ -145,6 +145,9 @@ class RunBulkDepreciation implements ShouldQueue
                     }
 
                     Cache::put($this->jobId, ['status' => 'completed', 'progress' => 100, 'message' => 'Semua asset berhasil di depresiasi.'], now()->addHour());
+                    
+                    $cacheKey = 'assets_not_depreciated_' . $this->companyId . '_' . Carbon::now()->year . '-' . Carbon::now()->month;
+                    Cache::forget($cacheKey);
 
                 } catch (Throwable $e) {
                     Cache::put($this->jobId, ['status' => 'failed', 'error' => $e->getMessage()], now()->addHour());

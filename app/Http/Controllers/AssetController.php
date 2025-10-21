@@ -20,33 +20,45 @@ use App\Exports\AssetsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Cache;
 
 class AssetController extends Controller
 {
     public function index()
     {
+        $companyId = session('active_company_id');
         $currentYear = Carbon::now()->year;
         $currentMonth = Carbon::now()->month;
 
-        // Query untuk mencari aset yang belum terdepresiasi bulan ini
-        $assetsNotDepreciated = Asset::query()
-            
-            // === Kriteria A: Aset ini harus aktif dan bisa didepresiasi ===
-            ->where('asset_type', 'FA')
-            ->where('assets.status', '!=', 'Sold')
-            ->where('assets.status', '!=', 'Onboard')
-            ->where('assets.status', '!=', 'Disposal')
-            ->where('commercial_nbv', '>', 0) // Memastikan aset belum lunas
-            ->where('start_depre_date', '<=', now()) // Memastikan sudah waktunya didepresiasi
-            
-            // === Kriteria B: Aset ini BELUM memiliki catatan depresiasi untuk bulan ini ===
-            ->whereDoesntHave('depreciations', function ($query) use ($currentYear, $currentMonth) {
-                $query->where('type', 'commercial')
-                    ->whereYear('depre_date', $currentYear)
-                    ->whereMonth('depre_date', $currentMonth);
-            })
-            ->get();
-            // dd($assetsNotDepreciated);
+        $cacheKey = 'assets_not_depreciated_' . $companyId . '_' . $currentYear . '-' . $currentMonth;
+
+        $assetsNotDepreciated = Cache::remember(
+            $cacheKey,
+            now()->addHour(), // Simpan hasil query selama 1 jam
+            function () use ($companyId, $currentYear, $currentMonth) {
+                return Asset::query()
+                    ->where('asset_type', 'FA')
+                    ->where('assets.status', '!=', 'Sold')
+                    ->where('assets.status', '!=', 'Onboard')
+                    ->where('assets.status', '!=', 'Disposal')
+                    ->where('commercial_nbv', '>', 0)
+                    ->where('start_depre_date', '<=', now())
+                    ->where('company_id', $companyId)
+                    // Aset ini BELUM memiliki catatan depresiasi untuk bulan ini ===
+                    ->whereDoesntHave('depreciations', function ($query) use ($currentYear, $currentMonth) {
+                        $query->where('type', 'commercial')
+                            ->whereYear('depre_date', $currentYear)
+                            ->whereMonth('depre_date', $currentMonth);
+                    })
+                    ->whereDoesntHave('depreciations', function ($query) use ($currentYear, $currentMonth) {
+                        $query->where('type', 'fiscal')
+                            ->whereYear('depre_date', $currentYear)
+                            ->whereMonth('depre_date', $currentMonth);
+                    })
+                    ->get();
+            }
+        );    
+
         return view('asset.fixed.index', compact('assetsNotDepreciated'));
     }
 
@@ -143,6 +155,9 @@ class AssetController extends Controller
         $dataToUpdate = $validatedData;
 
         $asset->update($dataToUpdate);
+        
+        $cacheKey = 'assets_not_depreciated_' . $asset->company_id . '_' . Carbon::now()->year . '-' . Carbon::now()->month;
+        Cache::forget($cacheKey);
 
         return redirect()->route('asset.index')->with('success', 'Data berhasil diperbarui!');
     }
