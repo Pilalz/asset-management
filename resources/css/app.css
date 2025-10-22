@@ -1,4 +1,5 @@
 @import 'datatables.net-dt'; 
+@import "tom-select/dist/css/tom-select.css";
 
 @tailwind base;
 @tailwind components;

@@ -382,10 +382,16 @@ class TransferAssetController extends Controller
                         ->where('approvable_id', $approval[0]->approvable_id)
                         ->whereIn('pic_id', [$approval1[0]->id, $approval1[1]->id])
                         ->get();
-                        dd($approval);
+                        
+                    foreach ($approval as $approval){
+                        $approval->update([
+                            'status' => 'approved',
+                            'approval_date' => now(),
+                            'user_id' => $user->id,
+                        ]);
+                    }
                 }
                 else{
-                    dd("1");
                     if ($approval) {
                         $approval->update([
                             'status' => 'approved',

@@ -14,6 +14,9 @@ import Alpine from 'alpinejs';
 import ApexCharts from 'apexcharts';
 window.ApexCharts = ApexCharts;
 
+import TomSelect from 'tom-select';
+window.TomSelect = TomSelect;
+
 window.Alpine = Alpine;
 Alpine.start();
 
