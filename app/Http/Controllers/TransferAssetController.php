@@ -8,7 +8,7 @@ use App\Models\Asset;
 use App\Models\Location;
 use App\Models\Department;
 use App\Models\Attachment;
-use App\Models\PersonInCharge;
+use App\Models\User;
 use App\Models\Approval;
 
 use Illuminate\Support\Facades\Auth;
@@ -39,9 +39,12 @@ class TransferAssetController extends Controller
 
         $locations = Location::all();
         $departments = Department::all();
-        $personsInCharge = PersonInCharge::all();
+        $users = User::join('company_users', 'users.id', '=', 'company_users.user_id')
+            ->where('company_users.company_id', session('active_company_id'))
+            ->select('users.id', 'users.name', 'company_users.role as user_role')
+            ->get();
 
-        $lastTransferAsset = TransferAsset::latest('id')->first();
+        $lastTransferAsset = TransferAsset::withTrashed()->latest('id')->first();
         $seq = 1;
 
         if ($lastTransferAsset){
@@ -52,7 +55,7 @@ class TransferAssetController extends Controller
         $formattedSeq = str_pad($seq, 5, '0', STR_PAD_LEFT);
         $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq ;
         
-        return view('transfer-asset.create', compact('locations', 'departments', 'form_no', 'personsInCharge'));
+        return view('transfer-asset.create', compact('locations', 'departments', 'form_no', 'users'));
     }
 
     public function store(Request $request)
@@ -76,7 +79,7 @@ class TransferAssetController extends Controller
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
             'approvals.*.role'              => 'required|string|max:255',
-            'approvals.*.pic_id'           => 'required|string|max:255',
+            'approvals.*.user_id'           => 'required|exists:users,id',
             'approvals.*.status'            => 'required|string|max:255',
             'approvals.0.approval_date'     => 'nullable|date',
         ]);
@@ -95,7 +98,7 @@ class TransferAssetController extends Controller
             $approvalsToStore[] = [
                 'approval_action'   => $approvalData['approval_action'],
                 'role'              => $approvalData['role'],
-                'pic_id'            => $approvalData['pic_id'],
+                'user_id'            => $approvalData['user_id'],
                 'status'            => 'pending',
                 'approval_date'     => null,
                 'approval_order'    => $order,
@@ -158,13 +161,16 @@ class TransferAssetController extends Controller
         
         $locations = Location::all();
         $departments = Department::all();
-        $personsInCharge = PersonInCharge::all();
+        $users = User::join('company_users', 'users.id', '=', 'company_users.user_id')
+            ->where('company_users.company_id', session('active_company_id'))
+            ->select('users.id', 'users.name', 'company_users.role as user_role')
+            ->get();
 
-        $transfer_asset->load('approvals.user', 'approvals.pic', 'department', 'destinationLocation', 'detailTransfers');
+        $transfer_asset->load('approvals.user', 'department', 'destinationLocation', 'detailTransfers');
 
         $selectedAssetIds = $transfer_asset->detailTransfers->pluck('asset_id');
 
-        return view('transfer-asset.edit', compact('transfer_asset', 'locations', 'departments', 'selectedAssetIds', 'personsInCharge'));
+        return view('transfer-asset.edit', compact('transfer_asset', 'locations', 'departments', 'selectedAssetIds', 'users'));
     }
 
     public function update(Request $request, TransferAsset $transfer_asset)
@@ -187,10 +193,9 @@ class TransferAssetController extends Controller
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
             'approvals.*.role'              => 'required|string|max:255',
-            'approvals.*.pic_id'            => 'required|string|max:255',
+            'approvals.*.user_id'            => 'required|exists:users,id',
             'approvals.*.status'            => 'required|string|max:255',
             'approvals.*.approval_date'     => 'nullable|date',
-            'approvals.*.user_id'           => 'nullable',
         ]);
 
         $assetIds = explode(',', $validated['asset_ids']);
@@ -242,7 +247,6 @@ class TransferAssetController extends Controller
                         'role'              => $approvalData['role'],
                         'approval_order'    => $order,
                         'status'            => $approvalData['status'],
-                        'pic_id'            => $approvalData['pic_id'],
                         'approval_date'     => $approvalData['approval_date'],
                         'user_id'           => $approvalData['user_id'],
                     ]);
@@ -285,26 +289,8 @@ class TransferAssetController extends Controller
     public function show(TransferAsset $transfer_asset)
     {
         // Eager load relasi untuk efisiensi
-        $transfer_asset->load('approvals.pic', 'department', 'destinationLocation', 'detailTransfers', 'attachments');
+        $transfer_asset->load('approvals.user', 'department', 'destinationLocation', 'detailTransfers', 'attachments');
 
-        $user = Auth::user();
-
-        $approval = $transfer_asset->approvals()
-            ->where('role', $user->role)
-            ->where('status', 'pending')
-            ->get();
-
-        $approval1 = PersonInCharge::find($approval[0]->pic_id);
-        $approval1 = PersonInCharge::where('user_id', $approval1->user_id)->get();
-
-        if(count($approval1) > 1){
-            $approval = Approval::where('status', 'pending')
-                ->where('approvable_type', $approval[0]->approvable_type)
-                ->where('approvable_id', $approval[0]->approvable_id)
-                ->whereIn('pic_id', [$approval1[0]->id, $approval1[1]->id])
-                ->get();
-        }
-        
         $canApprove = false;
         $userApprovalStatus = null;
 
@@ -312,10 +298,10 @@ class TransferAssetController extends Controller
             $user = Auth::user();
             $userApprovalStatus = 'Anda tidak ada dalam daftar approver, atau bukan giliran Anda.';
 
-            if ($user->role) {
+            if ($user->id) {
                 // LOGIKA UNTUK APPROVAL PARALLEL
                 if ($transfer_asset->sequence === "0") {
-                    if ($transfer_asset->approvals()->where('role', $user->role)->where('status', 'pending')->exists()) {
+                    if ($transfer_asset->approvals()->where('user_id', $user->id)->where('status', 'pending')->exists()) {
                         $canApprove = true;
                     }
                 }
@@ -323,7 +309,7 @@ class TransferAssetController extends Controller
                 // LOGIKA UNTUK APPROVAL SEQUENTIAL
                 if ($transfer_asset->sequence === "1") {
                     $nextApprover = $transfer_asset->approvals()->where('status', 'pending')->orderBy('approval_order', 'asc')->first();
-                    if ($nextApprover && $nextApprover->role === $user->role) {
+                    if ($nextApprover && $nextApprover->user_id == $user->id) {
                         $canApprove = true;
                     }
                 }
@@ -337,7 +323,7 @@ class TransferAssetController extends Controller
                 $userApprovalStatus = 'Anda tidak memiliki role di perusahaan ini.';
             }
         }
-        return view('transfer-asset.show', compact('transfer_asset', 'canApprove', 'userApprovalStatus', 'approval'));
+        return view('transfer-asset.show', compact('transfer_asset', 'canApprove', 'userApprovalStatus',));
     }
 
     public function approve(Request $request, TransferAsset $transfer_asset)
@@ -356,8 +342,8 @@ class TransferAssetController extends Controller
 
         // Kondisi kapan user TIDAK BOLEH approve
         if (
-            ($transfer_asset->sequence === "1" && (!$nextApprover || $nextApprover->role !== $user->role)) ||
-            ($transfer_asset->sequence === "0" && !$transfer_asset->approvals()->where('role', $user->role)->where('status', 'pending')->exists())
+            ($transfer_asset->sequence === 1 && (!$nextApprover || $nextApprover->user_id !== $user->id)) ||
+            ($transfer_asset->sequence === 0 && !$transfer_asset->approvals()->where('user_id', $user->id)->where('status', 'pending')->exists())
         ) {
             return back()->with('error', 'Saat ini bukan giliran Anda untuk melakukan approval.');
         }
@@ -366,23 +352,14 @@ class TransferAssetController extends Controller
             DB::transaction(function () use ($transfer_asset, $user, $request, $nextApprover) {
                 // 1. Update baris approval milik user ini
                 $approval = $transfer_asset->approvals()
-                    ->where('role', $user->role)
+                    ->where('user_id', $user->id)
                     ->where('status', 'pending')
                     ->when($transfer_asset->sequence === 1, function ($query) use ($nextApprover) {
                         return $query->where('approval_order', $nextApprover->approval_order);
                     })
                     ->get();
 
-                $approval1 = PersonInCharge::find($approval[0]->pic_id);
-                $approval1 = PersonInCharge::where('user_id', $approval1->user_id)->get();
-
-                if(count($approval1) > 1){
-                    $approval = Approval::where('status', 'pending')
-                        ->where('approvable_type', $approval[0]->approvable_type)
-                        ->where('approvable_id', $approval[0]->approvable_id)
-                        ->whereIn('pic_id', [$approval1[0]->id, $approval1[1]->id])
-                        ->get();
-                        
+                if(count($approval) > 1){
                     foreach ($approval as $approval){
                         $approval->update([
                             'status' => 'approved',

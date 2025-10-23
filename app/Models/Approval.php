@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\RegisterAsset;
-use App\Models\PersonInCharge;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -24,7 +23,6 @@ class Approval extends Model
         'approvable_id',
         'approval_action',
         'role',
-        'pic_id',
         'user_id',
         'status',
         'approval_date',
@@ -34,11 +32,6 @@ class Approval extends Model
     public function approvable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function pic(): BelongsTo
-    {
-        return $this->belongsTo(PersonInCharge::class, 'pic_id');
     }
 
     public function user(): BelongsTo
@@ -51,11 +44,6 @@ class Approval extends Model
     public function getApprovalNameAttribute()
     {
         return $this->approvable->form_no ?? null;
-    }
-
-    public function getPICNameAttribute()
-    {
-        return $this->pic->name ?? null;
     }
 
     public function getUserNameAttribute()
@@ -81,6 +69,6 @@ class Approval extends Model
             })
             ->useLogName(session('active_company_id'))
             ->logOnlyDirty()
-            ->logOnly(['approvable_type', 'approval_name', 'approval_action', 'role', 'pic_name', 'user_name', 'status', 'approval_date', 'approval_order']);
+            ->logOnly(['approvable_type', 'approval_name', 'approval_action', 'role', 'user_name', 'status', 'approval_date', 'approval_order']);
     }
 }
