@@ -257,11 +257,11 @@
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured <span class="text-red-900">*</span></label>
                         <div class="flex items-center mb-4">
-                            <input id="insured-yes" name="insured" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured', 'Y') == 'Y' ? 'checked' : '' }}>
+                            <input id="insured-yes" name="insured" type="radio" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured', 1) == 1 ? 'checked' : '' }}>
                             <label for="insured-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
                         </div>
                         <div class="flex items-center">
-                            <input id="insured-no" name="insured" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured') == 'N' ? 'checked' : '' }}>
+                            <input id="insured-no" name="insured" type="radio" value="0" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured') == 0 ? 'checked' : '' }}>
                             <label for="insured-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
                         </div>
                         @error('insured')
@@ -306,11 +306,11 @@
                             <div class="flex flex-row mb-2">
                                 <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
                                 <div class="flex items-center pr-4">
-                                    <input id="sequence-yes" name="sequence" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', 'Y') == 'Y' ? 'checked' : '' }}>
+                                    <input id="sequence-yes" name="sequence" type="radio" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', 1) == 1 ? 'checked' : '' }}>
                                     <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
                                 </div>
                                 <div class="flex items-center">
-                                    <input id="sequence-no" checked name="sequence" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence') == 'N' ? 'checked' : '' }}>
+                                    <input id="sequence-no" name="sequence" type="radio" value="0" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence') == 0 ? 'checked' : '' }}>
                                     <label for="sequence-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
                                 </div>
                                 @error('sequence')
@@ -352,7 +352,7 @@
                                                         {{-- Tambahkan atribut data-role di sini --}}
                                                         <option value="{{ $user->id }}" 
                                                                 data-role="{{ $user->user_role }}"
-                                                                {{ old("approvals.$index.user_id", $approvalData->user_id ?? '') == $user->id ? 'selected' : '' }}>
+                                                                {{ old("approvals.0.user_id", $approvals[0]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                             {{ $user->name }}
                                                         </option>
                                                     @endforeach
@@ -395,7 +395,7 @@
                                                         {{-- Tambahkan atribut data-role di sini --}}
                                                         <option value="{{ $user->id }}" 
                                                                 data-role="{{ $user->user_role }}"
-                                                                {{ old("approvals.$index.user_id", $approvalData->user_id ?? '') == $user->id ? 'selected' : '' }}>
+                                                                {{ old("approvals.1.user_id", $approvals[1]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                             {{ $user->name }}
                                                         </option>
                                                     @endforeach
@@ -438,7 +438,7 @@
                                                         {{-- Tambahkan atribut data-role di sini --}}
                                                         <option value="{{ $user->id }}" 
                                                                 data-role="{{ $user->user_role }}"
-                                                                {{ old("approvals.$index.user_id", $approvalData->user_id ?? '') == $user->id ? 'selected' : '' }}>
+                                                                {{ old("approvals.2.user_id", $approvals[2]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                             {{ $user->name }}
                                                         </option>
                                                     @endforeach
@@ -481,7 +481,7 @@
                                                         {{-- Tambahkan atribut data-role di sini --}}
                                                         <option value="{{ $user->id }}" 
                                                                 data-role="{{ $user->user_role }}"
-                                                                {{ old("approvals.$index.user_id", $approvalData->user_id ?? '') == $user->id ? 'selected' : '' }}>
+                                                                {{ old("approvals.3.user_id", $approvals[3]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                             {{ $user->name }}
                                                         </option>
                                                     @endforeach
@@ -554,17 +554,15 @@
             // Cek radio button mana yang sedang dipilih
             const selectedValue = document.querySelector('input[name="insured"]:checked').value;
 
-            if (selectedValue === 'Y') {
+            if (selectedValue == 1) {
                 // Tampilkan div dengan transisi
                 polishNoWrapper.style.maxHeight = polishNoWrapper.scrollHeight + 'px';
                 polishNoWrapper.style.opacity = '1';
-                polishNoWrapper.classList.add('mb-5');
                 polishNoInput.required = true;
             } else {
                 // Sembunyikan div dengan transisi
                 polishNoWrapper.style.maxHeight = '0px';
                 polishNoWrapper.style.opacity = '0';
-                polishNoWrapper.classList.remove('mb-5');
                 polishNoInput.required = false;
                 polishNoInput.value = '';
             }
@@ -811,4 +809,5 @@
         });
     });
 </script>
+    @vite('resources/js/pages/alert.js')
 @endpush

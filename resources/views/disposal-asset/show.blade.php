@@ -272,7 +272,7 @@
                                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->approval_action }}</th>   
                                             <th scope="row" class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $approv->role }}</th>
-                                            <td class="px-2 py-4">{{ $approv->pic?->name ?? "-" }}</td>
+                                            <td class="px-2 py-4">{{ $approv->user?->name ?? "-" }}</td>
                                             @if ($approv->status == 'approved' && $approv->user->signature)
                                                 <td class="px-2 py-4 status-pending">
                                                     <div class="signature-container">

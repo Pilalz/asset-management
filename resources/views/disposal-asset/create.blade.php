@@ -257,7 +257,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="approval-list-body">
-                                                <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         <input type="text" name="approvals[0][approval_action]" value="Submitted by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                         @error("approvals[0][approval_action]")
@@ -271,17 +271,17 @@
                                                         @enderror
                                                     </th>
                                                     <td class="px-2 py-4">
-                                                        <select name="approvals[0][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                        <select name="approvals[0][user_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                             <option value="">Pilih Nama</option>
-                                                            @foreach($personsInCharge as $pic)
+                                                            @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
-                                                                <option value="{{ $pic->id }}" 
-                                                                        data-role="{{ $pic->position }}">
-                                                                    {{ $pic->name }}
+                                                                <option value="{{ $user->id }}" 
+                                                                        data-role="{{ $user->user_role }}">
+                                                                    {{ $user->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                        @error("approvals[0][pic_id]")
+                                                        @error("approvals[0][user_id]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
@@ -313,17 +313,17 @@
                                                         @enderror
                                                     </th>
                                                     <td class="px-2 py-4">
-                                                        <select name="approvals[1][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                        <select name="approvals[1][user_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                             <option value="">Pilih Nama</option>
-                                                            @foreach($personsInCharge as $pic)
+                                                            @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
-                                                                <option value="{{ $pic->id }}" 
-                                                                        data-role="{{ $pic->position }}">
-                                                                    {{ $pic->name }}
+                                                                <option value="{{ $user->id }}" 
+                                                                        data-role="{{ $user->user_role }}">
+                                                                    {{ $user->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                        @error("approvals[1][pic_id]")
+                                                        @error("approvals[1][user_id]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
@@ -355,17 +355,17 @@
                                                         @enderror
                                                     </th>
                                                     <td class="px-2 py-4">
-                                                        <select name="approvals[2][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                        <select name="approvals[2][user_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                             <option value="">Pilih Nama</option>
-                                                            @foreach($personsInCharge as $pic)
+                                                            @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
-                                                                <option value="{{ $pic->id }}" 
-                                                                        data-role="{{ $pic->position }}">
-                                                                    {{ $pic->name }}
+                                                                <option value="{{ $user->id }}" 
+                                                                        data-role="{{ $user->user_role }}">
+                                                                    {{ $user->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                        @error("approvals[2][pic_id]")
+                                                        @error("approvals[2][user_id]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
@@ -397,17 +397,17 @@
                                                         @enderror
                                                     </th>
                                                     <td class="px-2 py-4">
-                                                        <select name="approvals[3][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                        <select name="approvals[3][user_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                             <option value="">Pilih Nama</option>
-                                                            @foreach($personsInCharge as $pic)
+                                                            @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
-                                                                <option value="{{ $pic->id }}" 
-                                                                        data-role="{{ $pic->position }}">
-                                                                    {{ $pic->name }}
+                                                                <option value="{{ $user->id }}" 
+                                                                        data-role="{{ $user->user_role }}">
+                                                                    {{ $user->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                        @error("approvals[3][pic_id]")
+                                                        @error("approvals[3][user_id]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
@@ -439,17 +439,17 @@
                                                         @enderror
                                                     </th>
                                                     <td class="px-2 py-4">
-                                                        <select name="approvals[4][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                        <select name="approvals[4][user_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                             <option value="">Pilih Nama</option>
-                                                            @foreach($personsInCharge as $pic)
+                                                            @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
-                                                                <option value="{{ $pic->id }}" 
-                                                                        data-role="{{ $pic->position }}">
-                                                                    {{ $pic->name }}
+                                                                <option value="{{ $user->id }}" 
+                                                                        data-role="{{ $user->user_role }}">
+                                                                    {{ $user->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                        @error("approvals[4][pic_id]")
+                                                        @error("approvals[4][user_id]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
@@ -481,17 +481,17 @@
                                                         @enderror
                                                     </th>
                                                     <td class="px-2 py-4">
-                                                        <select name="approvals[5][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                        <select name="approvals[5][user_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                             <option value="">Pilih Nama</option>
-                                                            @foreach($personsInCharge as $pic)
+                                                            @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
-                                                                <option value="{{ $pic->id }}" 
-                                                                        data-role="{{ $pic->position }}">
-                                                                    {{ $pic->name }}
+                                                                <option value="{{ $user->id }}" 
+                                                                        data-role="{{ $user->user_role }}">
+                                                                    {{ $user->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                        @error("approvals[5][pic_id]")
+                                                        @error("approvals[5][user_id]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
@@ -579,31 +579,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const selectedAssetIds = new Set();
-        // Temukan semua elemen notifikasi yang memiliki class 'auto-dismiss-alert'
-        const alertElements = document.querySelectorAll('.auto-dismiss-alert');
-
-        alertElements.forEach(targetEl => {
-            // Ambil tombol 'close' di dalam notifikasi (jika ada)
-            const triggerEl = targetEl.querySelector('[data-dismiss-target]');
-
-            // Opsi yang Anda inginkan
-            const options = {
-                transition: 'transition-opacity',
-                duration: 1000,
-                timing: 'ease-out',
-                onHide: (context, targetEl) => {
-                    console.log(`Element dengan ID ${targetEl.id} telah disembunyikan.`);
-                }
-            };
-
-            // Buat instance Dismiss dari Flowbite
-            const dismiss = new Dismiss(targetEl, triggerEl, options);
-
-            // (Opsional) Sembunyikan notifikasi secara otomatis setelah 5 detik
-            setTimeout(() => {
-                dismiss.hide();
-            }, 3000);
-        });
 
         if (typeof $ !== 'undefined') {
             $('#assetTable thead tr:eq(0) th').each(function(i) {
@@ -867,17 +842,14 @@
 
             const selectedRole = roleInput.value;
 
-            // Loop melalui setiap <option> di dalam dropdown user
             for (const option of userSelect.options) {
-                // Lewati opsi pertama ("Pilih Nama")
                 if (option.value === '') continue;
 
-                // Tampilkan jika role-nya cocok, sembunyikan jika tidak
                 if (option.dataset.role === selectedRole) {
                     option.style.display = 'block';
                 } else {
                     option.style.display = 'none';
-                    // Jika opsi yang disembunyikan sedang terpilih, reset dropdown
+
                     if (option.selected) {
                         userSelect.value = '';
                     }
@@ -891,4 +863,5 @@
         });
     });
 </script>
+    @vite('resources/js/pages/alert.js')
 @endpush

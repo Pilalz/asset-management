@@ -181,7 +181,7 @@
 
                             <div>
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alasan <span class="text-red-900">*</span></label>
-                                <textarea type="text" name="reason" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"></textarea>
+                                <textarea type="text" name="reason" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">{{ old('reason') }}</textarea>
                             </div>
                         </div>
 
@@ -211,11 +211,11 @@
                                     <div class="flex flex-row mb-2">
                                         <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
                                         <div class="flex items-center pr-4">
-                                            <input id="sequence-yes" name="sequence" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', 'Y') == 'Y' ? 'checked' : '' }}>
+                                            <input id="sequence-yes" name="sequence" type="radio" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', 1) == 1 ? 'checked' : '' }}>
                                             <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
                                         </div>
                                         <div class="flex items-center">
-                                            <input id="sequence-no" checked name="sequence" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence') == 'N' ? 'checked' : '' }}>
+                                            <input id="sequence-no" name="sequence" type="radio" value="0" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence') == 0 ? 'checked' : '' }}>
                                             <label for="sequence-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
                                         </div>
                                         @error('sequence')
@@ -255,7 +255,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.0.user_id", $approvals[0]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -297,7 +298,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.1.user_id", $approvals[1]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -339,7 +341,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.2.user_id", $approvals[2]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -381,7 +384,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.3.user_id", $approvals[3]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -423,7 +427,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.4.user_id", $approvals[4]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -465,7 +470,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.5.user_id", $approvals[5]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -507,7 +513,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.6.user_id", $approvals[6]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -598,7 +605,23 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        const selectedAssetIds = new Set();
+        const oldAssetIdsString = @json(old('asset_ids'));
+
+        let initialIds = [];
+
+        if (oldAssetIdsString && typeof oldAssetIdsString === 'string') {
+            initialIds = oldAssetIdsString.split(',');
+        }
+
+        const selectedAssetIds = new Set(initialIds);
+
+        function updateSelection() {
+            const selectedCount = selectedAssetIds.size;
+            $('#selected-count-display').text(`${selectedCount} asset(s) selected`);
+            $('#selected-asset-ids').val(Array.from(selectedAssetIds).join(','));
+        }
+
+        updateSelection();
 
         if (typeof $ !== 'undefined') {
             $('#assetTable thead tr:eq(0) th').each(function(i) {
@@ -741,13 +764,7 @@
                 createdRow: function( row, data, dataIndex ) {
                     $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
                 },
-            });
-
-            function updateSelection() {
-                const selectedCount = selectedAssetIds.size;
-                $('#selected-count-display').text(`${selectedCount} asset(s) selected`);
-                $('#selected-asset-ids').val(Array.from(selectedAssetIds).join(','));
-            }
+            });            
 
             $('#assetTable tbody').on('change', '.asset-checkbox', function() {
                 const assetId = $(this).val();

@@ -73,7 +73,7 @@ class RegisterAssetController extends Controller
             'location_id'   => 'required|exists:locations,id',
             'asset_type'    => 'required',
             'insured'       => 'required',
-            'polish_no'     => 'required_if:insured,Y|nullable|string|max:255',
+            'polish_no'     => 'required_if:insured,1|nullable|string|max:255',
             'sequence'      => 'required',
             'company_id'    => 'required|exists:companies,id',
 
@@ -98,7 +98,7 @@ class RegisterAssetController extends Controller
         ]);
 
         $approvalsToStore = [];
-        $isSequence = ($validated['sequence'] === "Y");
+        $isSequence = ($validated['sequence'] == "1");
 
         foreach ($validated['approvals'] as $index => $approvalData) {
             $order = 1;
@@ -123,9 +123,9 @@ class RegisterAssetController extends Controller
                     'department_id' => $validated['department_id'],
                     'location_id'   => $validated['location_id'],
                     'asset_type'    => $validated['asset_type'],
-                    'insured'       => ($validated['insured'] == 'Y') ? 1 : 0,
+                    'insured'       => $validated['insured'],
                     'polish_no'     => $validated['polish_no'],
-                    'sequence'      => ($validated['sequence'] == 'Y') ? 1 : 0,
+                    'sequence'      => $validated['sequence'],
                     'status'        => 'Waiting',
                     'company_id'    => $validated['company_id'],
                 ]);
@@ -184,7 +184,7 @@ class RegisterAssetController extends Controller
             'location_id'   => 'required|exists:locations,id',
             'asset_type'    => 'required',
             'insured'       => 'required',
-            'polish_no'     => 'required_if:insured,Y|nullable|string|max:255',
+            'polish_no'     => 'required_if:insured,1|nullable|string|max:255',
             'sequence'      => 'required',
 
             //Validasi Detail Asset
@@ -196,8 +196,8 @@ class RegisterAssetController extends Controller
             'assets.*.asset_name_id'    => 'required|exists:asset_names,id',
 
             //Validasi Attachments
-            'attachments.*' => 'nullable|file|mimes:pdf,jpg,png,xlsx|max:5120',
-            'deleted_attachments' => 'nullable|array',
+            'attachments.*'         => 'nullable|file|mimes:pdf,jpg,png,xlsx|max:5120',
+            'deleted_attachments'   => 'nullable|array',
             'deleted_attachments.*' => 'integer|exists:attachments,id',
 
             //Validasi Approval
@@ -215,10 +215,10 @@ class RegisterAssetController extends Controller
                 $registerAsset->update([
                     'department_id' => $validated['department_id'],
                     'location_id'   => $validated['location_id'],
-                    'asset_type'   => $validated['asset_type'],
-                    'insured'       => ($validated['insured'] == 'Y') ? 1 : 0,
-                    'polish_no'   => $validated['polish_no'],
-                    'sequence'      => ($validated['sequence'] == 'Y') ? 1 : 0,
+                    'asset_type'    => $validated['asset_type'],
+                    'insured'       => $validated['insured'],
+                    'polish_no'     => $validated['polish_no'],
+                    'sequence'      => $validated['sequence'],
                 ]);
 
                 $registerAsset->detailRegisters()->delete();
@@ -248,7 +248,7 @@ class RegisterAssetController extends Controller
                 }
 
                 $registerAsset->approvals()->delete();
-                $isSequence = ($validated['sequence'] === 'Y');
+                $isSequence = ($validated['sequence'] == "1");
                 foreach ($validated['approvals'] as $index => $approvalData) {
                     $order = $isSequence ? ($index + 1) : 1;
 
@@ -256,7 +256,7 @@ class RegisterAssetController extends Controller
                         'approval_action'   => $approvalData['approval_action'],
                         'role'              => $approvalData['role'],
                         'approval_order'    => $order,
-                        'status'            => $approvalData['status'],                        
+                        'status'            => $approvalData['status'],               
                         'approval_date'     => $approvalData['approval_date'],
                         'user_id'           => $approvalData['user_id'],
                     ]);

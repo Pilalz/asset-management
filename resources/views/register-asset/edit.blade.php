@@ -203,11 +203,11 @@
                 <div>
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured <span class="text-red-900">*</span></label>
                     <div class="flex items-center mb-4">
-                        <input id="insured-yes" name="insured" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured', $register_asset->insured) == '1' ? 'checked' : '' }}>
+                        <input id="insured-yes" name="insured" type="radio" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured', $register_asset->insured) == 1 ? 'checked' : '' }}>
                         <label for="insured-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
                     </div>
                     <div class="flex items-center">
-                        <input id="insured-no" name="insured" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured', $register_asset->insured) == '0' ? 'checked' : '' }}>
+                        <input id="insured-no" name="insured" type="radio" value="0" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured', $register_asset->insured) == 0 ? 'checked' : '' }}>
                         <label for="insured-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
                     </div>
                     @error('insured')
@@ -267,11 +267,11 @@
                         <div class="flex flex-row mb-2">
                             <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
                             <div class="flex items-center pr-4">
-                                <input id="sequence-yes" name="sequence" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $register_asset->sequence) == '1' ? 'checked' : '' }}>
+                                <input id="sequence-yes" name="sequence" type="radio" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $register_asset->sequence) == 1 ? 'checked' : '' }}>
                                 <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
                             </div>
                             <div class="flex items-center">
-                                <input id="sequence-no" name="sequence" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $register_asset->sequence) == '0' ? 'checked' : '' }}>
+                                <input id="sequence-no" name="sequence" type="radio" value="0" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $register_asset->sequence) == 0 ? 'checked' : '' }}>
                                 <label for="sequence-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
                             </div>
                             @error('sequence')
@@ -292,31 +292,36 @@
                                     </tr>
                                 </thead>
                                 <tbody id="approval-list-body">
-                                    @php $initialApprovals = old('approvals', $register_asset->approvals); @endphp
-                                    @foreach($initialApprovals as $index => $approvalData)
+                                    @foreach($register_asset->approvals as $index => $approval)
+                                        @php
+                                            $status = old("approvals.$index.status", $approval->status ?? 'Pending');
+                                            $userId = old("approvals.$index.user_id", $approval->user_id);
+                                            $date = old("approvals.$index.approval_date", $approval->approval_date ? \Carbon\Carbon::parse($approval->approval_date)->format('Y-m-d') : '');
+                                            $action = $approval->approval_action;
+                                            $role = $approval->role;
+                                        @endphp
                                         <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <input type="text" name="approvals[{{$index}}][approval_action]" value="{{ old("approvals.$index.approval_action", $approvalData->approval_action ?? '') }}" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                <input type="text" name="approvals[{{$index}}][approval_action]" value="{{ $action }}" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                 @error("approvals[{{$index}}][approval_action]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </th>   
                                             <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <input type="text" name="approvals[{{$index}}][role]" value="{{ old("approvals.$index.role", $approvalData->role ?? '') }}" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                <input type="text" name="approvals[{{$index}}][role]" value="{{ $role }}" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
                                                 @error("approvals[{{$index}}][role]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </th>
 
-                                            @if ($approvalData->status === "pending")
+                                            @if ($status === 'pending')
                                                 <td class="px-2 py-4">
                                                     <select name="approvals[{{$index}}][user_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                         <option value="">Pilih Nama</option>
                                                         @foreach($users as $user)
-                                                            {{-- Tambahkan atribut data-role di sini --}}
                                                             <option value="{{ $user->id }}" 
                                                                     data-role="{{ $user->user_role }}"
-                                                                    {{ old("approvals.$index.user_id", $approvalData->user_id ?? '') == $user->id ? 'selected' : '' }}>
+                                                                    {{ $userId == $user->id ? 'selected' : '' }}>
                                                                 {{ $user->name }}
                                                             </option>
                                                         @endforeach
@@ -327,8 +332,8 @@
                                                 </td>
                                             @else
                                                 <td class="px-2 py-4">
-                                                    <input type="text" value="{{ old("approvals.$index.user_id", $approvalData->user->name ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
-                                                    <input type="hidden" name="approvals[{{$index}}][user_id]" value="{{ old("approvals.$index.user_id", $approvalData->user_id ?? '') }}" />
+                                                    <input type="text" name="approvals[{{$index}}][user_id]" value="{{ $approval->user->name ?? '' }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                    <input type="hidden" name="approvals[{{$index}}][user_id]" value="{{ $userId }}" />
                                                     @error("approvals[{{$index}}][user_id]")
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
@@ -336,19 +341,20 @@
                                             @endif
 
                                             <td class="px-2 py-4">
-                                                <input type="text" name="approvals[{{$index}}][status]" value="{{ old("approvals.$index.status", $approvalData->status ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                <input type="text" name="approvals[{{$index}}][status]" value="{{ $status }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly placeholder="" />
                                                 @error("approvals[{{$index}}][status]")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </td>
+
                                             <td class="px-2 py-4">
-                                                @if($approvalData->status === 'approved')
-                                                    <input type="date" name="approvals[{{$index}}][approval_date]" value="{{ old("approvals.$index.approval_date", $approvalData->approval_date ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                                @if($status === 'approved')
+                                                    <input type="date" name="approvals[{{$index}}][approval_date]" value="{{ $date }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
                                                     @error("approvals[{{$index}}][approval_date]")
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 @else 
-                                                    <input type="date" name="approvals[{{$index}}][approval_date]" value="{{ old("approvals.$index.approval_date", $approvalData->approval_date ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                    <input type="date" name="approvals[{{$index}}][approval_date]" value="{{ $date }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                     @error("approvals[{{$index}}][approval_date]")
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
@@ -406,7 +412,7 @@
             // Cek radio button mana yang sedang dipilih
             const selectedValue = document.querySelector('input[name="insured"]:checked').value;
 
-            if (selectedValue === 'Y') {
+            if (selectedValue == 1) {
                 // Tampilkan div dengan transisi
                 polishNoWrapper.style.maxHeight = polishNoWrapper.scrollHeight + 'px';
                 polishNoWrapper.style.opacity = '1';
@@ -609,31 +615,37 @@
 
             assetListBody.querySelectorAll('.asset-row').forEach((row, index) => {
                 setupRowListeners(row);
+
+                const classSelect = row.querySelector('.asset-class-select');
+                const subClassSelect = row.querySelector('.asset-sub-class-select');
+                const nameSelect = row.querySelector('.asset-name-select');
+
+                const existingClassId = classSelect.value; 
+                
+                let existingSubClassId = null;
+                let existingNameId = null;
                 
                 if (initialAssetsData && initialAssetsData[index]) {
                     const rowData = initialAssetsData[index];
                     
-                    // Dapatkan elemen-elemen select di baris ini
-                    const classSelect = row.querySelector('.asset-class-select');
-                    const subClassSelect = row.querySelector('.asset-sub-class-select');
-                    const nameSelect = row.querySelector('.asset-name-select');
-                    
-                    // Ambil ID yang sudah tersimpan dari data
-                    const existingClassId = rowData.asset_name?.asset_sub_class?.asset_class?.id ?? null;
-                    const existingSubClassId = rowData.asset_name?.asset_sub_class?.id ?? null;
-                    const existingNameId = rowData.asset_name_id ?? null;
+                    if (rowData.asset_sub_class_id) {
+                        existingSubClassId = rowData.asset_sub_class_id;
+                        existingNameId = rowData.asset_name_id;
+                    } 
 
-                    // Jika asset class sudah terpilih, panggil API untuk mengisi sub class
-                    if (existingClassId) {
-                        // PERBAIKAN: Panggil fungsi dengan ID-nya langsung
-                        populateSubClasses(existingClassId, subClassSelect, nameSelect, existingSubClassId)
-                            .then(() => {
-                                if (existingSubClassId) {
-                                   // Panggil fungsi dengan ID-nya langsung
-                                   populateAssetNames(existingSubClassId, nameSelect, existingNameId);
-                                }
-                            });
+                    else if (rowData.asset_name) {
+                        existingSubClassId = rowData.asset_name.asset_sub_class?.id ?? null;
+                        existingNameId = rowData.asset_name_id; // 'asset_name_id' ada di root
                     }
+                }
+
+                if (existingClassId) {
+                    populateSubClasses(existingClassId, subClassSelect, nameSelect, existingSubClassId)
+                        .then(() => {
+                            if (existingSubClassId) {
+                                populateAssetNames(existingSubClassId, nameSelect, existingNameId);
+                            }
+                        });
                 }
             });
         }

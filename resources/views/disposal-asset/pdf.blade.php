@@ -191,7 +191,7 @@
                 <tr>
                     <td style="font-weight:bold;">{{ $approval->approval_action }}</td>
                     <td style="font-weight:bold;">{{ $approval->role }}</td>
-                    <td>{{ $approval->pic->name ?? '-' }}</td>
+                    <td>{{ $approval->user->name ?? '-' }}</td>
                     <td>
                         @if($approval->status == 'approved' && $approval->user?->signature)
                             <img src="{{ $approval->user->signature }}" alt="Signature">

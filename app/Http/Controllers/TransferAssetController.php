@@ -193,7 +193,7 @@ class TransferAssetController extends Controller
             'approvals'                     => 'required|array|min:1',
             'approvals.*.approval_action'   => 'required|string|max:255',
             'approvals.*.role'              => 'required|string|max:255',
-            'approvals.*.user_id'            => 'required|exists:users,id',
+            'approvals.*.user_id'           => 'required|exists:users,id',
             'approvals.*.status'            => 'required|string|max:255',
             'approvals.*.approval_date'     => 'nullable|date',
         ]);
@@ -315,8 +315,8 @@ class TransferAssetController extends Controller
                 }
 
                 // Cek apakah user sudah pernah approve
-                if ($transfer_asset->approvals()->where('status', 'approved')->where('user_id', $user->id)->exists()) {
-                    $canApprove = false; // Override, pastikan tidak bisa approve dua kali
+                if ($transfer_asset->approvals()->where('status', 'pending')->where('user_id', $user->id)->get()->isEmpty()) {
+                    $canApprove = false;
                     $userApprovalStatus = 'Anda sudah menyetujui formulir ini.';
                 }
             } else {
@@ -357,28 +357,17 @@ class TransferAssetController extends Controller
                     ->when($transfer_asset->sequence === 1, function ($query) use ($nextApprover) {
                         return $query->where('approval_order', $nextApprover->approval_order);
                     })
-                    ->get();
+                    ->first();                    
 
-                if(count($approval) > 1){
-                    foreach ($approval as $approval){
-                        $approval->update([
-                            'status' => 'approved',
-                            'approval_date' => now(),
-                            'user_id' => $user->id,
-                        ]);
-                    }
-                }
-                else{
-                    if ($approval) {
-                        $approval->update([
-                            'status' => 'approved',
-                            'approval_date' => now(),
-                            'user_id' => $user->id,
-                        ]);
-                    } else {
-                        // Throw exception jika approval tidak ditemukan, untuk membatalkan transaksi
-                        throw new \Exception("Approval yang valid tidak ditemukan untuk peran Anda.");
-                    }
+                if ($approval) {
+                    $approval->update([
+                        'status' => 'approved',
+                        'approval_date' => now(),
+                        'user_id' => $user->id,
+                    ]);
+                } else {
+                    // Throw exception jika approval tidak ditemukan, untuk membatalkan transaksi
+                    throw new \Exception("Approval yang valid tidak ditemukan untuk peran Anda.");
                 }
 
                 // 2. Cek apakah semua approval sudah selesai
@@ -402,12 +391,19 @@ class TransferAssetController extends Controller
         // Ubah status form menjadi 'approved'
         $transfer_asset->update(['status' => 'Approved']);
 
-        $asset = $transfer_asset->asset; 
+        $detailLines = $transfer_asset->detailTransfers()->get();
 
-        if ($asset) {
-            $asset->update([
-                'location_id'   => $transfer_asset->destination_loc_id,
-            ]);
+        if ($detailLines->isNotEmpty()) {
+            foreach ($detailLines as $detail){
+
+                $masterAsset = $detail->asset;
+                
+                if ($masterAsset) {
+                    $masterAsset->update([
+                        'location_id' => $transfer_asset->destination_loc_id,
+                    ]);
+                }
+            }
         } else {
             // (Opsional) Tambahkan penanganan error jika aset tidak ditemukan
             throw new \Exception("Aset yang terhubung dengan form transfer ini tidak ditemukan.");
@@ -532,7 +528,6 @@ class TransferAssetController extends Controller
             'destinationLocation', 
             'detailTransfers', 
             'approvals.user', 
-            'approvals.pic',
             'company'
         );
 
@@ -542,6 +537,6 @@ class TransferAssetController extends Controller
 
         $safeFilename = str_replace('/', '-', $transfer_asset->form_no);
         
-        return $pdf->stream('Register-Asset-' . $safeFilename  . '.pdf');
+        return $pdf->stream('Transfer-Asset-' . $safeFilename  . '.pdf');
     }
 }

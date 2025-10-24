@@ -264,7 +264,7 @@
                                                         
                                                         $action = old("approvals.$index.approval_action", $isObject ? $approvalData->approval_action : ($approvalData['approval_action'] ?? ''));
                                                         $role = old("approvals.$index.role", $isObject ? $approvalData->role : ($approvalData['role'] ?? ''));
-                                                        $picId = old("approvals.$index.pic_id", $isObject ? $approvalData->pic_id : ($approvalData['pic_id'] ?? ''));
+                                                        $userId = old("approvals.$index.user_id", $isObject ? $approvalData->user_id : ($approvalData['user_id'] ?? ''));
                                                         $status = old("approvals.$index.status", $isObject ? $approvalData->status : ($approvalData['status'] ?? 'Pending'));
                                                         $date = old("approvals.$index.approval_date", $isObject ? ($approvalData->approval_date ? \Carbon\Carbon::parse($approvalData->approval_date)->format('Y-m-d') : '') : ($approvalData['approval_date'] ?? ''));
                                                     @endphp
@@ -284,25 +284,25 @@
 
                                                         @if ($status === 'pending')
                                                             <td class="px-2 py-4">
-                                                                <select name="approvals[{{$index}}][pic_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                                <select name="approvals[{{$index}}][user_id]" class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                                     <option value="">Pilih Nama</option>
-                                                                    @foreach($personsInCharge as $pic)
-                                                                        <option value="{{ $pic->id }}" 
-                                                                                data-role="{{ $pic->position }}"
-                                                                                {{ $picId == $pic->id ? 'selected' : '' }}>
-                                                                            {{ $pic->name }}
+                                                                    @foreach($users as $user)
+                                                                        <option value="{{ $user->id }}" 
+                                                                                data-role="{{ $user->user_role }}"
+                                                                                {{ $userId == $user->id ? 'selected' : '' }}>
+                                                                            {{ $user->name }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
-                                                                @error("approvals[{{$index}}][pic_id]")
+                                                                @error("approvals[{{$index}}][user_id]")
                                                                     <div class="text-danger">{{ $message }}</div>
                                                                 @enderror
                                                             </td>
                                                         @else
                                                             <td class="px-2 py-4">
-                                                                <input type="text" name="approvals[{{$index}}][pic_id]" value="{{ $isObject ? ($approvalData->pic->name ?? '') : '' }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
-                                                                <input type="hidden" name="approvals[{{$index}}][pic_id]" value="{{ $picId }}" />
-                                                                @error("approvals[{{$index}}][pic_id]")
+                                                                <input type="text" name="approvals[{{$index}}][user_id]" value="{{ $isObject ? ($approvalData->user->name ?? '') : '' }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                                <input type="hidden" name="approvals[{{$index}}][user_id]" value="{{ $userId }}" />
+                                                                @error("approvals[{{$index}}][user_id]")
                                                                     <div class="text-danger">{{ $message }}</div>
                                                                 @enderror
                                                             </td>
@@ -314,6 +314,7 @@
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
                                                         </td>
+                                                        
                                                         <td class="px-2 py-4">
                                                             @if($status === 'approved')
                                                                 <input type="date" name="approvals[{{$index}}][approval_date]" value="{{ $date }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
@@ -326,10 +327,6 @@
                                                                     <div class="text-danger">{{ $message }}</div>
                                                                 @enderror
                                                             @endif
-                                                            <input type="hidden" name="approvals[{{$index}}][user_id]" value="{{ old("approvals.$index.user_id", $isObject ? $approvalData->user_id : ($approvalData['user_id'] ?? '')) }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="" />
-                                                            @error("approvals[{{$index}}][user_id]")
-                                                                <div class="text-danger">{{ $message }}</div>
-                                                            @enderror
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -415,32 +412,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         const preselectedIds = @json($selectedAssetIds->all() ?? []);
         const selectedAssetIds = new Set(preselectedIds.map(String));
-
-        // Temukan semua elemen notifikasi yang memiliki class 'auto-dismiss-alert'
-        const alertElements = document.querySelectorAll('.auto-dismiss-alert');
-
-        alertElements.forEach(targetEl => {
-            // Ambil tombol 'close' di dalam notifikasi (jika ada)
-            const triggerEl = targetEl.querySelector('[data-dismiss-target]');
-
-            // Opsi yang Anda inginkan
-            const options = {
-                transition: 'transition-opacity',
-                duration: 1000,
-                timing: 'ease-out',
-                onHide: (context, targetEl) => {
-                    console.log(`Element dengan ID ${targetEl.id} telah disembunyikan.`);
-                }
-            };
-
-            // Buat instance Dismiss dari Flowbite
-            const dismiss = new Dismiss(targetEl, triggerEl, options);
-
-            // (Opsional) Sembunyikan notifikasi secara otomatis setelah 5 detik
-            setTimeout(() => {
-                dismiss.hide();
-            }, 3000);
-        });
 
         if (typeof $ !== 'undefined') {
             $('#assetTable thead tr:eq(0) th').each(function(i) {
@@ -743,4 +714,5 @@
         });
     });
 </script>
+    @vite('resources/js/pages/alert.js')
 @endpush
