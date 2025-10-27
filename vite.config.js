@@ -27,8 +27,6 @@ export default defineConfig({
                 'resources/js/pages/profileSignature.js',
                 //Alert
                 'resources/js/pages/alert.js',
-                //PIC Search
-                'resources/js/pages/picSearch.js',
                 //User Search
                 'resources/js/pages/userSearch.js',
             ],

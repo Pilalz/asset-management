@@ -231,14 +231,14 @@
             <div class="grid grid-cols-1 md:grid-cols-1 gap-x-6 gap-y-5 mb-5">
                 <div class="md:col-span-2">
                     <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                        Remaks
+                        Remark
                     </h2>
                 </div>
 
                 <div>
                     <table>
                         <tr>
-                            <td>Remaks :</td>
+                            <td>Remark :</td>
                         </tr>
                         <tr>
                             <td>{{ ($asset->remaks == null) ? "-" : $asset->remaks }}</td>

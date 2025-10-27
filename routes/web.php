@@ -20,7 +20,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\DepreciationController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PersonInChargeController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\HistoryController;
 
@@ -140,7 +139,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('disposal-asset', DisposalAssetController::class);
     Route::resource('company-user', CompanyUserController::class);
     Route::resource('company', CompanyController::class);
-    Route::resource('person-in-charge', PersonInChargeController::class);
     Route::resource('insurance', InsuranceController::class);
     Route::resource('history', HistoryController::class);
 
@@ -169,11 +167,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/transfer-asset-canceled', [TransferAssetController::class, 'datatablesCanceled'])->name('api.transfer-asset-canceled');
     Route::get('api/disposal-asset', [DisposalAssetController::class, 'datatables'])->name('api.disposal-asset');
     Route::get('api/disposal-asset-canceled', [DisposalAssetController::class, 'datatablesCanceled'])->name('api.disposal-asset-canceled');
-    Route::get('api/person-in-charge', [PersonInChargeController::class, 'datatables'])->name('api.person-in-charge');
     Route::get('api/insurance', [InsuranceController::class, 'datatables'])->name('api.insurance');
     Route::get('api/history', [HistoryController::class, 'datatables'])->name('api.history');
 
     Route::get('api/disposal-asset-find', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset-find');
-    Route::get('api/pic-users/search', [PersonInChargeController::class, 'search'])->name('api.pic-users.search');
     Route::get('api/users/search', [CompanyUserController::class, 'search'])->name('api.users.search');
 });

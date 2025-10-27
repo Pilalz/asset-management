@@ -116,7 +116,7 @@
 
                 <div class="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700 overflow-y-auto h-9/10">
                     <div class="flex items-center justify-between mb-4">
-                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Asset Remaks</h5>
+                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Asset Remark</h5>
                         <!-- <a href="#" class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
                             View all
                         </a> -->

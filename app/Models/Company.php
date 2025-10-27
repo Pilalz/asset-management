@@ -18,7 +18,6 @@ use App\Models\Location;
 use App\Models\RegisterAsset;
 use App\Models\TransferAsset;
 use App\Models\Depreciation;
-use App\Models\PersonInCharge;
 use Illuminate\Support\Facades\Storage;
 
 class Company extends Model
@@ -107,11 +106,6 @@ class Company extends Model
     public function depreciations(): HasMany
     {
         return $this->hasMany(Depreciation::class, 'company_id', 'id');
-    }
-
-    public function personInCharges(): HasMany
-    {
-        return $this->hasMany(PersonInCharge::class, 'company_id', 'id');
     }
 
     protected static function booted(): void

@@ -88,9 +88,4 @@ class User extends Authenticatable
             }
         );
     }
-
-    public function personInCharge(): HasOne
-    {
-        return $this->hasOne(PersonInCharge::class);
-    }
 }

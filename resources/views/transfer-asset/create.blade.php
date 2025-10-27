@@ -117,7 +117,7 @@
         <form class="max-w mx-auto" action="{{ route('transfer-asset.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div id="default-tab-content">
-                <div class="hidden rounded-b-lg" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
+                <div class="hidden" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
                     <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-800">
 
                         <div class="grid grid-cols-1 gap-y-5 mb-5 dark:text-white">
@@ -546,8 +546,8 @@
                     </div>
                 </div>
 
-                <div class="hidden rounded-b-lg" id="asset" role="tabpanel" aria-labelledby="asset-tab">
-                    <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-800">
+                <div class="hidden" id="asset" role="tabpanel" aria-labelledby="asset-tab">
+                    <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-800">
                         <table id="assetTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                 <tr>
@@ -593,9 +593,23 @@
                     </div>
                 </div>
             </div>
-            <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md flex flex-col gap-2 sm:flex-row dark:bg-gray-800">
-                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
-                <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
+            <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md dark:bg-gray-800">
+                <div class="flex flex-col w-full">
+                    @if ($errors->any())
+                        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                            <span class="font-medium">Validasi Gagal!</span> Mohon periksa error di bawah ini:
+                            <ul class="mt-1.5 list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <div class="flex flex-col gap-2 sm:flex-row">
+                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
+                        <a href="{{ route('transfer-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
+                    </div>
+                </div>            
             </div>
         </form>
     </div>

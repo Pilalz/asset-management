@@ -29,7 +29,7 @@
         </div>
     </form>
 
-    <form action="{{ $depreUrl }}" method="POST">
+    <!-- <form action="{{ $depreUrl }}" method="POST">
         @csrf
         @method('POST')
         <div class="text-yellow-700 hover:text-white">
@@ -42,6 +42,6 @@
                 Depre
             </button>
         </div>
-    </form>
+    </form> -->
 @endcan
 </div>

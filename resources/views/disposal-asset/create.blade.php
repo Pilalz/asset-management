@@ -123,8 +123,8 @@
 
         <form class="max-w mx-auto" action="{{ route('disposal-asset.store') }}" method="POST" enctype="multipart/form-data">
             <div id="default-tab-content">
-                <div class="hidden rounded-b-lg" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
-                    <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-800">
+                <div class="hidden" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
+                    <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-800">
                         @csrf
                         <div class="grid grid-cols-1 gap-y-5 mb-5 dark:text-white">
                             <div class="md:col-span-1">
@@ -171,7 +171,7 @@
 
                             <div>
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alasan <span class="text-red-900">*</span></label>
-                                <textarea type="text" name="reason" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"></textarea>
+                                <textarea type="text" name="reason" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">{{ old('reason') }}</textarea>
                             </div>
 
                             <div class="flex content-center">
@@ -232,11 +232,11 @@
                                     <div class="flex flex-row mb-2">
                                         <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
                                         <div class="flex items-center pr-4">
-                                            <input id="sequence-yes" name="sequence" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', 'Y') == 'Y' ? 'checked' : '' }}>
+                                            <input id="sequence-yes" name="sequence" type="radio" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', 1) == 1 ? 'checked' : '' }}>
                                             <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
                                         </div>
                                         <div class="flex items-center">
-                                            <input id="sequence-no" checked name="sequence" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence') == 'N' ? 'checked' : '' }}>
+                                            <input id="sequence-no" name="sequence" type="radio" value="0" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence') == 0 ? 'checked' : '' }}>
                                             <label for="sequence-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
                                         </div>
                                         @error('sequence')
@@ -276,7 +276,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.0.user_id", $approvals[0]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -318,7 +319,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.1.user_id", $approvals[1]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -360,7 +362,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.2.user_id", $approvals[2]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -402,7 +405,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.3.user_id", $approvals[3]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -444,7 +448,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.4.user_id", $approvals[4]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -486,7 +491,8 @@
                                                             @foreach($users as $user)
                                                                 {{-- Tambahkan atribut data-role di sini --}}
                                                                 <option value="{{ $user->id }}" 
-                                                                        data-role="{{ $user->user_role }}">
+                                                                        data-role="{{ $user->user_role }}"
+                                                                        {{ old("approvals.5.user_id", $approvals[5]->user_id ?? '') == $user->id ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                             @endforeach
@@ -519,8 +525,8 @@
                     </div>
                 </div>
 
-                <div class="hidden rounded-b-lg" id="asset" role="tabpanel" aria-labelledby="asset-tab">
-                    <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-800">
+                <div class="hidden" id="asset" role="tabpanel" aria-labelledby="asset-tab">
+                    <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-800">
                         <table id="assetTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                 <tr>
@@ -567,9 +573,23 @@
                 </div>
             </div>
             
-            <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md flex flex-col gap-2 sm:flex-row dark:bg-gray-800">
-                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
-                <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
+            <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md dark:bg-gray-800">
+                <div class="flex flex-col w-full">
+                    @if ($errors->any())
+                        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                            <span class="font-medium">Validasi Gagal!</span> Mohon periksa error di bawah ini:
+                            <ul class="mt-1.5 list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <div class="flex flex-col gap-2 sm:flex-row">
+                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Create</button>
+                        <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
+                    </div>
+                </div>                    
             </div>
         </form>
     </div>
@@ -578,7 +598,23 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const selectedAssetIds = new Set();
+        const oldAssetIdsString = @json(old('asset_ids'));
+
+        let initialIds = [];
+
+        if (oldAssetIdsString && typeof oldAssetIdsString === 'string') {
+            initialIds = oldAssetIdsString.split(',');
+        }
+
+        const selectedAssetIds = new Set(initialIds);
+
+        function updateSelection() {
+            const selectedCount = selectedAssetIds.size;
+            $('#selected-count-display').text(`${selectedCount} asset(s) selected`);
+            $('#selected-asset-ids').val(Array.from(selectedAssetIds).join(','));
+        }
+
+        updateSelection();
 
         if (typeof $ !== 'undefined') {
             $('#assetTable thead tr:eq(0) th').each(function(i) {
@@ -723,12 +759,6 @@
                     $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
                 },
             });
-
-            function updateSelection() {
-                const selectedCount = selectedAssetIds.size;
-                $('#selected-count-display').text(`${selectedCount} asset(s) selected`);
-                $('#selected-asset-ids').val(Array.from(selectedAssetIds).join(','));
-            }
 
             // Event listener untuk checkbox di setiap baris
             $('#assetTable tbody').on('change', '.asset-checkbox', function() {

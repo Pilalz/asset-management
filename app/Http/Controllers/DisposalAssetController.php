@@ -88,7 +88,7 @@ class DisposalAssetController extends Controller
         $assetIds = explode(',', $validated['asset_ids']);
 
         $approvalsToStore = [];
-        $isSequence = ($validated['sequence'] === "Y");
+        $isSequence = ($validated['sequence'] === "1");
 
         foreach ($validated['approvals'] as $index => $approvalData) {
             $order = 1;
@@ -118,7 +118,7 @@ class DisposalAssetController extends Controller
                     'reason'        => $validated['reason'],
                     'nbv'           => $validated['nbv'],
                     'esp'           => $validated['esp'],
-                    'sequence'      => ($validated['sequence'] == 'Y') ? 1 : 0,
+                    'sequence'      => $validated['sequence'],
                     'status'        => 'Waiting',
                     'company_id'    => $validated['company_id'],
                 ]);
@@ -188,7 +188,6 @@ class DisposalAssetController extends Controller
             'sequence'  => 'required',
             'nbv'  => 'required',
             'esp'  => 'required',
-
             'kurs'  => 'required',
 
             //Validasi Detail Asset
@@ -215,7 +214,7 @@ class DisposalAssetController extends Controller
                 $disposalAsset->update([
                     'department_id' => $validated['department_id'],
                     'reason'        => $validated['reason'],
-                    'sequence'      => ($validated['sequence'] == 'Y') ? 1 : 0,
+                    'sequence'      => $validated['sequence'],
                     'nbv'           => $validated['nbv'],
                     'esp'           => $validated['esp'],
                 ]);
@@ -258,7 +257,7 @@ class DisposalAssetController extends Controller
                 }
                 
                 // 5. Buat ulang daftar approval dengan logika yang benar
-                $isSequence = ($validated['sequence'] === 'Y');
+                $isSequence = ($validated['sequence'] === "1");
                 foreach ($validated['approvals'] as $index => $approvalData) {
                     $isFirstApprover = ($index === 0);
                     $disposalAsset->approvals()->create([

@@ -87,7 +87,7 @@ class TransferAssetController extends Controller
         $assetIds = explode(',', $validated['asset_ids']);
 
         $approvalsToStore = [];
-        $isSequence = ($validated['sequence'] === "Y");
+        $isSequence = ($validated['sequence'] === "1");
 
         foreach ($validated['approvals'] as $index => $approvalData) {
             $order = 1;
@@ -116,7 +116,7 @@ class TransferAssetController extends Controller
                     'department_id'         => $validated['department_id'],
                     'destination_loc_id'    => $validated['destination_loc_id'],
                     'reason'                => $validated['reason'],
-                    'sequence'              => ($validated['sequence'] == 'Y') ? 1 : 0,
+                    'sequence'              => $validated['sequence'],
                     'status'                => 'Waiting',
                     'company_id'            => $validated['company_id'],
                 ]);
@@ -206,7 +206,7 @@ class TransferAssetController extends Controller
                     'department_id'         => $validated['department_id'],
                     'destination_loc_id'    => $validated['destination_loc_id'],
                     'reason'                => $validated['reason'],
-                    'sequence'              => ($validated['sequence'] == 'Y') ? 1 : 0,
+                    'sequence'              => $validated['sequence'],
                 ]);
 
                 $transfer_asset->detailTransfers()->delete();
@@ -238,7 +238,7 @@ class TransferAssetController extends Controller
                 }
 
                 $transfer_asset->approvals()->delete();
-                $isSequence = ($validated['sequence'] === 'Y');
+                $isSequence = ($validated['sequence'] === "1");
                 foreach ($validated['approvals'] as $index => $approvalData) {
                     $order = $isSequence ? ($index + 1) : 1;
 

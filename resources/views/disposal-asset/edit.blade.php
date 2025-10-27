@@ -103,8 +103,8 @@
             @csrf
             @method('PUT')
             <div id="default-tab-content">
-                <div class="hidden rounded-b-lg" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
-                    <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-800">
+                <div class="hidden" id="formulir" role="tabpanel" aria-labelledby="formulir-tab">
+                    <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-800">
 
                         <div class="grid grid-cols-1 gap-y-5 mb-5 dark:text-white">
                             <div class="md:col-span-1">
@@ -152,7 +152,7 @@
                             <div>
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alasan <span class="text-red-900">*</span></label>
                                 <textarea type="text" name="reason" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                                    {{ old("disposal_asset.reason", $disposal_asset->reason ?? '') }}
+                                    {{ old("reason", $disposal_asset->reason ?? '') }}
                                 </textarea>
                                 @error('reason')
                                     <div class="text-danger">{{ $message }}</div>
@@ -162,8 +162,8 @@
                             <div class="flex content-center">
                                 <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku <span class="text-red-900">*</span></label>
                                 <span> : </span>
-                                <input type="text" id="nbv-display" value="{{ old("disposal_asset.nbv", $disposal_asset->nbv ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-0"/>
-                                <input type="hidden" name="nbv" id="nbv-value" value="{{ old("disposal_asset.nbv", $disposal_asset->nbv ?? '') }}"/>
+                                <input type="text" id="nbv-display" value="{{ old('nbv', $disposal_asset->nbv ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-0"/>
+                                <input type="hidden" name="nbv" id="nbv-value" value="{{ old('nbv', $disposal_asset->nbv ?? '') }}"/>
                                 @error('nbv')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -172,8 +172,8 @@
                             <div class="flex content-center">
                                 <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi <span class="text-red-900">*</span></label>
                                 <span> : </span>
-                                <input type="text" id="esp-display" value="{{ old("disposal_asset.esp", $disposal_asset->esp ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-0"/>
-                                <input type="hidden" name="esp" id="esp-value" value="{{ old("disposal_asset.esp", $disposal_asset->esp ?? '') }}">
+                                <input type="text" id="esp-display" value="{{ old('esp', $disposal_asset->esp ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-0"/>
+                                <input type="hidden" name="esp" id="esp-value" value="{{ old('esp', $disposal_asset->esp ?? '') }}">
                                 @error('esp')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -232,11 +232,11 @@
                                     <div class="flex flex-row mb-2">
                                         <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
                                         <div class="flex items-center pr-4">
-                                            <input id="sequence-yes" name="sequence" type="radio" value="Y" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $disposal_asset->sequence) === '1' ? 'checked' : '' }}>
+                                            <input id="sequence-yes" name="sequence" type="radio" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $disposal_asset->sequence) == 1 ? 'checked' : '' }}>
                                             <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
                                         </div>
                                         <div class="flex items-center">
-                                            <input id="sequence-no" name="sequence" type="radio" value="N" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $disposal_asset->sequence) === '0' ? 'checked' : '' }}>
+                                            <input id="sequence-no" name="sequence" type="radio" value="0" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $disposal_asset->sequence) == 0 ? 'checked' : '' }}>
                                             <label for="sequence-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span class="italic">(No)</span></label>
                                         </div>
                                         @error('sequence')
@@ -257,16 +257,13 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="approval-list-body">
-                                                @php $initialApprovals = old('approvals', $disposal_asset->approvals); @endphp
-                                                @foreach($initialApprovals as $index => $approvalData)
+                                                @foreach($disposal_asset->approvals as $index => $approval)
                                                     @php
-                                                        $isObject = is_object($approvalData);
-                                                        
-                                                        $action = old("approvals.$index.approval_action", $isObject ? $approvalData->approval_action : ($approvalData['approval_action'] ?? ''));
-                                                        $role = old("approvals.$index.role", $isObject ? $approvalData->role : ($approvalData['role'] ?? ''));
-                                                        $userId = old("approvals.$index.user_id", $isObject ? $approvalData->user_id : ($approvalData['user_id'] ?? ''));
-                                                        $status = old("approvals.$index.status", $isObject ? $approvalData->status : ($approvalData['status'] ?? 'Pending'));
-                                                        $date = old("approvals.$index.approval_date", $isObject ? ($approvalData->approval_date ? \Carbon\Carbon::parse($approvalData->approval_date)->format('Y-m-d') : '') : ($approvalData['approval_date'] ?? ''));
+                                                        $status = old("approvals.$index.status", $approval->status ?? 'Pending');
+                                                        $userId = old("approvals.$index.user_id", $approval->user_id);
+                                                        $date = old("approvals.$index.approval_date", $approval->approval_date ? \Carbon\Carbon::parse($approval->approval_date)->format('Y-m-d') : '');
+                                                        $action = $approval->approval_action;
+                                                        $role = $approval->role;
                                                     @endphp
                                                     <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                         <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -300,7 +297,7 @@
                                                             </td>
                                                         @else
                                                             <td class="px-2 py-4">
-                                                                <input type="text" name="approvals[{{$index}}][user_id]" value="{{ $isObject ? ($approvalData->user->name ?? '') : '' }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                                <input type="text" name="approvals[{{$index}}][user_id]" value="{{ $approval->user->name ?? '' }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
                                                                 <input type="hidden" name="approvals[{{$index}}][user_id]" value="{{ $userId }}" />
                                                                 @error("approvals[{{$index}}][user_id]")
                                                                     <div class="text-danger">{{ $message }}</div>
@@ -338,22 +335,11 @@
                         </div>
 
                         <input type="hidden" name="company_id" value="{{ Auth::user()->last_active_company_id }}" required />
-
-                        @if ($errors->any())
-                            <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                                <span class="font-medium">Validasi Gagal!</span> Mohon periksa error di bawah ini:
-                                <ul class="mt-1.5 list-disc list-inside">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
                     </div>
                 </div>
 
-                <div class="hidden rounded-b-lg" id="asset" role="tabpanel" aria-labelledby="asset-tab">
-                    <div class="relative overflow-x-auto py-5 px-6 sm:rounded-b-lg bg-white dark:bg-gray-800">
+                <div class="hidden" id="asset" role="tabpanel" aria-labelledby="asset-tab">
+                    <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-800">
                         <table id="assetTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -399,9 +385,23 @@
                 </div>
             </div>
 
-            <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md flex flex-col gap-2 sm:flex-row dark:bg-gray-800">
-                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
-                <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
+            <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md dark:bg-gray-800">
+                <div class="flex flex-col w-full">
+                    @if ($errors->any())
+                        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                            <span class="font-medium">Validasi Gagal!</span> Mohon periksa error di bawah ini:
+                            <ul class="mt-1.5 list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <div class="flex flex-col gap-2 sm:flex-row">
+                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
+                        <a href="{{ route('disposal-asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
@@ -410,8 +410,30 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const oldAssetIdsString = @json(old('asset_ids'));
         const preselectedIds = @json($selectedAssetIds->all() ?? []);
-        const selectedAssetIds = new Set(preselectedIds.map(String));
+
+        let initialIds = [];
+
+        if (oldAssetIdsString && typeof oldAssetIdsString === 'string') {
+            initialIdsToUse = oldAssetIdsString.split(',');
+        } 
+        // Otherwise, use the preselected IDs from the controller
+        else if (Array.isArray(preselectedIds) && preselectedIds.length > 0) {
+             // Ensure preselected IDs are strings for consistency with split(',') result
+            initialIdsToUse = preselectedIds.map(String);
+        }
+
+        // Declare selectedAssetIds ONLY ONCE using the chosen initial data
+        const selectedAssetIds = new Set(initialIdsToUse);
+
+        function updateSelection() {
+            const selectedCount = selectedAssetIds.size;
+            $('#selected-count-display').text(`${selectedCount} asset(s) selected`);
+            $('#selected-asset-ids').val(Array.from(selectedAssetIds).join(','));
+        }
+
+        updateSelection();
 
         if (typeof $ !== 'undefined') {
             $('#assetTable thead tr:eq(0) th').each(function(i) {
@@ -556,12 +578,6 @@
                     $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
                 },
             });
-
-            function updateSelection() {
-                const selectedCount = selectedAssetIds.size;
-                $('#selected-count-display').text(`${selectedCount} asset(s) selected`);
-                $('#selected-asset-ids').val(Array.from(selectedAssetIds).join(','));
-            }
 
             // Event listener untuk checkbox di setiap baris
             $('#assetTable tbody').on('change', '.asset-checkbox', function() {

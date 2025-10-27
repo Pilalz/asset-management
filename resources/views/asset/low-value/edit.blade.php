@@ -441,12 +441,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-1 gap-x-6 gap-y-5 mb-5">
                     <div class="md:col-span-2">
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                            Remaks
+                            Remark
                         </h2>
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Remaks </label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Remark </label>
                         <input type="text" name="remaks" value="{{ old('remaks', $asset->remaks) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         @error('remaks')
                             <div class="text-danger">{{ $message }}</div>
