@@ -284,20 +284,27 @@ class DepreciationController extends Controller
 
         return new StreamedResponse(function() use ($jobId) {
             $lastStatus = null;
+            $initialCheck = true;
 
             while (true) {
                 $currentStatus = Cache::get($jobId);
 
-                // Kirim data hanya jika statusnya berubah
-                if ($currentStatus !== $lastStatus) {
-                    echo "data: " . json_encode($currentStatus) . "\n\n";
-                    ob_flush();
-                    flush();
-                    $lastStatus = $currentStatus;
+                if ($currentStatus !== $lastStatus || $initialCheck || ($currentStatus && in_array($currentStatus['status'], ['completed', 'failed'])) ) {
+                    
+                    $statusToSend = $currentStatus ?: ($initialCheck ? null : ['status' => 'idle']);
+                    
+                    if ($statusToSend !== $lastStatus || $initialCheck) {
+                        echo "data: " . json_encode($statusToSend) . "\n\n";
+                        ob_flush();
+                        flush();
+
+                        $lastStatus = $statusToSend;
+                        $initialCheck = false;
+                    }
                 }
 
                 // Jika job selesai, gagal, atau tidak ada, tutup koneksi
-                if (!$currentStatus || in_array($currentStatus['status'], ['completed', 'failed'])) {
+                if (!$currentStatus || ($currentStatus && in_array($currentStatus['status'], ['completed', 'failed']))) {
                     break;
                 }
                 

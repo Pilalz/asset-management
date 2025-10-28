@@ -238,13 +238,13 @@
                                             <tbody id="asset-list-body">
                                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[0][approval_action]" value="Submitted by" class="border border-white focus:ring-0 focus:border-white-600 focus:border-0 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[0][approval_action]" value="Submitted by" class="border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[0][approval_action]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </th>
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[0][role]" value="User" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[0][role]" value="User" class="approval-role border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[0][role]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -266,13 +266,13 @@
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="text" name="approvals[0][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
+                                                        <input type="text" name="approvals[0][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[0][status]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="date" name="approvals[0][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                        <input type="date" name="approvals[0][approval_date]" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[0][approval_date]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -281,13 +281,13 @@
 
                                                 <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[1][approval_action]" value="Known by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[1][approval_action]" value="Known by" class="border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[1][approval_action]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </th>
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[1][role]" value="User Manager" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[1][role]" value="User Manager" class="approval-role border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[1][role]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -309,13 +309,13 @@
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="text" name="approvals[1][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
+                                                        <input type="text" name="approvals[1][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[1][status]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="date" name="approvals[1][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                        <input type="date" name="approvals[1][approval_date]" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[1][approval_date]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -324,13 +324,13 @@
 
                                                 <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[2][approval_action]" value="Approved by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[2][approval_action]" value="Approved by" class="border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[2][approval_action]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </th>
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[2][role]" value="Site Director" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[2][role]" value="Site Director" class="approval-role border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[2][role]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -352,13 +352,13 @@
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="text" name="approvals[2][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
+                                                        <input type="text" name="approvals[2][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[2][status]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="date" name="approvals[2][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                        <input type="date" name="approvals[2][approval_date]" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[2][approval_date]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -367,13 +367,13 @@
 
                                                 <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[3][approval_action]" value="Checked by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[3][approval_action]" value="Checked by" class="border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[3][approval_action]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </th>
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[3][role]" value="Asset Management" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[3][role]" value="Asset Management" class="approval-role border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[3][role]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -395,13 +395,13 @@
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="text" name="approvals[3][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
+                                                        <input type="text" name="approvals[3][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[3][status]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="date" name="approvals[3][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                        <input type="date" name="approvals[3][approval_date]" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[3][approval_date]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -410,13 +410,13 @@
 
                                                 <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[4][approval_action]" value="Approved by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[4][approval_action]" value="Approved by" class="border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[4][approval_action]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </th>
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[4][role]" value="CFO" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[4][role]" value="CFO" class="approval-role border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[4][role]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -438,13 +438,13 @@
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="text" name="approvals[4][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
+                                                        <input type="text" name="approvals[4][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[4][status]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="date" name="approvals[4][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                        <input type="date" name="approvals[4][approval_date]" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[4][approval_date]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -453,13 +453,13 @@
 
                                                 <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"> 
-                                                        <input type="text" name="approvals[5][approval_action]" value="Approved by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[5][approval_action]" value="Approved by" class="border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[5][approval_action]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </th>
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[5][role]" value="Director" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[5][role]" value="Director" class="approval-role border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[5][role]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -481,13 +481,13 @@
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="text" name="approvals[5][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
+                                                        <input type="text" name="approvals[5][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[5][status]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="date" name="approvals[5][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                        <input type="date" name="approvals[5][approval_date]" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[5][approval_date]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -496,13 +496,13 @@
 
                                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[6][approval_action]" value="Accepted by" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[6][approval_action]" value="Accepted by" class="border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[6][approval_action]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </th>
                                                     <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        <input type="text" name="approvals[6][role]" value="User" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                        <input type="text" name="approvals[6][role]" value="User" class="approval-role border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                         @error("approvals[6][role]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -524,13 +524,13 @@
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="text" name="approvals[6][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 peer" readonly />
+                                                        <input type="text" name="approvals[6][status]" value="Pending" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[6][status]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td class="px-2 py-4">
-                                                        <input type="date" name="approvals[6][approval_date]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly />
+                                                        <input type="date" name="approvals[6][approval_date]" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly />
                                                         @error("approvals[6][approval_date]")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror

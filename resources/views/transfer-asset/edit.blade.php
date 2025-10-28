@@ -251,13 +251,13 @@
                                                     @endphp
                                                     <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                         <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                            <input type="text" name="approvals[{{$index}}][approval_action]" value="{{ $action }}" class="border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                            <input type="text" name="approvals[{{$index}}][approval_action]" value="{{ $action }}" class="border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                             @error("approvals[{{$index}}][approval_action]")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
                                                         </th>   
                                                         <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                            <input type="text" name="approvals[{{$index}}][role]" value="{{ $role }}" class="approval-role border border-white focus:ring-0 focus:border-white-600 dark:bg-gray-800 dark:border-gray-800" readonly/>
+                                                            <input type="text" name="approvals[{{$index}}][role]" value="{{ $role }}" class="approval-role border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                             @error("approvals[{{$index}}][role]")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
@@ -290,7 +290,7 @@
                                                         @endif
 
                                                         <td class="px-2 py-4">
-                                                            <input type="text" name="approvals[{{$index}}][status]" value="{{ $status }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" readonly placeholder="" />
+                                                            <input type="text" name="approvals[{{$index}}][status]" value="{{ $status }}" class="block py-1 px-0 w-full text-sm text-center text-gray-900 bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" readonly placeholder="" />
                                                             @error("approvals[{{$index}}][status]")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
