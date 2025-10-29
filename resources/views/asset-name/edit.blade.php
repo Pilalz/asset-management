@@ -39,7 +39,7 @@
             @method('PUT')
 
             <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a Class <span class="text-red-900">*</span></label>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a Class <span class="text-red-900 dark:text-red-400">*</span></label>
                 <select name="sub_class_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
                     <option value="">Choose a Class</option>
                     @foreach($assetsubclasses as $asset_sub_class)
@@ -54,7 +54,7 @@
             </div>
 
             <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sub Class Name <span class="text-red-900">*</span></label>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sub Class Name <span class="text-red-900 dark:text-red-400">*</span></label>
                 <input type="text" name="name" value="{{ old('name', $asset_name->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Buildings" required />
                 @error('name')
                     <div class="text-danger">{{ $message }}</div>
@@ -62,7 +62,7 @@
             </div>
 
             <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Grouping Name <span class="text-red-900">*</span></label>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Grouping Name <span class="text-red-900 dark:text-red-400">*</span></label>
                 <input type="text" name="grouping" value="{{ old('grouping', $asset_name->grouping) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
                 @error('grouping')
                     <div class="text-danger">{{ $message }}</div>
@@ -70,7 +70,7 @@
             </div>
 
             <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Commercial Life <span class="text-red-900">*</span></label>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Commercial Life <span class="text-red-900 dark:text-red-400">*</span></label>
                 <input type="number" name="commercial" value="{{ old('commercial', $asset_name->commercial) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="4" required />
                 @error('commercial')
                     <div class="text-danger">{{ $message }}</div>
@@ -79,7 +79,7 @@
             </div>
 
             <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fiscal Life <span class="text-red-900">*</span></label>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fiscal Life <span class="text-red-900 dark:text-red-400">*</span></label>
                 <input type="number" name="fiscal" value="{{ old('fiscal', $asset_name->fiscal) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="4" required />
                 @error('fiscal')
                     <div class="text-danger">{{ $message }}</div>

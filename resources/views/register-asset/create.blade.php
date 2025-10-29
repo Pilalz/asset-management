@@ -100,7 +100,7 @@
                     </div>
 
                     <div class="flex content-center">
-                        <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900">*</span></label>
+                        <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900 dark:text-red-400">*</span></label>
                         <span> : </span>
                         <p class="w-full px-2">{{ $form_no }}</p>
                         <input type="hidden" name="form_no" value="{{ $form_no }}" class="px-1 w-64 text-sm text-gray-900 appearance-none dark:text-white" readonly/>
@@ -110,7 +110,7 @@
                     </div>
 
                     <div class="flex content-center">
-                        <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
+                        <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900 dark:text-red-400">*</span></label>
                         <span> : </span>
                         <select name="department_id" id="department-select" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                             <option selected value="">Choose a Department</option>
@@ -126,7 +126,7 @@
                     </div>
 
                     <div class="flex content-center">
-                        <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Location <span class="text-red-900">*</span></label>
+                        <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Location <span class="text-red-900 dark:text-red-400">*</span></label>
                         <span> : </span>
                         <select name="location_id" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                             <option selected value="">Choose a Location</option>
@@ -150,7 +150,7 @@
                     </div>
 
                     <div class="flex content-center">
-                        <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Asset Type <span class="text-red-900">*</span></label>
+                        <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Asset Type <span class="text-red-900 dark:text-red-400">*</span></label>
                         <span> : </span>
                         <div class="w-full flex ml-2">
                             <div class="flex items-center pr-4">
@@ -255,7 +255,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insured <span class="text-red-900 dark:text-red-400">*</span></label>
                         <div class="flex items-center mb-4">
                             <input id="insured-yes" name="insured" type="radio" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('insured', 1) == 1 ? 'checked' : '' }}>
                             <label for="insured-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>
@@ -270,7 +270,7 @@
                     </div>
 
                     <div id="polish-no-wrapper" class="flex content-center overflow-hidden transition-all duration-500 ease-in-out">
-                        <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Polish No. <span class="text-red-900">*</span></label>
+                        <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Polish No. <span class="text-red-900 dark:text-red-400">*</span></label>
                         <span> : </span>
                         <input type="text" id="polish-no-input" name="polish_no" value="{{ old('polish_no') }}" class="block py-1 px-0 ml-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"/>
                         @error('polish_no')
@@ -304,7 +304,7 @@
                         <div class="border-2 border-black rounded-lg p-4 dark:border-gray-400">
                             
                             <div class="flex flex-row mb-2">
-                                <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
+                                <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900 dark:text-red-400">*</span> : </label>
                                 <div class="flex items-center pr-4">
                                     <input id="sequence-yes" name="sequence" type="radio" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', 1) == 1 ? 'checked' : '' }}>
                                     <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>

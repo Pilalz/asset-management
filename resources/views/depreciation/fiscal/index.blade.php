@@ -1,6 +1,30 @@
 @extends('layouts.main')
 
 @section('content')
+    @push('styles')
+        <style>
+            .dark .dt-search,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:hover,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:active,
+            .dark div.dt-container .dt-paging .dt-paging-button,
+            .dark div.dt-container .dt-paging .ellipsis{
+                color: #e4e6eb !important;
+            }
+
+            html.dark .dt-container .dt-paging .dt-paging-button.current:hover{
+                color: white !important;
+            }
+
+            div.dt-container select.dt-input {
+                padding: 4px 25px 4px 4px;
+            }
+
+            select.dt-input option{
+                text-align: center !important;
+            }
+        </style>
+    @endpush
     <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">

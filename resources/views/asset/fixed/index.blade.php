@@ -19,6 +19,27 @@
             table.dataTable tbody tr > .sorting_3 {
                 background-color: inherit !important;
             }
+
+            .dark .dt-search,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled, 
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:hover, 
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:active,
+            .dark div.dt-container .dt-paging .dt-paging-button,
+            .dark div.dt-container .dt-paging .ellipsis{
+                color: #e4e6eb !important;
+            }
+
+            html.dark .dt-container .dt-paging .dt-paging-button.current:hover{
+                color: white !important;
+            }
+
+            div.dt-container select.dt-input {
+                padding: 4px 25px 4px 4px;
+            }
+
+            select.dt-input option{
+                text-align: center !important;
+            }
         </style>
     @endpush
     <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800 dark:border-b dark:border-gray-700">
@@ -65,7 +86,7 @@
 
             <div>
                 @can('is-admin')
-                    <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-md text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                    <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-400 dark:hover:bg-gray-500 dark:hover:border-gray-400" type="button">
                         <span class="sr-only">Action button</span>
                         Action
                         <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -137,14 +158,14 @@
                             <form action="{{ route('asset.import') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-4">
-                                    <label for="excel_file" class="block mb-2 text-sm font-medium text-gray-900">Upload Excel File (.xlsx, .xls)</label>
+                                    <label for="excel_file" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Upload Excel File (.xlsx, .xls)</label>
                                     <input type="file" name="excel_file" id="excel_file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" required>
                                 </div>   
                                 <div class="mb-4">
-                                    <p class="text-sm text-gray-600">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">
                                         Silahkan download template Excel jika anda belum memilikinya.
                                     </p>
-                                    <a href="{{ asset('template/TemplateAsset.xlsx') }}" class="text-blue-600 hover:underline">Download Template Excel</a>
+                                    <a href="{{ asset('template/TemplateAsset.xlsx') }}" class="text-blue-600 hover:underline dark:text-blue-500">Download Template Excel</a>
                                 </div>
                                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5">
                                     Import Data

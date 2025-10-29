@@ -267,7 +267,7 @@
                                             <td class="px-2 py-4">{{ $approv->user?->name ?? "-" }}</td>
                                             @if ($approv->status == 'approved' && $approv->user->signature)
                                                 <td class="px-2 py-4 status-pending">
-                                                    <div class="signature-container">
+                                                    <div class="signature-container dark:invert">
                                                         <img src="{{ $approv->user->signature }}" alt="Signature" class="h-12">
                                                     </div>
                                                 </td>

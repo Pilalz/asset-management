@@ -342,7 +342,7 @@ class TransferAssetController extends Controller
 
         // Kondisi kapan user TIDAK BOLEH approve
         if (
-            ($transfer_asset->sequence === 1 && (!$nextApprover || $nextApprover->user_id !== $user->id)) ||
+            ($transfer_asset->sequence === 1 && (!$nextApprover || $nextApprover->user_id != $user->id)) ||
             ($transfer_asset->sequence === 0 && !$transfer_asset->approvals()->where('user_id', $user->id)->where('status', 'pending')->exists())
         ) {
             return back()->with('error', 'Saat ini bukan giliran Anda untuk melakukan approval.');

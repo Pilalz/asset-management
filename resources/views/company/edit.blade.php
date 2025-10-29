@@ -31,7 +31,7 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-5">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name <span class="text-red-900">*</span></label>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name <span class="text-red-900 dark:text-red-400">*</span></label>
                     <input type="text" name="name" value="{{ old('name', $company->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="HRGA" required />
                     @error('name')
                         <div class="text-danger">{{ $message }}</div>
@@ -55,7 +55,7 @@
                 </div>
 
                 <div class="mb-5">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company Currency <span class="text-red-900">*</span></label>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company Currency <span class="text-red-900 dark:text-red-400">*</span></label>
                     <select name="currency" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option selected value="">Choose a Currency</option>
                             <option value="USD" {{ $company->currency == 'USD' ? 'selected' : '' }}>USD</option>
@@ -113,13 +113,13 @@
 
     @canany(['is-dev', 'is-owner'])
         <div class="relative overflow-x-auto shadow-md mt-4 py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
-            <form action="{{ route('company.destroy', $company->id) }}" method="POST" class="group">
+            <form action="{{ route('company.destroy', $company->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <button type="submit"
                     onclick="return confirm('Terdapat {{$countAsset}} Asset di company ini, Apakah Anda yakin ingin menghapus data ini?')" 
-                    class="text-red-700 group-hover:text-white border border-red-700 group-hover:bg-red-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:border-red-500 dark:text-red-500 dark:group-hover:text-white dark:group-hover:bg-red-600">
-                    <svg class="w-3.5 h-3.5 me-2 text-red-700 dark:text-white group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center me-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600">
+                    <svg class="w-3.5 h-3.5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                     </svg>
                     Delete

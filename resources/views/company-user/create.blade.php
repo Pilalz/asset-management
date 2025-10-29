@@ -84,7 +84,7 @@
             <form class="max-w mx-auto" action="{{ route('company-user.store') }}" method="POST">
                 @csrf
                 <div class="mb-5">
-                    <label for="select-user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Search User by Email or Name</label>
+                    <label for="select-user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Search User by Email or Name <span class="text-red-900 dark:text-red-400">*</span></label>
                     <select id="select-user" 
                             placeholder="Ketik minimal 3 huruf..." 
                             data-search-url="{{ route('api.users.search') }}">
@@ -93,7 +93,7 @@
                 </div>
 
                 <div class="mb-5">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role <span class="text-red-900">*</span></label>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role <span class="text-red-900 dark:text-red-400">*</span></label>
                     <select name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option selected value="">Choose a Class</option>
                         <option value="User">User</option>

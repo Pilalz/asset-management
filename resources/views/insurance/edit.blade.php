@@ -1,6 +1,47 @@
 @extends('layouts.main')
 
 @section('content')
+    @push('styles')
+        <style>
+            /* Gaya untuk Light Mode */
+            #assetTable tbody tr:hover {
+                background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */
+            }
+
+            /* Gaya untuk Dark Mode */
+            .dark #assetTable tbody tr:hover {
+                background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
+            }
+
+            /* Menghapus background bawaan dari kolom yang diurutkan */
+            table.dataTable tbody tr > .sorting_1,
+            table.dataTable tbody tr > .sorting_2,
+            table.dataTable tbody tr > .sorting_3 {
+                background-color: inherit !important;
+            }
+
+            .dark .dt-search,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:hover,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:active,
+            .dark div.dt-container .dt-paging .dt-paging-button,
+            .dark div.dt-container .dt-paging .ellipsis{
+                color: #e4e6eb !important;
+            }
+
+            html.dark .dt-container .dt-paging .dt-paging-button.current:hover{
+                color: white !important;
+            }
+
+            div.dt-container select.dt-input {
+                padding: 4px 25px 4px 4px;
+            }
+
+            select.dt-input option{
+                text-align: center !important;
+            }
+        </style>
+    @endpush
     <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -29,10 +70,10 @@
         <div class="border-b bg-white rounded-t-lg border-gray-200 dark:border-gray-700 dark:bg-gray-800">
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
                 <li class="me-2" role="presentation">
-                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="formulir-tab" data-tabs-target="#formulir" type="button" role="tab" aria-controls="formulir" aria-selected="false">Form <span class="text-red-900">*</span></button>
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="formulir-tab" data-tabs-target="#formulir" type="button" role="tab" aria-controls="formulir" aria-selected="false">Form <span class="text-red-900 dark:text-red-400">*</span></button>
                 </li>
                 <li class="me-2" role="presentation">
-                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="asset-tab" data-tabs-target="#asset" type="button" role="tab" aria-controls="asset" aria-selected="false">Asset <span class="text-red-900">*</span></button>
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="asset-tab" data-tabs-target="#asset" type="button" role="tab" aria-controls="asset" aria-selected="false">Asset <span class="text-red-900 dark:text-red-400">*</span></button>
                 </li>
             </ul>
         </div>
@@ -45,7 +86,7 @@
                         @method('PUT')
 
                         <div class="mb-5 flex content-center">
-                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Polish No. <span class="text-red-900">*</span></label>
+                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Polish No. <span class="text-red-900 dark:text-red-400">*</span></label>
                             <span> : </span>
                             <input type="text" name="polish_no" value="{{ old('polish_no', $insurance->polish_no) }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:text-white focus:ring-0"/>
                             @error('polish_no')
@@ -54,7 +95,7 @@
                         </div>
 
                         <div class="mb-5 flex content-center">
-                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Start Date <span class="text-red-900">*</span></label>
+                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Start Date <span class="text-red-900 dark:text-red-400">*</span></label>
                             <span> : </span>
                             <input type="date" name="start_date" value="{{ old('start_date', $insurance->start_date) }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:text-white focus:ring-0"/>
                             @error('start_date')
@@ -63,7 +104,7 @@
                         </div>
 
                         <div class="mb-5 flex content-center">
-                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">End Date <span class="text-red-900">*</span></label>
+                            <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">End Date <span class="text-red-900 dark:text-red-400">*</span></label>
                             <span> : </span>
                             <input type="date" name="end_date" value="{{ old('end_date', $insurance->end_date) }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:text-white focus:ring-0"/>
                             @error('end_date')

@@ -1,6 +1,48 @@
 @extends('layouts.main')
 
 @section('content')
+    @push('styles')
+        <style>
+            /* Gaya untuk Light Mode */
+            #assetTable tbody tr:hover {
+                background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */
+            }
+
+            /* Gaya untuk Dark Mode */
+            .dark #assetTable tbody tr:hover {
+                background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
+            }
+
+            /* Menghapus background bawaan dari kolom yang diurutkan */
+            table.dataTable tbody tr > .sorting_1,
+            table.dataTable tbody tr > .sorting_2,
+            table.dataTable tbody tr > .sorting_3 {
+                background-color: inherit !important;
+            }
+
+            .dark .dt-search,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:hover,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:active,
+            .dark div.dt-container .dt-paging .dt-paging-button,
+            .dark div.dt-container .dt-paging .ellipsis{
+                color: #e4e6eb !important;
+            }
+
+            html.dark .dt-container .dt-paging .dt-paging-button.current:hover{
+                color: white !important;
+            }
+
+            div.dt-container select.dt-input {
+                padding: 4px 25px 4px 4px;
+            }
+
+            select.dt-input option{
+                text-align: center !important;
+            }
+        </style>
+    @endpush
+
     <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -33,7 +75,7 @@
 
     @can('is-form-maker')
         <div class="flex">
-            <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-md text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+            <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-400 dark:hover:bg-gray-500 dark:hover:border-gray-400" type="button">
                 <span class="sr-only">Action button</span>
                 Action
                 <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">

@@ -4,12 +4,12 @@
     @push('styles')
         <style>
             /* Gaya untuk Light Mode */
-            #departmentTable tbody tr:hover {
+            #historyTable tbody tr:hover {
                 background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */
             }
 
             /* Gaya untuk Dark Mode */
-            .dark #departmentTable tbody tr:hover {
+            .dark #historyTable tbody tr:hover {
                 background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
             }
 
@@ -18,6 +18,27 @@
             table.dataTable tbody tr > .sorting_2,
             table.dataTable tbody tr > .sorting_3 {
                 background-color: inherit !important;
+            }
+
+            .dark .dt-search,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:hover,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:active,
+            .dark div.dt-container .dt-paging .dt-paging-button,
+            .dark div.dt-container .dt-paging .ellipsis{
+                color: #e4e6eb !important;
+            }
+
+            html.dark .dt-container .dt-paging .dt-paging-button.current:hover{
+                color: white !important;
+            }
+
+            div.dt-container select.dt-input {
+                padding: 4px 25px 4px 4px;
+            }
+
+            select.dt-input option{
+                text-align: center !important;
             }
         </style>
     @endpush

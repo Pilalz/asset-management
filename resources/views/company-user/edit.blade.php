@@ -31,19 +31,19 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-5">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name <span class="text-red-900">*</span></label>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name <span class="text-red-900 dark:text-red-400">*</span></label>
                     <input type="text" name="name" value="{{ old('name', $company_user->user->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly required />
                     <small class="text-xs text-gray-400">Tidak bisa di edit</small>
                 </div>
 
                 <div class="mb-5">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email <span class="text-red-900">*</span></label>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email <span class="text-red-900 dark:text-red-400">*</span></label>
                     <input type="email" name="email" value="{{ old('name', $company_user->user->email) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly required />
                     <small class="text-xs text-gray-400">Tidak bisa di edit</small>
                 </div>
 
                 <div class="mb-5">
-                    <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role <span class="text-red-900">*</span></label>
+                    <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role <span class="text-red-900 dark:text-red-400">*</span></label>
                     <select id="role" name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white block w-full p-2.5">
                         <option value="User" {{ $company_user->role == 'User' ? 'selected' : '' }}>User</option>
                         <option value="User Manager" {{ $company_user->role == 'User Manager' ? 'selected' : '' }}>User Manager</option>

@@ -369,7 +369,7 @@
                 @endcanany
 
                 </ul>
-                <div class="mt-auto">
+                <div class="mt-auto hidden sm:block">
                     <button id="sidebar-toggle" class="w-full flex items-center justify-center p-2 text-gray-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <svg id="sidebar-toggle-icon" class="w-6 h-6 transition-transform text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m17 16-4-4 4-4m-6 8-4-4 4-4"/>

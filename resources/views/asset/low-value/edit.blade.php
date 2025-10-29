@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-400 dark:hover:text-white">
@@ -86,7 +86,7 @@
     @endif
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
+        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
             <form class="max-w mx-auto" action="{{ route('assetLVA.update', $asset->id) }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -98,7 +98,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Number <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Number <span class="text-red-900 dark:text-red-400">*</span></label>
                         <input type="text" name="asset_number" value="{{ old('asset_number', $asset->asset_number) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                         @error('asset_number')
                             <div class="text-danger">{{ $message }}</div>
@@ -106,7 +106,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Class <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Class <span class="text-red-900 dark:text-red-400">*</span></label>
                         <select id="asset-class-select" name="asset_class_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option selected value="">Choose an Asset Class</option>
                             @foreach($assetclasses as $assetclass)
@@ -118,7 +118,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Sub Class <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Sub Class <span class="text-red-900 dark:text-red-400">*</span></label>
                         <select id="asset-sub-class-select" name="asset_sub_class_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option value="">Choose an Asset Sub Class</option>
                             {{-- JavaScript akan mengisi pilihan di sini --}}
@@ -126,7 +126,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Name <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Name <span class="text-red-900 dark:text-red-400">*</span></label>
                         <select id="asset-name-select" name="asset_name_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option value="">Choose an Asset Name</option>
                             {{-- JavaScript akan mengisi pilihan di sini --}}
@@ -140,7 +140,7 @@
                         $isOther = !in_array($currentStatus, $standardStatuses) && !empty($currentStatus);
                     @endphp
                     <div>
-                        <label for="status-select" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status <span class="text-red-900">*</span></label>
+                        <label for="status-select" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status <span class="text-red-900 dark:text-red-400">*</span></label>
                         <select name="status" class="status-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option value="Active"      @if($currentStatus == 'Active') selected @endif>Active</option>
                             <option value="Broken"      @if($currentStatus == 'Broken') selected @endif>Broken</option>
@@ -159,7 +159,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location <span class="text-red-900 dark:text-red-400">*</span></label>
                         <select name="location_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option selected value="">Choose a Location</option>
                             @foreach($locations as $location)
@@ -174,7 +174,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department <span class="text-red-900 dark:text-red-400">*</span></label>
                         <select name="department_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option selected value="">Choose a Department</option>
                             @foreach($departments as $department)
@@ -197,7 +197,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity <span class="text-red-900 dark:text-red-400">*</span></label>
                         <input type="number" name="quantity" value="{{ old('quantity', $asset->quantity) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                         @error('quantity')
                             <div class="text-danger">{{ $message }}</div>
@@ -213,7 +213,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description <span class="text-red-900 dark:text-red-400">*</span></label>
                         <input type="text" name="description" value="{{ old('description', $asset->description) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                         @error('description')
                             <div class="text-danger">{{ $message }}</div>
@@ -230,7 +230,7 @@
 
                     <div>
                         <label for="production-year" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Production Year</label>
-                        <select name="production_year" id="production-year" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                        <select name="production_year" id="production-year" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                             <option value="">Choose a Year</option>
                             @for ($year = now()->year; $year >= now()->year - 20; $year--)
                                 @php
@@ -296,7 +296,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">PO No <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">PO No <span class="text-red-900 dark:text-red-400">*</span></label>
                         <input type="text" name="po_no" value="{{ old('po_no', $asset->po_no) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                         @error('po_no')
                             <div class="text-danger">{{ $message }}</div>
@@ -305,7 +305,7 @@
 
                     @if ($asset->depreciations->count() === 0)
                         <div>
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900">*</span></label>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900 dark:text-red-400">*</span></label>
                             <input type="date" name="capitalized_date" value="{{ old('capitalized_date', $asset->capitalized_date?->format('Y-m-d')) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             @error('capitalized_date')
                                 <div class="text-danger">{{ $message }}</div>
@@ -313,7 +313,7 @@
                         </div>
 
                         <div>
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acquisition Value <span class="text-red-900">*</span></label>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acquisition Value <span class="text-red-900 dark:text-red-400">*</span></label>
                             <div class="relative ">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                     @if($activeCompany->currency === 'USD')
@@ -333,7 +333,7 @@
                         </div>
                     @else
                         <div>
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900">*</span></label>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900 dark:text-red-400">*</span></label>
                             <input type="date" name="capitalized_date" value="{{ old('capitalized_date', $asset->capitalized_date?->format('Y-m-d')) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
                             @error('capitalized_date')
                                 <div class="text-danger">{{ $message }}</div>
@@ -341,7 +341,7 @@
                         </div>
 
                         <div>
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acquisition Value <span class="text-red-900">*</span></label>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acquisition Value <span class="text-red-900 dark:text-red-400">*</span></label>
                             <div class="relative ">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                     @if($activeCompany->currency === 'USD')
@@ -362,7 +362,7 @@
                     @endif
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current Cost <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current Cost <span class="text-red-900 dark:text-red-400">*</span></label>
                         <div class="relative">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                 @if($activeCompany->currency === 'USD')
@@ -382,7 +382,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Commercial Useful Life Month <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Commercial Useful Life Month <span class="text-red-900 dark:text-red-400">*</span></label>
                         <input type="text" name="commercial_useful_life_month" value="{{ old('commercial_useful_life_month', $asset->commercial_useful_life_month) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
                         @error('commercial_useful_life_month')
                             <div class="text-danger">{{ $message }}</div>
@@ -390,7 +390,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Commercial Net Book Value <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Commercial Net Book Value <span class="text-red-900 dark:text-red-400">*</span></label>
                         <div class="relative ">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                 @if($activeCompany->currency === 'USD')
@@ -410,7 +410,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fiscal Useful Life Month <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fiscal Useful Life Month <span class="text-red-900 dark:text-red-400">*</span></label>
                         <input type="text" name="fiscal_useful_life_month" value="{{ old('fiscal_useful_life_month', $asset->fiscal_useful_life_month) }}" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required readonly />
                         @error('fiscal_useful_life_month')
                             <div class="text-danger">{{ $message }}</div>
@@ -418,7 +418,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fiscal Net Book Value <span class="text-red-900">*</span></label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fiscal Net Book Value <span class="text-red-900 dark:text-red-400">*</span></label>
                         <div class="relative ">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                 @if($activeCompany->currency === 'USD')
@@ -454,8 +454,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
-                <a href="{{ route('assetLVA.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Cancel</a>
+                <div class="flex flex-col gap-2 sm:flex-row">
+                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
+                    <a href="{{ route('assetLVA.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200">Cancel</a>
+                </div>
             </form>
         </div>
     </div>

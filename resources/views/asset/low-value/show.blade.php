@@ -51,7 +51,7 @@
                     </h2>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>Asset Number</td>
@@ -81,7 +81,7 @@
                     </table>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>Obj Acc</td>
@@ -119,7 +119,7 @@
                     </h2>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>Description</td>
@@ -144,7 +144,7 @@
                     </table>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>SN Chassis</td>
@@ -177,7 +177,7 @@
                     </h2>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>PO No</td>
@@ -202,7 +202,7 @@
                     </table>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>Commercial Useful Life Month</td>
@@ -235,7 +235,7 @@
                     </h2>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>Remark :</td>
@@ -250,7 +250,7 @@
         </div>
 
         <div class="shadow-md rounded-lg mt-3 bg-white p-4 dark:bg-gray-800">
-            <a href="{{ route('assetLVA.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
+            <a href="{{ route('assetLVA.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200">Back</a>
         </div>
     </div>
 @endsection

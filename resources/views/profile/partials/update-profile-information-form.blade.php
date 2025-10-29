@@ -19,14 +19,14 @@
 
         <div>
             <x-input-label for="name" :value="__('Name')" class="dark:text-gray-100" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         @if( Auth::user()->google_id === null )
             <div>
                 <x-input-label for="email" :value="__('Email')" class="dark:text-gray-100" />
-                <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+                <x-text-input id="email" name="email" type="email" class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" :value="old('email', $user->email)" required autocomplete="username" />
                 <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
                 @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -56,7 +56,7 @@
         @endif
 
         <div class="flex items-center gap-4">
-            <x-primary-button class="dark:bg-gray-100 dark:text-gray-800 hover:dark:bg-white">{{ __('Save') }}</x-primary-button>
+            <x-primary-button class="dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">{{ __('Save') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -64,7 +64,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
+                    class="text-sm text-gray-400"
                 >{{ __('Saved.') }}</p>
             @endif
         </div>

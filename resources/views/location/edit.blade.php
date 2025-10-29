@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -25,12 +25,12 @@
         </nav>
     </div>
 
-    <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg m-5 bg-white dark:bg-gray-900">
+    <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg m-5 bg-white dark:bg-gray-800">
         <form class="max-w mx-auto" action="{{ route('location.update', $location->id) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name <span class="text-red-900">*</span></label>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name <span class="text-red-900 dark:text-red-400">*</span></label>
                 <input type="text" name="name" value="{{ old('name', $location->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Tuhup" required />
                  @error('name')
                     <div class="text-danger">{{ $message }}</div>
@@ -47,7 +47,7 @@
 
             <div class="flex flex-col gap-2 sm:flex-row">
                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
-                <a href="{{ route('location.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Cancel</a>
+                <a href="{{ route('location.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200">Cancel</a>
             </div>
         </form>
     </div>

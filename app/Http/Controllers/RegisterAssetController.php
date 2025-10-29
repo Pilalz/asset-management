@@ -13,6 +13,7 @@ use App\Models\Approval;
 use App\Models\CompanyUser;
 use App\Models\Attachment;
 use App\Models\User;
+use App\Models\Insurance;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -352,7 +353,7 @@ class RegisterAssetController extends Controller
 
         // Kondisi kapan user TIDAK BOLEH approve
         if (
-            ($register_asset->sequence === "1" && (!$nextApprover || $nextApprover->user_id !== $user->id)) ||
+            ($register_asset->sequence === "1" && (!$nextApprover || $nextApprover->user_id != $user->id)) ||
             ($register_asset->sequence === "0" && !$register_asset->approvals()->where('user_id', $user->id)->where('status', 'pending')->exists())
         ) {
             return back()->with('error', 'Saat ini bukan giliran Anda untuk melakukan approval.');
@@ -429,6 +430,8 @@ class RegisterAssetController extends Controller
         // Ubah status form menjadi 'approved'
         $register_asset->update(['status' => 'Approved']);
 
+        $newAssetIds = [];
+
         // Loop melalui detail dan buat aset baru
         foreach ($register_asset->detailRegisters as $detail) {
 
@@ -436,7 +439,7 @@ class RegisterAssetController extends Controller
 
             // $newAssetNumber = $this->generateAssetNumber($register_asset->company_id, $assetNameId);
 
-            Asset::create([
+            $newAsset = Asset::create([
                 'asset_number' => null,
                 'asset_name_id' => $detail->asset_name_id,
                 'asset_type' => $register_asset->asset_type,
@@ -463,7 +466,32 @@ class RegisterAssetController extends Controller
                 'fiscal_nbv' => 0,
                 'company_id' => $register_asset->company_id,
             ]);
+
+            $newAssetIds[] = $newAsset->id;
+
         }
+
+        $createdInsurance = null;
+
+        if ($register_asset->insured == 1 && !empty($register_asset->polish_no)){
+            $createdInsurance = Insurance::firstOrCreate([
+                'polish_no' => $register_asset->polish_no,
+                'start_date' => null,
+                'end_date' => null,
+                'instance_name' => null,
+                'annual_premium' => null,
+                'schedule' => null,
+                'next_payment' => null,
+                'status' => 'Inactive',
+                'company_id' => $register_asset->company_id,
+            ]);
+        }
+
+        if ($createdInsurance && !empty($newAssetIds)) {
+            $createdInsurance->detailInsurances()->attach($newAssetIds); 
+        }
+
+        DB::commit();
     }
 
     public function datatables(Request $request)

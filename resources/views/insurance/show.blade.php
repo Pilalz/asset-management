@@ -74,7 +74,7 @@
                     </table>
                 </div>
                 <div class="flex w-1/2">
-                    <table class="mb-4">
+                    <table class="mb-4 dark:text-gray-200">
                         <th>
                             <tr>
                                 <td>Annual Premium</td>
@@ -113,7 +113,7 @@
 
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Data </label>
-                <div class="border-2 border-black rounded-lg p-4">
+                <div class="border-2 border-black rounded-lg p-4 dark:border-gray-500">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                             <tr>

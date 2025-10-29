@@ -51,7 +51,7 @@
                     </h2>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>Asset Number</td>
@@ -81,7 +81,7 @@
                     </table>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>Obj Acc</td>
@@ -119,7 +119,7 @@
                     </h2>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>Description</td>
@@ -144,7 +144,7 @@
                     </table>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>SN Chassis</td>
@@ -172,7 +172,7 @@
                     </h2>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>PO No</td>
@@ -202,7 +202,7 @@
                     </table>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>Commercial Accum Depre</td>
@@ -240,7 +240,7 @@
                     </h2>
                 </div>
 
-                <div>
+                <div class="dark:text-gray-200">
                     <table>
                         <tr>
                             <td>Remark :</td>
@@ -257,8 +257,8 @@
             <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Depreciation</h2>
             <div class="mb-4 flex flex-row content-center">
                 <form method="GET" action="{{ route('asset.show', $asset->id) }}">
-                    <label for="year" class="">Tampilkan Tahun:</label>
-                    <select name="year" id="year" onchange="this.form.submit()" class="py-2 px-0 w-24 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                    <label for="year" class="dark:text-gray-200">Tampilkan Tahun:</label>
+                    <select name="year" id="year" onchange="this.form.submit()" class="py-2 px-0 w-24 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-200 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                         @for ($y = now()->year; $y >= 2020; $y--)
                             <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>{{ $y }}</option>
                         @endfor
@@ -267,8 +267,8 @@
             </div>
 
             <div class="relative overflow-x-auto">
-                <table class="w-full p-2 text-sm text-left rtl:text-right text-gray-500">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <table class="w-full p-2 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:text-gray-200 dark:bg-gray-700">
                         {{-- Baris Header Pertama --}}
                         <tr>
                             @foreach($months as $monthName)
@@ -286,7 +286,7 @@
                     </thead>
                     <tbody>
                         @forelse ($pivotedData as $assetId => $data)
-                            <tr class="bg-white border-b hover:bg-gray-50">
+                            <tr class="bg-white border-b hover:bg-gray-50 dark:bg-gray-600">
 
                                 {{-- Loop untuk mengisi data per bulan --}}
                                 @foreach ($months as $monthKey => $monthName)
@@ -313,7 +313,7 @@
             </div>
         </div>
         <div class="shadow-md rounded-lg mt-3 bg-white p-4 dark:bg-gray-800">
-            <a href="{{ route('asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2">Back</a>
+            <a href="{{ route('asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2 dark:text-gray-200">Back</a>
         </div>
     </div>
 @endsection

@@ -1,6 +1,47 @@
 @extends('layouts.main')
 
 @section('content')
+    @push('styles')
+        <style>
+            /* Gaya untuk Light Mode */
+            #assetTable tbody tr:hover {
+                background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */
+            }
+
+            /* Gaya untuk Dark Mode */
+            .dark #assetTable tbody tr:hover {
+                background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
+            }
+
+            /* Menghapus background bawaan dari kolom yang diurutkan */
+            table.dataTable tbody tr > .sorting_1,
+            table.dataTable tbody tr > .sorting_2,
+            table.dataTable tbody tr > .sorting_3 {
+                background-color: inherit !important;
+            }
+
+            .dark .dt-search,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:hover,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:active,
+            .dark div.dt-container .dt-paging .dt-paging-button,
+            .dark div.dt-container .dt-paging .ellipsis{
+                color: #e4e6eb !important;
+            }
+
+            html.dark .dt-container .dt-paging .dt-paging-button.current:hover{
+                color: white !important;
+            }
+
+            div.dt-container select.dt-input {
+                padding: 4px 25px 4px 4px;
+            }
+
+            select.dt-input option{
+                text-align: center !important;
+            }
+        </style>
+    @endpush
 
     <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
@@ -91,10 +132,10 @@
         <div class="border-b bg-white rounded-t-lg border-gray-200 dark:border-gray-700 dark:bg-gray-800">
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
                 <li class="me-2" role="presentation">
-                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="formulir-tab" data-tabs-target="#formulir" type="button" role="tab" aria-controls="formulir" aria-selected="false">Form <span class="text-red-900">*</span></button>
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="formulir-tab" data-tabs-target="#formulir" type="button" role="tab" aria-controls="formulir" aria-selected="false">Form <span class="text-red-900 dark:text-red-400">*</span></button>
                 </li>
                 <li class="me-2" role="presentation">
-                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="asset-tab" data-tabs-target="#asset" type="button" role="tab" aria-controls="asset" aria-selected="false">Asset <span class="text-red-900">*</span></button>
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="asset-tab" data-tabs-target="#asset" type="button" role="tab" aria-controls="asset" aria-selected="false">Asset <span class="text-red-900 dark:text-red-400">*</span></button>
                 </li>
             </ul>
         </div>
@@ -114,7 +155,7 @@
                             </div>
 
                             <div class="flex content-center">
-                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Tanggal Pengajuan <span class="text-red-900">*</span></label>
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Tanggal Pengajuan <span class="text-red-900 dark:text-red-400">*</span></label>
                                 <span> : </span>
                                 <p class="w-full px-2">{{ old("disposal_asset.submit_date", $disposal_asset->submit_date ?? '') }}</p>
                                 <input type="hidden" name="submit_date" value="{{ old("disposal_asset.submit_date", $disposal_asset->submit_date ?? '') }}" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
@@ -124,7 +165,7 @@
                             </div>
 
                             <div class="flex content-center">
-                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900">*</span></label>
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nomor Formulir <span class="text-red-900 dark:text-red-400">*</span></label>
                                 <span> : </span>
                                 <p class="w-full px-2">{{ old('form_no', $disposal_asset->form_no) }}</p>
                                 <input type="hidden" name="form_no" value="{{ old('form_no', $disposal_asset->form_no) }}" class="px-1 w-64 text-sm text-gray-900 appearance-none dark:text-white" readonly/>
@@ -134,7 +175,7 @@
                             </div>
 
                             <div class="flex content-center">
-                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900">*</span></label>
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Select Department <span class="text-red-900 dark:text-red-400">*</span></label>
                                 <span> : </span>
                                 <select name="department_id" id="department-select" class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                     <option selected value="">Choose a Department</option>
@@ -150,7 +191,7 @@
                             </div>
 
                             <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alasan <span class="text-red-900">*</span></label>
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alasan <span class="text-red-900 dark:text-red-400">*</span></label>
                                 <textarea type="text" name="reason" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                     {{ old("reason", $disposal_asset->reason ?? '') }}
                                 </textarea>
@@ -160,7 +201,7 @@
                             </div>
 
                             <div class="flex content-center">
-                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku <span class="text-red-900">*</span></label>
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Buku <span class="text-red-900 dark:text-red-400">*</span></label>
                                 <span> : </span>
                                 <input type="text" id="nbv-display" value="{{ old('nbv', $disposal_asset->nbv ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-0"/>
                                 <input type="hidden" name="nbv" id="nbv-value" value="{{ old('nbv', $disposal_asset->nbv ?? '') }}"/>
@@ -170,7 +211,7 @@
                             </div>
 
                             <div class="flex content-center">
-                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi <span class="text-red-900">*</span></label>
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi <span class="text-red-900 dark:text-red-400">*</span></label>
                                 <span> : </span>
                                 <input type="text" id="esp-display" value="{{ old('esp', $disposal_asset->esp ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-0"/>
                                 <input type="hidden" name="esp" id="esp-value" value="{{ old('esp', $disposal_asset->esp ?? '') }}">
@@ -180,7 +221,7 @@
                             </div>
 
                             <div class="flex content-center">
-                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Kurs <span class="text-red-900">*</span></label>
+                                <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Kurs <span class="text-red-900 dark:text-red-400">*</span></label>
                                 <span> : </span>
                                 <input type="text" id="kurs-display" value="{{ old('kurs', $disposal_asset->detailDisposals->first()?->kurs) }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-0"/>
                                 <input type="hidden" name="kurs" id="kurs-value" value="{{ old('kurs', $disposal_asset->detailDisposals->first()?->kurs) }}">
@@ -230,7 +271,7 @@
                                 <div class="border-2 border-black rounded-lg p-4 dark:border-gray-400">
                                     
                                     <div class="flex flex-row mb-2">
-                                        <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900">*</span> : </label>
+                                        <label class="w-auto mr-2 text-sm font-medium text-gray-900 dark:text-white">Sequence <span class="text-red-900 dark:text-red-400">*</span> : </label>
                                         <div class="flex items-center pr-4">
                                             <input id="sequence-yes" name="sequence" type="radio" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('sequence', $disposal_asset->sequence) == 1 ? 'checked' : '' }}>
                                             <label for="sequence-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span class="italic">(Yes)</span></label>

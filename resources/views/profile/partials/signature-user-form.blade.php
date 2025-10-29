@@ -20,7 +20,7 @@
 <div class="mt-6 space-y-2">
     <label for="signature" class="dark:text-white">New Signature:</label>
     <div class="border border-gray-400 rounded-md relative">
-        <canvas id="signature-pad" class="w-full h-48 relative z-10" data-signature="{{ Auth::user()->signature ? json_encode(Auth::user()->signature) : 'null' }}"></canvas>
+        <canvas id="signature-pad" class="w-full h-48 relative z-10"></canvas>
     </div>
     <button type="button" id="clear-signature" class="text-sm text-blue-600 hover:underline">Clear</button>
 </div>
