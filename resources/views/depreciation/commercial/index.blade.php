@@ -120,7 +120,7 @@
     @endif
     
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
+        <div class="relative shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
             {{-- Form untuk filter tahun jika perlu --}}
             <div class="mb-4 flex flex-row content-center">
                 <form method="GET" action="{{ route('depreciation.index') }}">
@@ -133,68 +133,69 @@
                 </form>
             </div>
 
-            <table id="depreciationTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-50">
-                <thead class="text-xs text-gray-700 dark:text-gray-50 uppercase">
-                    <tr>
-                        <th rowspan="2" class="px-2 py-3 border bg-gray-50 dark:bg-gray-700">No</th>
-                        <th rowspan="2" class="px-6 py-3 border bg-gray-50 dark:bg-gray-700">Asset Name</th>
-                        <th rowspan="2" class="px-6 py-3 border bg-gray-50 dark:bg-gray-700">Asset Number</th>
-                        
-                        @foreach($months as $monthName)
-                            @php
-                                $bgColorClass = $loop->iteration % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800';
-                            @endphp
-                            <th colspan="3" class="text-center px-6 py-3 border {{ $bgColorClass }}">{{ $monthName }}</th>
-                        @endforeach
-                    </tr>                    
-                    <tr>
-                        @foreach($months as $monthName)
-                            @php
-                                $bgColorClass = $loop->iteration % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800';
-                            @endphp
-                            <th class="px-2 py-2 border {{ $bgColorClass }}">Monthly Depre</th>
-                            <th class="px-2 py-2 border {{ $bgColorClass }}">Accum Depre</th>
-                            <th class="px-2 py-2 border {{ $bgColorClass }}">Book Value</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($pivotedData as $assetId => $data)
-                        <tr class="bg-white border-b hover:bg-gray-50">
-                            <td class="px-2 py-4 border bg-gray-50 dark:bg-gray-700">{{ $loop->iteration }}</td>
-                            <td class="px-6 py-4 border bg-gray-50 dark:bg-gray-700">{{ $data['master_data']->assetName->name }}</td>
-                            <td class="px-6 py-4 border bg-gray-50 dark:bg-gray-700">{{ $data['master_data']->asset_number }}</td>
-
-                            {{-- Loop untuk mengisi data per bulan --}}
-                            @foreach ($months as $monthKey => $monthName)
+            <div class="overflow-x-auto">
+                <table id="depreciationTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-50">
+                    <thead class="text-xs text-gray-700 dark:text-gray-50 uppercase">
+                        <tr>
+                            <th rowspan="2" class="px-2 py-3 border bg-gray-50 dark:bg-gray-700 sticky left-0">No</th>
+                            <th rowspan="2" class="px-6 py-3 border bg-gray-50 dark:bg-gray-700 sticky left-9">Asset Number</th>
+                            <th rowspan="2" class="px-6 py-3 border bg-gray-50 dark:bg-gray-700">Asset Name</th>
+                            
+                            @foreach($months as $monthName)
                                 @php
                                     $bgColorClass = $loop->iteration % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800';
                                 @endphp
-                                
-                                @if (isset($data['schedule'][$monthKey]))
-                                    <td class="px-2 py-4 border text-right {{ $bgColorClass }}">{{ format_currency($data['schedule'][$monthKey]->monthly_depre) }}</td>
-                                    <td class="px-2 py-4 border text-right {{ $bgColorClass }}">{{ format_currency($data['schedule'][$monthKey]->accumulated_depre) }}</td>
-                                    <td class="px-2 py-4 border text-right {{ $bgColorClass }}">{{ format_currency($data['schedule'][$monthKey]->book_value) }}</td>
-                                @else
-                                    {{-- Jika tidak ada data, buat sel kosong --}}
-                                    <td class="px-2 py-4 border {{ $bgColorClass }}"></td>
-                                    <td class="px-2 py-4 border {{ $bgColorClass }}"></td>
-                                    <td class="px-2 py-4 border {{ $bgColorClass }}"></td>
-                                @endif
+                                <th colspan="3" class="text-center px-6 py-3 border {{ $bgColorClass }}">{{ $monthName }}</th>
+                            @endforeach
+                        </tr>                    
+                        <tr>
+                            @foreach($months as $monthName)
+                                @php
+                                    $bgColorClass = $loop->iteration % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800';
+                                @endphp
+                                <th class="px-2 py-2 border {{ $bgColorClass }}">Monthly Depre</th>
+                                <th class="px-2 py-2 border {{ $bgColorClass }}">Accum Depre</th>
+                                <th class="px-2 py-2 border {{ $bgColorClass }}">Book Value</th>
                             @endforeach
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="{{ 3 + (count($months) * 3) }}" class="text-center p-3">Tidak ada data untuk ditampilkan.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($pivotedData as $assetId => $data)
+                            <tr class="group">
+                                <td class="sticky left-0 bg-gray-50 text-center border border-gray-100 group-hover:bg-gray-200">{{ $loop->iteration + (($pivotedData->currentPage() - 1) * $pivotedData->perPage()) }}</td>
+                                <td class="sticky left-9 p-4 bg-gray-50 border border-gray-100 group-hover:bg-gray-200">{{ $data['master_data']->asset_number ?? 'N/A' }}</td>
+                                <td class="px-6 py-3 bg-gray-50 border border-gray-100 group-hover:bg-gray-200">{{ $data['master_data']->assetName->name ?? 'N/A' }}</td>
+
+                                @foreach ($months as $monthKey => $monthName)
+                                    @php
+                                        $bgColorClass = $loop->iteration % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800';
+                                    @endphp
+
+                                    @if (isset($data['schedule'][$monthKey]))
+                                        @php $schedule = $data['schedule'][$monthKey]; @endphp
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">{{ format_currency($schedule->monthly_depre) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">{{ format_currency($schedule->accumulated_depre) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">{{ format_currency($schedule->book_value) }}</td>
+                                    @else
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">-</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">-</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">-</td>
+                                    @endif
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-4 py-4">
+                {{ $pivotedData->appends(request()->query())->links() }}
+            </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-    @vite('resources/js/pages/commercialDepre.js')
+    <!-- @vite('resources/js/pages/commercialDepre.js') -->
     @vite('resources/js/pages/alert.js')
 @endpush

@@ -131,6 +131,23 @@
                             @enderror
                         </div>
 
+                        <div class="mb-5 flex flex-col gap-2 content-center">
+                            <label class="flex w-48 text-sm font-medium text-gray-900 dark:text-white">Status <span class="text-red-900 dark:text-red-400">*</span></label>
+                            <div class="flex flex-row gap-5">
+                                <div class="flex items-center ps-4 border border-gray-200 hover:border-green-600 rounded-sm dark:border-gray-700">
+                                    <input id="bordered-radio-1" type="radio" value="Active" name="status" class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('status', $insurance->status) == "Active" ? 'checked' : '' }}>
+                                    <label for="bordered-radio-1" class="w-full py-4 pr-4 ms-2 text-sm font-medium"><span class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 rounded-sm p-1">Active</span></label>
+                                </div>
+                                <div class="flex items-center ps-4 border border-gray-200 hover:border-gray-600 rounded-sm dark:border-gray-700">
+                                    <input id="bordered-radio-2" type="radio" value="Inactive" name="status" class="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 focus:ring-gray-500 dark:focus:ring-gray-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ old('status', $insurance->status) == "Inactive" ? 'checked' : '' }}>
+                                    <label for="bordered-radio-2" class="w-full py-4 pr-4 ms-2 text-sm font-medium"><span class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300 rounded-sm p-1">Inactive</span></label>
+                                </div>
+                            </div>
+                            @error('status')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <input type="hidden" name="company_id" value="{{ Auth::user()->last_active_company_id }}" required />
                     </div>
                 </div>

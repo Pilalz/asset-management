@@ -262,6 +262,9 @@
 @endsection
 
 @push('scripts')
+    <script>
+        window.assetclassesForFilterData = @json($assetclassesForFilter ?? []);
+    </script>
     @vite('resources/js/pages/assetSubClass.js')
     @vite('resources/js/pages/alert.js')
 @endpush

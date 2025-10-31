@@ -2,6 +2,9 @@ import $ from 'jquery';
 import 'datatables.net-dt';
 
 $(document).ready(function() {
+
+    const usersData = window.usersForFilterData || [];
+
     const historyTable = $('#historyTable');
     
     if (historyTable.length) {
@@ -14,7 +17,20 @@ $(document).ready(function() {
             if (i === 2 || i === 3) {
                 return;
             }
-            $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            else if (i === 1) {
+                let options = usersData.map(user =>
+                    `<option value="${user.name}">${user.name}</option>` // Value pakai ID
+                ).join('');
+                $(cell).html(
+                    `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option selected value="">Select User</option>
+                        ${options}
+                    </select>`
+                );
+            }
+            else {
+                $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            }
         });
 
         var table = $('#historyTable').DataTable({
@@ -63,6 +79,17 @@ $(document).ready(function() {
                         }
                     });
                     input.on('click', function(e) {
+                        e.stopPropagation();
+                    });
+
+                    var select = $('select', cell);
+                    select.on('change', function(e) {
+                        e.stopPropagation();
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                    select.on('click', function(e) {
                         e.stopPropagation();
                     });
                 });

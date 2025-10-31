@@ -92,6 +92,7 @@ class InsuranceController extends Controller
             'instance_name'  => 'nullable|max:255',
             'annual_premium' => 'nullable|numeric',
             'schedule'       => 'nullable|integer|min:1|max:12',
+            'status'         => 'required|string',
 
             //Validasi Detail Asset
             'asset_ids'      => 'required|string',

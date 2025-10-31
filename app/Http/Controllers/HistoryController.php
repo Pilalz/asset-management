@@ -7,21 +7,24 @@ use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 use Carbon\Carbon;
+use App\Models\User;
 
 class HistoryController extends Controller
 {
     public function index()
     {
-        return view('history.index');
+        $companyId = session('active_company_id');
+
+        $usersForFilter = User::withoutGlobalScope(CompanyScope::class)
+                                     ->leftJoin('company_users', 'users.id', '=', 'company_users.user_id')
+                                     ->where('company_users.company_id', $companyId)
+                                     ->orderBy('name', 'asc')
+                                     ->get(['users.id', 'users.name']);
+
+        return view('history.index', [
+            'usersForFilter' => $usersForFilter
+        ]);
     }
-
-    // public function history(Asset $asset)
-    // {
-    //     // Ambil semua aktivitas untuk aset ini, urutkan dari yang terbaru
-    //     $activities = $asset->activities()->latest()->get();
-
-    //     return view('history.index', compact('asset', 'activities'));
-    // }
 
     public function datatables(Request $request)
     {

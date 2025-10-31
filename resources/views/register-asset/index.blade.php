@@ -195,6 +195,10 @@
 @endsection
 
 @push('scripts')
+    <script>
+        window.locationsForFilterData = @json($locationsForFilter ?? []);
+        window.departmentsForFilterData = @json($departmentsForFilter ?? []);
+    </script>
     @vite('resources/js/pages/registerAsset.js')
     @vite('resources/js/pages/alert.js')
 @endpush

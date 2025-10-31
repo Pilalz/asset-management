@@ -44,7 +44,7 @@
     </div>
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
+        <div class="relative shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insurance Information </label>
             <div class="flex flex-row">
                 <div class="flex w-1/2">
@@ -113,37 +113,40 @@
 
             <div class="mb-5">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Data </label>
-                <div class="border-2 border-black rounded-lg p-4 dark:border-gray-500">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
-                            <tr>
-                                <th scope="col" class="px-2 py-3">Asset Number</th>
-                                <th scope="col" class="px-2 py-3">Asset Name</th>
-                                <th scope="col" class="px-2 py-3">Description</th>
-                                <th scope="col" class="px-2 py-3">ID Pareto</th>
-                                <th scope="col" class="px-2 py-3">No. Unit</th>
-                                <th scope="col" class="px-2 py-3">No. Mesin</th>
-                                <th scope="col" class="px-2 py-3">No. Engine</th>
-                                <th scope="col" class="px-2 py-3">Tahun Akuisisi</th>
-                                <th scope="col" class="px-2 py-3">Location</th>
-                            </tr>
-                        </thead>
-                        <tbody id="asset-data-body">
-                            @foreach($insurance->detailInsurances as $detail)
+                <div class="border-2 border-black rounded-lg p-2 dark:border-gray-500">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                                 <tr>
-                                    <td class="p-4">{{ $detail->asset_number ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->assetName->name ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->description ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->pareto ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->unit_no ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->sn_chassis ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->sn_engine ?? "-" }}</td>
-                                    <td class="p-4">{{ $detail->capitalized_date->format('Y') }}</td>
-                                    <td class="p-4">{{ $detail->originLocation->name ?? "-" }}</td>
+                                    <th scope="col" class="px-2 py-3">Asset Number</th>
+                                    <th scope="col" class="px-2 py-3">Asset Name</th>
+                                    <th scope="col" class="px-2 py-3">Description</th>
+                                    <th scope="col" class="px-2 py-3">ID Pareto</th>
+                                    <th scope="col" class="px-2 py-3">No. Unit</th>
+                                    <th scope="col" class="px-2 py-3">No. Mesin</th>
+                                    <th scope="col" class="px-2 py-3">No. Engine</th>
+                                    <th scope="col" class="px-2 py-3">Tahun Akuisisi</th>
+                                    <th scope="col" class="px-2 py-3">Location</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody id="asset-data-body">
+                                @foreach($insurance->detailInsurances as $detail)
+                                    <tr>
+                                        <td class="p-4">{{ $detail->asset_number ?? "-" }}</td>
+                                        <td class="p-4">{{ $detail->assetName->name ?? "-" }}</td>
+                                        <td class="p-4">{{ $detail->description ?? "-" }}</td>
+                                        <td class="p-4">{{ $detail->pareto ?? "-" }}</td>
+                                        <td class="p-4">{{ $detail->unit_no ?? "-" }}</td>
+                                        <td class="p-4">{{ $detail->sn_chassis ?? "-" }}</td>
+                                        <td class="p-4">{{ $detail->sn_engine ?? "-" }}</td>
+                                        <td class="p-4">{{ $detail->capitalized_date->format('Y') }}</td>
+                                        <td class="p-4">{{ $detail->originLocation->name ?? "-" }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    
                 </div>
             </div> 
             

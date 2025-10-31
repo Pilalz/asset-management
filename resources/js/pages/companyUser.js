@@ -8,7 +8,21 @@ $(document).ready(function() {
             if (i === 0 || i === 4) {
                 return;
             }
-            $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            else if (i === 3) {
+                $(cell).html(
+                        '<select class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">' +
+                            '<option selected value="">Select Role</option>' + 
+                            '<option value="User">User</option>' + 
+                            '<option value="User Manager">User Manager</option>' + 
+                            '<option value="Site Director">Site Director</option>' + 
+                            '<option value="Asset Management">Asset Management</option>' + 
+                            '<option value="CFO">CFO</option>' + 
+                            '<option value="Director">Director</option>' + 
+                        '</select>');
+            }
+            else{
+                $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            }
         });
 
         var table = $('#userTable').DataTable({
@@ -53,6 +67,17 @@ $(document).ready(function() {
                         }
                     });
                     input.on('click', function(e) {
+                        e.stopPropagation();
+                    });
+
+                    var select = $('select', cell);
+                    select.on('change', function(e) {
+                        e.stopPropagation();
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                    select.on('click', function(e) {
                         e.stopPropagation();
                     });
                 });

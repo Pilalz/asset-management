@@ -18,7 +18,16 @@ class AssetSubClassController extends Controller
 {
     public function index()
     {
-        return view('asset-sub-class.index');
+        $companyId = session('active_company_id');
+
+        $assetclassesForFilter = AssetClass::withoutGlobalScope(CompanyScope::class)
+                                     ->where('company_id', $companyId)
+                                     ->orderBy('name', 'asc')
+                                     ->get(['id', 'name']);
+
+        return view('asset-sub-class.index', [
+            'assetclassesForFilter' => $assetclassesForFilter,
+        ]);
     }
 
     public function create()

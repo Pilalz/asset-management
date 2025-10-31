@@ -167,10 +167,23 @@
             $('#insuranceTable thead tr:eq(0) th').each(function(i) {
                 var title = $(this).text().trim();
                 var cell = $('#filter-row').children().eq(i);
-                if (i === 0 || i === 9) {
+                if (i === 0 || i === 7) {
                     return;
                 }
-                $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+                else if (i === 2 || i === 3) {
+                    $(cell).html('<input type="date" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+                }
+                else if (i === 6) {
+                    $(cell).html(
+                        '<select class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">' +
+                            '<option selected value="">Select</option>' +
+                            '<option value="Active">Active</option>' +
+                            '<option value="Inactive">Inactive</option>' +  
+                        '</select>');
+                }
+                else {
+                    $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+                }
             });
 
             var table = $('#insuranceTable').DataTable({
@@ -219,6 +232,17 @@
                             }
                         });
                         input.on('click', function(e) {
+                            e.stopPropagation();
+                        });
+
+                        var select = $('select', cell);
+                        select.on('change', function(e) {
+                            e.stopPropagation();
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
+                            }
+                        });
+                        select.on('click', function(e) {
                             e.stopPropagation();
                         });
                     });

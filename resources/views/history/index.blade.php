@@ -167,6 +167,9 @@
 @endsection
 
 @push('scripts')
+    <script>
+        window.usersForFilterData = @json($usersForFilter ?? []);
+    </script>
     @vite('resources/js/pages/history.js')
     @vite('resources/js/pages/alert.js')
 @endpush

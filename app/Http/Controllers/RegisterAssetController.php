@@ -31,7 +31,22 @@ class RegisterAssetController extends Controller
 {
     public function index()
     {        
-        return view('register-asset.index');
+        $companyId = session('active_company_id');
+
+        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
+                                     ->where('company_id', $companyId)
+                                     ->orderBy('name', 'asc')
+                                     ->get(['id', 'name']);
+
+        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
+                                       ->where('company_id', $companyId)
+                                       ->orderBy('name', 'asc')
+                                       ->get(['id', 'name']);
+
+        return view('register-asset.index', [
+            'locationsForFilter' => $locationsForFilter,
+            'departmentsForFilter' => $departmentsForFilter,
+        ]);
     }
 
     public function trash()

@@ -19,7 +19,16 @@ class AssetNameController extends Controller
 {
     public function index()
     {
-        return view('asset-name.index');
+        $companyId = session('active_company_id');
+
+        $assetSubClassesForFilter = AssetSubClass::withoutGlobalScope(CompanyScope::class)
+                                     ->where('company_id', $companyId)
+                                     ->orderBy('name', 'asc')
+                                     ->get(['id', 'name']);
+
+        return view('asset-name.index', [
+            'assetSubClassesForFilter' => $assetSubClassesForFilter,
+        ]);
     }
 
     public function create()
