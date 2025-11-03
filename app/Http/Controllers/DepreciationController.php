@@ -186,7 +186,7 @@ class DepreciationController extends Controller
         }
         
         return view('depreciation.fiscal.index', [
-            'pivotedData' => $pivotedData,
+            'pivotedData' => $paginatedData,
             'months' => $months,
             'selectedYear' => $year
         ]);
