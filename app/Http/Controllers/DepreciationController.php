@@ -160,7 +160,7 @@ class DepreciationController extends Controller
         $year = $request->input('year', now()->year);
         $companyId = session('active_company_id');
 
-        $pivotedData = $this->getPivotedDepreciationData($year, 'fiscal', $companyId);
+        $allPivotedData = $this->getPivotedDepreciationData($year, 'fiscal', $companyId);
 
         $dataCollection = new Collection($allPivotedData);
 
