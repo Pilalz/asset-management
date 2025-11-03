@@ -27,37 +27,43 @@ class AssetController extends Controller
     public function index()
     {
         $companyId = session('active_company_id');
-        $currentYear = Carbon::now()->year;
-        $currentMonth = Carbon::now()->month;
 
-        $cacheKey = 'assets_not_depreciated_' . $companyId . '_' . $currentYear . '-' . $currentMonth;
+        $lastMonth = Carbon::now()->subMonthNoOverflow();
+        $year = $lastMonth->year;
+        $month = $lastMonth->month;
+        $endOfMonthDay = $lastMonth->endOfMonth()->day;
+
+        $cacheKey = 'assets_not_depreciated_' . $companyId . '_' . $year . '-' . $month;
 
         $assetsNotDepreciated = Cache::remember(
             $cacheKey,
             now()->addHour(), // Simpan hasil query selama 1 jam
-            function () use ($companyId, $currentYear, $currentMonth) {
+            function () use ($companyId, $year, $month, $endOfMonthDay, $lastMonth) {
                 return Asset::query()
                     ->where('asset_type', 'FA')
                     ->where('assets.status', '!=', 'Sold')
                     ->where('assets.status', '!=', 'Onboard')
                     ->where('assets.status', '!=', 'Disposal')
                     ->where('commercial_nbv', '>', 0)
-                    ->where('start_depre_date', '<=', now())
+                    ->where('start_depre_date', '<=', $lastMonth->endOfMonth())
                     ->where('company_id', $companyId)
                     // Aset ini BELUM memiliki catatan depresiasi untuk bulan ini ===
-                    ->whereDoesntHave('depreciations', function ($query) use ($currentYear, $currentMonth) {
+                    ->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
                         $query->where('type', 'commercial')
-                            ->whereYear('depre_date', $currentYear)
-                            ->whereMonth('depre_date', $currentMonth);
+                            ->whereYear('depre_date', $year)
+                            ->whereMonth('depre_date', $month)
+                            ->whereDay('depre_date', $endOfMonthDay);
                     })
-                    ->whereDoesntHave('depreciations', function ($query) use ($currentYear, $currentMonth) {
+                    // (Anda mungkin hanya perlu cek salah satu, commercial atau fiscal)
+                    ->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
                         $query->where('type', 'fiscal')
-                            ->whereYear('depre_date', $currentYear)
-                            ->whereMonth('depre_date', $currentMonth);
+                            ->whereYear('depre_date', $year)
+                            ->whereMonth('depre_date', $month)
+                            ->whereDay('depre_date', $endOfMonthDay);
                     })
                     ->get();
             }
-        );    
+        );   
 
         return view('asset.fixed.index', compact('assetsNotDepreciated'));
     }
