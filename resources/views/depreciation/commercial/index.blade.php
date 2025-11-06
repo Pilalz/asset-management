@@ -125,9 +125,9 @@
             <div class="mb-4 flex flex-row content-center">
                 <form method="GET" action="{{ route('depreciation.index') }}">
                     <label for="year" class="dark:text-gray-50">Tampilkan Tahun:</label>
-                    <select name="year" id="year" onchange="this.form.submit()" class="py-2 px-0 w-24 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                    <select name="year" id="year" onchange="this.form.submit()" class="py-2 px-0 w-24 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-50 dark:border-gray-500 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                         @for ($y = now()->year; $y >= 2020; $y--)
-                            <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>{{ $y }}</option>
+                            <option value="{{ $y }}" class="dark:bg-gray-800" {{ $selectedYear == $y ? 'selected' : '' }}>{{ $y }}</option>
                         @endfor
                     </select>
                 </form>
@@ -162,9 +162,9 @@
                     <tbody>
                         @foreach ($pivotedData as $assetId => $data)
                             <tr class="group">
-                                <td class="sticky left-0 bg-gray-50 text-center border border-gray-100 group-hover:bg-gray-200">{{ $loop->iteration + (($pivotedData->currentPage() - 1) * $pivotedData->perPage()) }}</td>
-                                <td class="sticky left-9 p-4 bg-gray-50 border border-gray-100 group-hover:bg-gray-200">{{ $data['master_data']->asset_number ?? 'N/A' }}</td>
-                                <td class="px-6 py-3 bg-gray-50 border border-gray-100 group-hover:bg-gray-200">{{ $data['master_data']->assetName->name ?? 'N/A' }}</td>
+                                <td class="sticky left-0 bg-gray-50 dark:bg-gray-700 text-center border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $loop->iteration + (($pivotedData->currentPage() - 1) * $pivotedData->perPage()) }}</td>
+                                <td class="sticky left-9 p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $data['master_data']->asset_number ?? 'N/A' }}</td>
+                                <td class="px-6 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $data['master_data']->assetName->name ?? 'N/A' }}</td>
 
                                 @foreach ($months as $monthKey => $monthName)
                                     @php
@@ -173,13 +173,13 @@
 
                                     @if (isset($data['schedule'][$monthKey]))
                                         @php $schedule = $data['schedule'][$monthKey]; @endphp
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">{{ format_currency($schedule->monthly_depre) }}</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">{{ format_currency($schedule->accumulated_depre) }}</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">{{ format_currency($schedule->book_value) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->monthly_depre) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->accumulated_depre) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->book_value) }}</td>
                                     @else
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">-</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">-</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">-</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
                                     @endif
                                 @endforeach
                             </tr>

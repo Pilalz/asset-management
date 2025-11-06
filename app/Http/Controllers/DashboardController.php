@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Asset;
+use App\Models\Depreciation;
 use Illuminate\Support\Facades\DB;
 use App\Scopes\CompanyScope;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -113,6 +115,32 @@ class DashboardController extends Controller
             ->groupBy('asset_classes.obj_id')
             ->get();
 
-        return view('index', compact('assetLocData', 'assetClassData', 'assetArrival', 'assetFixed', 'assetLVA', 'assetRemaks', 'assetRemaksCount'));
+        $depreData = Depreciation::withoutGlobalScope(CompanyScope::class)
+            ->join('assets', 'depreciations.asset_id', '=', 'assets.id')
+            ->select('depreciations.depre_date', 
+                DB::raw("SUM(CASE WHEN depreciations.type = 'commercial' THEN depreciations.monthly_depre ELSE 0 END) as commercial_depre_sum"), 
+                DB::raw("SUM(CASE WHEN depreciations.type = 'fiscal' THEN depreciations.monthly_depre ELSE 0 END) as fiscal_depre_sum"), 
+                DB::raw("COUNT(CASE WHEN depreciations.type = 'commercial' THEN 1 END) as commercial_asset_count"), 
+                DB::raw("COUNT(CASE WHEN depreciations.type = 'fiscal' THEN 1 END) as fiscal_asset_count"))
+            ->where('assets.company_id', session('active_company_id'))
+            ->groupBy('depreciations.depre_date')
+            ->orderBy('depreciations.depre_date', 'asc')
+            ->get();
+
+        $chartLabels = $depreData->pluck('depre_date')->map(function($date) {
+            return Carbon::parse($date)->format('M-Y'); 
+        });
+
+        // Buat data Series
+        $commercialSumData = $depreData->pluck('commercial_depre_sum');
+        $fiscalSumData = $depreData->pluck('fiscal_depre_sum');
+        $commercialCountData = $depreData->pluck('commercial_asset_count');
+        $fiscalCountData = $depreData->pluck('fiscal_asset_count');
+
+        return view('index', compact(
+            'assetLocData', 'assetClassData', 'assetArrival', 
+            'assetFixed', 'assetLVA', 'assetRemaks', 
+            'assetRemaksCount', 'chartLabels', 'commercialSumData',
+            'fiscalSumData', 'commercialCountData', 'fiscalCountData'));
     }
 }

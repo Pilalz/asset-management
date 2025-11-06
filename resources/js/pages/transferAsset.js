@@ -9,7 +9,28 @@ $(document).ready(function() {
             if (i === 0 || i === 8) {
                 return;
             }
-            $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            else if (i === 2) {
+                $(cell).html('<input type="date" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />');
+            }
+            else if (i === 5) {
+                $(cell).html(
+                        '<select class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">' +
+                            '<option selected value="">Select</option>' +
+                            '<option value="1">Yes</option>' +
+                            '<option value="0">No</option>' +  
+                        '</select>');
+            }
+            else if (i === 7) {
+                $(cell).html(
+                        '<select class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">' +
+                            '<option selected value="">Select</option>' +
+                            '<option value="Approved">Approved</option>' +
+                            '<option value="Waiting">Waiting</option>' +  
+                        '</select>');
+            }
+            else {
+                $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            }
         });
 
         var table = $('#transferAssetTable').DataTable({
@@ -57,6 +78,17 @@ $(document).ready(function() {
                         }
                     });
                     input.on('click', function(e) {
+                        e.stopPropagation();
+                    });
+
+                    var select = $('select', cell);
+                    select.on('change', function(e) {
+                        e.stopPropagation();
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                    select.on('click', function(e) {
                         e.stopPropagation();
                     });
                 });

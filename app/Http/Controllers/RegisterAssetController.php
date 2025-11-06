@@ -544,6 +544,9 @@ class RegisterAssetController extends Controller
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
+            ->filterColumn('detail_registers_count', function($query, $keyword) {
+                $query->havingRaw("CAST(detailRegisters_count AS CHAR) LIKE ?", ["%{$keyword}%"]);
+            })
             ->orderColumn('department_name', function ($query, $order) {
                 $query->orderBy(
                     Department::select('name')

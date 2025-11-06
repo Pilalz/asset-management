@@ -111,6 +111,38 @@
             </div>
         </div>
 
+        <!-- <div class="grid grid-cols-1 md:grid-cols-1 gap-5 mt-5">
+            <div class="w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
+                <div class="flex justify-between mb-5">
+                    <div class="grid gap-4 grid-cols-2">
+                        <div>
+                            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Depreciation</h5>
+                        </div>
+                    </div>
+                    <div>
+                        <button id="dropdownDefaultButton"
+                            data-dropdown-toggle="lastDaysdropdown"
+                            data-dropdown-placement="bottom" type="button" class="px-3 py-2 inline-flex items-center text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Last week 
+                            <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                            </svg>
+                        </button>
+                        <div id="lastDaysdropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                                <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
+                                </li>
+                                <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div id="line-chart"></div>
+            </div>
+        </div> -->
+
         <div class="grid grid-cols-1 md:grid-cols-1 mt-5">
             <div class="w-full bg-white rounded-lg shadow-md dark:bg-gray-800 p-4 md:p-6">
 
@@ -204,6 +236,144 @@
                 document.getElementById("assetbyclass-chart").innerHTML = '<div class="text-center text-gray-500 py-10">No class data to display.</div>';
             }
         }
+
+        //Depre Chart Data
+        // const chartLabels = @json($chartLabels);
+        // const commercialSumData = @json($commercialSumData);
+        // const fiscalSumData = @json($fiscalSumData);
+        // const commercialCountData = @json($commercialCountData);
+        // const fiscalCountData = @json($fiscalCountData);
+
+        //Line Chart Depre
+        // const options = {
+        //     chart: {
+        //         height: "100%",
+        //         maxWidth: "100%",
+        //         type: "line",
+        //         fontFamily: "Inter, sans-serif",
+        //         toolbar: {
+        //             show: false,
+        //         },
+        //         stacked: false
+        //     },
+        //     tooltip: {
+        //         enabled: true,
+        //     },
+        //     dataLabels: {
+        //         enabled: false,
+        //     },
+        //     //ga keliatan
+        //     grid: {
+        //         show: true,
+        //         strokeDashArray: 4,
+        //         padding: { left: 2, right: 2, top: -26 },
+        //     },
+        //     legend: {
+        //         show: true,
+        //         position: 'bottom',
+        //         horizontalAlign: 'center'
+        //     },
+        //     stroke: {
+        //         width: 4,
+        //         curve: 'smooth',
+        //     },
+        //     series: [
+        //         {
+        //             name: "Commercial Sum",
+        //             data: commercialSumData,
+        //             color: "#1A56DB", // Biru
+        //         },
+        //         {
+        //             name: "Commercial Count",
+        //             data: commercialCountData,
+        //             color: "#F97316", // Oranye
+        //         },
+        //         {
+        //             name: "Fiscal Sum",
+        //             data: fiscalSumData,
+        //             color: "#13A085", // Hijau
+        //         },
+        //         {
+        //             name: "Fiscal Count",
+        //             data: fiscalCountData,
+        //             color: "#7E3AF2", // Ungu
+        //         }
+        //     ],
+        //     xaxis: {
+        //         categories: chartLabels,
+        //         labels: {
+        //             show: true,
+        //             style: {
+        //                 fontFamily: "Inter, sans-serif",
+        //                 cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+        //             }
+        //         },
+        //         axisBorder: { show: true },
+        //         axisTicks: { show: true },
+        //     },
+        //     yaxis: [
+        //         // Y-Axis 0 (untuk "Sum") - Sumbu Kiri
+        //         {
+        //             // Series "Commercial Sum" (index 0) dan "Commercial Count" (index 2)
+        //             // akan otomatis ter-plot di sumbu ini (karena index genap)
+        //             axisTicks: {
+        //                 show: true
+        //             },
+        //             axisBorder: {
+        //                 show: true,
+        //                 color: "#FF1654"
+        //             },
+        //             title: {
+        //                 text: "Depreciation Sum",
+        //                 style: {
+        //                     color: "#1A56DB",
+        //                     fontWeight: 600
+        //                 }
+        //             },
+        //             labels: {
+        //                 show: true,
+        //                 // Formatter untuk menyingkat angka (misal 1000000 -> 1M)
+        //                 formatter: function (value) {
+        //                     if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+        //                     if (value >= 1000) return (value / 1000).toFixed(1) + 'K';
+        //                     return value;
+        //                 }
+        //             },
+        //         },
+        //         // Y-Axis 1 (untuk "Count") - Sumbu Kanan
+        //         {
+        //             // Series "Fiscal Sum" (index 1) dan "Fiscal Count" (index 3)
+        //             // akan otomatis ter-plot di sumbu ini (karena index ganjil)
+        //             opposite: true, // Pindahkan sumbu ke kanan
+        //             axisTicks: {
+        //                 show: true
+        //             },
+        //             axisBorder: {
+        //                 show: true,
+        //                 color: "#247BA0"
+        //             },
+        //             title: {
+        //                 text: "Asset Count",
+        //                 style: {
+        //                     color: "#F97316",
+        //                     fontWeight: 600
+        //                 }
+        //             },
+        //             labels: {
+        //                 show: true,
+        //                 // Formatter untuk angka bulat (jumlah aset)
+        //                 formatter: function (value) {
+        //                     return Math.round(value);
+        //                 }
+        //             }
+        //         }
+        //     ]
+        // };
+
+        // if (document.getElementById("line-chart") && typeof ApexCharts !== 'undefined') {
+        //     const chart = new ApexCharts(document.getElementById("line-chart"), options);
+        //     chart.render();
+        // }
     });
 </script>
 @endpush
