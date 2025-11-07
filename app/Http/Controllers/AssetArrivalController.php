@@ -18,7 +18,28 @@ class AssetArrivalController extends Controller
     {
         Gate::authorize('is-admin');
 
-        return view('asset.arrival.index');    
+        $companyId = session('active_company_id');
+
+        $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
+                                     ->where('company_id', $companyId)
+                                     ->orderBy('name', 'asc')
+                                     ->get(['id', 'name']);
+
+        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
+                                     ->where('company_id', $companyId)
+                                     ->orderBy('name', 'asc')
+                                     ->get(['id', 'name']);
+
+        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
+                                       ->where('company_id', $companyId)
+                                       ->orderBy('name', 'asc')
+                                       ->get(['id', 'name']);
+
+        return view('asset.arrival.index', [
+            'assetNamesForFilter' => $assetNamesForFilter,
+            'locationsForFilter' => $locationsForFilter,
+            'departmentsForFilter' => $departmentsForFilter,
+        ]);    
     }
 
     public function edit(Asset $assetArrival)

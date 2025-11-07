@@ -8,7 +8,7 @@ $(document).ready(function() {
     $('#assetNameTable thead tr:eq(0) th').each(function(i) {
         var title = $(this).text().trim();
         var cell = $('#filter-row').children().eq(i);
-        if (i === 0 || i === 8) {
+        if (i === 0 || i === 6) {
             return;
         }
         else if (i === 1) {
@@ -21,6 +21,9 @@ $(document).ready(function() {
                     ${options}
                 </select>`
             );
+        }
+        else if (i === 3 || i === 4 ||  i === 5) {
+            $(cell).html('<input type="number" min="0" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
         }
         else {
             $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');

@@ -65,7 +65,22 @@ class AssetController extends Controller
             }
         );   
 
-        return view('asset.fixed.index', compact('assetsNotDepreciated'));
+        $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
+                                     ->where('company_id', $companyId)
+                                     ->orderBy('name', 'asc')
+                                     ->get(['id', 'name']);
+
+        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
+                                     ->where('company_id', $companyId)
+                                     ->orderBy('name', 'asc')
+                                     ->get(['id', 'name']);
+
+        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
+                                       ->where('company_id', $companyId)
+                                       ->orderBy('name', 'asc')
+                                       ->get(['id', 'name']);
+
+        return view('asset.fixed.index', compact('assetsNotDepreciated', 'assetNamesForFilter', 'locationsForFilter', 'departmentsForFilter'));
     }
 
     public function show(Request $request, Asset $asset)

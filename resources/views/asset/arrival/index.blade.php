@@ -164,49 +164,69 @@
 
 @push('scripts')
 <script>
+    const assetNamesData = @json($assetNamesForFilter ?? []);
+    const locationsData = @json($locationsForFilter ?? []);
+    const departmentsData = @json($departmentsForFilter ?? []);
+
     document.addEventListener('DOMContentLoaded', () => {
-        const alertElements = document.querySelectorAll('.auto-dismiss-alert');
-
-        alertElements.forEach(targetEl => {
-            const alertElements = document.querySelectorAll('.auto-dismiss-alert');
-
-            if (alertElements.length > 0) {
-                alertElements.forEach(targetEl => {
-                    // Sekarang 'Dismiss' dijamin sudah ada
-                    const dismiss = new Dismiss(targetEl); 
-                    setTimeout(() => {
-                        dismiss.hide();
-                    }, 5000);
-                });
-            }
-
-            // Opsi yang Anda inginkan
-            const options = {
-                transition: 'transition-opacity',
-                duration: 1000,
-                timing: 'ease-out',
-                onHide: (context, targetEl) => {
-                    console.log(`Element dengan ID ${targetEl.id} telah disembunyikan.`);
-                }
-            };
-
-            // Buat instance Dismiss dari Flowbite
-            const dismiss = new Dismiss(targetEl, triggerEl, options);
-
-            // (Opsional) Sembunyikan notifikasi secara otomatis setelah 5 detik
-            setTimeout(() => {
-                dismiss.hide();
-            }, 3000);
-        });
 
         if (typeof $ !== 'undefined') {
             $('#assetTable thead tr:eq(0) th').each(function(i) {
                 var title = $(this).text().trim();
                 var cell = $('#filter-row').children().eq(i);
-                if (i === 0 || i === 13) {
+                if (i === 0 || i === 3 || i === 5 || i === 13) {
                     return;
                 }
-                $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+                else if (i === 2) {
+                    $(cell).html(
+                        '<select class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">' +
+                            '<option selected value="">Select</option>' +
+                            '<option value="FA">Fixed Asset</option>' +
+                            '<option value="LVA">Low Value Asset</option>' +  
+                        '</select>');
+                }
+                else if (i === 4) {
+                    let options = assetNamesData.map(assetName =>
+                        `<option value="${assetName.name}">${assetName.name}</option>` // Value pakai ID
+                    ).join('');
+                    $(cell).html(
+                        `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option selected value="">Select Asset Name</option>
+                            ${options}
+                        </select>`
+                    );
+                }
+                else if (i === 8) {
+                    let options = locationsData.map(loc =>
+                        `<option value="${loc.name}">${loc.name}</option>` // Value pakai ID
+                    ).join('');
+                    $(cell).html(
+                        `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option selected value="">Select Location</option>
+                            ${options}
+                        </select>`
+                    );
+                }
+                else if (i === 9) {
+                    let options = departmentsData.map(dept =>
+                        `<option value="${dept.name}">${dept.name}</option>` // Value pakai ID
+                    ).join('');
+                    $(cell).html(
+                        `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option selected value="">Select Department</option>
+                            ${options}
+                        </select>`
+                    );
+                }
+                else if (i === 10 || i === 12) {
+                    $(cell).html('<input type="number" min="0" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+                }
+                else if (i === 11) {
+                    $(cell).html('<input type="date" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+                }
+                else {
+                    $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+                }
             });
 
             var table = $('#assetTable').DataTable({
@@ -259,6 +279,17 @@
                         }
                     });
                     input.on('click', function(e) {
+                        e.stopPropagation();
+                    });
+
+                    var select = $('select', cell);
+                    select.on('change', function(e) {
+                        e.stopPropagation();
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                    select.on('click', function(e) {
                         e.stopPropagation();
                     });
                 });
