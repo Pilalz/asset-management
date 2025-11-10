@@ -23,7 +23,14 @@ class DisposalAssetController extends Controller
 {
     public function index()
     {   
-        return view('disposal-asset.index');
+        $companyId = session('active_company_id');
+        
+        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
+                                       ->where('company_id', $companyId)
+                                       ->orderBy('name', 'asc')
+                                       ->get(['id', 'name']);
+
+        return view('disposal-asset.index', compact('departmentsForFilter'));
     }
 
     public function trash()

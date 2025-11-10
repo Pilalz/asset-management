@@ -139,6 +139,9 @@
                 <li class="me-2" role="presentation">
                     <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="asset-tab" data-tabs-target="#asset" type="button" role="tab" aria-controls="asset" aria-selected="false">Asset <span class="text-red-900 dark:text-red-400">*</span></button>
                 </li>
+                <li class="me-2" role="presentation">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="chosen-tab" data-tabs-target="#chosen" type="button" role="tab" aria-controls="chosen" aria-selected="false">Chosen <span id="selected-count-display" class="font-bold dark:text-gray-200">(0)</span></button>
+                </li>
             </ul>
         </div>
 
@@ -587,9 +590,40 @@
                                 
                             </tbody>
                         </table>
-                        <div class="p-4">
-                            <span id="selected-count-display" class="font-bold dark:text-gray-200">0 asset(s) selected</span>
-                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden" id="chosen" role="tabpanel" aria-labelledby="chosen-tab">
+                    <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-800">
+                        <table id="chosenTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">No</th>
+                                    <th scope="col" class="px-6 py-3">Asset Number</th>
+                                    <th scope="col" class="px-6 py-3">Status</th>
+                                    <th scope="col" class="px-6 py-3">Asset Name</th>
+                                    <th scope="col" class="px-6 py-3">Description</th>
+                                    <th scope="col" class="px-6 py-3">Location</th>
+                                    <th scope="col" class="px-6 py-3">Department</th>
+                                    <th scope="col" class="px-6 py-3">Qty</th>
+                                    <th scope="col" class="px-6 py-3">Capitalized Date</th>
+                                    <th scope="col" class="px-6 py-3">Acquisition Value</th>
+                                    <th scope="col" class="px-6 py-3">Commercial Accum Depre</th>
+                                    <th scope="col" class="px-6 py-3">Commercial Net Book Value</th>
+                                    <th scope="col" class="px-6 py-3">Fiscal Accum Depre</th>
+                                    <th scope="col" class="px-6 py-3">Fiscal Net Book Value</th>
+                                </tr>
+                                <tr id="filter-row">
+                                    <th></th><th></th><th></th><th></th>
+                                    <th></th><th></th><th></th><th></th>
+                                    <th></th><th></th><th></th><th></th>
+                                    <th></th><th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -631,7 +665,7 @@
 
         function updateSelection() {
             const selectedCount = selectedAssetIds.size;
-            $('#selected-count-display').text(`${selectedCount} asset(s) selected`);
+            $('#selected-count-display').text(`(${selectedCount})`);
             $('#selected-asset-ids').val(Array.from(selectedAssetIds).join(','));
         }
 

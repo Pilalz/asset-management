@@ -132,7 +132,6 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-100">
                         <tr>
                             <th scope="col" class="px-6 py-3">No</th>
-                            <th scope="col" class="px-6 py-3">Registration Form</th>
                             <th scope="col" class="px-6 py-3">Asset Type</th>
                             <th scope="col" class="px-6 py-3">Status</th>
                             <th scope="col" class="px-6 py-3">Asset Name</th>
@@ -150,7 +149,7 @@
                             <th></th><th></th><th></th><th></th>
                             <th></th><th></th><th></th><th></th>
                             <th></th><th></th><th></th><th></th>
-                            <th></th><th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -174,10 +173,10 @@
             $('#assetTable thead tr:eq(0) th').each(function(i) {
                 var title = $(this).text().trim();
                 var cell = $('#filter-row').children().eq(i);
-                if (i === 0 || i === 3 || i === 5 || i === 13) {
+                if (i === 0 || i === 2 || i === 4 || i === 12) {
                     return;
                 }
-                else if (i === 2) {
+                else if (i === 1) {
                     $(cell).html(
                         '<select class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">' +
                             '<option selected value="">Select</option>' +
@@ -185,7 +184,7 @@
                             '<option value="LVA">Low Value Asset</option>' +  
                         '</select>');
                 }
-                else if (i === 4) {
+                else if (i === 3) {
                     let options = assetNamesData.map(assetName =>
                         `<option value="${assetName.name}">${assetName.name}</option>` // Value pakai ID
                     ).join('');
@@ -196,7 +195,7 @@
                         </select>`
                     );
                 }
-                else if (i === 8) {
+                else if (i === 7) {
                     let options = locationsData.map(loc =>
                         `<option value="${loc.name}">${loc.name}</option>` // Value pakai ID
                     ).join('');
@@ -207,7 +206,7 @@
                         </select>`
                     );
                 }
-                else if (i === 9) {
+                else if (i === 8) {
                     let options = departmentsData.map(dept =>
                         `<option value="${dept.name}">${dept.name}</option>` // Value pakai ID
                     ).join('');
@@ -218,10 +217,10 @@
                         </select>`
                     );
                 }
-                else if (i === 10 || i === 12) {
+                else if (i === 9 || i === 11) {
                     $(cell).html('<input type="number" min="0" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
                 }
-                else if (i === 11) {
+                else if (i === 10) {
                     $(cell).html('<input type="date" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
                 }
                 else {
@@ -240,7 +239,6 @@
             orderCellsTop: true,
             columns: [
                 { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
-                { data: 'registration_form_no', name: 'registration_form_no' },
                 { data: 'asset_type', name: 'asset_type' },
                 { data: 'status', name: 'status' },
                 { data: 'asset_name_name', name: 'asset_name_name' },
@@ -301,7 +299,7 @@
                     className: 'px-6 py-4'
                 },
                 {
-                    targets: 2, 
+                    targets: 1, 
                     render: function (data, type, row) {
                         if (data === 'LVA') {
                             return 'Low Value Asset';
@@ -316,7 +314,7 @@
                     }
                 },
                 {
-                    targets: 5, 
+                    targets: 4, 
                     render: function (data, type, row) {
                         if (type === 'display') {
                             return 'Direct Ownership : ' + data;
@@ -325,7 +323,7 @@
                     }
                 },
                 {
-                    targets: 11,
+                    targets: 10,
                     render: function (data, type, row) {
                         if (type === 'display') {
                             if (!data) {

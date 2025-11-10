@@ -120,9 +120,6 @@ class AssetArrivalController extends Controller
                         ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
                         ->join('locations', 'assets.location_id', '=', 'locations.id')
                         ->join('departments', 'assets.department_id', '=', 'departments.id')
-                        ->leftJoin('detail_registers', 'assets.po_no', '=', 'detail_registers.po_no')
-                        ->leftJoin('register_assets', 'detail_registers.register_asset_id', '=', 'register_assets.id')
-                        ->where('register_assets.status', '=', 'Approved')
                         ->where('assets.status', '=', 'Onboard')
                         ->where('assets.company_id', $companyId)
                         ->select([
@@ -131,7 +128,6 @@ class AssetArrivalController extends Controller
                             'asset_classes.obj_acc as asset_class_obj',
                             'locations.name as location_name',
                             'departments.name as department_name',
-                            'register_assets.form_no as registration_form_no'
                         ]);
 
         return DataTables::eloquent($query)
@@ -141,9 +137,6 @@ class AssetArrivalController extends Controller
                     'editUrl' => route('assetArrival.edit', $asset->id),
                     'deleteUrl' => route('asset.destroy', $asset->id)
                 ])->render();
-            })
-            ->filterColumn('registration_form_no', function($query, $keyword) {
-                $query->where('register_assets.form_no', 'like', "%{$keyword}%");
             })
             ->filterColumn('asset_name_name', function($query, $keyword) {
                 $query->where('asset_names.name', 'like', "%{$keyword}%");

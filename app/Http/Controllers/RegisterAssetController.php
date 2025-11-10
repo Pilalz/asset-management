@@ -545,7 +545,9 @@ class RegisterAssetController extends Controller
                 });
             })
             ->filterColumn('detail_registers_count', function($query, $keyword) {
-                $query->havingRaw("CAST(detailRegisters_count AS CHAR) LIKE ?", ["%{$keyword}%"]);
+                if (!empty($keyword)) {
+                    $query->having('detailRegisters_count', '=', $keyword);
+                }
             })
             ->orderColumn('department_name', function ($query, $order) {
                 $query->orderBy(

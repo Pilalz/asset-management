@@ -11,12 +11,11 @@
             padding: 10px;
         }
         .container { 
-            height: 1000px;
+            height: 100%;
             margin: 0 auto; 
         }
         .container2 { 
-            height: 100vh;
-            margin: 0 auto; 
+            height: 100%;
         }
         .header-logo > table td, th {
             border: 0px solid black;
@@ -46,7 +45,7 @@
             text-align: left; 
         }
         .header-info { 
-            margin-bottom: 5px; 
+            margin-bottom: 5px;
         }
         .header-info table { 
             width: 50%; 
@@ -101,6 +100,7 @@
                 <tr>
                     <td>No. Formulir Pengajuan <i>(Submmision Form No.)</i></td>
                     <td>: {{ $disposal_asset->form_no }}</td>
+                    <td class="rightText">Company Code // YYYY // MM // Sequential No</td>
                 </tr>
                 <tr>
                     <td>Department Pemilik <i>(Department)</i></td>
@@ -205,7 +205,13 @@
             </tbody>
         </table>
     </div>
+
+    <!-- PAGE 2 -->
     <div class="container2">
+        <h2>
+            {{ $disposal_asset->company->name }}<br>
+            Assets Sold (Proposal)
+        </h2>
         <table>
             <thead>
                 <tr>

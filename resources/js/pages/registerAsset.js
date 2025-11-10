@@ -97,10 +97,10 @@ $(document).ready(function() {
                     }
                     
                     var input = $('input', cell);
-                    input.on('keyup change clear', function(e) {
+                    input.on('input change clear', function(e) { 
                         e.stopPropagation();
                         if (column.search() !== this.value) {
-                            column.search(this.value).draw();
+                            column.search(this.value, false, false).draw();
                         }
                     });
                     input.on('click', function(e) {

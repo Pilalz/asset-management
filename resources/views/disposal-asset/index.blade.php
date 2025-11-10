@@ -194,6 +194,9 @@
 @endsection
 
 @push('scripts')
+    <script>
+        window.departmentsForFilterData = @json($departmentsForFilter ?? []);
+    </script>
     @vite('resources/js/pages/disposalAsset.js')
     @vite('resources/js/pages/alert.js')
 @endpush

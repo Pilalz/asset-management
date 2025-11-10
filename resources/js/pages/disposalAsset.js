@@ -2,6 +2,9 @@ import $ from 'jquery';
 import 'datatables.net-dt';
 
 $(document).ready(function() {
+
+    const departmentsData = window.departmentsForFilterData || [];
+
     if ($('#disposalAssetTable').length) {
         $('#disposalAssetTable thead tr:eq(0) th').each(function(i) {
             var title = $(this).text().trim();
@@ -9,7 +12,42 @@ $(document).ready(function() {
             if (i === 0 || i === 9) {
                 return;
             }
-            $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            else if (i === 2) {
+                $(cell).html('<input type="date" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            }
+            else if (i === 3) {
+                let options = departmentsData.map(dept =>
+                    `<option value="${dept.name}">${dept.name}</option>` // Value pakai ID
+                ).join('');
+                $(cell).html(
+                    `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option selected value="">Select Department</option>
+                        ${options}
+                    </select>`
+                );
+            }
+            else if (i === 4 || i === 5) {
+                $(cell).html('<input type="number" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            }
+            else if (i === 6) {
+                $(cell).html(
+                        '<select class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">' +
+                            '<option selected value="">Select</option>' +
+                            '<option value="1">Yes</option>' +
+                            '<option value="0">No</option>' +  
+                        '</select>');
+            }
+            else if (i === 8) {
+                $(cell).html(
+                        '<select class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">' +
+                            '<option selected value="">Select</option>' +
+                            '<option value="Approved">Approved</option>' +
+                            '<option value="Waiting">Waiting</option>' +  
+                        '</select>');
+            }
+            else {
+                $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            }
         });
 
         var table = $('#disposalAssetTable').DataTable({
@@ -33,7 +71,7 @@ $(document).ready(function() {
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
-            order: [[0, 'asc']],
+            order: [[1, 'desc']],
             language: {
                 search: "Search : ",
                 searchPlaceholder: "Cari di sini...",
@@ -58,6 +96,17 @@ $(document).ready(function() {
                         }
                     });
                     input.on('click', function(e) {
+                        e.stopPropagation();
+                    });
+
+                    var select = $('select', cell);
+                    select.on('change', function(e) {
+                        e.stopPropagation();
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                    select.on('click', function(e) {
                         e.stopPropagation();
                     });
                 });

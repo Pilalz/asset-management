@@ -156,6 +156,11 @@ class InsuranceController extends Controller
                     'deleteUrl' => route('insurance.destroy', $insurance->id)
                 ])->render();
             })
+            ->filterColumn('status', function($query, $keyword) {
+                if (!empty($keyword)) {
+                    $query->where('insurances.status', '=', $keyword);
+                }
+            })
             ->rawColumns(['action'])
             ->toJson();
     }

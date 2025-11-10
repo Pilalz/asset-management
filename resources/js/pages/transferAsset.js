@@ -82,7 +82,7 @@ $(document).ready(function() {
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
-            order: [[0, 'asc']],
+            order: [[1, 'desc']],
             language: {
                 search: "Search : ",
                 searchPlaceholder: "Cari di sini...",

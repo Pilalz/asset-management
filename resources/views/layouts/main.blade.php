@@ -47,11 +47,11 @@
 
                 </div>
                 <div class="flex items-center">
-                    <div class="flex items-center ms-3 gap-2">
+                    <div class="flex items-center ms-3 gap-2.5">
 
                         <!-- Tombol utama dropdown -->
-                        <button type="button" aria-expanded="false" data-dropdown-toggle="dropdown-company">
-                            <div class="text-black hover:bg-gray-200 hover:rounded-md font-medium text-sm px-2.5 py-2.5 text-center inline-flex items-center dark:text-white dark:hover:bg-gray-600">
+                        <button type="button" aria-expanded="false" data-dropdown-toggle="dropdown-company" class="rounded-md text-black hover:bg-gray-100 font-medium text-sm px-2.5 py-2.5 text-center dark:text-white dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">
+                            <div class="inline-flex items-center">
                                 {{ $activeCompany?->name ?? 'Choose Company' }}
                                 <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
@@ -100,7 +100,7 @@
                         </button>
 
                         <!-- Notification -->
-                        <button type="button" class="relative inline-flex items-center text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg focus:ring-0 focus:outline-none p-2.5" aria-expanded="false" data-dropdown-toggle="dropdown-notif">
+                        <button type="button" class="relative inline-flex items-center text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg focus:ring-0 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 p-2.5" aria-expanded="false" data-dropdown-toggle="dropdown-notif">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M17.133 12.632v-1.8a5.406 5.406 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.955.955 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z"/>
                             </svg>
@@ -132,7 +132,7 @@
 
                         <!-- Shortcut -->
                         <div>
-                            <button type="button" class="flex text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg focus:ring-0 p-2.5" data-dropdown-toggle="dropdown-shortcut">
+                            <button type="button" class="flex text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg focus:ring-0 focus:bg-gray-100 dark:focus:bg-gray-700 p-2.5" data-dropdown-toggle="dropdown-shortcut">
                                 <div class="flex justify-center items-center">
                                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                         <path fill-rule="evenodd" d="M20.337 3.664c.213.212.354.486.404.782.294 1.711.657 5.195-.906 6.76-1.77 1.768-8.485 5.517-10.611 6.683a.987.987 0 0 1-1.176-.173l-.882-.88-.877-.884a.988.988 0 0 1-.173-1.177c1.165-2.126 4.913-8.841 6.682-10.611 1.562-1.563 5.046-1.198 6.757-.904.296.05.57.191.782.404ZM5.407 7.576l4-.341-2.69 4.48-2.857-.334a.996.996 0 0 1-.565-1.694l2.112-2.111Zm11.357 7.02-.34 4-2.111 2.113a.996.996 0 0 1-1.69-.565l-.422-2.807 4.563-2.74Zm.84-6.21a1.99 1.99 0 1 1-3.98 0 1.99 1.99 0 0 1 3.98 0Z" clip-rule="evenodd"/>
