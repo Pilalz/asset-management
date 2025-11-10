@@ -172,4 +172,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('api/disposal-asset-find', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset-find');
     Route::get('api/users/search', [CompanyUserController::class, 'search'])->name('api.users.search');
+    Route::post('/api/get-assets-by-ids', [DisposalAssetController::class, 'getAssetsByIds'])->name('api.get-assets-by-ids');
 });

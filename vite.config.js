@@ -29,6 +29,8 @@ export default defineConfig({
                 'resources/js/pages/alert.js',
                 //User Search
                 'resources/js/pages/userSearch.js',
+                //Disposal Asset
+                'resources/js/pages/disposalAssetCreate.js',
             ],
             refresh: true,
         }),

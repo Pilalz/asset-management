@@ -78,7 +78,8 @@ class DisposalAssetController extends Controller
             'kurs'  => 'required',
 
             //Validasi Detail Asset
-            'asset_ids'     => 'required|string',
+            'prices'     => 'required|array|min:1',
+            'prices.*'      => 'required|numeric',
 
             //Validasi Attachment
             'attachments.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,xlsx|max:5120',
@@ -92,7 +93,9 @@ class DisposalAssetController extends Controller
             'approvals.0.approval_date'     => 'nullable|date',
         ]);
 
-        $assetIds = explode(',', $validated['asset_ids']);
+        $pricesByAssetId = $validated['prices'];
+
+        $assetIds = array_keys($pricesByAssetId);
 
         $approvalsToStore = [];
         $isSequence = ($validated['sequence'] === "1");
@@ -114,7 +117,7 @@ class DisposalAssetController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($validated, $request, $assetIds, $approvalsToStore) {
+            DB::transaction(function () use ($validated, $request, $pricesByAssetId, $assetIds, $approvalsToStore) {
 
                 $assetsToDispose = Asset::whereIn('id', $assetIds)->get()->keyBy('id');
 
@@ -130,17 +133,16 @@ class DisposalAssetController extends Controller
                     'company_id'    => $validated['company_id'],
                 ]);
 
-                foreach ($assetIds as $assetId) {
-                    $assetId = trim($assetId);
-                    if($assetId !== '') {
-                        $asset = $assetsToDispose->get($assetId);
-                        if ($asset) {
-                            $disposalAsset->detailDisposals()->create([
-                                'asset_id' => $asset->id,
-                                'kurs'     => $validated['kurs'],
-                                'njab'     => $asset->net_book_value,
-                            ]);
-                        }
+                foreach ($pricesByAssetId as $assetId => $price) {
+                    $asset = $assetsToDispose->get($assetId); // Ambil data aset dari collection
+
+                    if ($asset) { // Pastikan aset ada
+                        // 8. Buat record 'detailDisposals'
+                        $disposalAsset->detailDisposals()->create([
+                            'asset_id' => $assetId, // ID Aset
+                            'kurs'     => $validated['kurs'],
+                            'njab'     => $price, // <-- PERBAIKAN: Gunakan '$price' dari array
+                        ]);
                     }
                 }
 
@@ -554,6 +556,41 @@ class DisposalAssetController extends Controller
             })
             ->rawColumns(['checkbox'])
             ->toJson();
+    }
+
+    public function getAssetsByIds(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return response()->json([]);
+        }
+
+        $companyId = session('active_company_id');
+
+        // Gunakan query yang sama dengan DataTables Anda untuk konsistensi data
+        $query = Asset::withoutGlobalScope(CompanyScope::class)
+                        ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+                        ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+                        ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+                        ->join('locations', 'assets.location_id', '=', 'locations.id')
+                        ->join('departments', 'assets.department_id', '=', 'departments.id')
+                        ->join('companies', 'assets.company_id', '=', 'companies.id') // Join untuk currency
+                        ->whereIn('assets.id', $ids) // Ambil berdasarkan ID yang diminta
+                        ->where('assets.company_id', $companyId)
+                        ->select([
+                            'assets.*',
+                            'asset_names.name as asset_name_name',
+                            'asset_classes.obj_acc as asset_class_obj',
+                            'locations.name as location_name',
+                            'departments.name as department_name',
+                            'companies.currency as currency_code' // Ambil currency code
+                        ]);
+
+        // keyBy('id') penting agar mudah dicari di JavaScript
+        $assets = $query->get()->keyBy('id'); 
+
+        return response()->json($assets);
     }
 
     public function exportPdf(DisposalAsset $disposal_asset)
