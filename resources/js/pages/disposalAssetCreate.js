@@ -35,6 +35,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function calculateAndDisplayTotalESP() {
+        let totalESP = 0;
+
+        // 1. Loop "source of truth" (Map data)
+        selectedAssetData.forEach((data, id) => {
+            const quantity = parseFloat(data.quantity || 0);
+            
+            // 2. Ambil harga mentah (dari input) atau default ke NBV
+            const rawPrice = parseFloat(
+                data.price_raw !== undefined ? data.price_raw : (data.commercial_nbv || 0)
+            );
+            
+            // 3. Kalkulasi total
+            totalESP += (quantity * rawPrice);
+        });
+
+        // 4. Ambil elemen input ESP di tab "Formulir"
+        const espValueInput = document.getElementById('esp-value');
+        const espDisplayInput = document.getElementById('esp-display');
+
+        // 5. Update nilainya
+        if (espValueInput && espDisplayInput) {
+            espValueInput.value = totalESP;
+            espDisplayInput.value = formatNumber(totalESP); // Gunakan formatNumber (tanpa Rp)
+        }
+    }
+
     function formatNumber(value) {
         let number = parseFloat(value);
         if (isNaN(number)) number = 0;
@@ -104,13 +131,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateSelection() {
         const selectedCount = selectedAssetIds.size;
-        $('#selected-count-display').text(`(${selectedCount})`); // Update di tab
+        $('#selected-count-display').text(`(${selectedCount})`);
         renderChosenTable();
+        calculateAndDisplayTotalESP();
     }
 
     function loadInitialData(ids) {
         if (ids.length === 0) {
-            updateSelection(); // Cukup render tabel kosong
+            updateSelection();
             return;
         }
 
@@ -123,14 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 _token: window.csrfToken // Dari variabel global di Blade
             },
             success: function(data) {
-                // data adalah objek { "1": {...}, "5": {...} }
                 for (const id in data) {
                     let asset = data[id];
                     
                     if (oldPrices.hasOwnProperty(id)) {
                         const rawPrice = oldPrices[id]; // Ambil harga dari old()
-                        const currency = asset.currency_code || 'IDR';
-                        const locale = currency === 'IDR' ? 'id-ID' : 'en-US';
                         
                         // Simpan harga dari old() ke "source of truth"
                         asset.price_raw = rawPrice;
@@ -373,13 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
         autoFormatCurrency(nbvDisplay, nbvValue);
     }
 
-    // Terapkan fungsi ke input Nilai Jual Estimasi
-    const espDisplay = document.getElementById('esp-display');
-    const espValue = document.getElementById('esp-value');
-    if (espDisplay && espValue) {
-        autoFormatCurrency(espDisplay, espValue);
-    }
-
     // Terapkan fungsi ke input Kurs
     const kursDisplay = document.getElementById('kurs-display');
     const kursValue = document.getElementById('kurs-value');
@@ -411,6 +429,8 @@ document.addEventListener('DOMContentLoaded', () => {
         assetData.price_raw = cleanValue;
         assetData.price_formatted = visibleInput.value;
         selectedAssetData.set(assetId, assetData);
+
+        calculateAndDisplayTotalESP();
     });
 
     function filterUsersByRole(row) {

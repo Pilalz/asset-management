@@ -8,14 +8,13 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: #fcfcff;
         }
     </style>
 </head>
 <body>
-    <div class="flex items-center justify-center min-h-screen dark:bg-black">
-        <div class="flex flex-col items-center text-center p-8">
-            <img src="{{ asset('images/404-gif.gif') }}" class="max-w-xs md:max-w-lg mb-8 dark:invert" alt="Under Maintenance Illustration" />
+    <div class="flex justify-center min-h-screen dark:bg-black">
+        <div class="flex flex-col text-center">
+            <img src="{{ asset('images/404.svg') }}" class="max-w-xs md:max-w-lg mb-8 dark:invert" alt="Under Maintenance Illustration" />
             <h1 class="font-bold text-3xl md:text-5xl text-gray-800 mb-2 dark:text-gray-100">Page not found</h1>
             <p class="text-gray-500 text-lg dark:text-gray-300">We've looked everywhere but couldn't find the page you were looking for.</p>
             <button onclick="window.history.back()" type="button" class="hover:underline hover:text-black dark:text-gray-300 dark:hover:text-white">

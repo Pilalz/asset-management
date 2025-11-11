@@ -184,9 +184,15 @@ class DisposalAssetController extends Controller
 
         $disposal_asset->load('approvals.user', 'department', 'detailDisposals');
 
-        $selectedAssetIds = $disposal_asset->detailDisposals->pluck('asset_id');
+        $pricesForJs = $disposal_asset->detailDisposals->pluck('njab', 'asset_id');
 
-        return view('disposal-asset.edit', compact('disposal_asset', 'departments', 'selectedAssetIds', 'users'));
+        return view('disposal-asset.edit', [ 
+            'disposal_asset' => $disposal_asset,
+            'departments' => $departments,
+            'users' => $users,
+            'pricesForJs' => $pricesForJs,
+            'activeCompany' => auth()->user()->activeCompany,
+        ]);
     }
 
     public function update(Request $request, DisposalAsset $disposalAsset)
@@ -200,7 +206,8 @@ class DisposalAssetController extends Controller
             'kurs'  => 'required',
 
             //Validasi Detail Asset
-            'asset_ids'     => 'required|string',
+            'prices'     => 'required|array|min:1',
+            'prices.*'      => 'required|numeric',
 
             //Validasi Attachments
             'attachments.*' => 'nullable|file|mimes:pdf,jpg,png,xlsx|max:5120',
@@ -216,10 +223,11 @@ class DisposalAssetController extends Controller
             'approvals.*.approval_date'     => 'nullable|date',
         ]);
 
-        $assetIds = explode(',', $validated['asset_ids']);
+        $pricesByAssetId = $validated['prices'];
+        $assetIds = array_keys($pricesByAssetId);
 
         try {
-            DB::transaction(function () use ($validated, $request, $assetIds, $disposalAsset) {
+            DB::transaction(function () use ($validated, $request, $assetIds, $pricesByAssetId, $disposalAsset) {
                 $disposalAsset->update([
                     'department_id' => $validated['department_id'],
                     'reason'        => $validated['reason'],
@@ -233,15 +241,14 @@ class DisposalAssetController extends Controller
 
                 $assetsToDispose = Asset::whereIn('id', $assetIds)->get()->keyBy('id');
                 
-                foreach ($assetIds as $assetId) {
+                foreach ($pricesByAssetId as $assetId => $price) {
                     $assetId = trim($assetId);
                     if ($assetId !== '' && $assetsToDispose->has($assetId)) {
                         $asset = $assetsToDispose->get($assetId);
-                        // PERBAIKAN: Gunakan variabel $disposalAsset yang benar
                         $disposalAsset->detailDisposals()->create([
-                            'asset_id' => $asset->id,
+                            'asset_id' => $assetId,
                             'kurs'     => $validated['kurs'],
-                            'njab'     => $asset->commercial_nbv,
+                            'njab'     => $price,
                         ]);
                     }
                 }

@@ -55,7 +55,7 @@
 
     @can('is-admin')
         <div class="flex">
-            <a href="{{ route('fiscal.export', ['year' => $selectedYear]) }}" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <a href="{{ route('fiscal.export', ['year' => $selectedYear]) }}" type="button" class="inline-flex items-center text-blue-500 bg-white border border-blue-300 focus:outline-none hover:bg-blue-200 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 text-center me-2 dark:bg-blue-600 dark:text-blue-200 dark:border-blue-400 dark:hover:bg-blue-500 dark:hover:border-blue-400">
                 <svg class="w-4 h-4 me-2 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10V4a1 1 0 0 0-1-1H9.914a1 1 0 0 0-.707.293L5.293 7.207A1 1 0 0 0 5 7.914V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 3v4a1 1 0 0 1-1 1H5m5 6h9m0 0-2-2m2 2-2 2"/>
                 </svg>

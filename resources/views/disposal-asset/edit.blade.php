@@ -137,6 +137,9 @@
                 <li class="me-2" role="presentation">
                     <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="asset-tab" data-tabs-target="#asset" type="button" role="tab" aria-controls="asset" aria-selected="false">Asset <span class="text-red-900 dark:text-red-400">*</span></button>
                 </li>
+                <li class="me-2" role="presentation">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="chosen-tab" data-tabs-target="#chosen" type="button" role="tab" aria-controls="chosen" aria-selected="false">Chosen <span id="selected-count-display" class="font-bold dark:text-gray-200">(0)</span></button>
+                </li>
             </ul>
         </div>
 
@@ -213,7 +216,7 @@
                             <div class="flex content-center">
                                 <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi <span class="text-red-900 dark:text-red-400">*</span></label>
                                 <span> : </span>
-                                <input type="text" id="esp-display" value="{{ old('esp', $disposal_asset->esp ?? '') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-0"/>
+                                <input type="text" id="esp-display" value="{{ old('esp', $disposal_asset->esp ?? '') }}" class="px-1 w-full text-sm border-0 text-gray-900 appearance-none dark:bg-gray-800 dark:text-white focus:ring-0" readonly/>
                                 <input type="hidden" name="esp" id="esp-value" value="{{ old('esp', $disposal_asset->esp ?? '') }}">
                                 @error('esp')
                                     <div class="text-danger">{{ $message }}</div>
@@ -306,7 +309,7 @@
                                                         $action = $approval->approval_action;
                                                         $role = $approval->role;
                                                     @endphp
-                                                    <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                         <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                             <input type="text" name="approvals[{{$index}}][approval_action]" value="{{ $action }}" class="border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                             @error("approvals[{{$index}}][approval_action]")
@@ -419,9 +422,41 @@
                                 
                             </tbody>
                         </table>
-                        <div class="p-4">
-                            <span id="selected-count-display" class="font-bold dark:text-gray-200">0 asset(s) selected</span>
-                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden" id="chosen" role="tabpanel" aria-labelledby="chosen-tab">
+                    <div class="relative overflow-x-auto py-5 px-6 bg-white dark:bg-gray-800">
+                        <table id="chosenTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">No</th>
+                                    <th scope="col" class="px-6 py-3">Asset Number</th>
+                                    <th scope="col" class="px-6 py-3">Status</th>
+                                    <th scope="col" class="px-6 py-3">Asset Name</th>
+                                    <th scope="col" class="px-6 py-3">Description</th>
+                                    <th scope="col" class="px-6 py-3">Location</th>
+                                    <th scope="col" class="px-6 py-3">Department</th>
+                                    <th scope="col" class="px-6 py-3">Qty</th>
+                                    <th scope="col" class="px-6 py-3">Capitalized Date</th>
+                                    <th scope="col" class="px-6 py-3">Acquisition Value</th>
+                                    <th scope="col" class="px-6 py-3">Commercial Accum Depre</th>
+                                    <th scope="col" class="px-6 py-3">Commercial Net Book Value</th>
+                                    <th scope="col" class="px-6 py-3">Fiscal Accum Depre</th>
+                                    <th scope="col" class="px-6 py-3">Fiscal Net Book Value</th>
+                                    <th scope="col" class="px-6 py-3">Price</th>
+                                </tr>
+                                <tr id="filter-row">
+                                    <th></th><th></th><th></th><th></th>
+                                    <th></th><th></th><th></th><th></th>
+                                    <th></th><th></th><th></th><th></th>
+                                    <th></th><th></th><th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -448,328 +483,14 @@
     </div>
 @endsection
 
-@push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const oldAssetIdsString = @json(old('asset_ids'));
-        const preselectedIds = @json($selectedAssetIds->all() ?? []);
-
-        let initialIds = [];
-
-        if (oldAssetIdsString && typeof oldAssetIdsString === 'string') {
-            initialIdsToUse = oldAssetIdsString.split(',');
-        } 
-        // Otherwise, use the preselected IDs from the controller
-        else if (Array.isArray(preselectedIds) && preselectedIds.length > 0) {
-             // Ensure preselected IDs are strings for consistency with split(',') result
-            initialIdsToUse = preselectedIds.map(String);
-        }
-
-        // Declare selectedAssetIds ONLY ONCE using the chosen initial data
-        const selectedAssetIds = new Set(initialIdsToUse);
-
-        function updateSelection() {
-            const selectedCount = selectedAssetIds.size;
-            $('#selected-count-display').text(`${selectedCount} asset(s) selected`);
-            $('#selected-asset-ids').val(Array.from(selectedAssetIds).join(','));
-        }
-
-        updateSelection();
-
-        if (typeof $ !== 'undefined') {
-            $('#assetTable thead tr:eq(0) th').each(function(i) {
-                var title = $(this).text().trim();
-                var cell = $('#filter-row').children().eq(i);
-                if (i === 0) {
-                    return;
-                }
-                $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
-            });
-
-            const table = $('#assetTable').DataTable({
-                dom:  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'l><'text-sm'f>>" +
-                    "<'overflow-x-auto'tr>" +
-                    "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('api.disposal-asset-find') }}",
-                autoWidth: false,
-                orderCellsTop: true,
-                columns: [
-                    { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false, className: 'text-center' },
-                    { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
-                    { data: 'asset_number', name: 'asset_number' },
-                    { data: 'status', name: 'status' },
-                    { data: 'asset_name_name', name: 'asset_name_name' },
-                    { data: 'asset_class_obj', name: 'asset_class_obj' },
-                    { data: 'description', name: 'description' },
-                    { data: 'pareto', name: 'pareto' },
-                    { data: 'po_no', name: 'po_no' },
-                    { data: 'location_name', name: 'location_name' },
-                    { data: 'department_name', name: 'department_name' },
-                    { data: 'quantity', name: 'quantity' },
-                    { data: 'capitalized_date', name: 'capitalized_date' },
-                    { data: 'start_depre_date', name: 'start_depre_date' },
-                    { data: 'acquisition_value', name: 'acquisition_value' },
-                    { data: 'commercial_useful_life_month', name: 'commercial_useful_life_month' },
-                    { data: 'commercial_accum_depre', name: 'commercial_accum_depre' },
-                    { data: 'commercial_nbv', name: 'commercial_nbv' },
-                    { data: 'fiscal_useful_life_month', name: 'fiscal_useful_life_month' },
-                    { data: 'fiscal_accum_depre', name: 'fiscal_accum_depre' },
-                    { data: 'fiscal_nbv', name: 'fiscal_nbv' },
-                ],
-                order: [[0, 'asc']],
-                language: {
-                    search: "Search : ",
-                    searchPlaceholder: "Cari di sini...",
-                },
-                initComplete: function () {
-                    $('.dt-search input').addClass('w-full sm:w-auto bg-white-50 border border-white-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500');
-
-                    // --- Logika untuk filter per kolom ---
-                    this.api().columns().every(function (index) {
-                        var column = this;
-                        var cell = $('#assetTable thead #filter-row').children().eq(column.index());
-                        
-                        if (column.settings()[0].bSearchable === false) {
-                            return;
-                        }
-                        
-                        var input = $('input', cell);
-                        input.on('keyup change clear', function(e) {
-                            e.stopPropagation();
-                            if (column.search() !== this.value) {
-                                column.search(this.value).draw();
-                            }
-                        });
-                        input.on('click', function(e) {
-                            e.stopPropagation();
-                        });
-                    });
-                },
-
-                columnDefs: [
-                    {
-                        targets: 0,
-                        className: 'px-6 py-4'
-                    },
-                    {
-                        targets: 5, 
-                        render: function (data, type, row) {
-                            if (type === 'display') {
-                                return 'Direct Ownership : ' + data;
-                            }
-                            return data;
-                        }
-                    },
-                    {
-                        targets: [12, 13],
-                        render: function (data, type, row) {
-                            if (type === 'display') {
-                                if (!data) {
-                                    return '-';
-                                }
-                                
-                                try {
-                                    const date = new Date(data);
-                                    
-                                    const options = {
-                                        day: 'numeric',
-                                        month: 'long',
-                                        year: 'numeric'
-                                    };
-
-                                    return date.toLocaleDateString('id-ID', options);
-                                } catch (e) {
-                                    return data;
-                                }
-                            }
-                            return data;
-                        }
-                    },
-                    {
-                        targets: [14, 16, 17, 19, 20], 
-                        render: function (data, type, row) {
-                            if (type === 'display') {
-                                let number = parseFloat(data);
-
-                                if (isNaN(number)) {
-                                    return data;
-                                }
-
-                                const currencyCode = row.currency || 'USD'; 
-                                let locale = 'en-US';
-                                if (currencyCode === 'IDR') {
-                                    locale = 'id-ID';
-                                }
-
-                                return number.toLocaleString(locale, {
-                                    style: 'currency',
-                                    currency: currencyCode,
-                                    minimumFractionDigits: 0,
-                                    maximumFractionDigits: 0
-                                });
-                            }
-                            return data;
-                        }
-                    }
-                ],
-
-                createdRow: function( row, data, dataIndex ) {
-                    $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
-                },
-            });
-
-            // Event listener untuk checkbox di setiap baris
-            $('#assetTable tbody').on('change', '.asset-checkbox', function() {
-                const assetId = $(this).val();
-                if (this.checked) {
-                    selectedAssetIds.add(assetId);
-                } else {
-                    selectedAssetIds.delete(assetId);
-                }
-                updateSelection();
-            });
-
-            // Event listener untuk checkbox "select all" di header
-            $('#select-all-assets').on('change', function() {
-                const isChecked = this.checked;
-                // Hanya pengaruhi checkbox di halaman saat ini
-                $('#assetTable tbody .asset-checkbox').each(function() {
-                    $(this).prop('checked', isChecked);
-                    const assetId = $(this).val();
-                    if (isChecked) {
-                        selectedAssetIds.add(assetId);
-                    } else {
-                        selectedAssetIds.delete(assetId);
-                    }
-                });
-                updateSelection();
-            });
-
-            updateSelection();
-
-            // Event listener saat DataTable digambar ulang (pindah halaman, sorting, dll.)
-            table.on('draw', function() {
-                // Pastikan checkbox tetap tercentang sesuai data yang tersimpan
-                $('#assetTable tbody .asset-checkbox').each(function() {
-                    if (selectedAssetIds.has($(this).val())) {
-                        $(this).prop('checked', true);
-                    } else {
-                        $(this).prop('checked', false);
-                    }
-                });
-                // Reset checkbox "select all"
-                $('#select-all-assets').prop('checked', false);
-            });
-
-            table.columns().every(function() {
-                var that = this;
-                
-                // Event untuk filtering saat mengetik
-                $('input', $('#assetTable thead #filter-row').children().eq(this.index())).on('keyup change clear', function(e) {
-                    e.stopPropagation(); // Hentikan event agar tidak memicu sorting
-                    if (that.search() !== this.value) {
-                        that.search(this.value).draw();
-                    }
-                });
-            });
-        }
-        function autoFormatCurrency(visibleInput, hiddenInput) {
-            // Inisialisasi nilai awal jika ada (dari old input)
-            if (visibleInput.value) {
-                const cleanValue = visibleInput.value.replace(/[^\d]/g, '');
-                const formattedValue = new Intl.NumberFormat('en-US').format(cleanValue);
-                visibleInput.value = formattedValue;
-                hiddenInput.value = cleanValue;
-            }
-
-            visibleInput.addEventListener('input', function(e) {
-                // 1. Ambil nilai input dan hapus semua karakter selain angka
-                let cleanValue = e.target.value.replace(/[^\d]/g, '');
-
-                // 2. Simpan nilai bersih ke input tersembunyi
-                hiddenInput.value = cleanValue;
-                
-                // 3. Format nilai yang terlihat dengan pemisah ribuan
-                if (cleanValue) {
-                    const formattedValue = new Intl.NumberFormat('en-US').format(cleanValue);
-                    e.target.value = formattedValue;
-                } else {
-                    e.target.value = '';
-                }
-            });
-        }
-
-        // Terapkan fungsi ke input Nilai Value
-        const nbvDisplay = document.getElementById('nbv-display');
-        const nbvValue = document.getElementById('nbv-value');
-        if (nbvDisplay && nbvValue) {
-            autoFormatCurrency(nbvDisplay, nbvValue);
-        }
-
-        // Terapkan fungsi ke input Nilai Jual Estimasi
-        const espDisplay = document.getElementById('esp-display');
-        const espValue = document.getElementById('esp-value');
-        if (espDisplay && espValue) {
-            autoFormatCurrency(espDisplay, espValue);
-        }
-
-        // Terapkan fungsi ke input Kurs
-        const kursDisplay = document.getElementById('kurs-display');
-        const kursValue = document.getElementById('kurs-value');
-        if (kursDisplay && kursValue) {
-            autoFormatCurrency(kursDisplay, kursValue);
-        }
-
-        document.getElementById('existing-attachments-list').addEventListener('click', function (e) {
-            if (e.target && e.target.matches('button.remove-attachment-btn')) {
-                const attachmentId = e.target.getAttribute('data-id');
-                const attachmentRow = document.getElementById('attachment-' + attachmentId);
-
-                // Buat input hidden untuk ID yang dihapus
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'deleted_attachments[]';
-                hiddenInput.value = attachmentId;
-                document.getElementById('deleted-attachments-container').appendChild(hiddenInput);
-
-                // Sembunyikan baris dari tampilan
-                attachmentRow.style.display = 'none';
-            }
-        });
-
-        function filterUsersByRole(row) {
-            const roleInput = row.querySelector('.approval-role');
-            const userSelect = row.querySelector('.approval-user-select');
-            
-            if (!roleInput || !userSelect) return;
-
-            const selectedRole = roleInput.value;
-
-            // Loop melalui setiap <option> di dalam dropdown user
-            for (const option of userSelect.options) {
-                // Lewati opsi pertama ("Pilih Nama")
-                if (option.value === '') continue;
-
-                // Tampilkan jika role-nya cocok, sembunyikan jika tidak
-                if (option.dataset.role === selectedRole) {
-                    option.style.display = 'block';
-                } else {
-                    option.style.display = 'none';
-                    // Jika opsi yang disembunyikan sedang terpilih, reset dropdown
-                    if (option.selected) {
-                        userSelect.value = '';
-                    }
-                }
-            }
-        }
-
-        // Terapkan filter ke semua baris yang ada saat halaman dimuat
-        document.querySelectorAll('.approval-row').forEach(row => {
-            filterUsersByRole(row);
-        });
-    });
+    window.getAssetsByIdsUrl = '{{ route('api.get-assets-by-ids') }}';
+    window.csrfToken = '{{ csrf_token() }}';
+    window.oldPrices = @json(old('prices', $pricesForJs)); 
+    window.activeCurrency = '{{ $activeCompany->currency ?? 'IDR' }}';
 </script>
+
+@push('scripts')
+    @vite('resources/js/pages/disposalAssetCreate.js')
     @vite('resources/js/pages/alert.js')
 @endpush

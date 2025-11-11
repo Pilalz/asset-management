@@ -14,7 +14,7 @@
 <body>
     <div class="flex items-center justify-center min-h-screen dark:bg-black">
         <div class="flex flex-col items-center text-center p-8">
-            <img src="{{ asset('images/maintenance.webp') }}" class="max-w-xs md:max-w-lg mb-8 dark:invert" alt="Under Maintenance Illustration" />
+            <img src="{{ asset('images/maintenance.svg') }}" class="max-w-xs md:max-w-lg mb-8 dark:invert" alt="Under Maintenance Illustration" />
             <h1 class="font-bold text-3xl md:text-5xl text-gray-800 mb-2 dark:text-gray-100">Oops! Site is under maintenance</h1>
             <p class="text-gray-500 text-lg dark:text-gray-300">We are working hard to improve your experience. Please check back later.</p>
         </div>

@@ -14,7 +14,7 @@
 <body>
     <div class="flex items-center justify-center min-h-screen dark:bg-black">
         <div class="flex flex-col items-center text-center p-8">
-            <img src="{{ asset('images/403-gif.gif') }}" class="max-w-xs md:max-w-lg mb-8" alt="Under Maintenance Illustration" />
+            <img src="{{ asset('images/403.svg') }}" class="max-w-xs md:max-w-lg mb-8 dark:invert" alt="Under Maintenance Illustration" />
             <h1 class="font-bold text-3xl md:text-5xl text-gray-800 mb-2 dark:text-gray-100">Access Denied</h1>
             <p class="text-gray-500 text-lg dark:text-gray-300">Sorry, but you don't have permission to access this page.</p>
             <span class="text-gray-500 dark:text-gray-300">You can go back to 

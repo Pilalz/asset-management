@@ -211,7 +211,7 @@
                             <div class="flex content-center">
                                 <label class="w-48 text-sm font-medium text-gray-900 dark:text-white">Nilai Jual Estimasi <span class="text-red-900 dark:text-red-400">*</span></label>
                                 <span> : </span>
-                                <input type="text" id="esp-display" value="{{ old('esp') }}" class="px-1 w-full text-sm border-0 border-b-2 border-gray-300 text-gray-900 appearance-none dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-0"/>
+                                <input type="text" id="esp-display" value="{{ old('esp') }}" class="px-1 w-full text-sm border-0 text-gray-900 appearance-none dark:bg-gray-800 dark:text-white focus:ring-0" readonly/>
                                 <input type="hidden" name="esp" id="esp-value" value="{{ old('esp') }}">
                                 @error('esp')
                                     <div class="text-danger">{{ $message }}</div>
