@@ -65,16 +65,16 @@ class DisposalAsset extends Model
     {
         static::addGlobalScope(new CompanyScope);
 
-        static::deleting(function (DisposalAsset $disposal_asset) {
-            // Hapus semua relasi anaknya terlebih dahulu
-            $disposal_asset->detailDisposals()->delete();
-            $disposal_asset->approvals()->delete();
+        // static::deleting(function (DisposalAsset $disposal_asset) {
+        //     // Hapus semua relasi anaknya terlebih dahulu
+        //     $disposal_asset->detailDisposals()->delete();
+        //     $disposal_asset->approvals()->delete();
 
-            foreach ($disposal_asset->attachments as $attachment) {
-                Storage::disk('public')->delete($attachment->file_path);
-            }
-            $disposal_asset->attachments()->delete();
-        });
+        //     foreach ($disposal_asset->attachments as $attachment) {
+        //         Storage::disk('public')->delete($attachment->file_path);
+        //     }
+        //     $disposal_asset->attachments()->delete();
+        // });
     }
 
     public function getDepartmentNameAttribute()

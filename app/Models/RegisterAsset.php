@@ -72,16 +72,16 @@ class RegisterAsset extends Model
     {
         static::addGlobalScope(new CompanyScope);
 
-        static::deleting(function (RegisterAsset $register_asset) {
-            // Hapus semua relasi anaknya terlebih dahulu
-            $register_asset->detailRegisters()->delete();
-            $register_asset->approvals()->delete();
+        // static::deleting(function (RegisterAsset $register_asset) {
+        //     // Hapus semua relasi anaknya terlebih dahulu
+        //     $register_asset->detailRegisters()->delete();
+        //     $register_asset->approvals()->delete();
 
-            foreach ($register_asset->attachments as $attachment) {
-                Storage::disk('public')->delete($attachment->file_path);
-            }
-            $register_asset->attachments()->delete();
-        });
+        //     foreach ($register_asset->attachments as $attachment) {
+        //         Storage::disk('public')->delete($attachment->file_path);
+        //     }
+        //     $register_asset->attachments()->delete();
+        // });
     }
 
     public function getDepartmentNameAttribute()

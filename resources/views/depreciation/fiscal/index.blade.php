@@ -165,9 +165,9 @@
                     <tbody>
                         @foreach ($pivotedData as $assetId => $data)
                             <tr class="group">
-                                <td class="sticky left-0 bg-gray-50 text-center border border-gray-100 group-hover:bg-gray-200">{{ $loop->iteration + (($pivotedData->currentPage() - 1) * $pivotedData->perPage()) }}</td>
-                                <td class="sticky left-9 p-4 bg-gray-50 border border-gray-100 group-hover:bg-gray-200">{{ $data['master_data']->asset_number ?? 'N/A' }}</td>
-                                <td class="px-6 py-3 bg-gray-50 border border-gray-100 group-hover:bg-gray-200">{{ $data['master_data']->assetName->name ?? 'N/A' }}</td>
+                                <td class="sticky left-0 bg-gray-50 dark:bg-gray-700 text-center border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $loop->iteration + (($pivotedData->currentPage() - 1) * $pivotedData->perPage()) }}</td>
+                                <td class="sticky left-9 p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $data['master_data']->asset_number ?? 'N/A' }}</td>
+                                <td class="px-6 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $data['master_data']->assetName->name ?? 'N/A' }}</td>
 
                                 @foreach ($months as $monthKey => $monthName)
                                     @php
@@ -176,13 +176,13 @@
 
                                     @if (isset($data['schedule'][$monthKey]))
                                         @php $schedule = $data['schedule'][$monthKey]; @endphp
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">{{ format_currency($schedule->monthly_depre) }}</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">{{ format_currency($schedule->accumulated_depre) }}</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">{{ format_currency($schedule->book_value) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->monthly_depre) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->accumulated_depre) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->book_value) }}</td>
                                     @else
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">-</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">-</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 {{ $bgColorClass }}">-</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
+                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
                                     @endif
                                 @endforeach
                             </tr>

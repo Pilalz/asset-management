@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
             autoWidth: false,
             orderCellsTop: true,
             columns: [
-                { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false, className: 'text-center' },
+                { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false, className: 'text-center dark:text-black' },
                 { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
                 { data: 'asset_number', name: 'asset_number' },
                 { data: 'status', name: 'status' },
@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
             columnDefs: [
                 {
                     targets: 0,
-                    className: 'px-6 py-4'
+                    className: 'px-6 py-4 dark:text-black'
                 },
                 {
                     targets: 5, 

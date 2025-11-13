@@ -658,6 +658,8 @@
                         </table>
                     </div>
                 </div>
+
+                <div id="asset-ids-container"></div>
             </div>
             <div class="px-5 pb-5 rounded-b-lg bg-white shadow-md dark:bg-gray-800">
                 <div class="flex flex-col w-full">

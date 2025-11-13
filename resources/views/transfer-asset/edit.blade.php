@@ -293,7 +293,7 @@
                                                         $action = $approval->approval_action;
                                                         $role = $approval->role;
                                                     @endphp
-                                                    <tr class="approval-row bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                         <th scope="row" class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                             <input type="text" name="approvals[{{$index}}][approval_action]" value="{{ $action }}" class="border-0 focus:ring-0 dark:bg-gray-800" readonly/>
                                                             @error("approvals[{{$index}}][approval_action]")

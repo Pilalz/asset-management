@@ -98,7 +98,7 @@ class AssetClassController extends Controller
     {
         // 1. Validasi file yang diupload
         $request->validate([
-            'excel_file' => 'required|mimes:xlsx,xls',
+            'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);
 
         try {

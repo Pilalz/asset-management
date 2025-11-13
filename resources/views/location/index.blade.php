@@ -13,10 +13,8 @@
                 background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
             }
 
-            .dt-orderable-asc .dt-orderable-desc:hover {
-                border: red 2px solid !important;
-            }
-
+            
+            
             /* Menghapus background bawaan dari kolom yang diurutkan */
             table.dataTable tbody tr > .sorting_1,
             table.dataTable tbody tr > .sorting_2,

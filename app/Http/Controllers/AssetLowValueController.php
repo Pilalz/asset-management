@@ -89,7 +89,7 @@ class AssetLowValueController extends Controller
     public function importExcel(Request $request)
     {
         $request->validate([
-            'excel_file' => 'required|mimes:xlsx,xls',
+            'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);
 
         try {

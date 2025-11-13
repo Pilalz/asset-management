@@ -70,16 +70,16 @@ class TransferAsset extends Model
     {
         static::addGlobalScope(new CompanyScope);
 
-        static::deleting(function (TransferAsset $transfer_asset) {
-            // Hapus semua relasi anaknya terlebih dahulu
-            $transfer_asset->detailTransfers()->delete();
-            $transfer_asset->approvals()->delete();
+        // static::deleting(function (TransferAsset $transfer_asset) {
+        //     // Hapus semua relasi anaknya terlebih dahulu
+        //     $transfer_asset->detailTransfers()->delete();
+        //     $transfer_asset->approvals()->delete();
 
-            foreach ($transfer_asset->attachments as $attachment) {
-                Storage::disk('public')->delete($attachment->file_path);
-            }
-            $transfer_asset->attachments()->delete();
-        });
+        //     foreach ($transfer_asset->attachments as $attachment) {
+        //         Storage::disk('public')->delete($attachment->file_path);
+        //     }
+        //     $transfer_asset->attachments()->delete();
+        // });
     }
 
     public function getDepartmentNameAttribute()

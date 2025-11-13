@@ -64,7 +64,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
             <div class="flex items-center w-full bg-white rounded-lg shadow-md dark:bg-gray-800 p-4 md:p-6">
                 <div class="me-4">
-                    <svg class="w-10 h-10 text-black bg-gray-200 rounded-lg p-1 dark:text-white dark:bg-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <svg class="w-10 h-10 text-black bg-gray-100 rounded-lg p-1 dark:text-white dark:bg-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v3c0 .5523.44772 1 1 1h10M3 15v-4m0 4h9m-9-4V6c0-.55228.44772-1 1-1h16c.5523 0 1 .44772 1 1v3M3 11h11m-2-.2079V19m3-4h1.9909M21 15c0 1.1046-.8954 2-2 2s-2-.8954-2-2 .8954-2 2-2 2 .8954 2 2Z"/>
                     </svg>
                 </div>
@@ -152,7 +152,7 @@
                         <!-- <a href="#" class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
                             View all
                         </a> -->
-                        <p class="text-sm font-medium">Total : <span class="text-sm font-medium text-blue-600 dark:text-blue-500">{{ $assetRemaksCount }}</span></p>
+                        <p class="text-sm font-medium dark:text-white">Total : <span class="text-sm font-medium text-blue-600 dark:text-blue-500">{{ $assetRemaksCount }}</span></p>
                     </div>
                     <div class="flow-root">
                         <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
