@@ -491,6 +491,6 @@
 </script>
 
 @push('scripts')
-    @vite('resources/js/pages/disposalAssetCreate.js')
+    @vite('resources/js/pages/disposalAssetForm.js')
     @vite('resources/js/pages/alert.js')
 @endpush

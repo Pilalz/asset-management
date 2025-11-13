@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TransferAsset;
 use App\Models\Asset;
+use App\Models\AssetName;
 use App\Models\Location;
 use App\Models\Department;
 use App\Models\Attachment;
@@ -20,6 +21,8 @@ use App\Scopes\CompanyScope;
 use Yajra\DataTables\Facades\DataTables;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Gate;
+
+use App\Rules\AssetIsAvailable;
 
 class TransferAssetController extends Controller
 {
@@ -52,8 +55,22 @@ class TransferAssetController extends Controller
     {
         Gate::authorize('is-form-maker');
 
-        $locations = Location::all();
-        $departments = Department::all();
+        $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
+                                       ->where('company_id', session('active_company_id'))
+                                       ->orderBy('name', 'asc')
+                                       ->get(['id', 'name']);
+        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
+                                     ->where('company_id', session('active_company_id'))
+                                     ->orderBy('name', 'asc')
+                                     ->get(['id', 'name']);
+        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
+                                       ->where('company_id', session('active_company_id'))
+                                       ->orderBy('name', 'asc')
+                                       ->get(['id', 'name']);
+
+        $departments = $departmentsForFilter;
+        $locations = $locationsForFilter;
+
         $users = User::join('company_users', 'users.id', '=', 'company_users.user_id')
             ->where('company_users.company_id', session('active_company_id'))
             ->select('users.id', 'users.name', 'company_users.role as user_role')
@@ -68,9 +85,9 @@ class TransferAssetController extends Controller
         }
         
         $formattedSeq = str_pad($seq, 5, '0', STR_PAD_LEFT);
-        $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq ;
+        $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq;
         
-        return view('transfer-asset.create', compact('locations', 'departments', 'form_no', 'users'));
+        return view('transfer-asset.create', compact('locations', 'departments', 'form_no', 'users', 'assetNamesForFilter', 'locationsForFilter', 'departmentsForFilter'));
     }
 
     public function store(Request $request)
@@ -85,7 +102,8 @@ class TransferAssetController extends Controller
             'company_id'  => 'required|exists:companies,id',
 
             //Validasi Detail Asset
-            'asset_ids'     => 'required|string',
+            'asset_ids'   => ['required', 'array', 'min:1', new AssetIsAvailable('transfer')],
+            'asset_ids.*' => 'required|integer|exists:assets,id',
 
             //Validasi Attachments
             'attachments.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,xlsx|max:5120', // Maks 5MB per file
@@ -99,7 +117,7 @@ class TransferAssetController extends Controller
             'approvals.0.approval_date'     => 'nullable|date',
         ]);
 
-        $assetIds = explode(',', $validated['asset_ids']);
+        $assetIds = $validated['asset_ids'];
 
         $approvalsToStore = [];
         $isSequence = ($validated['sequence'] === "1");
@@ -123,7 +141,7 @@ class TransferAssetController extends Controller
         try {
             DB::transaction(function () use ($validated, $assetIds, $approvalsToStore, $request) {
 
-                $assetsToTransfer = Asset::whereIn('id', $assetIds)->get();
+                $assetsToTransfer = Asset::whereIn('id', $assetIds)->get()->keyBy('id');
 
                 $transferAsset = TransferAsset::create([
                     'submit_date'           => $validated['submit_date'],
@@ -136,12 +154,15 @@ class TransferAssetController extends Controller
                     'company_id'            => $validated['company_id'],
                 ]);
 
-                foreach ($assetsToTransfer as $asset) {
-                    $transferAsset->detailTransfers()->create([
-                        'asset_id'              => $asset->id,
-                        'origin_loc_id'         => $asset->location_id,
-                        'destination_loc_id'    => $validated['destination_loc_id'],
-                    ]);
+                foreach ($assetIds as $assetId) {
+                    $asset = $assetsToTransfer->get($assetId);
+                    if ($asset) {
+                        $transferAsset->detailTransfers()->create([
+                            'asset_id'           => $asset->id,
+                            'origin_loc_id'      => $asset->location_id,
+                            'destination_loc_id' => $validated['destination_loc_id'],
+                        ]);
+                    }
                 }
 
                 if ($request->hasFile('attachments')) {
@@ -173,19 +194,35 @@ class TransferAssetController extends Controller
     public function edit(TransferAsset $transfer_asset)
     {
         Gate::authorize('is-form-maker');
+
+        $activeCompany = session('active_company_id');
         
-        $locations = Location::all();
-        $departments = Department::all();
+        $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
+                                       ->where('company_id', $activeCompany)
+                                       ->orderBy('name', 'asc')
+                                       ->get(['id', 'name']);
+        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
+                                     ->where('company_id', $activeCompany)
+                                     ->orderBy('name', 'asc')
+                                     ->get(['id', 'name']);
+        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
+                                       ->where('company_id', $activeCompany)
+                                       ->orderBy('name', 'asc')
+                                       ->get(['id', 'name']);
+
+        $departments = $departmentsForFilter;
+        $locations = $locationsForFilter;
+
         $users = User::join('company_users', 'users.id', '=', 'company_users.user_id')
-            ->where('company_users.company_id', session('active_company_id'))
+            ->where('company_users.company_id', $activeCompany)
             ->select('users.id', 'users.name', 'company_users.role as user_role')
             ->get();
 
         $transfer_asset->load('approvals.user', 'department', 'destinationLocation', 'detailTransfers');
 
-        $selectedAssetIds = $transfer_asset->detailTransfers->pluck('asset_id');
+        $assetIdsForJs = $transfer_asset->detailTransfers->pluck('asset_id');
 
-        return view('transfer-asset.edit', compact('transfer_asset', 'locations', 'departments', 'selectedAssetIds', 'users'));
+        return view('transfer-asset.edit', compact('transfer_asset', 'locations', 'departments', 'users', 'assetNamesForFilter', 'locationsForFilter', 'departmentsForFilter', 'assetIdsForJs', 'activeCompany'));
     }
 
     public function update(Request $request, TransferAsset $transfer_asset)
@@ -197,7 +234,8 @@ class TransferAssetController extends Controller
             'sequence'              => 'required',
 
             //Asset
-            'asset_ids'          => 'required|string',
+            'asset_ids'   => ['required', 'array', 'min:1', new AssetIsAvailable('transfer', $transfer_asset->id)],
+            'asset_ids.*' => 'required|integer|exists:assets,id',
 
             //Validasi Attachments
             'attachments.*' => 'nullable|file|mimes:pdf,jpg,png,xlsx|max:5120',
@@ -213,7 +251,7 @@ class TransferAssetController extends Controller
             'approvals.*.approval_date'     => 'nullable|date',
         ]);
 
-        $assetIds = explode(',', $validated['asset_ids']);
+        $assetIds = $validated['asset_ids'];
 
         try {
             DB::transaction(function () use ($validated, $request, $transfer_asset, $assetIds) {
@@ -225,13 +263,17 @@ class TransferAssetController extends Controller
                 ]);
 
                 $transfer_asset->detailTransfers()->delete();
-                $assetsToTransfer = Asset::whereIn('id', $assetIds)->get();
-                foreach ($assetsToTransfer as $asset) {
-                    $transfer_asset->detailTransfers()->create([
-                        'asset_id'              => $asset->id,
-                        'origin_loc_id'         => $asset->location_id,
-                        'destination_loc_id'    => $validated['destination_loc_id'],
-                    ]);
+                $assetsToTransfer = Asset::whereIn('id', $assetIds)->get()->keyBy('id');
+
+                foreach ($assetIds as $assetId) {
+                    $asset = $assetsToTransfer->get($assetId);
+                    if ($asset) {
+                        $transfer_asset->detailTransfers()->create([
+                            'asset_id'           => $asset->id,
+                            'origin_loc_id'      => $asset->location_id,
+                            'destination_loc_id' => $validated['destination_loc_id'],
+                        ]);
+                    }
                 }
 
                 if (!empty($validated['deleted_attachments'])) {

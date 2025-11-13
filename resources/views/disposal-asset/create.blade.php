@@ -656,9 +656,13 @@
     window.csrfToken = '{{ csrf_token() }}';
     window.oldPrices = @json(old('prices', [])); 
     window.activeCurrency = '{{ $activeCompany->currency ?? 'IDR' }}';
+    //Filtering
+    window.assetNamesForFilterData = @json($assetNamesForFilter ?? []);
+    window.locationsForFilterData = @json($locationsForFilter ?? []);
+    window.departmentsForFilterData = @json($departmentsForFilter ?? []);
 </script>
 
 @push('scripts')
-    @vite('resources/js/pages/disposalAssetCreate.js')
+    @vite('resources/js/pages/disposalAssetForm.js')
     @vite('resources/js/pages/alert.js')
 @endpush

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\DisposalAsset;
 use App\Models\Department;
 use App\Models\Location;
-use App\Models\AssetClass;
+use App\Models\AssetName;
 use App\Models\Asset;
 use App\Models\Attachment;
 use App\Models\User;
@@ -18,6 +18,7 @@ use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Gate;
+use App\Rules\AssetIsAvailable;
 
 class DisposalAssetController extends Controller
 {
@@ -43,7 +44,19 @@ class DisposalAssetController extends Controller
         Gate::authorize('is-form-maker');
 
         $departments = Department::all();
-        $assetclasses = AssetClass::all();
+        $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
+                                       ->where('company_id', session('active_company_id'))
+                                       ->orderBy('name', 'asc')
+                                       ->get(['id', 'name']);
+        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
+                                     ->where('company_id', session('active_company_id'))
+                                     ->orderBy('name', 'asc')
+                                     ->get(['id', 'name']);
+        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
+                                       ->where('company_id', session('active_company_id'))
+                                       ->orderBy('name', 'asc')
+                                       ->get(['id', 'name']);
+
         $users = User::join('company_users', 'users.id', '=', 'company_users.user_id')
             ->where('company_users.company_id', session('active_company_id'))
             ->select('users.id', 'users.name', 'company_users.role as user_role')
@@ -60,7 +73,7 @@ class DisposalAssetController extends Controller
         $formattedSeq = str_pad($seq, 5, '0', STR_PAD_LEFT);
         $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq ;
         
-        return view('disposal-asset.create', compact('departments', 'assetclasses', 'form_no', 'users'));
+        return view('disposal-asset.create', compact('departments', 'assetNamesForFilter', 'form_no', 'users', 'locationsForFilter', 'departmentsForFilter'));
     }
 
     public function store(Request $request)
@@ -78,7 +91,7 @@ class DisposalAssetController extends Controller
             'kurs'  => 'required',
 
             //Validasi Detail Asset
-            'prices'     => 'required|array|min:1',
+            'prices'     => ['required', 'array', 'min:1', new AssetIsAvailable],
             'prices.*'      => 'required|numeric',
 
             //Validasi Attachment
@@ -139,19 +152,18 @@ class DisposalAssetController extends Controller
                     if ($asset) { // Pastikan aset ada
                         // 8. Buat record 'detailDisposals'
                         $disposalAsset->detailDisposals()->create([
-                            'asset_id' => $assetId, // ID Aset
+                            'asset_id' => $assetId,
                             'kurs'     => $validated['kurs'],
-                            'njab'     => $price, // <-- PERBAIKAN: Gunakan '$price' dari array
+                            'njab'     => $price,
                         ]);
                     }
                 }
 
                 if ($request->hasFile('attachments')) {
                     foreach ($request->file('attachments') as $file) {
-                        // Simpan file ke storage/app/public/attachments
+
                         $filePath = $file->store('attachments', 'public');
                         
-                        // Buat record di tabel attachments
                         $disposalAsset->attachments()->create([
                             'file_path' => $filePath,
                             'original_filename' => $file->getClientOriginalName(),
@@ -206,7 +218,7 @@ class DisposalAssetController extends Controller
             'kurs'  => 'required',
 
             //Validasi Detail Asset
-            'prices'     => 'required|array|min:1',
+            'prices' => ['required', 'array', 'min:1', new AssetIsAvailable('disposal', $disposalAsset->id)],
             'prices.*'      => 'required|numeric',
 
             //Validasi Attachments
@@ -521,6 +533,9 @@ class DisposalAssetController extends Controller
     {
         $companyId = session('active_company_id');
 
+        $formToIgnoreId = $request->input('form_to_ignore_id');
+        $formType = $request->input('form_type');
+
         $query = Asset::withoutGlobalScope(CompanyScope::class)
                         ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
                         ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
@@ -532,6 +547,18 @@ class DisposalAssetController extends Controller
                         ->where('assets.status', '!=', 'Onboard')
                         ->where('assets.status', '!=', 'Disposal')
                         ->where('assets.company_id', $companyId)
+                        ->whereDoesntHave('detailDisposals.disposalAsset', function ($q) use ($formType, $formToIgnoreId) {
+                            $q->where('status', 'Waiting');
+                            if ($formType === 'disposal' && $formToIgnoreId) { 
+                                $q->where('id', '!=', $formToIgnoreId);
+                            }
+                        })
+                        ->whereDoesntHave('detailTransfers.transferAsset', function ($q) use ($formType, $formToIgnoreId) {
+                            $q->where('status', 'Waiting');
+                            if ($formType === 'transfer' && $formToIgnoreId) {
+                                $q->where('id', '!=', $formToIgnoreId);
+                            }
+                        })
                         ->select([
                             'assets.*',
                             'asset_names.name as asset_name_name',

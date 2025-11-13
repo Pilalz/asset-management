@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const activeCurrency = window.activeCurrency || 'IDR';
     const globalLocale = (activeCurrency === 'USD') ? 'en-US' : 'id-ID';
 
+    //Data for Filtering
+    const assetNamesData = window.assetNamesForFilterData || [];
+    const locationsData = window.locationsForFilterData || [];
+    const departmentsData = window.departmentsForFilterData || [];
+
     function formatCurrency(value, currencyCode = 'USD') {
         let locale = currencyCode === 'IDR' ? 'id-ID' : 'en-US';
         let number = parseFloat(value);
@@ -178,10 +183,51 @@ document.addEventListener('DOMContentLoaded', () => {
         $('#assetTable thead tr:eq(0) th').each(function(i) {
             var title = $(this).text().trim();
             var cell = $('#filter-row').children().eq(i);
-            if (i === 0) {
+            if (i === 0 || i === 1) {
                 return;
             }
-            $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            else if (i === 4) {
+                let options = assetNamesData.map(assetName =>
+                    `<option value="${assetName.name}">${assetName.name}</option>`
+                ).join('');
+                $(cell).html(
+                    `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option selected value="">Select Asset Name</option>
+                        ${options}
+                    </select>`
+                );
+            }
+            else if (i === 9) {
+                let options = locationsData.map(loc =>
+                    `<option value="${loc.name}">${loc.name}</option>` // Value pakai ID
+                ).join('');
+                $(cell).html(
+                    `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option selected value="">Select Location</option>
+                        ${options}
+                    </select>`
+                );
+            }
+            else if (i === 10) {
+                let options = departmentsData.map(dept =>
+                    `<option value="${dept.name}">${dept.name}</option>` // Value pakai ID
+                ).join('');
+                $(cell).html(
+                    `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option selected value="">Select Department</option>
+                        ${options}
+                    </select>`
+                );
+            }
+            else if (i === 11 || i === 14 || i === 15 || i === 16 || i === 17 || i === 18 || i === 19 || i === 20) {
+                $(cell).html('<input type="number" min="1" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            }
+            else if (i === 12 || i === 13) {
+                $(cell).html('<input type="date" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            }
+            else {
+                $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            }
         });
 
         const table = $('#assetTable').DataTable({
@@ -241,6 +287,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     });
                     input.on('click', function(e) {
+                        e.stopPropagation();
+                    });
+
+                    var select = $('select', cell);
+                    select.on('change', function(e) {
+                        e.stopPropagation();
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                    select.on('click', function(e) {
                         e.stopPropagation();
                     });
                 });
