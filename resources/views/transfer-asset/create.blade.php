@@ -14,6 +14,11 @@
                 background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */
             }
 
+            /* Matiin Outline */
+            #assetTable thead tr th:hover {
+                outline: none !important;
+            }
+
             /* Gaya untuk Dark Mode */
             .dark #assetTable tbody tr:hover {
                 background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */

@@ -13,7 +13,10 @@
                 background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
             }
 
-            
+            /* Matiin Outline */
+            #locationTable thead tr th:hover {
+                outline: none !important;
+            }
             
             /* Menghapus background bawaan dari kolom yang diurutkan */
             table.dataTable tbody tr > .sorting_1,

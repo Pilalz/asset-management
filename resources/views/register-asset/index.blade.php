@@ -4,13 +4,18 @@
     @push('styles')
         <style>
             /* Gaya untuk Light Mode */
-            #assetTable tbody tr:hover {
+            #registerAssetTable tbody tr:hover {
                 background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */
             }
 
             /* Gaya untuk Dark Mode */
-            .dark #assetTable tbody tr:hover {
+            .dark #registerAssetTable tbody tr:hover {
                 background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
+            }
+
+            /* Matiin Outline */
+            #registerAssetTable thead tr th:hover {
+                outline: none !important;
             }
 
             /* Menghapus background bawaan dari kolom yang diurutkan */
