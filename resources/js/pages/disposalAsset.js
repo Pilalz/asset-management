@@ -37,6 +37,9 @@ $(document).ready(function() {
                             '<option value="0">No</option>' +  
                         '</select>');
             }
+            else if (i === 7) {
+                $(cell).html('<input type="number" min="1" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+            }
             else if (i === 8) {
                 $(cell).html(
                         '<select class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">' +

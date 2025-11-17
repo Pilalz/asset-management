@@ -473,7 +473,7 @@ class TransferAssetController extends Controller
 
         $query = TransferAsset::withoutGlobalScope(CompanyScope::class)
                         ->with(['destinationLocation', 'department'])
-                        ->withCount('detailTransfers')
+                        ->withCount(['detailTransfers'])
                         ->where('company_id', $companyId);
 
         return DataTables::of($query)
@@ -504,6 +504,18 @@ class TransferAssetController extends Controller
                 $query->whereHas('department', function($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
+            })
+            ->filterColumn('detail_transfers_count', function ($query, $keyword) {
+                if ($keyword !== null && $keyword !== '') {
+                    $n = (int) $keyword;
+                    if ($n === 0) {
+                        $query->whereDoesntHave('detailTransfers');
+                    } else {
+                        $query->whereHas('detailTransfers', function ($q) {
+                            // no constraints
+                        }, '=', $n);
+                    }
+                }
             })
             ->orderColumn('destination_location_name', function ($query, $order) {
                 $query->orderBy(

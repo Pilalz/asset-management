@@ -515,7 +515,7 @@ class RegisterAssetController extends Controller
 
         $query = RegisterAsset::withoutGlobalScope(CompanyScope::class)
                         ->with(['department', 'location'])
-                        ->withCount('detailRegisters')
+                        ->withCount(['detailRegisters'])
                         ->where('company_id', $companyId);
 
         return DataTables::of($query)
@@ -544,9 +544,16 @@ class RegisterAssetController extends Controller
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
-            ->filterColumn('detail_registers_count', function($query, $keyword) {
-                if (!empty($keyword)) {
-                    $query->having('detailRegisters_count', '=', $keyword);
+            ->filterColumn('detail_registers_count', function ($query, $keyword) {
+                if ($keyword !== null && $keyword !== '') {
+                    $n = (int) $keyword;
+                    if ($n === 0) {
+                        $query->whereDoesntHave('detailRegisters');
+                    } else {
+                        $query->whereHas('detailRegisters', function ($q) {
+                            // no constraints
+                        }, '=', $n);
+                    }
                 }
             })
             ->orderColumn('department_name', function ($query, $order) {

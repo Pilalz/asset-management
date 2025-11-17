@@ -13,6 +13,28 @@ $(document).ready(function() {
             if (i === 0 || i === 8) {
                 return;
             }
+            else if (i === 2) {
+                let options = departmentsData.map(dept =>
+                    `<option value="${dept.name}">${dept.name}</option>` // Value pakai ID
+                ).join('');
+                $(cell).html(
+                    `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option selected value="">Select Department</option>
+                        ${options}
+                    </select>`
+                );
+            }
+            else if (i === 3) {
+                let options = locationsData.map(loc =>
+                    `<option value="${loc.name}">${loc.name}</option>` // Value pakai ID
+                ).join('');
+                $(cell).html(
+                    `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option selected value="">Select Location</option>
+                        ${options}
+                    </select>`
+                );
+            }
             else if (i === 4 || i === 5) {
                 $(cell).html(
                         '<select class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">' +
@@ -31,28 +53,6 @@ $(document).ready(function() {
                             '<option value="Approved">Approved</option>' +
                             '<option value="Waiting">Waiting</option>' +  
                         '</select>');
-            }
-            else if (i === 3) {
-                let options = locationsData.map(loc =>
-                    `<option value="${loc.name}">${loc.name}</option>` // Value pakai ID
-                ).join('');
-                $(cell).html(
-                    `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <option selected value="">Select Location</option>
-                        ${options}
-                    </select>`
-                );
-            }
-            else if (i === 2) {
-                let options = departmentsData.map(dept =>
-                    `<option value="${dept.name}">${dept.name}</option>` // Value pakai ID
-                ).join('');
-                $(cell).html(
-                    `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <option selected value="">Select Department</option>
-                        ${options}
-                    </select>`
-                );
             }
             else{
                 $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');

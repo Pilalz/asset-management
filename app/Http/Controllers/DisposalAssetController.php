@@ -448,7 +448,7 @@ class DisposalAssetController extends Controller
 
         $query = DisposalAsset::withoutGlobalScope(CompanyScope::class)
                         ->with(['department', 'company'])
-                        ->withCount('detailDisposals')
+                        ->withCount(['detailDisposals'])
                         ->where('company_id', $companyId);
 
         return DataTables::of($query)
@@ -474,6 +474,18 @@ class DisposalAssetController extends Controller
                 $query->whereHas('department', function($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
+            })
+            ->filterColumn('detail_disposals_count', function ($query, $keyword) {
+                if ($keyword !== null && $keyword !== '') {
+                    $n = (int) $keyword;
+                    if ($n === 0) {
+                        $query->whereDoesntHave('detailDisposals');
+                    } else {
+                        $query->whereHas('detailDisposals', function ($q) {
+                            // no constraints
+                        }, '=', $n);
+                    }
+                }
             })
             ->orderColumn('department_name', function ($query, $order) {
                 $query->orderBy(
