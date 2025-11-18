@@ -64,6 +64,20 @@
             max-height: 40px; 
             height: 40px;
         }
+
+        .container2 table tr th{
+            background: #dedede;
+            border: 0;
+            border-bottom: 1px solid black;
+        }
+        .container2 table tr td {
+            border: 0;
+        }
+        .footer-sum {
+            background: #dedede;
+            border: 0;
+            border-top: 1px solid black;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +114,6 @@
                 <tr>
                     <td>No. Formulir Pengajuan <i>(Submmision Form No.)</i></td>
                     <td>: {{ $disposal_asset->form_no }}</td>
-                    <td class="rightText">Company Code // YYYY // MM // Sequential No</td>
                 </tr>
                 <tr>
                     <td>Department Pemilik <i>(Department)</i></td>
@@ -215,29 +228,42 @@
         <table>
             <thead>
                 <tr>
-                    <th>No.</th>
-                    <th>Nomor Asset <br> <i>(Asset No.)</i></th>
-                    <th>Nama Asset <br> <i>(Asset Name)</i></th>
-                    <th>No. Unit <br> <i>(Unit No.)</i></th>
-                    <th>No. Mesin <br> <i>(Machine No.)</i></th>
-                    <th>Tahun Produksi <br> <i>(Manufacturing Date)</i></th>
-                    <th>Tahun Pembelian <br> <i>(Year Of Purchase)</i></th>
-                    <th>Lokasi Unit <br> <i>(Unit Location)</i></th>
+                    <th>Row Labels</th>
+                    <th>Sum of Qty</th>
+                    @if($activeCompany->currency === 'USD')
+                        <th>Sum of NJAB (USD)</th>
+                        <th>Sum of NJAB (IDR)</th>
+                    @elseif($activeCompany->currency === 'IDR')
+                        <th>Sum of NJAB (IDR)</th>
+                        <th>Sum of NJAB (USD)</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
                 @foreach($disposal_asset->detailDisposals as $detail)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $detail->asset?->asset_number ?? "-" }}</td>
-                    <td>{{ $detail->asset?->assetName?->name ?? "-" }}</td>                    
-                    <td>{{ $detail->asset?->unit_no ?? "-" }}</td>
-                    <td>{{ $detail->asset?->sn_engine ?? "-" }}</td>
-                    <td>{{ $detail->asset?->production_year ? \Carbon\Carbon::parse($detail->asset->production_year)->translatedFormat('Y') : "-" }}</td>
-                    <td>{{ $detail->asset?->capitalized_date ? \Carbon\Carbon::parse($detail->asset->capitalized_date)->translatedFormat('d F Y') : "-" }}</td>
-                    <td>{{ $detail->asset?->location?->name ?? "-" }}</td>
+                    <td>{{ $detail->asset?->description ?? "-" }}</td>
+                    <td>{{ $detail->asset?->quantity ?? "-" }}</td>     
+                    @if($activeCompany->currency === 'USD')
+                        <td class="px-2 py-4">$ {{ number_format($detail->njab, 0, '.', ',') }}</td>
+                        <td class="px-2 py-4">Rp {{ number_format(($detail->kurs * $detail->njab), 0, ',', '.') }}</td>
+                    @elseif($activeCompany->currency === 'IDR')
+                        <td class="px-2 py-4">Rp {{ number_format($detail->njab, 0, ',', '.') }}</td>
+                        <td class="px-2 py-4">$ {{ number_format(($detail->njab / $detail->kurs), 0, '.', ',') }}</td>
+                    @endif
                 </tr>
                 @endforeach
+                <tr class="footer-sum">
+                    <td><b>Grand Total</b></td>
+                    <td><b>{{ $sumQuantity }}</b></td>
+                    @if($activeCompany->currency === 'USD')
+                        <td class="px-2 py-4"><b>$ {{ number_format($totalNjabUsd, 0, '.', ',') }}</b></td>
+                        <td class="px-2 py-4"><b>Rp {{ number_format($totalNjabIdr, 0, ',', '.') }}</b></td>
+                    @elseif($activeCompany->currency === 'IDR')
+                        <td class="px-2 py-4"><b>Rp {{ number_format($totalNjabIdr, 0, ',', '.') }}</b></td>
+                        <td class="px-2 py-4"><b>$ {{ number_format($totalNjabUsd, 0, '.', ',') }}</b></td>
+                    @endif
+                </tr>
             </tbody>
         </table>
     </div>

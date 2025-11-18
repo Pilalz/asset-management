@@ -10,6 +10,7 @@ use App\Models\AssetName;
 use App\Models\Asset;
 use App\Models\Attachment;
 use App\Models\User;
+use App\Models\Company;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -648,7 +649,42 @@ class DisposalAssetController extends Controller
             'company'
         );
 
-        $pdf = Pdf::loadView('disposal-asset.pdf', ['disposal_asset' => $disposal_asset]);
+        $sumQuantity = $disposal_asset->detailDisposals->sum(function($detail) {
+            return $detail->asset?->quantity ?? 0;
+        });
+
+        $totalNjabPrimary = $disposal_asset->detailDisposals->sum('njab');
+
+        $totalNjabUsd = 0;
+        $totalNjabIdr = 0;
+
+        $activeCompany = Company::find(session('active_company_id'));
+
+        if($activeCompany->currency === 'USD') {
+            $totalNjabUsd = $totalNjabPrimary;
+            // Hitung total konversi ke IDR
+            $totalNjabIdr = $disposal_asset->detailDisposals->sum(function($detail) {
+                return ($detail->kurs ?? 0) * ($detail->njab ?? 0);
+            });
+        } elseif ($activeCompany->currency === 'IDR') {
+            $totalNjabIdr = $totalNjabPrimary;
+            // Hitung total konversi ke USD
+            $totalNjabUsd = $disposal_asset->detailDisposals->sum(function($detail) {
+                // Hindari pembagian dengan nol
+                if ($detail->kurs && $detail->kurs != 0) {
+                    return ($detail->njab ?? 0) / $detail->kurs;
+                }
+                return 0;
+            });
+            $totalNjabUsd = round($totalNjabUsd);
+        }
+
+        $pdf = Pdf::loadView('disposal-asset.pdf', [
+            'disposal_asset'    => $disposal_asset,
+            'sumQuantity'       => $sumQuantity,
+            'totalNjabUsd'      => $totalNjabUsd,
+            'totalNjabIdr'      => $totalNjabIdr
+        ]);
 
         $pdf->setPaper('a4', 'portrait');
 
