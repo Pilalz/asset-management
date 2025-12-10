@@ -62,7 +62,7 @@ class RunBulkDepreciation implements ShouldQueue
         $assetsLockKey = "lock_assets_not_depreciated_{$this->companyId}_{$lmYear}-{$lmMonth}";
 
         $this->assetsNotDepLock = Cache::lock($assetsLockKey, 600);
-        if (! $this->assetsNotDepLock->get()) {
+        if (! $this->assetsNotDepLock->block(2)) {
             Log::warning("Warning: could not acquire assets-not-depreciated lock ({$assetsLockKey}) for company {$this->companyId}.");
         }
 

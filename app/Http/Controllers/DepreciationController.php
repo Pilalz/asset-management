@@ -262,16 +262,23 @@ class DepreciationController extends Controller
         $companyId = session('active_company_id');
         $jobId = 'depreciation_status_' . $companyId;
 
-        // Cek jika job sudah berjalan
-        $status = Cache::get($jobId);
-        if ($status && $status['status'] === 'running') {
-            return response()->json(['message' => 'Proses depresiasi sudah berjalan.'], 409); // 409 Conflict
+        $jobStatus = Cache::get($jobId);
+
+        if ($jobStatus && in_array($jobStatus['status'], ['queued', 'running'])) {
+            return response()->json([
+                'message' => 'Proses depresiasi sedang berjalan atau dalam antrian.'
+            ], 409);
         }
 
-        // Kirim tugas ke antrian
+        Cache::put($jobId, [
+            'status' => 'queued', 
+            'progress' => 0, 
+            'message' => 'Menunggu antrian worker...'
+        ], now()->addMinutes(5));
+
         RunBulkDepreciation::dispatch($companyId);
 
-        return response()->json(['message' => 'Proses depresiasi massal telah dimulai.']);
+        return response()->json(['message' => 'Permintaan depresiasi telah masuk antrian.']);
     }
 
     public function getStatus()
