@@ -21,8 +21,9 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            InsuranceSeeder::class,
+            // InsuranceSeeder::class,
             // MasterSeeder::class,
+            AssetDepreTestSeeder::class,
             // AssetSeeder::class,
         ]);
     }

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Cache;
 
 class CompanyController extends Controller
 {
@@ -103,6 +104,9 @@ class CompanyController extends Controller
         }
 
         $company->update($validatedData);
+
+        $cacheKey = 'company_' . $company->id;
+        Cache::forget($cacheKey);
 
         return redirect()->route('company.index')->with('success', 'Data berhasil diperbarui!');
     }

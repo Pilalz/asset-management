@@ -40,7 +40,7 @@ return new class extends Migration
             $table->integer('fiscal_useful_life_month');
             $table->decimal('fiscal_accum_depre', 18, 0);
             $table->decimal('fiscal_nbv', 18, 0);
-            $table->longText('remaks');
+            $table->longText('remaks')->nullable();
             $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });

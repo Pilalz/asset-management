@@ -136,13 +136,11 @@
             <div class="overflow-x-auto">
                 <table id="depreciationTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-50">
                     <thead class="text-xs text-gray-700 dark:text-gray-50 uppercase">
-                        {{-- Baris Header Pertama --}}
                         <tr>
                             <th rowspan="2" class="px-2 py-3 border bg-gray-50 dark:bg-gray-700 sticky left-0">No</th>
                             <th rowspan="2" class="px-6 py-3 border bg-gray-50 dark:bg-gray-700 sticky left-9">Asset Name</th>
                             <th rowspan="2" class="px-6 py-3 border bg-gray-50 dark:bg-gray-700">Asset Number</th>
                             
-                            {{-- Loop untuk membuat header bulan --}}
                             @foreach($months as $monthName)
                                 @php
                                     $bgColorClass = $loop->iteration % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800';
@@ -150,7 +148,7 @@
                                 <th colspan="3" class="text-center px-6 py-3 border {{ $bgColorClass }}">{{ $monthName }}</th>
                             @endforeach
                         </tr>
-                        {{-- Baris Header Kedua --}}
+                        
                         <tr>
                             @foreach($months as $monthName)
                                 @php

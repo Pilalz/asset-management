@@ -34,36 +34,43 @@ class AssetController extends Controller
         $endOfMonthDay = $lastMonth->endOfMonth()->day;
 
         $cacheKey = 'assets_not_depreciated_' . $companyId . '_' . $year . '-' . $month;
+        $lockKey = "lock_assets_not_depreciated_{$companyId}_{$year}-{$month}";
+        $lock = Cache::lock($lockKey, 5); // lock 5 seconds max
 
-        $assetsNotDepreciated = Cache::remember(
-            $cacheKey,
-            now()->addHour(), // Simpan hasil query selama 1 jam
-            function () use ($companyId, $year, $month, $endOfMonthDay, $lastMonth) {
-                return Asset::query()
-                    ->where('asset_type', 'FA')
-                    ->where('assets.status', '!=', 'Sold')
-                    ->where('assets.status', '!=', 'Onboard')
-                    ->where('assets.status', '!=', 'Disposal')
-                    ->where('commercial_nbv', '>', 0)
-                    ->where('start_depre_date', '<=', $lastMonth->endOfMonth())
-                    ->where('company_id', $companyId)
-                    // Aset ini BELUM memiliki catatan depresiasi untuk bulan ini ===
-                    ->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
-                        $query->where('type', 'commercial')
-                            ->whereYear('depre_date', $year)
-                            ->whereMonth('depre_date', $month)
-                            ->whereDay('depre_date', $endOfMonthDay);
-                    })
-                    // (Anda mungkin hanya perlu cek salah satu, commercial atau fiscal)
-                    ->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
-                        $query->where('type', 'fiscal')
-                            ->whereYear('depre_date', $year)
-                            ->whereMonth('depre_date', $month)
-                            ->whereDay('depre_date', $endOfMonthDay);
-                    })
-                    ->get();
+        if ($lock->get()) {
+            try {
+                // SAFE: Job is not running → perform DB query + refresh cache
+                $assetsNotDepreciated = Cache::remember(
+                    $cacheKey,
+                    now()->addHour(),
+                    function () use ($companyId, $year, $month, $endOfMonthDay, $lastMonth) {
+                        return Asset::query()
+                            ->where('asset_type', 'FA')
+                            ->whereNotIn('assets.status', ['Sold', 'Onboard', 'Disposal'])
+                            ->where('commercial_nbv', '>', 0)
+                            ->where('start_depre_date', '<=', $lastMonth->endOfMonth())
+                            ->where('company_id', $companyId)
+                            ->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
+                                $query->where('type', 'commercial')
+                                    ->whereYear('depre_date', $year)
+                                    ->whereMonth('depre_date', $month)
+                                    ->whereDay('depre_date', $endOfMonthDay);
+                            })
+                            ->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
+                                $query->where('type', 'fiscal')
+                                    ->whereYear('depre_date', $year)
+                                    ->whereMonth('depre_date', $month)
+                                    ->whereDay('depre_date', $endOfMonthDay);
+                            })
+                            ->get();
+                    }
+                );
+            } finally {
+                $lock->release();
             }
-        );   
+        } else {
+            $assetsNotDepreciated = Cache::get($cacheKeyData, collect());
+        } 
 
         $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
                                      ->where('company_id', $companyId)

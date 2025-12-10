@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('logo')->nullable();
             $table->text('address')->nullable();
             $table->string('phone')->nullable();
-            $table->string('tax')->nullable();
+            $table->string('fax')->nullable();
             $table->string('currency')->default('IDR');
             $table->foreignId('owner_id')->constrained('users');
             $table->timestamps();

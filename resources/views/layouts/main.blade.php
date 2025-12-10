@@ -143,11 +143,12 @@
                         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm border border-gray-200 dark:bg-gray-700 dark:border-gray-600" id="dropdown-shortcut">
                             <ul class="py-1" role="none">
                                 <li>
+                                    <a href="{{ route('cache-clear') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Clear Cache</a>
                                     @can('is-dev')
                                         <a href="{{ route('company.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Create Company</a>
                                     @endcan
-                                    <a href="{{ route('register-asset.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Add Register Form</a>
                                     <a href="{{ route('company-user.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Add Company User</a>
+
                                 </li>
                             </ul>
                         </div>

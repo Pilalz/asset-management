@@ -14,6 +14,9 @@ use App\Exports\AssetNamesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Spatie\SimpleExcel\SimpleExcelReader;
+use Illuminate\Support\Facades\Cache;
+use App\Jobs\ImportCompleteJob;
 
 class AssetNameController extends Controller
 {
@@ -114,16 +117,52 @@ class AssetNameController extends Controller
     public function importExcel(Request $request)
     {
         $request->validate([
-            'excel_file' => 'required|mimes:xlsx,xls|max:5120',
+            'excel_file' => 'required|mimes:xlsx,xls|max:10240',
         ]);
 
-        try {
-            Excel::import(new AssetNamesImport, $request->file('excel_file'));
-        } catch (\Exception $e) {
-            return redirect()->route('asset-name.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+        $companyId = session('active_company_id');
+        $jobId = 'import_asset_names_' . $companyId . '_' . time();
+
+        if ($request->hasFile('excel_file')) {
+            $file = $request->file('excel_file');
+        
+            $fileNameOnly = time() . '_' . $file->getClientOriginalName();
+
+            $path = $file->storeAs('imports', $fileNameOnly, 'local'); 
+
+            if (!$path) {
+                return response()->json(['message' => 'Gagal menyimpan file.'], 500);
+            }
+
+            $fullPath = storage_path('app/private/' . $path);
+            
+            $totalRows = 1000;
+
+            Cache::put($jobId, ['status' => 'running', 'progress' => 0, 'processed_rows' => 0], now()->addHour());
+
+            Excel::queueImport(new AssetNamesImport($companyId, $jobId, $totalRows), $fullPath)
+                ->chain([
+                    new ImportCompleteJob($jobId)
+                ]);
+
+            return response()->json([
+                'message' => 'Import sedang berjalan.',
+                'job_id' => $jobId
+            ]);
+        }
+    }
+
+    public function checkImportStatus($jobId)
+    {
+        // Ambil data dari Cache
+        $status = Cache::get($jobId);
+
+        if (!$status) {
+            // Jika cache hilang/expired, anggap selesai atau error
+            return response()->json(['status' => 'completed', 'progress' => 100]);
         }
 
-        return redirect()->route('asset-name.index')->with('success', 'Data aset berhasil diimpor!');
+        return response()->json($status);
     }
 
     public function exportExcel()

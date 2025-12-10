@@ -154,11 +154,11 @@
                         </div>
                         <!-- Modal body -->
                         <div class="p-4 md:p-5">
-                            <form action="{{ route('asset-name.import') }}" method="POST" enctype="multipart/form-data">
+                            <form id="importForm" action="{{ route('asset-name.import') }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-4">
                                     <label for="excel_file" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Upload Excel File (.xlsx, .xls)</label>
-                                    <input type="file" name="excel_file" id="excel_file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" required>
+                                    <input type="file" name="excel_file" id="excel_file" accept=".xlsx, .xls" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" required>
                                 </div>   
                                 <div class="mb-4">
                                     <p class="text-sm text-gray-600 dark:text-gray-400">
@@ -166,10 +166,17 @@
                                     </p>
                                     <a href="{{ asset('template/TemplateAssetName.xlsx') }}" class="text-blue-600 hover:underline dark:text-blue-500">Download Template Excel</a>
                                 </div>
-                                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5">
+                                <button type="submit" id="btnSubmit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5">
                                     Import Data
                                 </button>
+                                <div id="importError" class="text-red-500 text-sm mt-2 hidden"></div>
                             </form>
+                            
+                            <div id="progressContainer" class="hidden w-full bg-gray-200 rounded-full h-4 mb-4 mt-2 dark:bg-gray-700">
+                                <div id="progressBar" class="bg-blue-600 h-4 rounded-full text-xs font-medium text-blue-100 text-center p-0.5 leading-none" style="width: 0%"> 0%</div>
+                            </div>
+
+                            <p id="statusMessage" class="text-sm text-gray-600 dark:text-gray-300 hidden"></p>
                         </div>
                     </div>
                 </div>

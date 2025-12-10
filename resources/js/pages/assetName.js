@@ -122,4 +122,97 @@ $(document).ready(function() {
             }
         });
     });
+
+    $('#importForm').on('submit', function(e) {
+        e.preventDefault(); // Mencegah submit form biasa
+
+        let formData = new FormData(this);
+        let $btn = $('#btnSubmit');
+        let $error = $('#importError');
+        let $progressContainer = $('#progressContainer');
+        let $progressBar = $('#progressBar');
+        let $statusMessage = $('#statusMessage');
+        let formAction = $(this).attr('action');
+
+        // Reset UI
+        $btn.prop('disabled', true).text('Uploading...');
+        $error.addClass('hidden').text('');
+        $progressContainer.removeClass('hidden');
+        $progressBar.css('width', '0%').text('0%');
+        $statusMessage.removeClass('hidden').text('Mengunggah file...');
+
+        // 1. AJAX Upload
+        $.ajax({
+            url: formAction,
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $btn.text('Processing...');
+                $statusMessage.text(response.message);
+                
+                // 2. Mulai Polling Status
+                if (response.job_id) {
+                    trackProgress(response.job_id);
+                }
+            },
+            error: function(xhr) {
+                // Error Validasi / Upload
+                $btn.prop('disabled', false).text('Import Excel');
+                $progressContainer.addClass('hidden');
+                $statusMessage.addClass('hidden');
+                
+                let msg = 'Terjadi kesalahan.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message; // Pesan error Laravel
+                }
+                $error.removeClass('hidden').text(msg);
+            }
+        });
+    });
+
+    // Fungsi Polling (Cek Status Setiap 1 Detik)
+    function trackProgress(jobId) {
+        let $progressBar = $('#progressBar');
+        let $statusMessage = $('#statusMessage');
+        let $btn = $('#btnSubmit');
+
+        let interval = setInterval(function() {
+            $.ajax({
+                url: "/api/import-status/" + jobId, // Panggil route baru tadi
+                type: "GET",
+                success: function(data) {
+                    // Update Progress Bar
+                    let percent = data.progress || 0;
+                    $progressBar.css('width', percent + '%').text(percent + '%');
+
+                    // Cek Status
+                    if (data.status === 'completed') {
+                        clearInterval(interval);
+                        $progressBar.removeClass('bg-blue-600').addClass('bg-green-600');
+                        $statusMessage.text('Import Selesai! Merefresh halaman...');
+                        $btn.text('Selesai');
+                        
+                        // Reload halaman setelah 1 detik
+                        setTimeout(() => window.location.reload(), 1000);
+
+                    } else if (data.status === 'failed') {
+                        clearInterval(interval);
+                        $progressBar.removeClass('bg-blue-600').addClass('bg-red-600');
+                        $statusMessage.text('Gagal: ' + (data.error || 'Unknown error'));
+                        $btn.prop('disabled', false).text('Import Excel');
+                    } else {
+                        // Masih running
+                        $statusMessage.text('Memproses data... (' + (data.processed_rows || 0) + ' baris)');
+                    }
+                },
+                error: function() {
+                    // Jika gagal cek status (misal koneksi putus), hentikan
+                    clearInterval(interval);
+                    $statusMessage.text('Gagal mengambil status import.');
+                }
+            });
+        }, 1000); // Cek setiap 1000ms (1 detik)
+    }
 });

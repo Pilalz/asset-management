@@ -73,6 +73,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/profile', 'destroy')->name('destroy');
     });
 
+    // Hapus Cache
+    Route::get('/cache-clear', function() {
+        Artisan::call('cache:clear');
+        return back()->with('success', 'System Cache, Config, & View Cleared!');
+    })->name('cache-clear');
+
     // --- User Onboarding ---
     // Routes for new users to create their first company.
     Route::controller(UserController::class)->prefix('onboard')->name('onboard.')->group(function () {
@@ -124,6 +130,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //Start Profile
     Route::put('/profile/signature', [ProfileController::class, 'updateSignature'])->name('profile.updateSignature');
 
+    // --- Import Data ---
+    Route::post('/asset-class/import', [AssetClassController::class, 'importExcel'])->name('asset-class.import');
+    Route::post('/asset-sub-class/import', [AssetSubClassController::class, 'importExcel'])->name('asset-sub-class.import');
+    Route::post('/asset-name/import', [AssetNameController::class, 'importExcel'])->name('asset-name.import');
+    Route::post('/asset/import', [AssetController::class, 'importExcel'])->name('asset.import');
+    Route::post('/assetLVA/import', [AssetLowValueController::class, 'importExcel'])->name('assetLVA.import');
+    Route::post('/location/import', [LocationController::class, 'importExcel'])->name('location.import');
+    Route::post('/department/import', [DepartmentController::class, 'importExcel'])->name('department.import');
+
+    //Start SSE
+    Route::get('api/import-status/{jobId}', [AssetNameController::class, 'checkImportStatus'])->name('api.import-status');
+
     // --- Core Application Resources ---
     Route::resource('asset-class', AssetClassController::class);
     Route::resource('asset-sub-class', AssetSubClassController::class);
@@ -141,15 +159,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('company', CompanyController::class);
     Route::resource('insurance', InsuranceController::class);
     Route::resource('history', HistoryController::class);
-
-    // --- Import Data ---
-    Route::post('/asset-class/import', [AssetClassController::class, 'importExcel'])->name('asset-class.import');
-    Route::post('/asset-sub-class/import', [AssetSubClassController::class, 'importExcel'])->name('asset-sub-class.import');
-    Route::post('/asset-name/import', [AssetNameController::class, 'importExcel'])->name('asset-name.import');
-    Route::post('/asset/import', [AssetController::class, 'importExcel'])->name('asset.import');
-    Route::post('/assetLVA/import', [AssetLowValueController::class, 'importExcel'])->name('assetLVA.import');
-    Route::post('/location/import', [LocationController::class, 'importExcel'])->name('location.import');
-    Route::post('/department/import', [DepartmentController::class, 'importExcel'])->name('department.import');
 
     // --- API Data Datatables ---
     Route::get('api/asset', [AssetController::class, 'datatables'])->name('api.asset');
@@ -172,5 +181,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('api/disposal-asset-find', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset-find');
     Route::get('api/users/search', [CompanyUserController::class, 'search'])->name('api.users.search');
-    Route::post('/api/get-assets-by-ids', [DisposalAssetController::class, 'getAssetsByIds'])->name('api.get-assets-by-ids');
+    Route::post('api/get-assets-by-ids', [DisposalAssetController::class, 'getAssetsByIds'])->name('api.get-assets-by-ids');
 });

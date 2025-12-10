@@ -84,6 +84,7 @@ class AssetsImport implements ToModel, WithStartRow, WithValidation
             'company_id'                    => session('active_company_id'),
             'status'                        => 'Active',
             'asset_type'                    => 'FA',
+            'remaks'                        => null,
         ]);
     }
 

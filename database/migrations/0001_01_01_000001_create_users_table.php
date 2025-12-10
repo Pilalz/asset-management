@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->text('signature')->nullable();
             $table->string('avatar')->nullable();
+            $table->string('akses')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -198,6 +198,15 @@ class DepreciationController extends Controller
         
         $ttl = 3600; 
 
+        $listKey = "depreciation_data_keys_{$companyId}";
+        $existing = Cache::get($listKey, []);
+
+        // Hanya tambahkan jika key belum tercatat
+        if (!in_array($cacheKey, $existing)) {
+            $existing[] = $cacheKey;
+            Cache::put($listKey, $existing, 3600 * 24); // simpan 1 hari
+        }
+
         return Cache::remember($cacheKey, $ttl, function() use ($year, $type, $companyId) {
             
             $startDate = Carbon::create($year, 1, 1)->startOfMonth();

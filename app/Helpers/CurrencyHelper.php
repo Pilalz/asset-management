@@ -11,11 +11,9 @@ if (!function_exists('format_currency')) {
      */
     function format_currency($amount)
     {
-        // Ambil ID perusahaan yang aktif dari sesi
         $activeCompanyId = session('active_company_id');
 
         if (!$activeCompanyId) {
-            // Default ke IDR jika tidak ada perusahaan aktif
             return 'Rp ' . number_format($amount, 0, ',', '.');
         }
 
@@ -33,6 +31,7 @@ if (!function_exists('format_currency')) {
             $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 0);
         }
         elseif ($currencyCode === 'USD') {
+            $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
             $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 0);
         }
         

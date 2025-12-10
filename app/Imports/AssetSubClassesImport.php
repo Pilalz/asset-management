@@ -8,7 +8,6 @@ use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Illuminate\Support\Facades\Cache;
 
 class AssetSubClassesImport implements ToModel, WithStartRow, WithValidation
 {

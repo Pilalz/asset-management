@@ -130,29 +130,16 @@
 
                 <div>
                     <table class="text-sm text-gray-900 dark:text-white">
-                        @if($activeCompany->currency === 'USD')
-                            <tr>
-                                <td class="font-medium">Nilai Buku</td>
-                                <td class="px-2">:</td>
-                                <td>$ {{ number_format($disposal_asset->nbv, 0, '.', ',') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="font-medium">Nilai Jual Estimasi</td>
-                                <td class="px-2">:</td>
-                                <td>$ {{ number_format($disposal_asset->esp, 0, '.', ',') }}</td>
-                            </tr>
-                        @elseif($activeCompany->currency === 'IDR')
-                            <tr>
-                                <td class="font-medium">Nilai Buku</td>
-                                <td class="px-2">:</td>
-                                <td>Rp {{ number_format($disposal_asset->nbv, 0, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="font-medium">Nilai Jual Estimasi</td>
-                                <td class="px-2">:</td>
-                                <td>Rp {{ number_format($disposal_asset->esp, 0, ',', '.') }}</td>
-                            </tr>
-                        @endif
+                        <tr>
+                            <td class="font-medium">Nilai Buku</td>
+                            <td class="px-2">:</td>
+                            <td>{{ format_currency($disposal_asset->nbv) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">Nilai Jual Estimasi</td>
+                            <td class="px-2">:</td>
+                            <td>{{ format_currency($disposal_asset->esp) }}</td>
+                        </tr>
                     </table>
                 </div>
             </div>

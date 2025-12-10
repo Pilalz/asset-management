@@ -135,7 +135,7 @@
 
             <div class="overflow-x-auto">
                 <table id="depreciationTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-50">
-                    <thead class="text-xs text-gray-700 dark:text-gray-50 uppercase">
+                    <thead class="text-xs text-gray-700 dark:text-gray-50 text-center uppercase">
                         <tr>
                             <th rowspan="2" class="px-2 py-3 border bg-gray-50 dark:bg-gray-700 sticky left-0">No</th>
                             <th rowspan="2" class="px-6 py-3 border bg-gray-50 dark:bg-gray-700 sticky left-9">Asset Number</th>
@@ -173,9 +173,9 @@
 
                                     @if (isset($data['schedule'][$monthKey]))
                                         @php $schedule = $data['schedule'][$monthKey]; @endphp
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->monthly_depre) }}</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->accumulated_depre) }}</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->book_value) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center min-w-[160px] group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->monthly_depre) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center min-w-[160px] group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->accumulated_depre) }}</td>
+                                        <td class="border border-gray-100 px-2 text-center min-w-[160px] group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->book_value) }}</td>
                                     @else
                                         <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
                                         <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
