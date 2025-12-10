@@ -47,7 +47,7 @@ class RunBulkDepreciation implements ShouldQueue
     public function handle(): void
     {
         $mainLockKey = 'running-depreciation-process:' . $this->companyId;
-        $this->mainLock = Cache::lock($mainLockKey, 600);
+        $this->mainLock = Cache::lock($mainLockKey, 1200);
 
         if (! $this->mainLock->block(2)) { // Tunggu 2 detik, kalau masih dikunci, release job
             Log::warning("Could not acquire lock for Company ID: {$this->companyId}; releasing job to retry later.");
