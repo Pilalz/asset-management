@@ -112,7 +112,7 @@ class RunBulkDepreciation implements ShouldQueue
                                 ->first();
                             
                             $startDate = $lastDepreciation 
-                                ? Carbon::parse($lastDepreciation->depre_date)->addMonth()->startOfMonth() 
+                                ? Carbon::parse($lastDepreciation->depre_date)->addMonthNoOverflow()->startOfMonth() 
                                 : Carbon::parse($asset->start_depre_date)->startOfMonth();
                             
                             $cutoff = now();
