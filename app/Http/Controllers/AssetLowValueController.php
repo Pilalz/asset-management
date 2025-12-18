@@ -29,6 +29,71 @@ class AssetLowValueController extends Controller
         return view('asset.low-value.show', ['asset' => $assetLVA]);
     }
 
+    public function create()
+    {
+        Gate::authorize('is-admin'); 
+
+        $locations = Location::all();
+        $departments = Department::all();
+        $assetclasses = AssetClass::all();
+        
+        $activeCompany = Company::find(session('active_company_id'));
+
+        return view('asset.low-value.create', compact('locations', 'departments', 'assetclasses', 'activeCompany'));
+    }
+
+    public function store(Request $request)
+    {
+        $companyId = session('active_company_id');
+
+        $validatedData = $request->validate([
+            'asset_number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('assets')->where('company_id', $companyId)
+            ],
+            'asset_name_id'    => 'required|exists:asset_names,id',
+            'description'      => 'required|string|max:255',
+            'detail'           => 'nullable|string|max:255',
+            'pareto'           => 'nullable|string|max:255',
+            'unit_no'          => 'nullable|string|max:255',
+            'user'             => 'nullable|string|max:255',
+            'sn_chassis'       => 'nullable|string|max:255',
+            'sn_engine'        => 'nullable|string|max:255',
+            'sn'               => 'nullable|string|max:255',
+            'production_year'  => 'nullable|string|max:255',
+            'po_no'            => 'required|string|max:255',
+            'location_id'      => 'required|exists:locations,id',
+            'department_id'    => 'required|exists:departments,id',
+            'quantity'         => 'required|integer|min:1',
+            
+            'status'           => 'required|string', 
+            'capitalized_date' => 'required|date',
+            
+            'acquisition_value' => 'required',
+            'current_cost'      => 'required',
+            'commercial_nbv'    => 'required',
+            'fiscal_nbv'        => 'required',
+            'remaks'            => 'nullable|string'
+        ]);
+
+        $validatedData['company_id'] = $companyId;
+        
+        $validatedData['asset_type'] = 'LVA'; 
+
+        $validatedData['commercial_useful_life_month'] = 0;
+        $validatedData['fiscal_useful_life_month']     = 0;
+        $validatedData['commercial_accum_depre']       = 0;
+        $validatedData['fiscal_accum_depre']           = 0;
+        
+        $validatedData['start_depre_date'] = $validatedData['capitalized_date'];
+
+        Asset::create($validatedData);
+
+        return redirect()->route('assetLVA.index')->with('success', 'Low Value Asset berhasil dibuat!');
+    }
+
     public function edit(Asset $assetLVA)
     {      
         Gate::authorize('is-admin');
