@@ -32,18 +32,13 @@ class RunBulkDepreciation implements ShouldQueue
 
     protected $assetsNotDepLock = null;
     protected $mainLock = null;
-    /**
-     * Create a new job instance.
-     */
+
     public function __construct($companyId)
     {
         $this->companyId = $companyId;
         $this->jobId = 'depreciation_status_' . $this->companyId;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
         $mainLockKey = 'running-depreciation-process:' . $this->companyId;
@@ -58,7 +53,6 @@ class RunBulkDepreciation implements ShouldQueue
         $lastMonth = Carbon::now()->subMonthNoOverflow();
         $lmYear = $lastMonth->year;
         $lmMonth = $lastMonth->month;
-        $assetsCacheKey = "assets_not_depreciated_{$this->companyId}_{$lmYear}-{$lmMonth}";
         $assetsLockKey = "lock_assets_not_depreciated_{$this->companyId}_{$lmYear}-{$lmMonth}";
 
         $this->assetsNotDepLock = Cache::lock($assetsLockKey, 600);
@@ -67,10 +61,11 @@ class RunBulkDepreciation implements ShouldQueue
         }
 
         Log::info("Lock acquired for Company ID: {$this->companyId}. Starting depreciation.");
-            
+
         try {
             Cache::put($this->jobId, ['status' => 'running', 'progress' => 0], now()->addHour());
 
+            // Ambil semua aset yang eligible (Aktif & Belum dijual)
             $assetIds = Asset::withoutGlobalScope(CompanyScope::class)
                 ->whereNotIn('status', ['Sold', 'Disposal', 'Onboard'])
                 ->where('asset_type', 'FA')
@@ -79,7 +74,7 @@ class RunBulkDepreciation implements ShouldQueue
                 ->pluck('id');
 
             $totalOperations = $assetIds->count();
-            
+
             if ($totalOperations === 0) {
                 Cache::put($this->jobId, ['status' => 'completed', 'progress' => 100, 'message' => 'Tidak ada asset yang perlu di depresiasi.'], now()->addHour());
                 return;
@@ -89,20 +84,23 @@ class RunBulkDepreciation implements ShouldQueue
             $types = ['commercial', 'fiscal'];
 
             foreach ($assetIds as $assetId) {
-                try{
+                try {
                     DB::transaction(function () use ($assetId, $types) {
+                        
+                        // Lock baris aset agar tidak diedit user saat proses berjalan
                         $asset = Asset::withoutGlobalScope(CompanyScope::class)
                                     ->where('id', $assetId)
                                     ->lockForUpdate()
                                     ->first();
 
-                        if (!$asset) return;
+                        if (! $asset) return;
 
                         foreach ($types as $type) {
                             $usefulLifeCol = $type . '_useful_life_month';
                             $nbvCol = $type . '_nbv';
                             $accumDepreCol = $type . '_accum_depre';
 
+                            // Skip jika umur habis atau nilai buku sudah 0
                             if ($asset->$usefulLifeCol <= 0 || $asset->$nbvCol <= 0) continue;
 
                             $lastDepreciation = Depreciation::withoutGlobalScope(CompanyScope::class)
@@ -110,32 +108,42 @@ class RunBulkDepreciation implements ShouldQueue
                                 ->where('type', $type)
                                 ->latest('depre_date')
                                 ->first();
-                            
-                            $startDate = $lastDepreciation 
-                                ? Carbon::parse($lastDepreciation->depre_date)->addMonthNoOverflow()->startOfMonth() 
-                                : Carbon::parse($asset->start_depre_date)->startOfMonth();
-                            
+
+                            if ($lastDepreciation) {
+                                $currentBookValue = $lastDepreciation->book_value;
+                                $currentAccumulatedDepre = $lastDepreciation->accumulated_depre;
+                                
+                                $startDate = Carbon::parse($lastDepreciation->depre_date)->addMonthNoOverflow()->startOfMonth();
+                            } else {
+                                $currentBookValue = $asset->$nbvCol;
+                                $currentAccumulatedDepre = $asset->$accumDepreCol;
+                                
+                                $startDate = Carbon::parse($asset->start_depre_date)->startOfMonth();
+                            }
+
+                            // Tentukan Tanggal Akhir (Bulan Lalu)
                             $cutoff = now();
                             if (! $cutoff->isLastOfMonth()) {
                                 $cutoff = $cutoff->subMonth();
                             }
-
                             $endDate = $cutoff->startOfMonth();
+
+                            // Guard: Jika tanggal mulai melebihi tanggal akhir, skip
                             if ($startDate->gt($endDate)) {
-                                // nothing to depreciate for this type
                                 continue;
                             }
 
+                            // Hitung Penyusutan Bulanan (Rounding sesuai request)
                             $monthlyDepre = round($asset->acquisition_value / $asset->$usefulLifeCol);
-                            $currentBookValue = $asset->$nbvCol;
-                            $currentAccumulatedDepre = $asset->$accumDepreCol;
-
+                            
                             $period = CarbonPeriod::create($startDate, '1 month', $endDate);
 
                             foreach ($period as $date) {
                                 if ($currentBookValue <= 0) break;
 
                                 $depreDate = $date->endOfMonth()->toDateString();
+                                
+                                // Cek Idempotency: Apakah data untuk bulan ini sudah ada?
                                 $exists = Depreciation::withoutGlobalScope(CompanyScope::class)
                                     ->where('asset_id', $asset->id)
                                     ->where('type', $type)
@@ -143,21 +151,23 @@ class RunBulkDepreciation implements ShouldQueue
                                     ->exists();
 
                                 if ($exists) {
-                                    // Jika sudah ada (misal karena retry), update saldo memori kita dgn data terbaru
+                                    // Jika sudah ada, update saldo memori kita agar sinkron, lalu skip
                                     $latest = Depreciation::withoutGlobalScope(CompanyScope::class)
                                         ->where('asset_id', $asset->id)
                                         ->where('type', $type)
-                                        ->latest('depre_date')
+                                        ->whereDate('depre_date', $depreDate)
                                         ->first();
 
                                     if ($latest) {
                                         $currentAccumulatedDepre = $latest->accumulated_depre;
                                         $currentBookValue = $latest->book_value;
                                     }
-                                    continue; // Skip bulan ini
+                                    continue; 
                                 }
 
+                                // Hitung Nilai Baru
                                 $finalDepreciationAmount = $monthlyDepre;
+                                // Cegah nilai buku negatif
                                 if (($currentBookValue - $monthlyDepre) <= 0) {
                                     $finalDepreciationAmount = $currentBookValue;
                                 }
@@ -165,6 +175,7 @@ class RunBulkDepreciation implements ShouldQueue
                                 $currentBookValue -= $finalDepreciationAmount;
                                 $currentAccumulatedDepre += $finalDepreciationAmount;
 
+                                // Simpan Record
                                 try {
                                     Depreciation::create([
                                         'asset_id' => $asset->id,
@@ -176,20 +187,8 @@ class RunBulkDepreciation implements ShouldQueue
                                         'company_id' => $asset->company_id,
                                     ]);
                                 } catch (QueryException $qe) {
-                                    // Menangkap error Unique Constraint (Double Data)
-                                    Log::warning("Duplicate detected for asset {$asset->id} - {$type} - {$depreDate}. Skipping.");
-                                    
-                                    // Refresh saldo agar sinkron
-                                    $latest = Depreciation::withoutGlobalScope(CompanyScope::class)
-                                        ->where('asset_id', $asset->id)
-                                        ->where('type', $type)
-                                        ->latest('depre_date')
-                                        ->first();
-                                        
-                                    if ($latest) {
-                                        $currentAccumulatedDepre = $latest->accumulated_depre;
-                                        $currentBookValue = $latest->book_value;
-                                    }
+                                    // Tangkap error duplikat (Race Condition)
+                                    Log::warning("Duplicate detected for asset {$asset->id}. Skipping.");
                                     continue;
                                 }
                             }
@@ -199,10 +198,9 @@ class RunBulkDepreciation implements ShouldQueue
                                 $nbvCol        => $currentBookValue,
                             ]);
                         }
-                    }, 5); 
-                    
+                    }, 5); // Retry transaksi 5x
+
                 } catch (Throwable $e) {
-                    // Error di satu aset tidak mematikan seluruh job
                     Log::error("Error processing asset {$assetId}: " . $e->getMessage());
                 }
 
@@ -214,6 +212,8 @@ class RunBulkDepreciation implements ShouldQueue
 
             Cache::put($this->jobId, ['status' => 'completed', 'progress' => 100, 'message' => 'Semua asset berhasil di depresiasi.'], now()->addHour());
 
+            $assetsCacheKey = "assets_not_depreciated_{$this->companyId}_{$lmYear}-{$lmMonth}";
+            
             $freshAssets = Asset::query()
                 ->where('asset_type', 'FA')
                 ->whereNotIn('assets.status', ['Sold', 'Onboard', 'Disposal'])
@@ -226,16 +226,11 @@ class RunBulkDepreciation implements ShouldQueue
                         ->whereMonth('depre_date', $lmMonth)
                         ->whereDay('depre_date', $lastMonth->endOfMonth()->day);
                 })
-                ->whereDoesntHave('depreciations', function ($query) use ($lmYear, $lmMonth, $lastMonth) {
-                    $query->where('type', 'fiscal')
-                        ->whereYear('depre_date', $lmYear)
-                        ->whereMonth('depre_date', $lmMonth)
-                        ->whereDay('depre_date', $lastMonth->endOfMonth()->day);
-                })
                 ->get();
 
             Cache::put($assetsCacheKey, $freshAssets, now()->addHour());
-
+            
+            // Bersihkan cache lainnya
             $listKey = "depreciation_data_keys_{$this->companyId}";
             $keys = Cache::get($listKey, []);
             if (!empty($keys)) {
@@ -250,7 +245,7 @@ class RunBulkDepreciation implements ShouldQueue
             Cache::put($this->jobId, ['status' => 'failed', 'error' => $e->getMessage()], now()->addHour());
             throw $e;
         } finally {
-
+            // RELEASE LOCK DENGAN AMAN
             try {
                 if ($this->assetsNotDepLock) {
                     $this->assetsNotDepLock->release();
@@ -259,7 +254,6 @@ class RunBulkDepreciation implements ShouldQueue
                 Log::warning("Failed to release assets-not-depreciated lock: " . $e->getMessage());
             }
 
-            // release main job lock
             try {
                 if ($this->mainLock) {
                     $this->mainLock->release();
