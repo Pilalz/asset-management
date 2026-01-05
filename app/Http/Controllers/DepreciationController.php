@@ -24,8 +24,8 @@ use Illuminate\Support\Facades\Gate;
 
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+// use Illuminate\Pagination\LengthAwarePaginator;
+// use Illuminate\Support\Collection;
 
 class DepreciationController extends Controller
 {
@@ -122,35 +122,52 @@ class DepreciationController extends Controller
         $year = $request->input('year', now()->year);
         $companyId = session('active_company_id');
 
-        $allPivotedData = $this->getPivotedDepreciationData($year, 'commercial', $companyId);
+        $startDate = Carbon::create($year, 1, 1)->startOfDay();
+        $endDate   = Carbon::create($year, 12, 31)->endOfDay();
 
-        $dataCollection = new Collection($allPivotedData);
+        $assets = Asset::where('company_id', $companyId)
+            ->where('asset_type', 'FA')
+            ->whereNotIn('status', ['Sold', 'Onboard', 'Disposal'])
+            ->whereHas('depreciations', function($query) use ($startDate, $endDate) {
+                $query->where('type', 'commercial')
+                      ->whereBetween('depre_date', [$startDate, $endDate]);
+            })
+            ->orderBy('id')
+            ->paginate(15);
 
-        $perPage = 15; // Tampilkan 50 aset per halaman. Sesuaikan angka ini!
-        $currentPage = $request->input('page', 1); // Ambil nomor halaman dari URL (?page=2)
-
-        $currentPageData = $dataCollection->slice(($currentPage - 1) * $perPage, $perPage);
-
-        // 5. Buat Paginator secara manual
-        $paginatedData = new LengthAwarePaginator(
-            $currentPageData,         
-            $dataCollection->count(), 
-            $perPage,                 
-            $currentPage,             
-            ['path' => $request->url(), 'query' => $request->query()] 
-        );
-
-        $months = [];
-        $startDate = Carbon::create($year, 1, 1)->startOfMonth();
-        $endDate = Carbon::create($year, 12, 1)->endOfMonth();
-        $period = CarbonPeriod::create($startDate, '1 month', $endDate);
-        foreach ($period as $date) {
-            $months[$date->format('Y-m')] = $date->format('M-y');
+        $assetIds = $assets->pluck('id')->toArray();
+        
+        $depreciations = [];
+        if (!empty($assetIds)) {
+            $depreciations = Depreciation::whereIn('asset_id', $assetIds)
+                ->where('type', 'commercial')
+                ->whereBetween('depre_date', [$startDate, $endDate])
+                ->get();
         }
-                
+
+        $pivotedData = [];
+        foreach ($assets as $asset) {
+            $pivotedData[$asset->id] = [
+                'master_data' => $asset,
+                'schedule' => []
+            ];
+        }
+
+        foreach ($depreciations as $depre) {
+            $monthKey = Carbon::parse($depre->depre_date)->format('Y-m');
+            if (isset($pivotedData[$depre->asset_id])) {
+                $pivotedData[$depre->asset_id]['schedule'][$monthKey] = (object)[
+                    'monthly_depre' => $depre->monthly_depre,
+                    'accumulated_depre' => $depre->accumulated_depre,
+                    'book_value' => $depre->book_value,
+                ];
+            }
+        }
+
         return view('depreciation.commercial.index', [
-            'pivotedData' => $paginatedData, 
-            'months' => $months,
+            'pivotedData' => $pivotedData, 
+            'paginator' => $assets, 
+            'months' => $this->getMonths($year),
             'selectedYear' => $year
         ]);
     }
@@ -160,99 +177,54 @@ class DepreciationController extends Controller
         $year = $request->input('year', now()->year);
         $companyId = session('active_company_id');
 
-        $allPivotedData = $this->getPivotedDepreciationData($year, 'fiscal', $companyId);
+        $startDate = Carbon::create($year, 1, 1)->startOfDay();
+        $endDate   = Carbon::create($year, 12, 31)->endOfDay();
 
-        $dataCollection = new Collection($allPivotedData);
+        $assets = Asset::where('company_id', $companyId)
+            ->where('asset_type', 'FA')
+            ->whereNotIn('status', ['Sold', 'Onboard', 'Disposal'])
+            ->whereHas('depreciations', function($query) use ($startDate, $endDate) {
+                $query->where('type', 'fiscal')
+                      ->whereBetween('depre_date', [$startDate, $endDate]);
+            })
+            ->orderBy('id')
+            ->paginate(15);
 
-        $perPage = 15;
-        $currentPage = $request->input('page', 1); 
+        $assetIds = $assets->pluck('id')->toArray();
 
-        $currentPageData = $dataCollection->slice(($currentPage - 1) * $perPage, $perPage);
+        $depreciations = [];
+        if (!empty($assetIds)) {
+            $depreciations = Depreciation::whereIn('asset_id', $assetIds)
+                ->where('type', 'fiscal')
+                ->whereBetween('depre_date', [$startDate, $endDate])
+                ->get();
+        }
 
-        $paginatedData = new LengthAwarePaginator(
-            $currentPageData,         
-            $dataCollection->count(), 
-            $perPage,                 
-            $currentPage,             
-            ['path' => $request->url(), 'query' => $request->query()] 
-        );
+        $pivotedData = [];
+        foreach ($assets as $asset) {
+            $pivotedData[$asset->id] = [
+                'master_data' => $asset,
+                'schedule' => []
+            ];
+        }
 
-        $months = [];
-        $startDate = Carbon::create($year, 1, 1)->startOfMonth();
-        $endDate = Carbon::create($year, 12, 1)->endOfMonth();
-        $period = CarbonPeriod::create($startDate, '1 month', $endDate);
-        foreach ($period as $date) {
-            $months[$date->format('Y-m')] = $date->format('M-y');
+        foreach ($depreciations as $depre) {
+            $monthKey = Carbon::parse($depre->depre_date)->format('Y-m');
+            if (isset($pivotedData[$depre->asset_id])) {
+                $pivotedData[$depre->asset_id]['schedule'][$monthKey] = (object)[
+                    'monthly_depre' => $depre->monthly_depre,
+                    'accumulated_depre' => $depre->accumulated_depre,
+                    'book_value' => $depre->book_value,
+                ];
+            }
         }
         
         return view('depreciation.fiscal.index', [
-            'pivotedData' => $paginatedData,
-            'months' => $months,
+            'pivotedData' => $pivotedData, 
+            'paginator' => $assets, 
+            'months' => $this->getMonths($year),
             'selectedYear' => $year
         ]);
-    }
-
-    private function getPivotedDepreciationData($year, $type, $companyId)
-    {
-        $cacheKey = "depreciation_data_{$type}_{$companyId}_{$year}";
-        
-        $ttl = 3600; 
-
-        $listKey = "depreciation_data_keys_{$companyId}";
-        $existing = Cache::get($listKey, []);
-
-        // Hanya tambahkan jika key belum tercatat
-        if (!in_array($cacheKey, $existing)) {
-            $existing[] = $cacheKey;
-            Cache::put($listKey, $existing, 3600 * 24); // simpan 1 hari
-        }
-
-        return Cache::remember($cacheKey, $ttl, function() use ($year, $type, $companyId) {
-            
-            $startDate = Carbon::create($year, 1, 1)->startOfMonth();
-            $endDate = Carbon::create($year, 12, 1)->endOfMonth();
-
-            // 1. Query Database
-            $schedules = Depreciation::with([
-                    'asset', 
-                    'asset.assetName.assetSubClass.assetClass'
-                ])
-                ->whereBetween('depre_date', [$startDate, $endDate])
-                // Filter berdasarkan company_id di relasi asset
-                ->whereHas('asset', function ($query) use ($companyId) {
-                    $query->where('company_id', $companyId)
-                          ->where('status', '!=', 'Onboard')
-                          ->where('status', '!=', 'Disposal')
-                          ->where('status', '!=', 'Sold')
-                          ->where('asset_type', 'FA');
-                })
-                ->where('type', $type)
-                ->orderBy('asset_id')
-                ->orderBy('depre_date')
-                ->lazy();
-
-            // 2. Proses Pivot Data
-            $pivotedData = [];
-            foreach ($schedules as $schedule) {
-                $assetId = $schedule->asset_id;
-                $monthKey = Carbon::parse($schedule->depre_date)->format('Y-m');
-
-                if (!isset($pivotedData[$assetId])) {
-                    $pivotedData[$assetId] = [
-                        'master_data' => $schedule->asset,
-                        'schedule' => []
-                    ];
-                }
-
-                $pivotedData[$assetId]['schedule'][$monthKey] = (object)[
-                    'monthly_depre' => $schedule->monthly_depre,
-                    'accumulated_depre' => $schedule->accumulated_depre,
-                    'book_value' => $schedule->book_value,
-                ];
-            }
-            
-            return $pivotedData; 
-        });
     }
 
     public function runAll()
@@ -367,5 +339,20 @@ class DepreciationController extends Controller
         $fileName = 'Fiscal-Depreciations-'. $year. '-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
         
         return Excel::download(new FiscalDepreciationsExport($year), $fileName);
+    }
+
+    private function getMonths($year)
+    {
+        $months = [];
+        $startDate = Carbon::create($year, 1, 1)->startOfMonth();
+        $endDate = Carbon::create($year, 12, 1)->endOfMonth();
+        
+        $period = CarbonPeriod::create($startDate, '1 month', $endDate);
+        
+        foreach ($period as $date) {
+            $months[$date->format('Y-m')] = $date->format('M-y');
+        }
+
+        return $months;
     }
 }
