@@ -22,19 +22,19 @@ class AssetSeederLarge extends Seeder
         $faker = Faker::create('id_ID');
         
         $companyIds = Company::pluck('id')->toArray();
-        if (empty($companyIds)) {
-            $companyIds[] = DB::table('companies')->insertGetId(['name' => 'PT Bagas Dummy', 'code' => 'BBD', 'created_at' => now(), 'updated_at' => now()]);
-        }
+        // if (empty($companyIds)) {
+        //     $companyIds[] = DB::table('companies')->insertGetId(['name' => 'PT Bagas Dummy', 'code' => 'BBD', 'created_at' => now(), 'updated_at' => now()]);
+        // }
 
-        $deptIds = Department::pluck('id')->toArray();
-        if (empty($deptIds)) {
-            $deptIds[] = DB::table('departments')->insertGetId(['name' => 'Finance', 'company_id' => $companyIds[0], 'created_at' => now(), 'updated_at' => now()]);
-        }
+        $deptIds = Department::withoutGlobalScope(CompanyScope::class)->pluck('id')->toArray();
+        // if (empty($deptIds)) {
+        //     $deptIds[] = DB::table('departments')->insertGetId(['name' => 'Finance', 'company_id' => $companyIds[0], 'created_at' => now(), 'updated_at' => now()]);
+        // }
 
-        $locIds = Location::pluck('id')->toArray();
-        if (empty($locIds)) {
-            $locIds[] = DB::table('locations')->insertGetId(['name' => 'Head Office', 'company_id' => $companyIds[0], 'created_at' => now(), 'updated_at' => now()]);
-        }
+        $locIds = Location::withoutGlobalScope(CompanyScope::class)->pluck('id')->toArray();
+        // if (empty($locIds)) {
+        //     $locIds[] = DB::table('locations')->insertGetId(['name' => 'Head Office', 'company_id' => $companyIds[0], 'created_at' => now(), 'updated_at' => now()]);
+        // }
 
         $assetNames = AssetName::withoutGlobalScope(CompanyScope::class)->get();
 
@@ -43,7 +43,7 @@ class AssetSeederLarge extends Seeder
             return;
         }
 
-        $totalRecords = 500; // Target 50.000 Data
+        $totalRecords = 10000; // Target 50.000 Data
         $chunkSize = 50;     // Masukkan per 1.000 baris (Biar RAM hemat & Cepat)
         
         $this->command->info("Memulai proses seeding {$totalRecords} aset...");
@@ -64,7 +64,7 @@ class AssetSeederLarge extends Seeder
             $acqValue = floor($acqValue / 1000) * 1000; 
             
             $buyDate = Carbon::now()->subDays($faker->numberBetween(1, 1800));
-            $startDepreDate = $buyDate->copy()->addMonth()->startOfMonth(); // Depresiasi mulai bulan depannya
+            $startDepreDate = $buyDate->copy()->startOfMonth(); // Depresiasi mulai bulan depannya
             
             $accumDepre = 0; 
             $nbv = $acqValue;
@@ -104,7 +104,7 @@ class AssetSeederLarge extends Seeder
                 'fiscal_accum_depre'           => $accumDepre,
                 'fiscal_nbv'                   => $nbv,
                 
-                'remaks'            => 'Stress Test Data',
+                'remaks'            => null,
                 'company_id'        => $faker->randomElement($companyIds), // Random company atau spesifik
                 'created_at'        => now(),
                 'updated_at'        => now(),
@@ -125,6 +125,6 @@ class AssetSeederLarge extends Seeder
         }
 
         $bar->finish();
-        $this->command->info("\nSeeding Selesai! 50.000 Data Aset Siap Disiksa.");
+        $this->command->info("\nSeeding Selesai! ".$totalRecords." Data Aset Siap Disiksa.");
     }
 }
