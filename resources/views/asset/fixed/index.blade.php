@@ -114,7 +114,7 @@
                 <!-- Dropdown menu -->
                 <div id="dropdownAction" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700 dark:divide-gray-600">
                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton">
-                        @if($assetsNotDepreciated->isEmpty())
+                        @if(!$hasPendingDepreciation)
                             
                         @else
                             <li>

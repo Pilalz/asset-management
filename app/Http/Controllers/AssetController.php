@@ -33,61 +33,65 @@ class AssetController extends Controller
         $month = $lastMonth->month;
         $endOfMonthDay = $lastMonth->endOfMonth()->day;
 
-        $cacheKey = 'assets_not_depreciated_' . $companyId . '_' . $year . '-' . $month;
+        $cacheKey = 'has_assets_pending_depreciation_' . $companyId . '_' . $year . '-' . $month; // Saya ganti nama key biar sesuai konteks
         $lockKey = "lock_assets_not_depreciated_{$companyId}_{$year}-{$month}";
-        $lock = Cache::lock($lockKey, 5); // lock 5 seconds max
+        $lock = Cache::lock($lockKey, 5);
+
+        // Default false jika gagal lock
+        $hasPendingDepreciation = false;
 
         if ($lock->get()) {
             try {
-                // SAFE: Job is not running → perform DB query + refresh cache
-                $assetsNotDepreciated = Cache::remember(
+                // Kita simpan BOOLEAN (true/false) saja, bukan Collection data asetnya.
+                $hasPendingDepreciation = Cache::remember(
                     $cacheKey,
                     now()->addHour(),
                     function () use ($companyId, $year, $month, $endOfMonthDay, $lastMonth) {
+                        // Gunakan exists() agar database cuma balikin 1 atau 0. Sangat ringan.
                         return Asset::query()
                             ->where('asset_type', 'FA')
                             ->whereNotIn('assets.status', ['Sold', 'Onboard', 'Disposal'])
                             ->where('commercial_nbv', '>', 0)
                             ->where('start_depre_date', '<=', $lastMonth->endOfMonth())
                             ->where('company_id', $companyId)
-                            ->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
-                                $query->where('type', 'commercial')
-                                    ->whereYear('depre_date', $year)
-                                    ->whereMonth('depre_date', $month)
-                                    ->whereDay('depre_date', $endOfMonthDay);
+                            ->where(function ($q) use ($year, $month, $endOfMonthDay) {
+                                // Grouping logic whereDoesntHave biar lebih rapi dan optimal
+                                $q->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
+                                    $query->where('type', 'commercial')
+                                        ->whereYear('depre_date', $year)
+                                        ->whereMonth('depre_date', $month)
+                                        ->whereDay('depre_date', $endOfMonthDay);
+                                })
+                                ->orWhereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
+                                    $query->where('type', 'fiscal')
+                                        ->whereYear('depre_date', $year)
+                                        ->whereMonth('depre_date', $month)
+                                        ->whereDay('depre_date', $endOfMonthDay);
+                                });
                             })
-                            ->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
-                                $query->where('type', 'fiscal')
-                                    ->whereYear('depre_date', $year)
-                                    ->whereMonth('depre_date', $month)
-                                    ->whereDay('depre_date', $endOfMonthDay);
-                            })
-                            ->get();
+                            ->exists(); // <--- GANTI get() JADI exists()
                     }
                 );
             } finally {
                 $lock->release();
             }
         } else {
-            $assetsNotDepreciated = Cache::get($cacheKeyData, collect());
-        } 
+            // Ambil dari cache, default false
+            $hasPendingDepreciation = Cache::get($cacheKey, false);
+        }
 
+        // Filter list (ini ringan karena cuma ambil ID dan Name)
         $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', $companyId)
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
+            ->where('company_id', $companyId)->orderBy('name', 'asc')->get(['id', 'name']);
 
         $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', $companyId)
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
+            ->where('company_id', $companyId)->orderBy('name', 'asc')->get(['id', 'name']);
 
         $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', $companyId)
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
+            ->where('company_id', $companyId)->orderBy('name', 'asc')->get(['id', 'name']);
 
-        return view('asset.fixed.index', compact('assetsNotDepreciated', 'assetNamesForFilter', 'locationsForFilter', 'departmentsForFilter'));
+        // Kirim variable boolean baru ke view
+        return view('asset.fixed.index', compact('hasPendingDepreciation', 'assetNamesForFilter', 'locationsForFilter', 'departmentsForFilter'));
     }
 
     public function show(Request $request, Asset $asset)
@@ -262,6 +266,17 @@ class AssetController extends Controller
         Cache::forget($cacheKey);
 
         return redirect()->route('asset.index')->with('success', 'Data berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        // Cari aset (secara default hanya mencari yang statusnya aktif/belum dihapus)
+        $asset = Asset::findOrFail($id);
+
+        // Hapus (Ini otomatis jadi Soft Delete karena di Model sudah pakai trait SoftDeletes)
+        $asset->delete();
+
+        return redirect()->back()->with('success', 'Aset berhasil dipindahkan ke sampah (Trash).');
     }
 
     public function importExcel(Request $request)

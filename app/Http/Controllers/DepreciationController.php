@@ -128,6 +128,7 @@ class DepreciationController extends Controller
         $assets = Asset::where('company_id', $companyId)
             ->where('asset_type', 'FA')
             ->whereNotIn('status', ['Sold', 'Onboard', 'Disposal'])
+            ->with(['assetName', 'location', 'department'])
             ->whereHas('depreciations', function($query) use ($startDate, $endDate) {
                 $query->where('type', 'commercial')
                       ->whereBetween('depre_date', [$startDate, $endDate]);
@@ -183,6 +184,7 @@ class DepreciationController extends Controller
         $assets = Asset::where('company_id', $companyId)
             ->where('asset_type', 'FA')
             ->whereNotIn('status', ['Sold', 'Onboard', 'Disposal'])
+            ->with(['assetName', 'location', 'department'])
             ->whereHas('depreciations', function($query) use ($startDate, $endDate) {
                 $query->where('type', 'fiscal')
                       ->whereBetween('depre_date', [$startDate, $endDate]);

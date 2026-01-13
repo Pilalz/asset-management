@@ -4,24 +4,32 @@ namespace App\Exports;
 
 use App\Models\Asset;
 use App\Scopes\CompanyScope;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\Exportable;
 
-class AssetsExport implements FromCollection, WithHeadings, WithMapping
+class AssetsExport implements FromQuery, WithHeadings, WithMapping
 {
+    use Exportable;
+
     /**
-    * @return \Illuminate\Support\Collection
+    * Kita ubah dari collection() ke query()
+    * Biarkan Laravel Excel yang melakukan fetching (chunking)
     */
-    public function collection()
+    public function query()
     {
         return Asset::withoutGlobalScope(CompanyScope::class)
                 ->where('company_id', session('active_company_id'))
+                ->with([
+                    'assetName.assetSubClass.assetClass', 
+                    'location',
+                    'department'
+                ])
                 ->where('status', '!=', 'Onboard')
                 ->where('status', '!=', 'Disposal')
                 ->where('status', '!=', 'Sold')
-                ->where('asset_type', 'FA')
-                ->get();
+                ->where('asset_type', 'FA');
     }
 
     public function headings(): array
@@ -60,15 +68,16 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
     }
 
     public function map($asset): array
-    {
+    {   
         return [
             $asset->id,
             $asset->asset_number,
-            $asset->assetName->assetSubClass->assetClass->name,
-            $asset->assetName->assetSubClass->name,
-            $asset->assetName->name,
-            $asset->assetName->assetSubClass->assetClass->obj_id,
-            $asset->assetName->assetSubClass->assetClass->obj_acc,
+            // Akses data yang sudah di-Eager Load
+            $asset->assetName?->assetSubClass?->assetClass?->name ?? '-',
+            $asset->assetName?->assetSubClass?->name ?? '-',
+            $asset->assetName?->name ?? '-',
+            $asset->assetName?->assetSubClass?->assetClass?->obj_id ?? '-',
+            $asset->assetName?->assetSubClass?->assetClass?->obj_acc ?? '-',
             $asset->status,
             $asset->description,
             $asset->detail,
@@ -78,8 +87,8 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
             $asset->sn_engine,
             $asset->production_year,
             $asset->po_no,
-            $asset->location->name,
-            $asset->department->name,
+            $asset->location?->name ?? '-',
+            $asset->department?->name ?? '-',
             $asset->quantity,
             $asset->capitalized_date,
             $asset->start_depre_date,

@@ -4,24 +4,28 @@ namespace App\Exports;
 
 use App\Models\Asset;
 use App\Scopes\CompanyScope;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\Exportable;
 
-class LVAExport implements FromCollection, WithHeadings, WithMapping
+class LVAExport implements FromQuery, WithHeadings, WithMapping
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-    public function collection()
+    use Exportable;
+
+    public function query()
     {
         return Asset::withoutGlobalScope(CompanyScope::class)
-                ->where('company_id', session('active_company_id'))
-                ->where('status', '!=', 'Onboard')
-                ->where('status', '!=', 'Disposal')
-                ->where('status', '!=', 'Sold')
-                ->where('asset_type', 'LVA')
-                ->get();
+            ->where('company_id', session('active_company_id'))
+            ->with([
+                'assetName.assetSubClass.assetClass', 
+                'location',
+                'department'
+            ])
+            ->where('status', '!=', 'Onboard')
+            ->where('status', '!=', 'Disposal')
+            ->where('status', '!=', 'Sold')
+            ->where('asset_type', 'LVA');
     }
 
     public function headings(): array
@@ -64,11 +68,11 @@ class LVAExport implements FromCollection, WithHeadings, WithMapping
         return [
             $asset->id,
             $asset->asset_number,
-            $asset->assetName->assetSubClass->assetClass->name,
-            $asset->assetName->assetSubClass->name,
-            $asset->assetName->name,
-            $asset->assetName->assetSubClass->assetClass->obj_id,
-            $asset->assetName->assetSubClass->assetClass->obj_acc,
+            $asset->assetName?->assetSubClass?->assetClass?->name ?? '-',
+            $asset->assetName?->assetSubClass?->name ?? '-',
+            $asset->assetName?->name ?? '-',
+            $asset->assetName?->assetSubClass?->assetClass?->obj_id ?? '-',
+            $asset->assetName?->assetSubClass?->assetClass?->obj_acc ?? '-',
             $asset->status,
             $asset->description,
             $asset->detail,
@@ -78,8 +82,8 @@ class LVAExport implements FromCollection, WithHeadings, WithMapping
             $asset->sn_engine,
             $asset->production_year,
             $asset->po_no,
-            $asset->location->name,
-            $asset->department->name,
+            $asset->location->name ?? '-',
+            $asset->department->name ?? '-',
             $asset->quantity,
             $asset->capitalized_date,
             $asset->start_depre_date,

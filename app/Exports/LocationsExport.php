@@ -4,20 +4,21 @@ namespace App\Exports;
 
 use App\Models\Location;
 use App\Scopes\CompanyScope;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\Exportable;
 
-class LocationsExport implements FromCollection, WithHeadings, WithMapping
+class LocationsExport implements FromQuery, WithHeadings, WithMapping
 {
+    use Exportable;
     /**
     * @return \Illuminate\Support\Collection
     */
-    public function collection()
+    public function query()
     {
         return Location::withoutGlobalScope(CompanyScope::class)
-                ->where('company_id', session('active_company_id'))
-                ->get();
+                ->where('company_id', session('active_company_id'));
     }
 
     public function headings(): array

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Throwable;
 
 class RunBulkDepreciation implements ShouldQueue
@@ -44,9 +45,16 @@ class RunBulkDepreciation implements ShouldQueue
         $mainLockKey = 'running-depreciation-process:' . $this->companyId;
         $this->mainLock = Cache::lock($mainLockKey, 1200);
 
-        if (! $this->mainLock->block(2)) { // Tunggu 2 detik, kalau masih dikunci, release job
-            Log::warning("Could not acquire lock for Company ID: {$this->companyId}; releasing job to retry later.");
-            $this->release(30); // Coba lagi 30 detik kemudian
+        try {
+            // Coba minta gembok, tunggu maksimal 2 detik
+            $this->mainLock->block(2);
+            
+        } catch (LockTimeoutException $e) {
+            // JIKA GAGAL DAPAT GEMBOK (Ada proses lain jalan atau Zombie Lock):
+            Log::warning("LockTimeout: Proses lain sedang berjalan untuk Company ID: {$this->companyId}. Job akan dicoba lagi nanti.");
+            
+            // Lepaskan job ini, biar antrian worker mencobanya lagi 30 detik kemudian
+            $this->release(30);
             return;
         }
 
@@ -61,6 +69,12 @@ class RunBulkDepreciation implements ShouldQueue
         }
 
         Log::info("Lock acquired for Company ID: {$this->companyId}. Starting depreciation.");
+
+        $cachedStatus = Cache::get($this->jobId);
+        if ($cachedStatus && isset($cachedStatus['status']) && $cachedStatus['status'] === 'completed') {
+             Log::info("Job for Company {$this->companyId} already completed by another worker. Exiting.");
+             return;
+        }
 
         try {
             Cache::put($this->jobId, ['status' => 'running', 'progress' => 0], now()->addHour());

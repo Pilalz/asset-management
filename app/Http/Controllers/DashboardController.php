@@ -123,6 +123,7 @@ class DashboardController extends Controller
                 DB::raw("COUNT(CASE WHEN depreciations.type = 'commercial' THEN 1 END) as commercial_asset_count"), 
                 DB::raw("COUNT(CASE WHEN depreciations.type = 'fiscal' THEN 1 END) as fiscal_asset_count"))
             ->where('assets.company_id', session('active_company_id'))
+            ->whereNull('assets.deleted_at') //tambahan
             ->groupBy('depreciations.depre_date')
             ->orderBy('depreciations.depre_date', 'asc')
             ->get();

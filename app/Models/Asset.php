@@ -19,10 +19,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Asset extends Model
 {
-    use HasFactory;
-    use LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'asset_number',
