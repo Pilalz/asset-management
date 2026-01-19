@@ -45,6 +45,8 @@ class AssetNameController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('is-admin');
+
         $companyId = $request->input('company_id');
 
         $request->validate([
@@ -81,6 +83,8 @@ class AssetNameController extends Controller
 
     public function update(Request $request, AssetName $asset_name)
     {
+        Gate::authorize('is-admin');
+
         $companyId = $asset_name->company_id;
         
         $validatedData = $request->validate([
@@ -109,6 +113,8 @@ class AssetNameController extends Controller
 
     public function destroy(AssetName $asset_name)
     {
+        Gate::authorize('is-admin');
+
         $asset_name->delete();
 
         return redirect()->route('asset-name.index')->with('success', 'Data berhasil dihapus!');
@@ -116,6 +122,8 @@ class AssetNameController extends Controller
 
     public function importExcel(Request $request)
     {
+        Gate::authorize('is-admin');
+        
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:10240',
         ]);

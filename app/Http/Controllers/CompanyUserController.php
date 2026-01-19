@@ -26,6 +26,8 @@ class CompanyUserController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('is-admin');
+
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'role' => 'required|string',
@@ -46,6 +48,8 @@ class CompanyUserController extends Controller
 
     public function update(Request $request, CompanyUser $company_user)
     {
+        Gate::authorize('is-admin');
+
         $validatedData = $request->validate([
             'role' => 'required|string',
         ]);
@@ -59,6 +63,8 @@ class CompanyUserController extends Controller
 
     public function destroy(CompanyUser $company_user)
     {
+        Gate::authorize('is-admin');
+        
         $company_user->delete();
 
         return redirect()->route('company-user.index')->with('success', 'Data berhasil dihapus!');

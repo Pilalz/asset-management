@@ -40,6 +40,8 @@ class AssetSubClassController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('is-admin');
+
         $companyId = $request->input('company_id');
 
         $request->validate([
@@ -74,6 +76,8 @@ class AssetSubClassController extends Controller
 
     public function update(Request $request, AssetSubClass $asset_sub_class)
     {
+        Gate::authorize('is-admin');
+
         $companyId = $asset_sub_class->company_id;
 
         $validatedData = $request->validate([
@@ -100,6 +104,8 @@ class AssetSubClassController extends Controller
 
     public function destroy(AssetSubClass $asset_sub_class)
     {
+        Gate::authorize('is-admin');
+
         $asset_sub_class->delete();
 
         return redirect()->route('asset-sub-class.index')->with('success', 'Data berhasil dihapus!');
@@ -107,6 +113,8 @@ class AssetSubClassController extends Controller
 
     public function importExcel(Request $request)
     {
+        Gate::authorize('is-admin');
+        
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);

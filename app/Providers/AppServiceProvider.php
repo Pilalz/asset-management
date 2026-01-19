@@ -37,7 +37,10 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('is-admin', function (User $user) {
-            return in_array($user->role, ['Owner', 'Asset Management']);
+            // Check role is not empty before validating
+            // User.role depends on last_active_company_id being set
+            $role = $user->role;
+            return !empty($role) && in_array($role, ['Owner', 'Asset Management']);
         });
 
         Gate::define('is-form-maker', function (User $user) {

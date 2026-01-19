@@ -34,6 +34,8 @@ class InsuranceController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('is-admin');
+
         $validated = $request->validate([
             'polish_no' => 'required|string|max:255|unique:insurances,polish_no',
             'start_date' => 'required|date',
@@ -84,6 +86,8 @@ class InsuranceController extends Controller
 
     public function update(Request $request, Insurance $insurance)
     {
+        Gate::authorize('is-admin');
+
         $validated = $request->validate([
             'polish_no'      => 'required|string|max:255|unique:insurances,polish_no,' . $insurance->id,
             'start_date'     => 'required|date',
@@ -128,6 +132,8 @@ class InsuranceController extends Controller
 
     public function destroy(Insurance $insurance)
     {
+        Gate::authorize('is-admin');
+        
         $insurance->delete();
 
         return redirect()->route('insurance.index')->with('success', 'Data berhasil dihapus!');

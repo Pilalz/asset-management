@@ -92,6 +92,8 @@ class TransferAssetController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('is-form-maker');
+
         $validated = $request->validate([
             'submit_date' => 'required|date',
             'form_no' => 'required|string|max:255|unique:transfer_assets,form_no',
@@ -227,6 +229,8 @@ class TransferAssetController extends Controller
 
     public function update(Request $request, TransferAsset $transfer_asset)
     {
+        Gate::authorize('is-form-maker');
+
         $validated = $request->validate([
             'department_id'         => 'required|exists:departments,id',
             'destination_loc_id'    => 'required|exists:locations,id',
@@ -318,6 +322,8 @@ class TransferAssetController extends Controller
 
     public function destroy(TransferAsset $transfer_asset)
     {
+        Gate::authorize('is-form-maker');
+
         try {
             $transfer_asset->delete();
 
@@ -331,6 +337,8 @@ class TransferAssetController extends Controller
 
     public function restore($id)
     {
+        Gate::authorize('is-form-maker');
+        
         try {
             $transfer_asset = TransferAsset::onlyTrashed()->findOrFail($id);
             $transfer_asset->restore();

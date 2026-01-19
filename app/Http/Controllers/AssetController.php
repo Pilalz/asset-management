@@ -149,6 +149,8 @@ class AssetController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('is-admin');
+
         $companyId = session('active_company_id');
 
         $validatedData = $request->validate([
@@ -223,6 +225,8 @@ class AssetController extends Controller
 
     public function update(Request $request, Asset $asset)
     {
+        Gate::authorize('is-admin');
+
         $validatedData = $request->validate([
             'asset_number' => [
                 'required',
@@ -250,6 +254,7 @@ class AssetController extends Controller
             'commercial_nbv'    => 'required',
             'fiscal_nbv'        => 'required',
             'remaks'            => 'nullable',
+            'status'            => 'required|string',
         ]);
 
         $assetNameID = $validatedData['asset_name_id'];
@@ -270,6 +275,8 @@ class AssetController extends Controller
 
     public function destroy($id)
     {
+        Gate::authorize('is-admin');
+        
         // Cari aset (secara default hanya mencari yang statusnya aktif/belum dihapus)
         $asset = Asset::findOrFail($id);
 
@@ -281,6 +288,8 @@ class AssetController extends Controller
 
     public function importExcel(Request $request)
     {
+        Gate::authorize('is-admin');
+
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);

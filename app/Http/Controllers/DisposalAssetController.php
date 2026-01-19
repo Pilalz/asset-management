@@ -79,6 +79,8 @@ class DisposalAssetController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('is-form-maker');
+
         //Store Disposal Asset
         $validated = $request->validate([
             'submit_date'  => 'required|date',
@@ -210,6 +212,8 @@ class DisposalAssetController extends Controller
 
     public function update(Request $request, DisposalAsset $disposalAsset)
     {
+        Gate::authorize('is-form-maker');
+
         $validated = $request->validate([
             'department_id' => 'required|exists:departments,id',
             'reason'  => 'required',
@@ -308,6 +312,8 @@ class DisposalAssetController extends Controller
 
     public function destroy(DisposalAsset $disposal_asset)
     {
+        Gate::authorize('is-form-maker');
+
         try {
             $disposal_asset->delete();
 
@@ -321,6 +327,8 @@ class DisposalAssetController extends Controller
 
     public function restore($id)
     {
+        Gate::authorize('is-form-maker');
+        
         try {
             $disposal_asset = DisposalAsset::onlyTrashed()->findOrFail($id);
             $disposal_asset->restore();

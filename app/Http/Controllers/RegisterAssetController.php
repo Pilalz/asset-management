@@ -82,6 +82,8 @@ class RegisterAssetController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('is-form-maker');
+
         //Store Register Asset
         $validated = $request->validate([
             'form_no'       => 'required|string|max:255|unique:register_assets,form_no',
@@ -195,6 +197,8 @@ class RegisterAssetController extends Controller
 
     public function update(Request $request, RegisterAsset $registerAsset)
     {
+        Gate::authorize('is-form-maker');
+
         $validated = $request->validate([
             'department_id' => 'required|exists:departments,id',
             'location_id'   => 'required|exists:locations,id',
@@ -287,6 +291,8 @@ class RegisterAssetController extends Controller
 
     public function destroy(RegisterAsset $register_asset)
     {
+        Gate::authorize('is-form-maker');
+
         try {
             $register_asset->delete();
 
@@ -300,6 +306,8 @@ class RegisterAssetController extends Controller
 
     public function restore($id)
     {
+        Gate::authorize('is-form-maker');
+        
         try {
             $register_asset = RegisterAsset::onlyTrashed()->findOrFail($id);
             $register_asset->restore();

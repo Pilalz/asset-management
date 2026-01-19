@@ -42,6 +42,7 @@ return new class extends Migration
             $table->decimal('fiscal_nbv', 18, 0);
             $table->longText('remaks')->nullable();
             $table->foreignId('company_id')->constrained('companies');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

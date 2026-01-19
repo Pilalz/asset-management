@@ -30,6 +30,8 @@ class DepartmentController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('is-admin');
+
         $companyId = $request->input('company_id');
 
         $request->validate([
@@ -56,6 +58,8 @@ class DepartmentController extends Controller
 
     public function update(Request $request, Department $department)
     {
+        Gate::authorize('is-admin');
+
         $companyId = $department->company_id;
 
         $validatedData = $request->validate([
@@ -84,6 +88,8 @@ class DepartmentController extends Controller
 
     public function importExcel(Request $request)
     {
+        Gate::authorize('is-admin');
+        
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);

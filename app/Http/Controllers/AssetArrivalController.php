@@ -44,6 +44,8 @@ class AssetArrivalController extends Controller
 
     public function edit(Asset $assetArrival)
     {      
+        Gate::authorize('is-admin');
+
         $locations = Location::all();
         $departments = Department::all();
         $assetclasses = AssetClass::all();
@@ -58,6 +60,8 @@ class AssetArrivalController extends Controller
 
     public function update(Request $request, Asset $assetArrival)
     {
+        Gate::authorize('is-admin');
+        
         if ($request->asset_number === $assetArrival->asset_number){
             $validAssetNumber = $request->validate([
                 'asset_number' => 'required|string|max:255',

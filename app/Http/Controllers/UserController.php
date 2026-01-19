@@ -11,6 +11,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -26,11 +27,15 @@ class UserController extends Controller
 
     public function createCompany()
     {
+        Gate::authorize('is-dev');
+
         return view('onboarding.create');
     }
 
     public function storeCompany(Request $request)
     {
+        Gate::authorize('is-dev');
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'alias' => 'required|string|unique:companies,alias',

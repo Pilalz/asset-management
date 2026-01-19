@@ -44,6 +44,8 @@ class AssetLowValueController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('is-admin');
+
         $companyId = session('active_company_id');
 
         $validatedData = $request->validate([
@@ -115,6 +117,8 @@ class AssetLowValueController extends Controller
 
     public function update(Request $request, Asset $assetLVA)
     {
+        Gate::authorize('is-admin');
+
         $validatedData = $request->validate([
             'asset_number' => [
                 'required',
@@ -141,7 +145,8 @@ class AssetLowValueController extends Controller
             'current_cost'      => 'required',
             'commercial_nbv'    => 'required',
             'fiscal_nbv'        => 'required',
-            'remaks'            => 'nullable'
+            'remaks'            => 'nullable',
+            'status'            => 'required|string',
         ]);
 
         $dataToUpdate = $validatedData;
@@ -151,8 +156,23 @@ class AssetLowValueController extends Controller
         return redirect()->route('assetLVA.index')->with('success', 'Data berhasil diperbarui!');
     }
 
+    public function destroy($id)
+    {
+        Gate::authorize('is-admin');
+        
+        // Cari aset (secara default hanya mencari yang statusnya aktif/belum dihapus)
+        $asset = Asset::findOrFail($id);
+
+        // Hapus (Ini otomatis jadi Soft Delete karena di Model sudah pakai trait SoftDeletes)
+        $asset->delete();
+
+        return redirect()->back()->with('success', 'Aset berhasil dipindahkan ke sampah (Trash).');
+    }
+
     public function importExcel(Request $request)
     {
+        Gate::authorize('is-admin');
+
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);

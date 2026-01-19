@@ -20,14 +20,18 @@
         <div>
             <x-input-label for="name" :value="__('Name')" class="dark:text-gray-100" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            @if(isset($errors))
+                <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            @endif
         </div>
 
         @if( Auth::user()->google_id === null )
             <div>
                 <x-input-label for="email" :value="__('Email')" class="dark:text-gray-100" />
                 <x-text-input id="email" name="email" type="email" class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" :value="old('email', $user->email)" required autocomplete="username" />
-                <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                @if(isset($errors))
+                    <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                @endif
 
                 @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                     <div>
@@ -51,7 +55,9 @@
             <div>                
                 <x-input-label for="email" :value="__('Email')" class="dark:text-gray-100" />
                 <x-text-input id="email" name="email" type="email" class="mt-1 block w-full focus:ring-0 focus:border-gray-400 bg-gray-300 border-gray-400" :value="old('email', $user->email)" readonly required autocomplete="username" />
-                <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                @if(isset($errors))
+                    <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                @endif
             </div>
         @endif
 
