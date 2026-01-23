@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('currency')->default('IDR');
             $table->foreignId('owner_id')->constrained('users');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

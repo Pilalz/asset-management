@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AssetSubClass;
-use App\Models\AssetClass;
 use App\Models\AssetName;
 use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
@@ -14,7 +13,6 @@ use App\Exports\AssetNamesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use Spatie\SimpleExcel\SimpleExcelReader;
 use Illuminate\Support\Facades\Cache;
 use App\Jobs\ImportCompleteJob;
 

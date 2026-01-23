@@ -8,17 +8,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Company;
 use App\Models\CompanyUser;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Scopes\UserCompanyScope;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -83,7 +82,7 @@ class User extends Authenticatable
                 $companyUser = CompanyUser::where('user_id', $this->id)
                     ->where('company_id', $this->last_active_company_id)
                     ->first();
-                
+
                 return $companyUser?->role; // Mengembalikan nama role (string) atau null
             }
         );

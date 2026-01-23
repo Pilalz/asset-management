@@ -127,6 +127,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/disposal-asset/{disposal_asset}/restore', [DisposalAssetController::class, 'restore'])->name('disposal-asset.restore');
     //Start Company
     Route::post('/company/switch', [CompanyController::class, 'switch'])->name('company.switch');
+    Route::put('/company/{company}/transfer', [CompanyController::class, 'transfer'])->name('company.transfer');
     //Start Profile
     Route::put('/profile/signature', [ProfileController::class, 'updateSignature'])->name('profile.updateSignature');
 

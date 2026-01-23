@@ -147,7 +147,9 @@
                                     @can('is-dev')
                                         <a href="{{ route('company.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Create Company</a>
                                     @endcan
-                                    <a href="{{ route('company-user.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Add Company User</a>
+                                    @canany(['is-dev', 'is-admin'])
+                                        <a href="{{ route('company-user.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">Add Company User</a>
+                                    @endcan
 
                                 </li>
                             </ul>

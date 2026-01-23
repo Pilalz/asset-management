@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('akses')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

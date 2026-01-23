@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class CompanyController extends Controller
 {
@@ -77,7 +79,12 @@ class CompanyController extends Controller
             ->where('status', 'Active')
             ->count();
 
-        return view('company.edit', compact('company', 'countAsset'));
+        $companyUsers = $company->users()
+            ->where('role', '!=', 'Owner')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return view('company.edit', compact('company', 'countAsset', 'companyUsers'));
     }
 
     public function update(Request $request, Company $company)
@@ -114,7 +121,7 @@ class CompanyController extends Controller
     public function destroy(Company $company)
     {
         User::where('last_active_company_id', $company->id)
-        ->update(['last_active_company_id' => null]);
+            ->update(['last_active_company_id' => null]);
 
         $company->delete();
 
@@ -137,5 +144,37 @@ class CompanyController extends Controller
         }
 
         return redirect()->back()->with('error', 'Akses tidak diizinkan.');
+    }
+
+    public function transfer(Request $request, Company $company)
+    {
+        $this->authorize('update', $company);
+
+        $request->validate([
+            'new_owner_id' => 'required|exists:users,id',
+            'password'     => 'required',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->with('error', 'Password konfirmasi salah.');
+        }
+        
+        $isMember = $company->users()->where('users.id', $request->new_owner_id)->exists();
+        if (!$isMember) {
+            return back()->with('error', 'User tersebut bukan anggota perusahaan ini.');
+        }
+
+        DB::transaction(function () use ($company, $user, $request) {
+            $newOwnerId = $request->new_owner_id;
+
+            $company->update(['owner_id' => $newOwnerId]);
+
+            $company->users()->updateExistingPivot($user->id, ['role' => 'Asset Management']);
+            $company->users()->updateExistingPivot($newOwnerId, ['role' => 'Owner']);
+        });
+
+        return redirect()->route('company.index')->with('success', 'Kepemilikan perusahaan berhasil dipindahkan.');
     }
 }
