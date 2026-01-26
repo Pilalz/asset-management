@@ -328,17 +328,29 @@ class DisposalAssetController extends Controller
     public function restore($id)
     {
         Gate::authorize('is-form-maker');
-        
+
         try {
-            $disposal_asset = DisposalAsset::onlyTrashed()->findOrFail($id);
+            $disposal_asset = DisposalAsset::onlyTrashed()
+                ->with([
+                    'department'=> function($q) { 
+                        $q->withTrashed(); 
+                    },
+                ])
+                ->findOrFail($id);
+
+            if ($disposal_asset->department && $disposal_asset->department->trashed()) {
+                return redirect()->route('disposal-asset.trash')
+                    ->with('error', "Gagal Restore! Departemen '{$disposal_asset->department->name}' saat ini berstatus Terhapus (Deleted). Silahkan restore departemen tersebut terlebih dahulu di menu Master Data.");
+            }
+
             $disposal_asset->restore();
 
         } catch (\Exception $e) {
-            return redirect()->route('disposal-asset.index')
+            return redirect()->route('disposal-asset.trash')
                 ->with('error', 'Gagal memulihkan data: ' . $e->getMessage());
         }
 
-        return redirect()->route('disposal-asset.trash')->with('success', 'Data berhasil dipulihkan!');
+        return redirect()->route('disposal-asset.index')->with('success', 'Data berhasil dipulihkan!');
     }
 
     public function show(DisposalAsset $disposal_asset)

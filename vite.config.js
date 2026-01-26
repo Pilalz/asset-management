@@ -25,8 +25,6 @@ export default defineConfig({
                 'resources/js/pages/history.js',
                 //Signature Pad User
                 'resources/js/pages/profileSignature.js',
-                //Alert
-                'resources/js/pages/alert.js',
                 //User Search
                 'resources/js/pages/userSearch.js',
                 //Transfer Asset

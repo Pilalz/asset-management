@@ -36,9 +36,10 @@
             </ol>
         </nav>
     </div>
+
+    <x-alerts />
     
     <div class="p-5">
-
         <div class="grid grid-cols-1 md:grid-cols-1 mb-5">
             <div class="flex items-center w-full">
                 <div class="w-full bg-white dark:bg-gray-800 dark:text-white p-6 rounded-lg shadow-md relative overflow-hidden">

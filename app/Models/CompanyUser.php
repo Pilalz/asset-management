@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
 
 class CompanyUser extends Pivot
 {

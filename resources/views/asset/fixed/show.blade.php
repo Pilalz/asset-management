@@ -40,6 +40,8 @@
         </div>
     @endcan
     </div>
+
+    <x-alerts />
     
     <div class="p-5">
         <div class="shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">

@@ -113,6 +113,20 @@ class AssetNameController extends Controller
     {
         Gate::authorize('is-admin');
 
+        $hasActiveAssets = $asset_name->assets()
+            ->whereNotIn('assets.status', ['Sold', 'Disposal'])
+            ->exists();
+
+        if ($hasActiveAssets) {
+            return back()->with('error', 'Gagal dihapus! Masih ada Aset Active di Grouping ini.');
+        }
+
+        if ($asset_name->detailRegisters()->whereHas('registerAsset', function ($query) {
+            $query->where('status', '!=', 'Approved');
+        })->exists()) {
+            return back()->with('error', 'Gagal dihapus! Grouping Asset Name ini masih digunakan dalam Detail Register.');
+        }
+
         $asset_name->delete();
 
         return redirect()->route('asset-name.index')->with('success', 'Data berhasil dihapus!');

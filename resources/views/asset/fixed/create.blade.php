@@ -31,6 +31,8 @@
         </nav>
     </div>
 
+    <x-alerts />
+
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
             <form class="max-w mx-auto" action="{{ route('asset.store') }}" method="POST">
@@ -337,155 +339,155 @@
 @endsection
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {    
 
-        // --- 1. Dependent Dropdowns (Class -> SubClass -> Name) ---
-        const classSelect = document.getElementById('asset-class-select');
-        const subClassSelect = document.getElementById('asset-sub-class-select');
-        const nameSelect = document.getElementById('asset-name-select');
+            // --- 1. Dependent Dropdowns (Class -> SubClass -> Name) ---
+            const classSelect = document.getElementById('asset-class-select');
+            const subClassSelect = document.getElementById('asset-sub-class-select');
+            const nameSelect = document.getElementById('asset-name-select');
 
-        // Untuk Create, kita cek old() value dari Blade jika terjadi validasi error
-        const initialSubClassId = "{{ old('asset_sub_class_id') }}";
-        const initialNameId = "{{ old('asset_name_id') }}";
+            // Untuk Create, kita cek old() value dari Blade jika terjadi validasi error
+            const initialSubClassId = "{{ old('asset_sub_class_id') }}";
+            const initialNameId = "{{ old('asset_name_id') }}";
 
-        async function loadSubClasses(classId, selectedSubClassId = null) {
-            if (!classId) {
+            async function loadSubClasses(classId, selectedSubClassId = null) {
+                if (!classId) {
+                    subClassSelect.innerHTML = '<option value="">Choose an Asset Sub Class</option>';
+                    nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
+                    return;
+                }
+                
+                const response = await fetch(`/api/asset-sub-classes-by-class/${classId}`);
+                const data = await response.json();
+                
                 subClassSelect.innerHTML = '<option value="">Choose an Asset Sub Class</option>';
-                nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
-                return;
-            }
-            
-            const response = await fetch(`/api/asset-sub-classes-by-class/${classId}`);
-            const data = await response.json();
-            
-            subClassSelect.innerHTML = '<option value="">Choose an Asset Sub Class</option>';
-            data.forEach(sub => {
-                const option = new Option(sub.name, sub.id);
-                if (selectedSubClassId && selectedSubClassId == sub.id) {
-                    option.selected = true;
+                data.forEach(sub => {
+                    const option = new Option(sub.name, sub.id);
+                    if (selectedSubClassId && selectedSubClassId == sub.id) {
+                        option.selected = true;
+                    }
+                    subClassSelect.add(option);
+                });
+
+                if (selectedSubClassId) {
+                    loadAssetNames(selectedSubClassId, initialNameId);
                 }
-                subClassSelect.add(option);
-            });
-
-            if (selectedSubClassId) {
-                loadAssetNames(selectedSubClassId, initialNameId);
-            }
-        }
-
-        async function loadAssetNames(subClassId, selectedNameId = null) {
-            if (!subClassId) {
-                nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
-                return;
             }
 
-            const response = await fetch(`/api/asset-names-by-sub-class/${subClassId}`);
-            const data = await response.json();
-            
-            nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
-            data.forEach(name => {
-                const option = new Option(name.name, name.id);
-                if (selectedNameId && selectedNameId == name.id) {
-                    option.selected = true;
+            async function loadAssetNames(subClassId, selectedNameId = null) {
+                if (!subClassId) {
+                    nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
+                    return;
                 }
-                nameSelect.add(option);
-            });
-        }
 
-        classSelect.addEventListener('change', function () {
-            loadSubClasses(this.value);
-        });
-
-        subClassSelect.addEventListener('change', function () {
-            loadAssetNames(this.value);
-        });
-
-        // Jika terjadi error validasi dan old value ada
-        if (classSelect.value) {
-            loadSubClasses(classSelect.value, initialSubClassId);
-        }
-
-        // --- 2. Currency & Calculations ---
-        // Logic: Acquisition Value diinput -> NBV sama dengan Acquisition -> Accum Depre = 0
-        const acquisitionDisplay = document.getElementById('acquisition_value_display');
-        const acquisitionHidden = document.getElementById('acquisition_value_hidden');
-        
-        // Target display & hidden fields
-        const targets = [
-            { display: document.getElementById('current_cost_display'), hidden: document.getElementById('current_cost_hidden') },
-            { display: document.getElementById('commercial_nbv_display'), hidden: document.getElementById('commercial_nbv_hidden') },
-            { display: document.getElementById('fiscal_nbv_display'), hidden: document.getElementById('fiscal_nbv_hidden') }
-        ];
-
-        // Accum Depreciation targets (Should be 0 for new assets usually)
-        const accumTargets = [
-             { display: document.getElementById('commercial_accum_display'), hidden: document.getElementById('commercial_accum_hidden') },
-             { display: document.getElementById('fiscal_accum_display'), hidden: document.getElementById('fiscal_accum_hidden') }
-        ];
-
-        function formatRupiah(angka) {
-            const currencyCode = '{{ $activeCompany->currency ?? 'IDR' }}';
-            const locale = (currencyCode === 'USD') ? 'en-US' : 'id-ID';
-            if (!angka || isNaN(angka)) return '';
-            return new Intl.NumberFormat(locale).format(angka);
-        }
-
-        function unformatRupiah(rupiahStr) {
-            return rupiahStr.replace(/[^0-9]/g, ''); // Hapus semua non-digit
-        }
-
-        function processAndSyncValue(inputValue) {
-            let rawValue = unformatRupiah(inputValue);
-            let formattedValue = formatRupiah(rawValue);
-
-            // Set Acquisition
-            acquisitionDisplay.value = formattedValue;
-            acquisitionHidden.value = rawValue;
-
-            // Untuk asset baru, Current Cost & NBV = Acquisition Value
-            targets.forEach(t => {
-                t.display.value = formattedValue;
-                t.hidden.value = rawValue;
-            });
-
-            // Accum Depre tetap 0 kecuali user mengubah manual (tapi di form ini readonly)
-            // Jika Anda ingin Accum Depre otomatis 0:
-            /*
-            accumTargets.forEach(t => {
-                t.display.value = formatRupiah(0);
-                t.hidden.value = 0;
-            });
-            */
-        }
-
-        acquisitionDisplay.addEventListener('input', function(e) {
-            processAndSyncValue(e.target.value);
-        });
-
-        // Trigger on load jika ada old value
-        if (acquisitionDisplay.value) {
-            processAndSyncValue(acquisitionDisplay.value);
-        }
-
-        // --- 3. Status Toggle ---
-        const statusSelect = document.querySelector('.status-select');
-        const otherStatusWrapper = document.getElementById('other-status-wrapper');
-        const otherStatusInput = document.getElementById('other-status-input');
-
-        function handleStatusChange() {
-            if (statusSelect.value === 'Other') {
-                otherStatusWrapper.classList.remove('hidden');
-                otherStatusInput.setAttribute('name', 'status');
-                statusSelect.removeAttribute('name');
-            } else {
-                otherStatusWrapper.classList.add('hidden');
-                statusSelect.setAttribute('name', 'status');
-                otherStatusInput.removeAttribute('name');
+                const response = await fetch(`/api/asset-names-by-sub-class/${subClassId}`);
+                const data = await response.json();
+                
+                nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
+                data.forEach(name => {
+                    const option = new Option(name.name, name.id);
+                    if (selectedNameId && selectedNameId == name.id) {
+                        option.selected = true;
+                    }
+                    nameSelect.add(option);
+                });
             }
-        }
 
-        statusSelect.addEventListener('change', handleStatusChange);
-        handleStatusChange();
-    });
-</script>
+            classSelect.addEventListener('change', function () {
+                loadSubClasses(this.value);
+            });
+
+            subClassSelect.addEventListener('change', function () {
+                loadAssetNames(this.value);
+            });
+
+            // Jika terjadi error validasi dan old value ada
+            if (classSelect.value) {
+                loadSubClasses(classSelect.value, initialSubClassId);
+            }
+
+            // --- 2. Currency & Calculations ---
+            // Logic: Acquisition Value diinput -> NBV sama dengan Acquisition -> Accum Depre = 0
+            const acquisitionDisplay = document.getElementById('acquisition_value_display');
+            const acquisitionHidden = document.getElementById('acquisition_value_hidden');
+            
+            // Target display & hidden fields
+            const targets = [
+                { display: document.getElementById('current_cost_display'), hidden: document.getElementById('current_cost_hidden') },
+                { display: document.getElementById('commercial_nbv_display'), hidden: document.getElementById('commercial_nbv_hidden') },
+                { display: document.getElementById('fiscal_nbv_display'), hidden: document.getElementById('fiscal_nbv_hidden') }
+            ];
+
+            // Accum Depreciation targets (Should be 0 for new assets usually)
+            const accumTargets = [
+                { display: document.getElementById('commercial_accum_display'), hidden: document.getElementById('commercial_accum_hidden') },
+                { display: document.getElementById('fiscal_accum_display'), hidden: document.getElementById('fiscal_accum_hidden') }
+            ];
+
+            function formatRupiah(angka) {
+                const currencyCode = '{{ $activeCompany->currency ?? 'IDR' }}';
+                const locale = (currencyCode === 'USD') ? 'en-US' : 'id-ID';
+                if (!angka || isNaN(angka)) return '';
+                return new Intl.NumberFormat(locale).format(angka);
+            }
+
+            function unformatRupiah(rupiahStr) {
+                return rupiahStr.replace(/[^0-9]/g, ''); // Hapus semua non-digit
+            }
+
+            function processAndSyncValue(inputValue) {
+                let rawValue = unformatRupiah(inputValue);
+                let formattedValue = formatRupiah(rawValue);
+
+                // Set Acquisition
+                acquisitionDisplay.value = formattedValue;
+                acquisitionHidden.value = rawValue;
+
+                // Untuk asset baru, Current Cost & NBV = Acquisition Value
+                targets.forEach(t => {
+                    t.display.value = formattedValue;
+                    t.hidden.value = rawValue;
+                });
+
+                // Accum Depre tetap 0 kecuali user mengubah manual (tapi di form ini readonly)
+                // Jika Anda ingin Accum Depre otomatis 0:
+                /*
+                accumTargets.forEach(t => {
+                    t.display.value = formatRupiah(0);
+                    t.hidden.value = 0;
+                });
+                */
+            }
+
+            acquisitionDisplay.addEventListener('input', function(e) {
+                processAndSyncValue(e.target.value);
+            });
+
+            // Trigger on load jika ada old value
+            if (acquisitionDisplay.value) {
+                processAndSyncValue(acquisitionDisplay.value);
+            }
+
+            // --- 3. Status Toggle ---
+            const statusSelect = document.querySelector('.status-select');
+            const otherStatusWrapper = document.getElementById('other-status-wrapper');
+            const otherStatusInput = document.getElementById('other-status-input');
+
+            function handleStatusChange() {
+                if (statusSelect.value === 'Other') {
+                    otherStatusWrapper.classList.remove('hidden');
+                    otherStatusInput.setAttribute('name', 'status');
+                    statusSelect.removeAttribute('name');
+                } else {
+                    otherStatusWrapper.classList.add('hidden');
+                    statusSelect.setAttribute('name', 'status');
+                    otherStatusInput.removeAttribute('name');
+                }
+            }
+
+            statusSelect.addEventListener('change', handleStatusChange);
+            handleStatusChange();
+        });
+    </script>
 @endpush

@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Insurance;
-use App\Models\Asset;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
 
 class InsuranceController extends Controller

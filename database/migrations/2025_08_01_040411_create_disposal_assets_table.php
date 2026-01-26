@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('status');
             $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

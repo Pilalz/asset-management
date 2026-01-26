@@ -11,7 +11,6 @@ use App\Models\Location;
 use App\Models\Company;
 use App\Models\DetailTransfer;
 use App\Scopes\CompanyScope;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -38,12 +37,12 @@ class TransferAsset extends Model
 
     public function department(): BelongsTo
     {
-        return $this->belongsTo(Department::class, 'department_id');
+        return $this->belongsTo(Department::class, 'department_id')->withTrashed();
     }
 
     public function destinationLocation(): BelongsTo
     {
-        return $this->belongsTo(Location::class, 'destination_loc_id');
+        return $this->belongsTo(Location::class, 'destination_loc_id')->withTrashed();
     }
 
     public function company(): BelongsTo

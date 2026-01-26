@@ -81,6 +81,26 @@ class DepartmentController extends Controller
     {
         Gate::authorize('is-admin');
         
+        if ($department->registerAsset()->where('register_assets.status', '!=', 'Approved')->exists()) {
+            return back()->with('error', 'Gagal dihapus! Department ini masih digunakan dalam transaksi Register Asset.');
+        }
+
+        if ($department->transferAsset()->where('transfer_assets.status', '!=', 'Approved')->exists()) {
+            return back()->with('error', 'Gagal dihapus! Department ini sedang dalam proses Transfer Asset.');
+        }
+
+        if ($department->disposalAsset()->where('disposal_assets.status', '!=', 'Approved')->exists()) {
+            return back()->with('error', 'Gagal dihapus! Department ini sedang dalam proses Disposal Asset.');
+        }
+
+        $hasActiveAssets = $department->assets()
+            ->whereNotIn('assets.status', ['Sold', 'Disposal'])
+            ->exists();
+
+        if ($hasActiveAssets) {
+            return back()->with('error', 'Gagal dihapus! Masih ada Aset Active di department ini.');
+        }
+
         $department->delete();
 
         return redirect()->route('department.index')->with('success', 'Data berhasil dihapus!');

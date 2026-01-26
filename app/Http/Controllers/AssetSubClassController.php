@@ -106,6 +106,10 @@ class AssetSubClassController extends Controller
     {
         Gate::authorize('is-admin');
 
+        if ($asset_sub_class->assetNames()->exists()) {
+            return back()->with('error', 'Gagal dihapus! Grouping Asset Sub Class ini masih digunakan dalam Grouping Asset Name.');
+        }
+
         $asset_sub_class->delete();
 
         return redirect()->route('asset-sub-class.index')->with('success', 'Data berhasil dihapus!');

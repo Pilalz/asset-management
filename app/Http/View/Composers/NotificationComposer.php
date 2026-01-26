@@ -5,7 +5,6 @@ namespace App\Http\View\Composers;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Approval;
-use App\Models\CompanyUser;
 use App\Models\RegisterAsset;
 use App\Models\TransferAsset;
 use App\Models\DisposalAsset;

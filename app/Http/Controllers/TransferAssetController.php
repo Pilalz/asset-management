@@ -10,7 +10,6 @@ use App\Models\Location;
 use App\Models\Department;
 use App\Models\Attachment;
 use App\Models\User;
-use App\Models\Approval;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -338,17 +337,37 @@ class TransferAssetController extends Controller
     public function restore($id)
     {
         Gate::authorize('is-form-maker');
-        
+
         try {
-            $transfer_asset = TransferAsset::onlyTrashed()->findOrFail($id);
+            $transfer_asset = TransferAsset::onlyTrashed()
+                ->with([
+                    'destinationLocation' => function($q) { 
+                        $q->withTrashed(); 
+                    },
+                    'department'=> function($q) { 
+                        $q->withTrashed(); 
+                    },
+                ])
+                ->findOrFail($id);
+
+            if ($transfer_asset->destinationLocation && $transfer_asset->destinationLocation->trashed()) {
+                return redirect()->route('transfer-asset.trash')
+                    ->with('error', "Gagal Restore! Lokasi '{$transfer_asset->destinationLocation->name}' saat ini berstatus Terhapus (Deleted).");
+            }
+
+            if ($transfer_asset->department && $transfer_asset->department->trashed()) {
+                return redirect()->route('transfer-asset.trash')
+                    ->with('error', "Gagal Restore! Departemen '{$transfer_asset->department->name}' saat ini berstatus Terhapus (Deleted). Silahkan restore departemen tersebut terlebih dahulu di menu Master Data.");
+            }
+            
             $transfer_asset->restore();
 
         } catch (\Exception $e) {
-            return redirect()->route('transfer-asset.index')
+            return redirect()->route('transfer-asset.trash')
                 ->with('error', 'Gagal memulihkan data: ' . $e->getMessage());
         }
 
-        return redirect()->route('transfer-asset.trash')->with('success', 'Data berhasil dipulihkan!');
+        return redirect()->route('transfer-asset.index')->with('success', 'Data berhasil dipulihkan!');
     }
 
     public function show(TransferAsset $transfer_asset)

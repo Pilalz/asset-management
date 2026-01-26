@@ -195,59 +195,7 @@
         </div>
     </div>
 
-    @if (session('success'))
-        <div id="alert-3" class="auto-dismiss-alert flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-            <svg class="shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span class="sr-only">Info</span>
-            <div class="ms-3 text-sm font-medium">
-                {{ session('success') }}
-            </div>
-            <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700" data-dismiss-target="#alert-3" aria-label="Close">
-                <span class="sr-only">Close</span>
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                </svg>
-            </button>
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div id="alert-2" class="auto-dismiss-alert flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-            <svg class="shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span class="sr-only">Info</span>
-            <div class="ms-3 text-sm font-medium">
-                {{ session('error') }}
-            </div>
-            <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700" data-dismiss-target="#alert-2" aria-label="Close">
-                <span class="sr-only">Close</span>
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                </svg>
-            </button>
-        </div>
-    @endif
-
-    @if (session('info'))
-        <div id="alert-1" class="auto-dismiss-alert flex items-center p-4 mb-4 text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-            <svg class="shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span class="sr-only">Info</span>
-            <div class="ms-3 text-sm font-medium">
-                {{ session('info') }}
-            </div>
-                <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-blue-50 text-blue-500 rounded-lg focus:ring-2 focus:ring-blue-400 p-1.5 hover:bg-blue-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700" data-dismiss-target="#alert-1" aria-label="Close">
-                <span class="sr-only">Close</span>
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                </svg>
-            </button>
-        </div>
-    @endif
+    <x-alerts />
     
     <div class="p-5">
         <div class="shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
@@ -292,315 +240,315 @@
 @endsection
 
 @push('scripts')
-<script>
+    <script>
 
-    const assetNamesData = @json($assetNamesForFilter ?? []);
-    const locationsData = @json($locationsForFilter ?? []);
-    const departmentsData = @json($departmentsForFilter ?? []);
+        const assetNamesData = @json($assetNamesForFilter ?? []);
+        const locationsData = @json($locationsForFilter ?? []);
+        const departmentsData = @json($departmentsForFilter ?? []);
 
-    document.addEventListener('DOMContentLoaded', () => {
-        if (typeof $ !== 'undefined') {
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof $ !== 'undefined') {
 
-            //DEPRE ALL
-            const runBtn = $('#run-all-btn');
-            const statusContainer = $('#status-container');
-            const statusText = $('#status-text');
-            
-            let eventSource = null; // Variabel untuk menyimpan koneksi EventSource
+                //DEPRE ALL
+                const runBtn = $('#run-all-btn');
+                const statusContainer = $('#status-container');
+                const statusText = $('#status-text');
+                
+                let eventSource = null; // Variabel untuk menyimpan koneksi EventSource
 
-            // Fungsi untuk memulai mendengarkan pembaruan dari server
-            function listenForUpdates() {
-                // Tutup koneksi lama jika ada
-                if (eventSource) {
-                    eventSource.close();
-                }
-
-                // Buka koneksi baru ke stream
-                eventSource = new EventSource("{{ route('depreciation.stream') }}");
-
-                // Fungsi ini akan berjalan setiap kali server mengirim data
-                eventSource.onmessage = function(event) {
-                    const data = JSON.parse(event.data);
-
-                    if (!data) {
-                        eventSource.close();
-                        updateUI('idle');
-                        return;
-                    }
-
-                    // Update UI berdasarkan status yang diterima
-                    updateUI(data.status, data.progress, data.message, data.error);
-
-                    // Jika proses selesai atau gagal, tutup koneksi
-                    if (data.status === 'completed' || data.status === 'failed') {
+                // Fungsi untuk memulai mendengarkan pembaruan dari server
+                function listenForUpdates() {
+                    // Tutup koneksi lama jika ada
+                    if (eventSource) {
                         eventSource.close();
                     }
-                };
 
-                // Tangani error koneksi
-                eventSource.onerror = function() {
-                    console.error("Koneksi SSE gagal. Menutup koneksi.");
-                    eventSource.close();
-                    updateUI('idle');
-                };
-            }
+                    // Buka koneksi baru ke stream
+                    eventSource = new EventSource("{{ route('depreciation.stream') }}");
 
-            // Fungsi terpusat untuk memperbarui tampilan
-            function updateUI(status, progress = 0, message = '', error = '') {
-                if (status === 'running') {
-                    runBtn.prop('disabled', true).addClass('cursor-not-allowed bg-gray-400');
-                    statusContainer.removeClass('hidden');
-                    statusContainer.addClass('flex');
+                    // Fungsi ini akan berjalan setiap kali server mengirim data
+                    eventSource.onmessage = function(event) {
+                        const data = JSON.parse(event.data);
 
-                    statusText.text('Sedang memproses... (' + Math.round(progress) + '%)');
-                } else {
-                    runBtn.prop('disabled', false).removeClass('cursor-not-allowed bg-gray-400');
-                    statusContainer.removeClass('flex');
-                    statusContainer.addClass('hidden');
-                    
-                    if (status === 'completed') {
-                        alert(message || 'Proses depresiasi selesai!');
-                        $('#assetTable').DataTable().ajax.reload(null, false);
-                        $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" });
-                    } else if (status === 'failed') {
-                        alert('Proses depresiasi gagal: ' + error);
-                        $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" });
-                    }
-                }
-            }
-            
-            // Event listener untuk tombol "Run All"
-            runBtn.on('click', function() {
-                if (!confirm('Apakah Anda yakin ingin menjalankan depresiasi untuk semua aset?')) return;
+                        if (!data) {
+                            eventSource.close();
+                            updateUI('idle');
+                            return;
+                        }
 
-                updateUI('running', 0);
-                statusText.text('Mengirim permintaan...');
+                        // Update UI berdasarkan status yang diterima
+                        updateUI(data.status, data.progress, data.message, data.error);
 
-                $.post("{{ route('depreciation.runAll') }}")
-                    .done(function() {
-                        // Setelah job berhasil dimulai, mulai mendengarkan
-                        listenForUpdates();
-                    })
-                    .fail(function(xhr) {
-                        alert('Gagal memulai proses: ' + (xhr.responseJSON?.message || 'Error tidak diketahui.'));
+                        // Jika proses selesai atau gagal, tutup koneksi
+                        if (data.status === 'completed' || data.status === 'failed') {
+                            eventSource.close();
+                        }
+                    };
+
+                    // Tangani error koneksi
+                    eventSource.onerror = function() {
+                        console.error("Koneksi SSE gagal. Menutup koneksi.");
+                        eventSource.close();
                         updateUI('idle');
-                    });
-            });
-            
-            // Cek status saat halaman pertama kali dimuat
-            $.get("{{ route('depreciation.status') }}").done(function(data) {
-                if (data && data.status === 'running') {
-                    // Jika job sudah berjalan, langsung mulai mendengarkan
-                    listenForUpdates();
+                    };
                 }
-            });
 
-            //TABLE
-            $('#assetTable thead tr:eq(0) th').each(function(i) {
-                var title = $(this).text().trim();
-                var cell = $('#filter-row').children().eq(i);
-                if (i === 0 || i === 4 || i === 17) {
-                    return;
-                }
-                else if (i === 3) {
-                    let options = assetNamesData.map(assetName =>
-                        `<option value="${assetName.name}">${assetName.name}</option>` // Value pakai ID
-                    ).join('');
-                    $(cell).html(
-                        `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            <option selected value="">Select Asset Name</option>
-                            ${options}
-                        </select>`
-                    );
-                }
-                else if (i === 8) {
-                    let options = locationsData.map(loc =>
-                        `<option value="${loc.name}">${loc.name}</option>` // Value pakai ID
-                    ).join('');
-                    $(cell).html(
-                        `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            <option selected value="">Select Location</option>
-                            ${options}
-                        </select>`
-                    );
-                }
-                else if (i === 9) {
-                    let options = departmentsData.map(dept =>
-                        `<option value="${dept.name}">${dept.name}</option>` // Value pakai ID
-                    ).join('');
-                    $(cell).html(
-                        `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            <option selected value="">Select Department</option>
-                            ${options}
-                        </select>`
-                    );
-                }
-                else if (i === 10 || i === 13 || i === 14 || i === 15 || i === 16) {
-                    $(cell).html('<input type="number" min="1" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
-                }
-                else if (i === 11 || i === 12) {
-                    $(cell).html('<input type="date" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
-                }
-                else {
-                    $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
-                }
-            });
+                // Fungsi terpusat untuk memperbarui tampilan
+                function updateUI(status, progress = 0, message = '', error = '') {
+                    if (status === 'running') {
+                        runBtn.prop('disabled', true).addClass('cursor-not-allowed bg-gray-400');
+                        statusContainer.removeClass('hidden');
+                        statusContainer.addClass('flex');
 
-            var table = $('#assetTable').DataTable({
-            dom:  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'l><'text-sm'f>>" +
-                "<'overflow-x-auto'tr>" +
-                "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('api.asset') }}",
-            autoWidth: false,
-            orderCellsTop: true,
-            columns: [
-                { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
-                { data: 'asset_number', name: 'asset_number' },
-                { data: 'status', name: 'status' },
-                { data: 'asset_name_name', name: 'asset_name_name' },
-                { data: 'asset_class_obj', name: 'asset_class_obj' },
-                { data: 'description', name: 'description' },
-                { data: 'pareto', name: 'pareto' },
-                { data: 'po_no', name: 'po_no' },
-                { data: 'location_name', name: 'location_name' },
-                { data: 'department_name', name: 'department_name' },
-                { data: 'quantity', name: 'quantity' },
-                { data: 'capitalized_date', name: 'capitalized_date' },
-                { data: 'start_depre_date', name: 'start_depre_date' },
-                { data: 'acquisition_value', name: 'acquisition_value' },
-                { data: 'commercial_useful_life_month', name: 'commercial_useful_life_month' },
-                { data: 'commercial_accum_depre', name: 'commercial_accum_depre' },
-                { data: 'commercial_nbv', name: 'commercial_nbv' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
-            ],
-            order: [[0, 'asc']],
-            language: {
-                search: "Search : ",
-                searchPlaceholder: "Cari di sini...",
-            },
-            initComplete: function () {
-                $('.dt-search input').addClass('w-full sm:w-auto bg-white-50 border border-white-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500');
-
-                // --- Logika untuk filter per kolom ---
-                this.api().columns().every(function (index) {
-                    var column = this;
-                    var cell = $('#assetTable thead #filter-row').children().eq(column.index());
-                    
-                    if (column.settings()[0].bSearchable === false) {
-                        return;
+                        statusText.text('Sedang memproses... (' + Math.round(progress) + '%)');
+                    } else {
+                        runBtn.prop('disabled', false).removeClass('cursor-not-allowed bg-gray-400');
+                        statusContainer.removeClass('flex');
+                        statusContainer.addClass('hidden');
+                        
+                        if (status === 'completed') {
+                            alert(message || 'Proses depresiasi selesai!');
+                            $('#assetTable').DataTable().ajax.reload(null, false);
+                            $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" });
+                        } else if (status === 'failed') {
+                            alert('Proses depresiasi gagal: ' + error);
+                            $.post("{{ route('depreciation.clearStatus') }}", { _token: "{{ csrf_token() }}" });
+                        }
                     }
-                    
-                    var input = $('input', cell);
-                    input.on('keyup change clear', function(e) {
-                        e.stopPropagation();
-                        if (column.search() !== this.value) {
-                            column.search(this.value).draw();
-                        }
-                    });
-                    input.on('click', function(e) {
-                        e.stopPropagation();
-                    });
+                }
+                
+                // Event listener untuk tombol "Run All"
+                runBtn.on('click', function() {
+                    if (!confirm('Apakah Anda yakin ingin menjalankan depresiasi untuk semua aset?')) return;
 
-                    var select = $('select', cell);
-                    select.on('change', function(e) {
-                        e.stopPropagation();
-                        if (column.search() !== this.value) {
-                            column.search(this.value).draw();
-                        }
-                    });
-                    select.on('click', function(e) {
-                        e.stopPropagation();
-                    });
+                    updateUI('running', 0);
+                    statusText.text('Mengirim permintaan...');
+
+                    $.post("{{ route('depreciation.runAll') }}")
+                        .done(function() {
+                            // Setelah job berhasil dimulai, mulai mendengarkan
+                            listenForUpdates();
+                        })
+                        .fail(function(xhr) {
+                            alert('Gagal memulai proses: ' + (xhr.responseJSON?.message || 'Error tidak diketahui.'));
+                            updateUI('idle');
+                        });
                 });
-            },
-
-            columnDefs: [
-                {
-                    targets: 0,
-                    className: 'px-6 py-4'
-                },
-                {
-                    targets: 4, 
-                    render: function (data, type, row) {
-                        if (type === 'display') {
-                            return 'Direct Ownership : ' + data;
-                        }
-                        return data;
+                
+                // Cek status saat halaman pertama kali dimuat
+                $.get("{{ route('depreciation.status') }}").done(function(data) {
+                    if (data && data.status === 'running') {
+                        // Jika job sudah berjalan, langsung mulai mendengarkan
+                        listenForUpdates();
                     }
+                });
+
+                //TABLE
+                $('#assetTable thead tr:eq(0) th').each(function(i) {
+                    var title = $(this).text().trim();
+                    var cell = $('#filter-row').children().eq(i);
+                    if (i === 0 || i === 4 || i === 17) {
+                        return;
+                    }
+                    else if (i === 3) {
+                        let options = assetNamesData.map(assetName =>
+                            `<option value="${assetName.name}">${assetName.name}</option>` // Value pakai ID
+                        ).join('');
+                        $(cell).html(
+                            `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <option selected value="">Select Asset Name</option>
+                                ${options}
+                            </select>`
+                        );
+                    }
+                    else if (i === 8) {
+                        let options = locationsData.map(loc =>
+                            `<option value="${loc.name}">${loc.name}</option>` // Value pakai ID
+                        ).join('');
+                        $(cell).html(
+                            `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <option selected value="">Select Location</option>
+                                ${options}
+                            </select>`
+                        );
+                    }
+                    else if (i === 9) {
+                        let options = departmentsData.map(dept =>
+                            `<option value="${dept.name}">${dept.name}</option>` // Value pakai ID
+                        ).join('');
+                        $(cell).html(
+                            `<select class="filter-select w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <option selected value="">Select Department</option>
+                                ${options}
+                            </select>`
+                        );
+                    }
+                    else if (i === 10 || i === 13 || i === 14 || i === 15 || i === 16) {
+                        $(cell).html('<input type="number" min="1" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+                    }
+                    else if (i === 11 || i === 12) {
+                        $(cell).html('<input type="date" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+                    }
+                    else {
+                        $(cell).html('<input type="text" class="w-auto p-2 mx-2 my-2 text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search..." />');
+                    }
+                });
+
+                var table = $('#assetTable').DataTable({
+                dom:  "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'l><'text-sm'f>>" +
+                    "<'overflow-x-auto'tr>" +
+                    "<'flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 dark:bg-gray-700'<'text-sm text-gray-700 dark:text-gray-200'i><'text-sm'p>>",
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('api.asset') }}",
+                autoWidth: false,
+                orderCellsTop: true,
+                columns: [
+                    { data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false },
+                    { data: 'asset_number', name: 'asset_number' },
+                    { data: 'status', name: 'status' },
+                    { data: 'asset_name_name', name: 'asset_name_name' },
+                    { data: 'asset_class_obj', name: 'asset_class_obj' },
+                    { data: 'description', name: 'description' },
+                    { data: 'pareto', name: 'pareto' },
+                    { data: 'po_no', name: 'po_no' },
+                    { data: 'location_name', name: 'location_name' },
+                    { data: 'department_name', name: 'department_name' },
+                    { data: 'quantity', name: 'quantity' },
+                    { data: 'capitalized_date', name: 'capitalized_date' },
+                    { data: 'start_depre_date', name: 'start_depre_date' },
+                    { data: 'acquisition_value', name: 'acquisition_value' },
+                    { data: 'commercial_useful_life_month', name: 'commercial_useful_life_month' },
+                    { data: 'commercial_accum_depre', name: 'commercial_accum_depre' },
+                    { data: 'commercial_nbv', name: 'commercial_nbv' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false }
+                ],
+                order: [[0, 'asc']],
+                language: {
+                    search: "Search : ",
+                    searchPlaceholder: "Cari di sini...",
                 },
-                {
-                    targets: [11, 12],
-                    render: function (data, type, row) {
-                        if (type === 'display') {
-                            if (!data) {
-                                return '-';
+                initComplete: function () {
+                    $('.dt-search input').addClass('w-full sm:w-auto bg-white-50 border border-white-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500');
+
+                    // --- Logika untuk filter per kolom ---
+                    this.api().columns().every(function (index) {
+                        var column = this;
+                        var cell = $('#assetTable thead #filter-row').children().eq(column.index());
+                        
+                        if (column.settings()[0].bSearchable === false) {
+                            return;
+                        }
+                        
+                        var input = $('input', cell);
+                        input.on('keyup change clear', function(e) {
+                            e.stopPropagation();
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
                             }
-                            
-                            try {
-                                const date = new Date(data);
+                        });
+                        input.on('click', function(e) {
+                            e.stopPropagation();
+                        });
+
+                        var select = $('select', cell);
+                        select.on('change', function(e) {
+                            e.stopPropagation();
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
+                            }
+                        });
+                        select.on('click', function(e) {
+                            e.stopPropagation();
+                        });
+                    });
+                },
+
+                columnDefs: [
+                    {
+                        targets: 0,
+                        className: 'px-6 py-4'
+                    },
+                    {
+                        targets: 4, 
+                        render: function (data, type, row) {
+                            if (type === 'display') {
+                                return 'Direct Ownership : ' + data;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        targets: [11, 12],
+                        render: function (data, type, row) {
+                            if (type === 'display') {
+                                if (!data) {
+                                    return '-';
+                                }
                                 
-                                const options = {
-                                    day: 'numeric',
-                                    month: 'long',
-                                    year: 'numeric'
-                                };
+                                try {
+                                    const date = new Date(data);
+                                    
+                                    const options = {
+                                        day: 'numeric',
+                                        month: 'long',
+                                        year: 'numeric'
+                                    };
 
-                                return date.toLocaleDateString('id-ID', options);
-                            } catch (e) {
-                                return data;
+                                    return date.toLocaleDateString('id-ID', options);
+                                } catch (e) {
+                                    return data;
+                                }
                             }
+                            return data;
                         }
-                        return data;
+                    },
+                    {
+                        targets: [13, 15, 16], 
+                        render: function (data, type, row) {
+                            if (type === 'display') {
+                                let number = parseFloat(data);
+
+                                if (isNaN(number)) {
+                                    return data;
+                                }
+
+                                const currencyCode = row.currency || 'USD'; 
+                                let locale = 'en-US';
+                                if (currencyCode === 'IDR') {
+                                    locale = 'id-ID';
+                                }
+
+                                return number.toLocaleString(locale, {
+                                    style: 'currency',
+                                    currency: currencyCode,
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0
+                                });
+                            }
+                            return data;
+                        }
                     }
+                ],
+
+                createdRow: function( row, data, dataIndex ) {
+                    $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
                 },
-                {
-                    targets: [13, 15, 16], 
-                    render: function (data, type, row) {
-                        if (type === 'display') {
-                            let number = parseFloat(data);
-
-                            if (isNaN(number)) {
-                                return data;
-                            }
-
-                            const currencyCode = row.currency || 'USD'; 
-                            let locale = 'en-US';
-                            if (currencyCode === 'IDR') {
-                                locale = 'id-ID';
-                            }
-
-                            return number.toLocaleString(locale, {
-                                style: 'currency',
-                                currency: currencyCode,
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 0
-                            });
-                        }
-                        return data;
-                    }
-                }
-            ],
-
-            createdRow: function( row, data, dataIndex ) {
-                $(row).addClass('bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
-            },
-        });
-
-        table.columns().every(function() {
-            var that = this;
-            
-            // Event untuk filtering saat mengetik
-            $('input', $('#assetTable thead #filter-row').children().eq(this.index())).on('keyup change clear', function(e) {
-                e.stopPropagation(); // Hentikan event agar tidak memicu sorting
-                if (that.search() !== this.value) {
-                    that.search(this.value).draw();
-                }
             });
-        });
 
-        }
-    });
-</script>
+            table.columns().every(function() {
+                var that = this;
+                
+                // Event untuk filtering saat mengetik
+                $('input', $('#assetTable thead #filter-row').children().eq(this.index())).on('keyup change clear', function(e) {
+                    e.stopPropagation(); // Hentikan event agar tidak memicu sorting
+                    if (that.search() !== this.value) {
+                        that.search(this.value).draw();
+                    }
+                });
+            });
+
+            }
+        });
+    </script>
 @endpush

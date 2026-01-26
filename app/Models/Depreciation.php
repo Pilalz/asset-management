@@ -10,7 +10,6 @@ use App\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
-use Illuminate\Support\Facades\Log;
 
 class Depreciation extends Model
 {

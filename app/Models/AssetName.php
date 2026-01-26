@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\AssetSubClass;
 use App\Models\Company;
+use App\Models\RegisterAsset;
 use App\Models\Asset;
 use App\Scopes\CompanyScope;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -38,9 +40,14 @@ class AssetName extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function Assets(): HasMany
+    public function assets(): HasMany
     {
         return $this->hasMany(Asset::class, 'asset_name_id', 'id');
+    }
+
+    public function detailRegisters(): HasMany
+    {
+        return $this->hasMany(RegisterAsset::class, 'asset_name_id', 'id');
     }
 
     protected static function booted(): void

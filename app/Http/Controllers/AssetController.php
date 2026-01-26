@@ -276,11 +276,21 @@ class AssetController extends Controller
     public function destroy($id)
     {
         Gate::authorize('is-admin');
-        
-        // Cari aset (secara default hanya mencari yang statusnya aktif/belum dihapus)
+
         $asset = Asset::findOrFail($id);
 
-        // Hapus (Ini otomatis jadi Soft Delete karena di Model sudah pakai trait SoftDeletes)
+        if ($asset->detailTransfers()->whereHas('transferAsset', function ($query) {
+            $query->where('status', '!=', 'Approved');
+        })->exists()) {
+            return back()->with('error', 'Gagal dihapus! Aset ini sedang dalam proses transaksi Transfer Asset yang belum selesai.');
+        }
+
+        if ($asset->detailDisposals()->whereHas('disposalAsset', function ($query) {
+            $query->where('status', '!=', 'Approved');
+        })->exists()) {
+            return back()->with('error', 'Gagal dihapus! Aset ini sedang dalam proses transaksi Disposal Asset yang belum selesai.');
+        }
+
         $asset->delete();
 
         return redirect()->back()->with('success', 'Aset berhasil dipindahkan ke sampah (Trash).');

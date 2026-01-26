@@ -31,6 +31,8 @@
         </nav>
     </div>
 
+    <x-alerts />
+
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-900">
             <form class="max-w mx-auto" action="{{ route('assetArrival.update', $asset->id) }}" method="POST">
@@ -47,7 +49,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Number <span class="text-red-900 dark:text-red-400">*</span></label>
                         <input type="text" name="asset_number" value="{{ old('asset_number', $asset->asset_number) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                         @error('asset_number')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -92,7 +94,7 @@
                                 <option value="Other">Other</option>
                             </select>
                             @error('status')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </div>
                     @elseif ($asset->asset_type === 'LVA')
@@ -105,7 +107,7 @@
                                 <option value="Other">Other</option>
                             </select>
                             @error('status')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </div>
                     @endif
@@ -127,7 +129,7 @@
                             @endforeach
                         </select>
                         @error('location_id')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -142,7 +144,7 @@
                             @endforeach
                         </select>
                         @error('department_id')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -150,7 +152,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User </label>
                         <input type="text" name="user" value="{{ old('user', $asset->user) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         @error('user')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -158,7 +160,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity <span class="text-red-900 dark:text-red-400">*</span></label>
                         <input type="number" name="quantity" value="{{ old('quantity', $asset->quantity) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                         @error('quantity')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
@@ -174,7 +176,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description <span class="text-red-900 dark:text-red-400">*</span></label>
                         <input type="text" name="description" value="{{ old('description', $asset->description) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                         @error('description')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -182,7 +184,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Detail </label>
                         <input type="text" name="detail" value="{{ old('detail', $asset->detail) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         @error('detail')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -195,7 +197,7 @@
                             @endfor
                         </select>
                         @error('production_year')
-                            <div class="text-danger mt-2 text-sm">{{ $message }}</div>
+                            <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -203,7 +205,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unit No </label>
                         <input type="text" name="unit_no" value="{{ old('unit_no', $asset->unit_no) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         @error('unit_no')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -211,7 +213,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">SN Engine </label>
                         <input type="text" name="sn_engine" value="{{ old('sn_engine', $asset->sn_engine) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         @error('sn_engine')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -219,7 +221,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">SN Chassis </label>
                         <input type="text" name="sn_chassis" value="{{ old('sn_chassis', $asset->sn_chassis) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         @error('sn_chassis')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -227,7 +229,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pareto </label>
                         <input type="text" name="pareto" value="{{ old('pareto', $asset->pareto) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         @error('pareto')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -236,7 +238,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Serial Number </label>
                         <input type="text" name="sn" value="{{ old('sn', $asset->sn) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         @error('sn')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
                     @endif
@@ -253,7 +255,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">PO No <span class="text-red-900 dark:text-red-400">*</span></label>
                         <input type="text" name="po_no" value="{{ old('po_no', $asset->po_no) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                         @error('po_no')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -272,7 +274,7 @@
                             <input type="text" id="acquisition_value-display" value="{{ old('acquisition_value', $asset->acquisition_value) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             <input type="hidden" name="acquisition_value" id="acquisition_value-value" value="{{ old('acquisition_value', $asset->acquisition_value) }}" required />
                             @error('acquisition_value')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
@@ -282,7 +284,7 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900 dark:text-red-400">*</span></label>
                             <input type="date" name="capitalized_date" id="capitalized_date" value="{{ old('capitalized_date', $asset->capitalized_date?->format('Y-m-d')) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             @error('capitalized_date')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </div>
                     @else
@@ -290,7 +292,7 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capitalized Date <span class="text-red-900 dark:text-red-400">*</span></label>
                             <input type="date" name="capitalized_date" value="{{ old('capitalized_date', $asset->capitalized_date?->format('Y-m-d')) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             @error('capitalized_date')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </div>
                     @endif
@@ -300,7 +302,7 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start Depre Date <span class="text-red-900 dark:text-red-400">*</span></label>
                             <input type="date" name="start_depre_date" id="start_depre_date" value="{{ old('start_depre_date', $asset->start_depre_date?->format('Y-m-d')) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                             @error('start_depre_date')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </div>
                     @endif
@@ -317,7 +319,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Remark </label>
                         <input type="text" name="remaks" value="{{ old('remaks', $asset->remaks) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         @error('remaks')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-red-500">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
@@ -332,160 +334,160 @@
 @endsection
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-        const capitalizedDateInput = document.getElementById('capitalized_date');
-        const startDepreDateInput = document.getElementById('start_depre_date');
+            const capitalizedDateInput = document.getElementById('capitalized_date');
+            const startDepreDateInput = document.getElementById('start_depre_date');
 
-        if (capitalizedDateInput && startDepreDateInput) {
+            if (capitalizedDateInput && startDepreDateInput) {
+                
+                const setStartDepreDate = () => {
+                    const capitalizedDateValue = capitalizedDateInput.value;
+                    if (capitalizedDateValue) {
+                        const date = new Date(capitalizedDateValue);
+                        const year = date.getFullYear();
+                        // getMonth() dimulai dari 0 (Januari=0), jadi perlu + 1
+                        // String(...).padStart(2, '0') untuk memastikan format bulan selalu 2 digit (e.g., 08)
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const newStartDate = `${year}-${month}-01`;
+                        startDepreDateInput.value = newStartDate;
+                    }
+                };
+
+                // Tambahkan event listener untuk dijalankan saat tanggal berubah
+                capitalizedDateInput.addEventListener('change', setStartDepreDate);
+
+                // Jalankan sekali saat halaman dimuat untuk mengatur nilai awal
+                setStartDepreDate();
+            }
             
-            const setStartDepreDate = () => {
-                const capitalizedDateValue = capitalizedDateInput.value;
-                if (capitalizedDateValue) {
-                    const date = new Date(capitalizedDateValue);
-                    const year = date.getFullYear();
-                    // getMonth() dimulai dari 0 (Januari=0), jadi perlu + 1
-                    // String(...).padStart(2, '0') untuk memastikan format bulan selalu 2 digit (e.g., 08)
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const newStartDate = `${year}-${month}-01`;
-                    startDepreDateInput.value = newStartDate;
+            /**
+             * Fungsi untuk memformat input menjadi format mata uang US Dollar.
+             * @param {HTMLInputElement} visibleInput - Input yang dilihat pengguna.
+             * @param {HTMLInputElement} hiddenInput - Input tersembunyi untuk menyimpan nilai asli.
+             */
+            function autoFormatCurrency(visibleInput, hiddenInput) {
+
+                const currencyCode = '{{ $activeCompany->currency ?? 'USD' }}';
+
+                const formatValue = (value) => {
+                    let cleanValue = value.toString().replace(/[^\d]/g, '');
+                    if (cleanValue) {
+                        hiddenInput.value = cleanValue;
+                        // Format nilai yang terlihat
+
+                        const locale = (currencyCode === 'USD') ? 'en-US' : 'id-ID';
+                        visibleInput.value = new Intl.NumberFormat(locale).format(cleanValue);
+                    } else {
+                        hiddenInput.value = '';
+                        visibleInput.value = '';
+                    }
+                };
+
+                // Format nilai awal saat halaman dimuat
+                formatValue(visibleInput.value);
+
+                // Tambahkan event listener untuk memformat saat pengguna mengetik
+                visibleInput.addEventListener('input', (e) => {
+                    formatValue(e.target.value);
+                });
+            }
+
+            // Terapkan fungsi ke semua input mata uang
+            autoFormatCurrency(
+                document.getElementById('acquisition_value-display'),
+                document.getElementById('acquisition_value-value')
+            );
+
+            //Asset Class, Asset Sub Class, Asset Name
+            const classSelect = document.getElementById('asset-class-select');
+            const subClassSelect = document.getElementById('asset-sub-class-select');
+            const nameSelect = document.getElementById('asset-name-select');
+
+            // Simpan nilai awal dari database untuk pemilihan otomatis
+            const initialSubClassId = "{{ old('asset_sub_class_id', $asset->assetName->assetSubClass->id ?? '') }}";
+            const initialNameId = "{{ old('asset_name_id', $asset->assetName->id ?? '') }}";
+
+            // Fungsi untuk memuat Sub Class berdasarkan Class ID
+            async function loadSubClasses(classId, selectedSubClassId = null) {
+                if (!classId) {
+                    subClassSelect.innerHTML = '<option value="">Choose an Asset Sub Class</option>';
+                    nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
+                    return;
                 }
-            };
-
-            // Tambahkan event listener untuk dijalankan saat tanggal berubah
-            capitalizedDateInput.addEventListener('change', setStartDepreDate);
-
-            // Jalankan sekali saat halaman dimuat untuk mengatur nilai awal
-            setStartDepreDate();
-        }
-        
-        /**
-         * Fungsi untuk memformat input menjadi format mata uang US Dollar.
-         * @param {HTMLInputElement} visibleInput - Input yang dilihat pengguna.
-         * @param {HTMLInputElement} hiddenInput - Input tersembunyi untuk menyimpan nilai asli.
-         */
-        function autoFormatCurrency(visibleInput, hiddenInput) {
-
-            const currencyCode = '{{ $activeCompany->currency ?? 'USD' }}';
-
-            const formatValue = (value) => {
-                let cleanValue = value.toString().replace(/[^\d]/g, '');
-                if (cleanValue) {
-                    hiddenInput.value = cleanValue;
-                    // Format nilai yang terlihat
-
-                    const locale = (currencyCode === 'USD') ? 'en-US' : 'id-ID';
-                    visibleInput.value = new Intl.NumberFormat(locale).format(cleanValue);
-                } else {
-                    hiddenInput.value = '';
-                    visibleInput.value = '';
-                }
-            };
-
-            // Format nilai awal saat halaman dimuat
-            formatValue(visibleInput.value);
-
-            // Tambahkan event listener untuk memformat saat pengguna mengetik
-            visibleInput.addEventListener('input', (e) => {
-                formatValue(e.target.value);
-            });
-        }
-
-        // Terapkan fungsi ke semua input mata uang
-        autoFormatCurrency(
-            document.getElementById('acquisition_value-display'),
-            document.getElementById('acquisition_value-value')
-        );
-
-        //Asset Class, Asset Sub Class, Asset Name
-        const classSelect = document.getElementById('asset-class-select');
-        const subClassSelect = document.getElementById('asset-sub-class-select');
-        const nameSelect = document.getElementById('asset-name-select');
-
-        // Simpan nilai awal dari database untuk pemilihan otomatis
-        const initialSubClassId = "{{ old('asset_sub_class_id', $asset->assetName->assetSubClass->id ?? '') }}";
-        const initialNameId = "{{ old('asset_name_id', $asset->assetName->id ?? '') }}";
-
-        // Fungsi untuk memuat Sub Class berdasarkan Class ID
-        async function loadSubClasses(classId, selectedSubClassId = null) {
-            if (!classId) {
+                
+                const response = await fetch(`/api/asset-sub-classes-by-class/${classId}`);
+                const data = await response.json();
+                
                 subClassSelect.innerHTML = '<option value="">Choose an Asset Sub Class</option>';
+                data.forEach(sub => {
+                    const option = new Option(sub.name, sub.id);
+                    if (selectedSubClassId && selectedSubClassId == sub.id) {
+                        option.selected = true;
+                    }
+                    subClassSelect.add(option);
+                });
+
+                // Jika ada sub class yang terpilih, picu pemuatan asset name
+                if (selectedSubClassId) {
+                    loadAssetNames(selectedSubClassId, initialNameId);
+                }
+            }
+
+            // Fungsi untuk memuat Asset Name berdasarkan Sub Class ID
+            async function loadAssetNames(subClassId, selectedNameId = null) {
+                if (!subClassId) {
+                    nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
+                    return;
+                }
+
+                const response = await fetch(`/api/asset-names-by-sub-class/${subClassId}`);
+                const data = await response.json();
+                
                 nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
-                return;
+                data.forEach(name => {
+                    const option = new Option(name.name, name.id);
+                    if (selectedNameId && selectedNameId == name.id) {
+                        option.selected = true;
+                    }
+                    nameSelect.add(option);
+                });
             }
-            
-            const response = await fetch(`/api/asset-sub-classes-by-class/${classId}`);
-            const data = await response.json();
-            
-            subClassSelect.innerHTML = '<option value="">Choose an Asset Sub Class</option>';
-            data.forEach(sub => {
-                const option = new Option(sub.name, sub.id);
-                if (selectedSubClassId && selectedSubClassId == sub.id) {
-                    option.selected = true;
-                }
-                subClassSelect.add(option);
+
+            // Event listener untuk dropdown Asset Class
+            classSelect.addEventListener('change', function () {
+                loadSubClasses(this.value);
             });
 
-            // Jika ada sub class yang terpilih, picu pemuatan asset name
-            if (selectedSubClassId) {
-                loadAssetNames(selectedSubClassId, initialNameId);
-            }
-        }
-
-        // Fungsi untuk memuat Asset Name berdasarkan Sub Class ID
-        async function loadAssetNames(subClassId, selectedNameId = null) {
-            if (!subClassId) {
-                nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
-                return;
-            }
-
-            const response = await fetch(`/api/asset-names-by-sub-class/${subClassId}`);
-            const data = await response.json();
-            
-            nameSelect.innerHTML = '<option value="">Choose an Asset Name</option>';
-            data.forEach(name => {
-                const option = new Option(name.name, name.id);
-                if (selectedNameId && selectedNameId == name.id) {
-                    option.selected = true;
-                }
-                nameSelect.add(option);
+            // Event listener untuk dropdown Asset Sub Class
+            subClassSelect.addEventListener('change', function () {
+                loadAssetNames(this.value);
             });
-        }
 
-        // Event listener untuk dropdown Asset Class
-        classSelect.addEventListener('change', function () {
-            loadSubClasses(this.value);
+            // --- Inisialisasi Saat Halaman Dimuat ---
+            // Jika ada nilai awal untuk Asset Class, muat Sub Class yang sesuai
+            if (classSelect.value) {
+                loadSubClasses(classSelect.value, initialSubClassId);
+            }
+
+            const statusSelect = document.querySelector('.status-select');
+            const otherStatusWrapper = document.getElementById('other-status-wrapper');
+            const otherStatusInput = document.getElementById('other-status-input');
+
+            if (statusSelect && otherStatusWrapper && otherStatusInput) {
+                statusSelect.addEventListener('change', function () {
+                    if (this.value === 'Other') {
+                        otherStatusWrapper.classList.remove('hidden');
+                        otherStatusInput.setAttribute('name', 'status');
+                        statusSelect.removeAttribute('name');
+                    } else {
+                        otherStatusWrapper.classList.add('hidden');
+                        statusSelect.setAttribute('name', 'status');
+                        otherStatusInput.removeAttribute('name');
+                    }
+                });
+            }
         });
-
-        // Event listener untuk dropdown Asset Sub Class
-        subClassSelect.addEventListener('change', function () {
-            loadAssetNames(this.value);
-        });
-
-        // --- Inisialisasi Saat Halaman Dimuat ---
-        // Jika ada nilai awal untuk Asset Class, muat Sub Class yang sesuai
-        if (classSelect.value) {
-            loadSubClasses(classSelect.value, initialSubClassId);
-        }
-
-        const statusSelect = document.querySelector('.status-select');
-        const otherStatusWrapper = document.getElementById('other-status-wrapper');
-        const otherStatusInput = document.getElementById('other-status-input');
-
-        if (statusSelect && otherStatusWrapper && otherStatusInput) {
-            statusSelect.addEventListener('change', function () {
-                if (this.value === 'Other') {
-                    otherStatusWrapper.classList.remove('hidden');
-                    otherStatusInput.setAttribute('name', 'status');
-                    statusSelect.removeAttribute('name');
-                } else {
-                    otherStatusWrapper.classList.add('hidden');
-                    statusSelect.setAttribute('name', 'status');
-                    otherStatusInput.removeAttribute('name');
-                }
-            });
-        }
-    });
-</script>
+    </script>
 @endpush

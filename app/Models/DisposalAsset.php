@@ -12,7 +12,6 @@ use App\Models\Department;
 use App\Models\Company;
 use App\Models\DetailDisposal;
 use App\Scopes\CompanyScope;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -38,7 +37,7 @@ class DisposalAsset extends Model
 
     public function department(): BelongsTo
     {
-        return $this->belongsTo(Department::class, 'department_id');
+        return $this->belongsTo(Department::class, 'department_id')->withTrashed();
     }
 
     public function company(): BelongsTo

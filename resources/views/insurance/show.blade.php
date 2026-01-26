@@ -43,6 +43,8 @@
         </div>
     </div>
 
+    <x-alerts />
+
     <div class="p-5">
         <div class="relative shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insurance Information </label>

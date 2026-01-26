@@ -10,7 +10,6 @@ use App\Models\Company;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
@@ -23,9 +22,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
 
 use Symfony\Component\HttpFoundation\StreamedResponse;
-
-// use Illuminate\Pagination\LengthAwarePaginator;
-// use Illuminate\Support\Collection;
 
 class DepreciationController extends Controller
 {

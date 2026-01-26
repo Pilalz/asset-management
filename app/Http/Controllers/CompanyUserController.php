@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CompanyUser;
 use App\Models\User;
-use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Gate;

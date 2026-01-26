@@ -12,12 +12,13 @@ use App\Models\Company;
 use App\Scopes\CompanyScope;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Contracts\Activity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Location extends Model
 {
     use HasFactory;
     use LogsActivity;
+    use SoftDeletes;
 
     protected $table = 'locations';
 
@@ -37,7 +38,7 @@ class Location extends Model
         return $this->hasMany(TransferAsset::class, 'destination_loc_id', 'id');
     }
 
-    public function Assets(): HasMany
+    public function assets(): HasMany
     {
         return $this->hasMany(Asset::class, 'location_id', 'id');
     }

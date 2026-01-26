@@ -14,7 +14,6 @@ use App\Models\Company;
 use App\Models\DetailRegister;
 use App\Models\Approval;
 use App\Scopes\CompanyScope;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -40,12 +39,12 @@ class RegisterAsset extends Model
 
     public function department(): BelongsTo
     {
-        return $this->belongsTo(Department::class, 'department_id');
+        return $this->belongsTo(Department::class, 'department_id')->withTrashed();
     }
 
     public function location(): BelongsTo
     {
-        return $this->belongsTo(Location::class, 'location_id');
+        return $this->belongsTo(Location::class, 'location_id')->withTrashed();
     }
 
     public function company(): BelongsTo

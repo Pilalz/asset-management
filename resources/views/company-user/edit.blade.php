@@ -25,6 +25,8 @@
         </nav>
     </div>
 
+    <x-alerts />
+
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
             <form class="max-w mx-auto" action="{{ route('company-user.update', $company_user->id) }}" method="POST">

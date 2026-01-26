@@ -8,15 +8,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\RegisterAsset;
 use App\Models\TransferAsset;
+use App\Models\DisposalAsset;
 use App\Models\Company;
 use App\Scopes\CompanyScope;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Department extends Model
 {
-    use HasFactory;
-    use LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     protected $table = 'departments';
 
@@ -36,7 +37,12 @@ class Department extends Model
         return $this->hasMany(TransferAsset::class, 'department_id', 'id');
     }
 
-    public function Assets(): HasMany
+    public function disposalAsset(): HasMany
+    {
+        return $this->hasMany(DisposalAsset::class, 'department_id', 'id');
+    }
+
+    public function assets(): HasMany
     {
         return $this->hasMany(Asset::class, 'department_id', 'id');
     }

@@ -78,6 +78,22 @@ class LocationController extends Controller
     public function destroy(Location $location)
     {
         Gate::authorize('is-admin');
+
+        if ($location->registerAssets()->where('register_assets.status', '!=', 'Approved')->exists()) {
+            return back()->with('error', 'Gagal dihapus! Lokasi ini masih digunakan dalam transaksi Register Asset.');
+        }
+
+        if ($location->transferredAssets()->where('transfer_assets.status', '!=', 'Approved')->exists()) {
+            return back()->with('error', 'Gagal dihapus! Lokasi ini sedang dalam proses Transfer Asset.');
+        }
+
+        $hasActiveAssets = $location->assets()
+            ->whereNotIn('assets.status', ['Sold', 'Disposal'])
+            ->exists();
+
+        if ($hasActiveAssets) {
+            return back()->with('error', 'Gagal dihapus! Masih ada Aset Aktif di lokasi ini.');
+        }
         
         $location->delete();
 

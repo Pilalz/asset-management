@@ -8,9 +8,6 @@ use App\Models\Location;
 use App\Models\Asset;
 use App\Models\Department;
 use App\Models\AssetClass;
-use App\Models\AssetSubClass;
-use App\Models\Approval;
-use App\Models\CompanyUser;
 use App\Models\Attachment;
 use App\Models\User;
 use App\Models\Insurance;
@@ -19,9 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 
-use Carbon\Carbon;
 use App\Scopes\CompanyScope;
 use Yajra\DataTables\Facades\DataTables;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -309,15 +304,35 @@ class RegisterAssetController extends Controller
         Gate::authorize('is-form-maker');
         
         try {
-            $register_asset = RegisterAsset::onlyTrashed()->findOrFail($id);
+            $register_asset = RegisterAsset::onlyTrashed()
+                ->with([
+                    'location' => function($q) { 
+                        $q->withTrashed(); 
+                    },
+                    'department'=> function($q) { 
+                        $q->withTrashed(); 
+                    },
+                ])
+                ->findOrFail($id);
+
+            if ($register_asset->location && $register_asset->location->trashed()) {
+                return redirect()->route('register-asset.trash')
+                    ->with('error', "Gagal Restore! Lokasi '{$register_asset->location->name}' saat ini berstatus Terhapus (Deleted).");
+            }
+
+            if ($register_asset->department && $register_asset->department->trashed()) {
+                return redirect()->route('register-asset.trash')
+                    ->with('error', "Gagal Restore! Departemen '{$register_asset->department->name}' saat ini berstatus Terhapus (Deleted). Silahkan restore departemen tersebut terlebih dahulu di menu Master Data.");
+            }
+
             $register_asset->restore();
 
         } catch (\Exception $e) {
-            return redirect()->route('register-asset.index')
+            return redirect()->route('register-asset.trash')
                 ->with('error', 'Gagal memulihkan data: ' . $e->getMessage());
         }
 
-        return redirect()->route('register-asset.trash')->with('success', 'Data berhasil dipulihkan!');
+        return redirect()->route('register-asset.index')->with('success', 'Data berhasil dipulihkan!');
     }
 
     public function show(RegisterAsset $register_asset)
