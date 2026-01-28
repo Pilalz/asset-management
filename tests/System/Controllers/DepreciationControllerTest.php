@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\System\Controllers;
 
 use Tests\TestCase;
 use App\Models\Depreciation;
@@ -9,11 +9,11 @@ use App\Models\AssetName;
 use App\Models\Location;
 use App\Models\Department;
 use App\Models\Company;
-use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class DepreciationControllerTest extends TestCase
-{   
+{
     protected Asset $asset;
 
     protected function setUp(): void
@@ -25,7 +25,7 @@ class DepreciationControllerTest extends TestCase
         $assetName = AssetName::factory()->create(['company_id' => $this->company->id]);
         $location = Location::factory()->create(['company_id' => $this->company->id]);
         $department = Department::factory()->create(['company_id' => $this->company->id]);
-        
+
         $this->asset = Asset::factory()->create([
             'asset_number' => 'AST-001',
             'asset_name_id' => $assetName->id,
@@ -51,7 +51,7 @@ class DepreciationControllerTest extends TestCase
     }
 
     /**
-     * Test dapat melihat depreciation schedule
+     * Test dapat melihat depreciation schedule.
      */
     public function test_can_view_depreciation_schedule(): void
     {
@@ -62,11 +62,10 @@ class DepreciationControllerTest extends TestCase
     }
 
     /**
-     * Test depreciation schedule menampilkan data dengan benar
+     * Test depreciation schedule menampilkan data dengan benar.
      */
     public function test_depreciation_schedule_shows_correct_data(): void
     {
-        // Create some depreciations
         Depreciation::factory()->count(12)->create([
             'asset_id' => $this->asset->id,
             'type' => 'commercial',
@@ -80,7 +79,7 @@ class DepreciationControllerTest extends TestCase
     }
 
     /**
-     * Test dapat melihat depreciation index
+     * Test dapat melihat depreciation commercial index.
      */
     public function test_can_view_depreciation_commercial_index(): void
     {
@@ -90,6 +89,9 @@ class DepreciationControllerTest extends TestCase
         $response->assertViewIs('depreciation.commercial.index');
     }
 
+    /**
+     * Test dapat melihat depreciation fiscal index.
+     */
     public function test_can_view_depreciation_fiscal_index(): void
     {
         $response = $this->get('/depreciation/fiscal');
@@ -99,7 +101,7 @@ class DepreciationControllerTest extends TestCase
     }
 
     /**
-     * Test depreciation datatable menampilkan data
+     * Test depreciation datatable menampilkan data.
      */
     public function test_depreciation_datatable_returns_data(): void
     {
@@ -120,78 +122,53 @@ class DepreciationControllerTest extends TestCase
     }
 
     /**
-     * Test dapat run bulk depreciation
+     * Test dapat run bulk depreciation.
      */
     public function test_can_run_bulk_depreciation(): void
     {
-        $response = $this->post(
-                '/depreciation/run-all', [
-                'type' => 'commercial',
-            ]);
+        $response = $this->post('/depreciation/run-all', [
+            'type' => 'commercial',
+        ]);
 
         $response->assertStatus(200);
     }
 
     /**
-     * Test depreciation calculation adalah correct
+     * Test depreciation calculation adalah correct.
      */
     public function test_depreciation_calculation_is_correct(): void
     {
         $assetValue = 12000000;
         $usefulLifeMonths = 60;
-        $monthlyDepre = $assetValue / $usefulLifeMonths;
+        $expectedMonthlyDepre = $assetValue / $usefulLifeMonths;
 
         $depreciation = Depreciation::factory()->create([
             'asset_id' => $this->asset->id,
             'type' => 'commercial',
-            'monthly_depre' => $monthlyDepre,
+            'monthly_depre' => $expectedMonthlyDepre,
         ]);
 
-        $this->assertEquals($monthlyDepre, $depreciation->monthly_depre);
-        $this->assertEqualsWithDelta(200000, $depreciation->monthly_depre, 0.1);
+        $this->assertEquals($expectedMonthlyDepre, $depreciation->monthly_depre);
     }
 
     /**
-     * Test depreciation tidak bisa melebihi NBV
+     * Verifikasi proses bulk depreciation mengubah status di Cache.
      */
+    public function test_run_bulk_depreciation_updates_cache_status(): void
+    {
+        $this->actingAsUser();
 
-    // SAMPAI SINI
-    
-    // public function test_depreciation_cannot_exceed_nbv(): void
-    // {
-    //     $this->actingAsUser();
-
-    //     $this->asset->update([
-    //         'commercial_accum_depre' => 11000000,
-    //         'commercial_nbv' => 1000000,
-    //     ]);
-
-    //     $response = $this->post("/{$this->asset->id}/depreciate", [
-    //         'amount' => 2000000, // Mencoba menyusutkan 2jt padahal sisa cuma 1jt
-    //         'type' => 'commercial',
-    //         'date' => now()->format('Y-m-d'),
-    //     ]);
-
-    //     $this->assertDatabaseHas('depreciations', [
-    //         'asset_id' => $this->asset->id,
-    //         'monthly_depre' => 1000000, // Harus terpotong otomatis menjadi 1jt
-    //     ]);
+        $response = $this->post('/depreciation/run-all', ['type' => 'commercial']);
         
-    //     // // Try to depreciate more than remaining NBV
-    //     // $monthlyDepre = 2000000; // More than remaining NBV
+        $response->assertStatus(200);
 
-    //     // $depreciation = Depreciation::factory()->create([
-    //     //     'asset_id' => $this->asset->id,
-    //     //     'type' => 'commercial',
-    //     //     'monthly_depre' => $monthlyDepre,
-    //     // ]);
-
-    //     // // System should cap it to remaining NBV
-    //     // $this->assertLessThanOrEqual(1000000, $depreciation->monthly_depre);
-    // }
+        // Cek apakah status di cache sudah ter-update menjadi 'queued' atau 'running'
+        $status = Cache::get('depreciation_status_' . $this->company->id);
+        $this->assertContains($status['status'], ['queued', 'running', 'completed']);
+    }
 
     /**
-     * Test depreciation history untuk asset
+     * Test depreciation history untuk asset.
      */
     public function test_can_view_depreciation_history(): void
     {
@@ -207,7 +184,7 @@ class DepreciationControllerTest extends TestCase
     }
 
     /**
-     * Test depreciation expense report
+     * Test depreciation expense report (commercial export).
      */
     public function test_can_view_depreciation_expense_report(): void
     {
@@ -217,14 +194,13 @@ class DepreciationControllerTest extends TestCase
             'company_id' => $this->company->id,
         ]);
 
-        $response = $this->get('/depreciation/export-excel');
+        $response = $this->get(route('commercial.export', ['year' => now()->year]));
 
-        // Endpoint might not exist, adjust as needed
         $response->assertStatus(200);
     }
 
     /**
-     * Test depreciation dapat difilter by type
+     * Test depreciation dapat difilter by type.
      */
     public function test_depreciation_can_be_filtered_by_type(): void
     {
@@ -248,7 +224,7 @@ class DepreciationControllerTest extends TestCase
     }
 
     /**
-     * Test depreciation dapat difilter by date range
+     * Test depreciation dapat difilter by date range.
      */
     public function test_depreciation_can_be_filtered_by_date_range(): void
     {
@@ -268,19 +244,20 @@ class DepreciationControllerTest extends TestCase
     }
 
     /**
-     * Test monthly depreciation accumulation
+     * Test monthly depreciation accumulation.
      */
     public function test_monthly_depreciation_accumulation(): void
     {
         $monthlyAmount = 200000;
+        $numberOfMonths = 12;
 
-        for ($i = 1; $i <= 12; $i++) {
+        for ($i = 1; $i <= $numberOfMonths; $i++) {
             Depreciation::factory()->create([
                 'asset_id' => $this->asset->id,
                 'type' => 'commercial',
                 'monthly_depre' => $monthlyAmount,
                 'accumulated_depre' => $monthlyAmount * $i,
-                'depre_date' => Carbon::now()->subMonths(12 - $i),
+                'depre_date' => Carbon::now()->subMonths($numberOfMonths - $i),
                 'company_id' => $this->company->id,
             ]);
         }
@@ -288,11 +265,11 @@ class DepreciationControllerTest extends TestCase
         $totalAccumulated = Depreciation::where('asset_id', $this->asset->id)
             ->sum('monthly_depre');
 
-        $this->assertEquals($monthlyAmount * 12, $totalAccumulated);
+        $this->assertEquals($monthlyAmount * $numberOfMonths, $totalAccumulated);
     }
 
     /**
-     * Test user dari company berbeda tidak bisa akses depreciation
+     * Test user dari company berbeda tidak bisa akses depreciation.
      */
     public function test_user_from_different_company_cannot_access_depreciation(): void
     {
@@ -302,5 +279,33 @@ class DepreciationControllerTest extends TestCase
         $response = $this->get("/asset/{$otherAsset->id}?year=2025");
 
         $response->assertStatus(404);
+    }
+
+    /**
+     * Test sistem menolak menjalankan bulk depre jika masih ada proses yang berjalan (409).
+     */
+    public function test_cannot_run_bulk_depreciation_if_already_running(): void
+    {
+        $this->actingAsUser();
+        $jobId = 'depreciation_status_' . $this->company->id;
+
+        // Simulasikan ada job yang sedang berjalan di cache
+        Cache::put($jobId, ['status' => 'running', 'progress' => 50]);
+
+        $response = $this->post('/depreciation/run-all', ['type' => 'commercial']);
+
+        // Harus mengembalikan error 409 sesuai logic di Controller
+        $response->assertStatus(409);
+        $response->assertJson(['message' => 'Proses depresiasi sedang berjalan atau dalam antrian.']);
+    }
+
+    /**
+     * Test dapat download fiscal export.
+     */
+    public function test_can_download_fiscal_export(): void
+    {
+        $response = $this->get(route('fiscal.export', ['year' => now()->year]));
+
+        $response->assertStatus(200);
     }
 }

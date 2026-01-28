@@ -4,11 +4,7 @@ namespace Tests\Unit\Models;
 
 use Tests\TestCase;
 use App\Models\Asset;
-use App\Models\AssetName;
 use App\Models\Company;
-use App\Models\Location;
-use App\Models\Department;
-use App\Models\Depreciation;
 use Carbon\Carbon;
 
 class AssetTest extends TestCase

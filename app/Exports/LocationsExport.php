@@ -12,13 +12,11 @@ use Maatwebsite\Excel\Concerns\Exportable;
 class LocationsExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
-    /**
-    * @return \Illuminate\Support\Collection
-    */
+
     public function query()
     {
         return Location::withoutGlobalScope(CompanyScope::class)
-                ->where('company_id', session('active_company_id'));
+            ->where('company_id', session('active_company_id'));
     }
 
     public function headings(): array

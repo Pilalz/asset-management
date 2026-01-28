@@ -1,8 +1,10 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\System\Controllers;
 
 use Tests\TestCase;
+use App\Models\Location;
+use App\Models\Asset;
 
 class LocationControllerTest extends TestCase
 {
@@ -53,5 +55,27 @@ class LocationControllerTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors();
+    }
+
+    /**
+     * Gagal menghapus lokasi jika masih ada aset di dalamnya (Integritas Data).
+     */
+    public function test_cannot_delete_location_with_existing_assets(): void
+    {
+        $this->actingAsUser();
+        $location = Location::factory()->create(['company_id' => $this->company->id]);
+        
+        // Tautkan aset ke lokasi ini
+        Asset::factory()->create([
+            'asset_code' => 'AC-938532',
+            'location_id' => $location->id,
+            'company_id' => $this->company->id
+        ]);
+
+        $response = $this->delete("/location/{$location->id}");
+
+        // Tergantung logic-mu, bisa redirect dengan error atau 403
+        $response->assertSessionHasErrors();
+        $this->assertDatabaseHas('locations', ['id' => $location->id]);
     }
 }

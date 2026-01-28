@@ -21,6 +21,7 @@ class AssetFactory extends Factory
 
         return [
             'asset_number' => 'AST-' . $this->faker->unique()->numerify('######'),
+            'asset_code' => $this->faker->bothify('AC-#####'),
             'asset_name_id' => AssetName::factory(),
             'asset_type' => $this->faker->randomElement(['FA', 'LVA', 'Arrival']),
             'status' => $this->faker->randomElement(['Active', 'Sold', 'Disposal', 'Onboard']),

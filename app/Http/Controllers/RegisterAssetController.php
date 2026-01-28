@@ -11,6 +11,7 @@ use App\Models\AssetClass;
 use App\Models\Attachment;
 use App\Models\User;
 use App\Models\Insurance;
+use App\Models\Approval;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -25,18 +26,18 @@ use Illuminate\Support\Facades\Gate;
 class RegisterAssetController extends Controller
 {
     public function index()
-    {        
+    {
         $companyId = session('active_company_id');
 
         $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', $companyId)
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
+            ->where('company_id', $companyId)
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name']);
 
         $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', $companyId)
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
+            ->where('company_id', $companyId)
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name']);
 
         return view('register-asset.index', [
             'locationsForFilter' => $locationsForFilter,
@@ -64,14 +65,14 @@ class RegisterAssetController extends Controller
         $lastRegisterAsset = RegisterAsset::withTrashed()->latest('id')->first();
         $seq = 1;
 
-        if ($lastRegisterAsset){
+        if ($lastRegisterAsset) {
             $lastSeq = (int) substr($lastRegisterAsset->form_no, -5);
             $seq = $lastSeq + 1;
         }
-        
+
         $formattedSeq = str_pad($seq, 5, '0', STR_PAD_LEFT);
-        $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq ;
-        
+        $form_no = Auth::user()->lastActiveCompany->alias . "/" . now()->format('Y/m') . "/" . $formattedSeq;
+
         return view('register-asset.create', compact('locations', 'departments', 'assetclasses', 'form_no', 'users'));
     }
 
@@ -122,7 +123,7 @@ class RegisterAssetController extends Controller
             $approvalsToStore[] = [
                 'approval_action'   => $approvalData['approval_action'],
                 'role'              => $approvalData['role'],
-                'user_id'            => $approvalData['user_id'],
+                'user_id'           => $approvalData['user_id'],
                 'status'            => 'pending',
                 'approval_date'     => null,
                 'approval_order'    => $order,
@@ -151,7 +152,7 @@ class RegisterAssetController extends Controller
                     foreach ($request->file('attachments') as $file) {
                         // Simpan file ke storage/app/public/attachments
                         $filePath = $file->store('attachments', 'public');
-                        
+
                         // Buat record di tabel attachments
                         $registerAsset->attachments()->create([
                             'file_path' => $filePath,
@@ -302,15 +303,15 @@ class RegisterAssetController extends Controller
     public function restore($id)
     {
         Gate::authorize('is-form-maker');
-        
+
         try {
             $register_asset = RegisterAsset::onlyTrashed()
                 ->with([
-                    'location' => function($q) { 
-                        $q->withTrashed(); 
+                    'location' => function ($q) {
+                        $q->withTrashed();
                     },
-                    'department'=> function($q) { 
-                        $q->withTrashed(); 
+                    'department' => function ($q) {
+                        $q->withTrashed();
                     },
                 ])
                 ->findOrFail($id);
@@ -396,7 +397,7 @@ class RegisterAssetController extends Controller
         ) {
             return back()->with('error', 'Saat ini bukan giliran Anda untuk melakukan approval.');
         }
-        
+
         try {
             DB::transaction(function () use ($register_asset, $user, $request, $nextApprover) {
                 // 1. Update baris approval milik user ini
@@ -408,7 +409,7 @@ class RegisterAssetController extends Controller
                     })
                     ->first();
 
-                if ($approval) {
+                if ($approval instanceof Approval) {
                     $approval->update([
                         'status' => 'approved',
                         'approval_date' => now(),
@@ -526,7 +527,7 @@ class RegisterAssetController extends Controller
         }
 
         if ($createdInsurance && !empty($newAssetIds)) {
-            $createdInsurance->detailInsurances()->attach($newAssetIds); 
+            $createdInsurance->detailInsurances()->attach($newAssetIds);
         }
 
         DB::commit();
@@ -537,9 +538,9 @@ class RegisterAssetController extends Controller
         $companyId = session('active_company_id');
 
         $query = RegisterAsset::withoutGlobalScope(CompanyScope::class)
-                        ->with(['department', 'location'])
-                        ->withCount(['detailRegisters'])
-                        ->where('company_id', $companyId);
+            ->with(['department', 'location'])
+            ->withCount(['detailRegisters'])
+            ->where('company_id', $companyId);
 
         return DataTables::of($query)
             ->addIndexColumn()
@@ -594,7 +595,7 @@ class RegisterAssetController extends Controller
                 );
             })
             ->rawColumns(['action'])
-            ->toJson();        
+            ->toJson();
     }
 
     public function datatablesCanceled(Request $request)
@@ -602,10 +603,10 @@ class RegisterAssetController extends Controller
         $companyId = session('active_company_id');
 
         $query = RegisterAsset::withoutGlobalScope(CompanyScope::class)
-                        ->with(['department', 'location'])
-                        ->withCount('detailRegisters')
-                        ->onlyTrashed()
-                        ->where('company_id', $companyId);
+            ->with(['department', 'location'])
+            ->withCount('detailRegisters')
+            ->onlyTrashed()
+            ->where('company_id', $companyId);
 
         return DataTables::of($query)
             ->addIndexColumn()
@@ -617,7 +618,7 @@ class RegisterAssetController extends Controller
             })
             ->addColumn('action', function ($register_assets) {
                 return view('components.action-form-canceled-buttons', [
-                    'model'     => $register_assets,
+                    'model'      => $register_assets,
                     'restoreUrl' => route('register-asset.restore', $register_assets->id)
                 ])->render();
             })
@@ -646,16 +647,16 @@ class RegisterAssetController extends Controller
                 );
             })
             ->rawColumns(['action'])
-            ->toJson();        
+            ->toJson();
     }
 
     public function exportPdf(RegisterAsset $register_asset)
     {
         $register_asset->load(
-            'department', 
-            'location', 
-            'detailRegisters.assetName.assetSubClass.assetClass', 
-            'approvals.user', 
+            'department',
+            'location',
+            'detailRegisters.assetName.assetSubClass.assetClass',
+            'approvals.user',
             'company'
         );
 
@@ -664,7 +665,7 @@ class RegisterAssetController extends Controller
         $pdf->setPaper('a4', 'portrait');
 
         $safeFilename = str_replace('/', '-', $register_asset->form_no);
-        
-        return $pdf->stream('Register-Asset-' . $safeFilename  . '.pdf');
+
+        return $pdf->stream('Register-Asset-' . $safeFilename . '.pdf');
     }
 }

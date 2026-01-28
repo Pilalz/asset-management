@@ -13,13 +13,11 @@ class DepartmentsExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 
-    /**
-    * @return \Illuminate\Support\Collection
-    */
     public function query()
     {
-        return Department::withoutGlobalScope(CompanyScope::class)
-                ->where('company_id', session('active_company_id'));
+        return Department::query()
+            ->withoutGlobalScope(CompanyScope::class)
+            ->where('company_id', session('active_company_id'));
     }
 
     public function headings(): array

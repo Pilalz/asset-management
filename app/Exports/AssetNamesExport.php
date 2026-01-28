@@ -13,14 +13,11 @@ class AssetNamesExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 
-    /**
-    * @return \Illuminate\Support\Collection
-    */
     public function query()
     {
         return AssetName::withoutGlobalScope(CompanyScope::class)
-                ->with(['assetSubClass'])
-                ->where('company_id', session('active_company_id'));
+            ->with(['assetSubClass'])
+            ->where('company_id', session('active_company_id'));
     }
 
     public function headings(): array

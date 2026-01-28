@@ -1,15 +1,22 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\System\Controllers;
 
 use Tests\TestCase;
 use App\Models\Company;
-use App\Models\User;
 use App\Models\Asset;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class DashboardTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        fake()->unique(true);
+    }
+
     /**
      * Test dapat membuka halaman dashboard
      */
@@ -114,24 +121,6 @@ class DashboardTest extends TestCase
         $response->assertViewHas('fiscalCountData');
     }
 
-    // /**
-    //  * Test dashboard menampilkan asset value summary
-    //  */
-    // public function test_dashboard_shows_asset_value_summary(): void
-    // {
-    //     Asset::factory()->count(5)->create([
-    //         'company_id' => $this->company->id,
-    //         'acquisition_value' => 10000000,
-    //     ]);
-
-    //     $this->actingAsUser();
-
-    //     $response = $this->get('/dashboard');
-
-    //     $response->assertStatus(200);
-    //     $response->assertViewHas('totalValue');
-    // }
-
     /**
      * Test dashboard menampilkan recent activities
      */
@@ -188,6 +177,23 @@ class DashboardTest extends TestCase
     }
 
     /**
+     * Memastikan statistik dashboard tidak bocor dari perusahaan lain.
+     */
+    public function test_dashboard_statistics_isolation(): void
+    {
+        $this->actingAsUser(); // Perusahaan Aktif
+
+        // Buat 10 aset di perusahaan LAIN
+        $otherCompany = Company::factory()->create();
+        Asset::factory()->count(10)->create(['company_id' => $otherCompany->id]);
+
+        $response = $this->get('/dashboard');
+
+        // Statistik harus tetap 0 karena di perusahaan aktif belum ada aset
+        $response->assertViewHas('assetFixed', 0);
+    }
+
+    /**
      * Test dashboard with no data
      */
     public function test_dashboard_handles_empty_data(): void
@@ -217,6 +223,7 @@ class DashboardTest extends TestCase
     {
         // Create 1000 assets
         Asset::factory()->count(1000)->create([
+            'asset_code' => 'AC-' . Str::uuid(),
             'company_id' => $this->company->id,
         ]);
 

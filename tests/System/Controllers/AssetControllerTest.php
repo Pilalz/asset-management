@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\System\Controllers;
 
 use Tests\TestCase;
 use App\Models\Asset;
@@ -79,6 +79,7 @@ class AssetControllerTest extends TestCase
 
         $data = [
             'asset_number' => 'AST-001',
+            'asset_code' => 'AC-42837',
             'asset_name_id' => $assetName->id,
             'status' => 'Active',
             'asset_type' => 'FA',
@@ -526,8 +527,6 @@ class AssetControllerTest extends TestCase
         $response = $this->session(['active_company_id' => $otherCompany->id])->get("/asset/{$asset->id}");
 
         // Asset dari company lain mungkin tidak terlihat (404) atau disembunyikan (403)
-        $this->assertTrue(
-            in_array($response->getStatusCode(), [200, 302, 404, 403])
-        );
+        $response->assertStatus(404);
     }
 }

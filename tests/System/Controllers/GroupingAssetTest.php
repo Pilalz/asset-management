@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\System\Controllers;
 
 use Tests\TestCase;
 use App\Models\Asset;
