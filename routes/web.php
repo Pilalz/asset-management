@@ -22,6 +22,9 @@ use App\Http\Controllers\DepreciationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\ScanController;
+
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +133,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/company/{company}/transfer', [CompanyController::class, 'transfer'])->name('company.transfer');
     //Start Profile
     Route::put('/profile/signature', [ProfileController::class, 'updateSignature'])->name('profile.updateSignature');
+    //Start Scan
+    Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
+    Route::get('/scan-process', [ScanController::class, 'scan'])->name('scan.process');
+    Route::get('/assets/download-qr/{id}', [ScanController::class, 'download'])->name('scan.qr.download');
+    //Start Print QR
+    Route::get('/preview-qr-layout', function() {
+        $assets = \App\Models\Asset::limit(3)->get();
+
+        foreach ($assets as $asset) {
+            $qrImage = QrCode::format('svg')->size(150)->generate('dummy-data');
+            $asset->qr_base64 = base64_encode($qrImage);
+        }
+
+        return view('asset.fixed.print-qr', compact('assets'));
+    });
 
     // --- Import Data ---
     Route::post('/asset-class/import', [AssetClassController::class, 'importExcel'])->name('asset-class.import');

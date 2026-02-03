@@ -21,6 +21,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class AssetController extends Controller
 {
@@ -160,6 +161,7 @@ class AssetController extends Controller
                 'max:255',
                 Rule::unique('assets')->where('company_id', $companyId)
             ],
+            'asset_code'       => 'string',
             'asset_name_id'    => 'required|exists:asset_names,id',
             'description'      => 'required|string|max:255',
             'detail'           => 'nullable|string|max:255',
@@ -350,11 +352,19 @@ class AssetController extends Controller
         return DataTables::eloquent($query)
             ->addIndexColumn()
             ->addColumn('action', function ($asset) {
+                $qrContent = Str::isUuid($asset->asset_code) 
+                    ? route('scan.process', ['code' => $asset->asset_code]) 
+                    : $asset->asset_code;
+
                 return view('components.action-asset-buttons', [
+                    'assetNumber' => $asset->asset_number,
+                    'qrContent' => $qrContent,
+                    'qrcodeUrl' => route('scan.qr.download', $asset->id),
+
                     'showUrl' => route('asset.show', $asset->id),
-                    'depreUrl' => route('depreciation.depre', $asset->id),
                     'editUrl' => route('asset.edit', $asset->id),
-                    'deleteUrl' => route('asset.destroy', $asset->id)
+                    'deleteUrl' => route('asset.destroy', $asset->id),
+                    'depreUrl' => route('depreciation.depre', $asset->id),
                 ])->render();
             })
             ->addColumn('currency', function($asset) {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use App\Models\AssetName;
 use App\Models\Location;
 use App\Models\Department;
@@ -15,6 +16,7 @@ use App\Models\Insurance;
 use App\Models\Claim;
 use App\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
@@ -27,6 +29,7 @@ class Asset extends Model
 
     protected $fillable = [
         'asset_number',
+        'asset_code',
         'asset_name_id',
         'asset_type',
         'status',
@@ -111,6 +114,12 @@ class Asset extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
+
+        static::creating(function ($model) {
+            if (empty($model->identifier)) {
+                $model->identifier = (string) Str::uuid();
+            }
+        });
     }
 
     public function getAssetNameNameAttribute()

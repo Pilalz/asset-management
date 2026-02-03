@@ -25,93 +25,94 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DepreciationController extends Controller
 {
-    public function depre(Asset $asset)
-    {
-        Gate::authorize('is-admin');
+    // Tidak digunakan (belum di maintenance)
+    // public function depre(Asset $asset)
+    // {
+    //     Gate::authorize('is-admin');
 
-        $periodsProcessed = 0;
+    //     $periodsProcessed = 0;
 
-        try {
-            DB::transaction(function () use ($asset, &$periodsProcessed) {
+    //     try {
+    //         DB::transaction(function () use ($asset, &$periodsProcessed) {
                 
-                $types = ['commercial', 'fiscal'];
+    //             $types = ['commercial', 'fiscal'];
 
-                foreach ($types as $type) {
-                    // Tentukan nama kolom dinamis
-                    $usefulLifeCol = $type . '_useful_life_month';
-                    $nbvCol        = $type . '_nbv';
-                    $accumDepreCol = $type . '_accum_depre';
+    //             foreach ($types as $type) {
+    //                 // Tentukan nama kolom dinamis
+    //                 $usefulLifeCol = $type . '_useful_life_month';
+    //                 $nbvCol        = $type . '_nbv';
+    //                 $accumDepreCol = $type . '_accum_depre';
 
-                    if ($asset->$usefulLifeCol <= 0 || $asset->$nbvCol <= 0) {
-                        continue; // Lewati tipe ini jika tidak valid
-                    }
+    //                 if ($asset->$usefulLifeCol <= 0 || $asset->$nbvCol <= 0) {
+    //                     continue; // Lewati tipe ini jika tidak valid
+    //                 }
 
-                    // Tentukan periode pengejaran untuk tipe ini
-                    $lastDepreciation = Depreciation::where('asset_id', $asset->id)
-                        ->where('type', $type)
-                        ->latest('depre_date')
-                        ->first();
+    //                 // Tentukan periode pengejaran untuk tipe ini
+    //                 $lastDepreciation = Depreciation::where('asset_id', $asset->id)
+    //                     ->where('type', $type)
+    //                     ->latest('depre_date')
+    //                     ->first();
                     
-                    $startDate = $lastDepreciation 
-                        ? Carbon::parse($lastDepreciation->depre_date)->addMonth()->startOfMonth()
-                        : Carbon::parse($asset->start_depre_date)->startOfMonth();
+    //                 $startDate = $lastDepreciation 
+    //                     ? Carbon::parse($lastDepreciation->depre_date)->addMonth()->startOfMonth()
+    //                     : Carbon::parse($asset->start_depre_date)->startOfMonth();
 
-                    $endDate = now()->startOfMonth();
+    //                 $endDate = now()->startOfMonth();
 
-                    if ($startDate->greaterThan($endDate)) {
-                        continue; // Lanjut ke tipe berikutnya jika tidak ada yang perlu dikejar
-                    }
+    //                 if ($startDate->greaterThan($endDate)) {
+    //                     continue; // Lanjut ke tipe berikutnya jika tidak ada yang perlu dikejar
+    //                 }
 
-                    // Inisialisasi nilai awal
-                    $currentBookValue = $asset->$nbvCol;
-                    $currentAccumulatedDepre = $asset->$accumDepreCol;
-                    $monthlyDepre = round($asset->acquisition_value / $asset->$usefulLifeCol);
+    //                 // Inisialisasi nilai awal
+    //                 $currentBookValue = $asset->$nbvCol;
+    //                 $currentAccumulatedDepre = $asset->$accumDepreCol;
+    //                 $monthlyDepre = round($asset->acquisition_value / $asset->$usefulLifeCol);
                     
-                    for ($date = $startDate; $date->lessThanOrEqualTo($endDate); $date->addMonth()) {
-                        if ($currentBookValue <= 0) break;
+    //                 for ($date = $startDate; $date->lessThanOrEqualTo($endDate); $date->addMonth()) {
+    //                     if ($currentBookValue <= 0) break;
 
-                        // Tambahkan 1 ke penghitung setiap kali loop berjalan
-                        $periodsProcessed++; 
+    //                     // Tambahkan 1 ke penghitung setiap kali loop berjalan
+    //                     $periodsProcessed++; 
 
-                        $finalDepreciationAmount = $monthlyDepre;
-                        if (($currentBookValue - $monthlyDepre) <= 0) {
-                            $finalDepreciationAmount = $currentBookValue;
-                        }
+    //                     $finalDepreciationAmount = $monthlyDepre;
+    //                     if (($currentBookValue - $monthlyDepre) <= 0) {
+    //                         $finalDepreciationAmount = $currentBookValue;
+    //                     }
 
-                        $currentBookValue -= $finalDepreciationAmount;
-                        $currentAccumulatedDepre += $finalDepreciationAmount;
+    //                     $currentBookValue -= $finalDepreciationAmount;
+    //                     $currentAccumulatedDepre += $finalDepreciationAmount;
 
-                        Depreciation::create([
-                            'asset_id'          => $asset->id,
-                            'type'              => $type,
-                            'depre_date'        => $date->copy()->endOfMonth()->toDateString(),
-                            'monthly_depre'     => $finalDepreciationAmount,
-                            'accumulated_depre' => $currentAccumulatedDepre,
-                            'book_value'        => $currentBookValue,
-                            'company_id'        => $asset->company_id,
-                        ]);
+    //                     Depreciation::create([
+    //                         'asset_id'          => $asset->id,
+    //                         'type'              => $type,
+    //                         'depre_date'        => $date->copy()->endOfMonth()->toDateString(),
+    //                         'monthly_depre'     => $finalDepreciationAmount,
+    //                         'accumulated_depre' => $currentAccumulatedDepre,
+    //                         'book_value'        => $currentBookValue,
+    //                         'company_id'        => $asset->company_id,
+    //                     ]);
                         
-                        if ($currentBookValue <= 0) break;
-                    }
+    //                     if ($currentBookValue <= 0) break;
+    //                 }
 
-                    // Update data master aset dengan nilai final untuk tipe ini
-                    $asset->update([
-                        $accumDepreCol => $currentAccumulatedDepre,
-                        $nbvCol        => $currentBookValue,
-                    ]);
-                }
-            });
+    //                 // Update data master aset dengan nilai final untuk tipe ini
+    //                 $asset->update([
+    //                     $accumDepreCol => $currentAccumulatedDepre,
+    //                     $nbvCol        => $currentBookValue,
+    //                 ]);
+    //             }
+    //         });
 
-        } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+    //     } catch (\Exception $e) {
+    //         return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+    //     }
 
-        if ($periodsProcessed > 0) {
-            return back()->with('success', 'Depresiasi yang terlewat untuk aset ' . ($asset->assetName->name ?? $asset->asset_number) . ' berhasil dicatat.');
-        } else {
-            return back()->with('info', 'Tidak ada periode depresiasi yang perlu dijalankan untuk aset ini.');
-        }
-    }
+    //     if ($periodsProcessed > 0) {
+    //         return back()->with('success', 'Depresiasi yang terlewat untuk aset ' . ($asset->assetName->name ?? $asset->asset_number) . ' berhasil dicatat.');
+    //     } else {
+    //         return back()->with('info', 'Tidak ada periode depresiasi yang perlu dijalankan untuk aset ini.');
+    //     }
+    // }
 
     public function index(Request $request)
     {

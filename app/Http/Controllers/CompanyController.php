@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Models\Asset;
 use App\Models\User;
+use App\Models\TransferAsset;
+use App\Models\RegisterAsset;
+use App\Models\DisposalAsset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -118,12 +121,47 @@ class CompanyController extends Controller
         return redirect()->route('company.index')->with('success', 'Data berhasil diperbarui!');
     }
 
-    public function destroy(Company $company)
+    public function destroy(Request $request, Company $company)
     {
-        User::where('last_active_company_id', $company->id)
-            ->update(['last_active_company_id' => null]);
+        if (!Gate::any(['is-dev', 'is-owner'])) {
+            abort(403);
+        }
 
-        $company->delete();
+        $request->validate([
+            'delete_company' => 'required',
+        ]);
+
+        if ($request->delete_company !== $company->name) {
+            return back()->with('error', 'Nama perusahaan tidak cocok.');
+        }
+
+        $companyId = $company->id;
+
+        if ($company->assets()->whereNotIn('status', ['Sold', 'Disposal'])->exists()) {
+            return back()->with('error', "Gagal! Perusahaan '{$company->name}' masih memiliki aset active. Harap bereskan aset terlebih dahulu.");
+        }
+
+        $hasPending = TransferAsset::where('company_id', $companyId)->where('status', 'Waiting')->exists() ||
+                    RegisterAsset::where('company_id', $companyId)->where('status', 'Waiting')->exists() ||
+                    DisposalAsset::where('company_id', $companyId)->where('status', 'Waiting')->exists();
+
+        if ($hasPending) {
+            return back()->with('error', "Gagal! Masih ada transaksi (Transfer/Register/Disposal) yang berstatus 'Waiting'.");
+        }
+
+        $jobStatus = Cache::get('depreciation_status_' . $companyId);
+        if ($jobStatus && $jobStatus['status'] === 'running') {
+            return back()->with('error', "Gagal! Proses hitung depresiasi sedang berjalan untuk perusahaan ini.");
+        }
+
+        DB::transaction(function () use ($company) {
+            User::where('last_active_company_id', $company->id)
+                ->update(['last_active_company_id' => null]);
+
+            $company->users()->detach();
+
+            $company->delete();
+        });
 
         return redirect()->route('company.index')->with('success', 'Data berhasil dihapus!');
     }
