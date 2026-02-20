@@ -128,6 +128,31 @@ $(document).ready(function() {
                     targets: 0,
                     className: 'px-6 py-4'
                 },
+                {
+                    targets: 2,
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            if (!data) {
+                                return '-';
+                            }
+                            
+                            try {
+                                const date = new Date(data);
+                                
+                                const options = {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric'
+                                };
+
+                                return date.toLocaleDateString('id-ID', options);
+                            } catch (e) {
+                                return data;
+                            }
+                        }
+                        return data;
+                    }
+                },
             ],
 
             createdRow: function( row, data, dataIndex ) {

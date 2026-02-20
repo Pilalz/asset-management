@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // InsuranceSeeder::class,
             // MasterSeeder::class,
-            AssetDepreTestSeeder::class,
-            // AssetSeeder::class,
+            // AssetDepreTestSeeder::class,
+            AssetSeederLarge::class,
         ]);
     }
 }

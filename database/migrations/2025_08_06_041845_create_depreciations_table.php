@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('depreciations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('asset_id')->constrained('assets')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('asset_id')->constrained('assets');
             $table->string('type');
             $table->date('depre_date');
             $table->decimal('monthly_depre', 18, 0);
@@ -21,6 +21,23 @@ return new class extends Migration
             $table->decimal('book_value', 18, 0);
             $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
+
+            $table->unique(
+                ['asset_id', 'type', 'depre_date'],
+                'depreciations_asset_type_date_unique'
+            );
+
+            $table->index(
+                [
+                    'asset_id',
+                    'book_value',
+                    'monthly_depre',
+                    'accumulated_depre',
+                    'type',
+                    'depre_date',
+                ],
+                'idx_depre_search'
+            );
         });
     }
 

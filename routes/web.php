@@ -23,6 +23,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ScanController;
+use App\Http\Controllers\StockOpnameController;
 
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -46,6 +47,8 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('/scan/detail/{code}', [ScanController::class, 'detail'])->name('scan.detail');
+
 // Google Authentication Routes
 Route::controller(GoogleController::class)->group(function () {
     Route::get('/auth/google/redirect', 'redirectToGoogle')->name('auth.google');
@@ -57,7 +60,7 @@ Route::controller(GoogleController::class)->group(function () {
 // STANDARD AUTHENTICATION ROUTES (Login, Register, etc.)
 //======================================================================
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 
 //======================================================================
@@ -77,7 +80,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Hapus Cache
-    Route::get('/cache-clear', function() {
+    Route::get('/cache-clear', function () {
         Artisan::call('cache:clear');
         return back()->with('success', 'System Cache, Config, & View Cleared!');
     })->name('cache-clear');
@@ -137,8 +140,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
     Route::get('/scan-process', [ScanController::class, 'scan'])->name('scan.process');
     Route::get('/assets/download-qr/{id}', [ScanController::class, 'download'])->name('scan.qr.download');
+    Route::post('/assets/bulk-download-qr', [ScanController::class, 'bulkDownload'])->name('asset.qr.bulk-download');
+
     //Start Print QR
-    Route::get('/preview-qr-layout', function() {
+    Route::get('/preview-qr-layout', function () {
         $assets = \App\Models\Asset::limit(3)->get();
 
         foreach ($assets as $asset) {
@@ -178,6 +183,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('company', CompanyController::class);
     Route::resource('insurance', InsuranceController::class);
     Route::resource('history', HistoryController::class);
+    Route::resource('stock-opname', StockOpnameController::class);
 
     // --- API Data Datatables ---
     Route::get('api/asset', [AssetController::class, 'datatables'])->name('api.asset');
@@ -197,6 +203,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/disposal-asset-canceled', [DisposalAssetController::class, 'datatablesCanceled'])->name('api.disposal-asset-canceled');
     Route::get('api/insurance', [InsuranceController::class, 'datatables'])->name('api.insurance');
     Route::get('api/history', [HistoryController::class, 'datatables'])->name('api.history');
+    Route::get('api/stock-opname', [StockOpnameController::class, 'datatables'])->name('api.stock-opname');
+    Route::get('api/stock-opname/{stock_opname}/details', [StockOpnameController::class, 'detailsDatatables'])->name('api.stock-opname.details');
 
     Route::get('api/disposal-asset-find', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset-find');
     Route::get('api/users/search', [CompanyUserController::class, 'search'])->name('api.users.search');

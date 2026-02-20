@@ -22,7 +22,6 @@ class DashboardController extends Controller
             ->with('location')
             ->get();
 
-        // Gunakan metode collection untuk mengelompokkan dan menghitung
         $assetCountByLocation = $assets
             ->groupBy(function ($asset) {
                 return $asset->location->name ?? 'No Location';
@@ -38,10 +37,10 @@ class DashboardController extends Controller
 
         $assetLocData = [
             'labels' => $assetCountByLocation->pluck('location_name')->all(),
-            'series' => $assetCountByLocation->pluck('asset_count')->all(),
+            'series' => $assetCountByLocation->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
         ];
 
-        //Asset By Class
+        //Asset By Category
         $assetCountByClass = Asset::withoutGlobalScope(CompanyScope::class)
             ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
             ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
@@ -56,13 +55,55 @@ class DashboardController extends Controller
             ->get();
 
         $assetClassData = [
-            'labels' => $assetCountByClass->pluck('class_name')->all(),
-            'series' => $assetCountByClass->pluck('asset_count')->all(),
+            'labels' => $assetCountByClass->pluck('class_name')->values()->all(),
+            'series' => $assetCountByClass->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
         ];
+
+        // Asset By Department
+        $assetsdep = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('company_id', session('active_company_id'))
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
+            ->with('department')
+            ->get();
+
+        $assetCountByDepartment = $assetsdep
+            ->groupBy(function ($asset) {
+                return $asset->department->name ?? 'No Department';
+            })
+            ->map(function ($group, $departmentName) {
+                return [
+                    'department_name' => $departmentName,
+                    'asset_count' => $group->count(),
+                ];
+            })
+            ->sortByDesc('asset_count')
+            ->values();
+
+        $assetDeptData = [
+            'labels' => $assetCountByDepartment->pluck('department_name')->all(),
+            'series' => $assetCountByDepartment->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
+        ];
+
+        // Active assets base query (reusable)
+        $activeAssetsQuery = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('assets.company_id', session('active_company_id'))
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal');
+
+        // Total Assets
+        $totalAsset = (clone $activeAssetsQuery)->count();
+
+        // Total Asset Value
+        $totalAssetPrice = (clone $activeAssetsQuery)->sum('commercial_nbv');
 
         //Asset Arrival
         $assetArrival = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('status', 'Onboard')
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Disposal')
+            ->where('assets.status', 'Onboard')
             ->where('assets.company_id', session('active_company_id'))
             ->count();
 
@@ -117,19 +158,21 @@ class DashboardController extends Controller
 
         $depreData = Depreciation::withoutGlobalScope(CompanyScope::class)
             ->join('assets', 'depreciations.asset_id', '=', 'assets.id')
-            ->select('depreciations.depre_date', 
-                DB::raw("SUM(CASE WHEN depreciations.type = 'commercial' THEN depreciations.monthly_depre ELSE 0 END) as commercial_depre_sum"), 
-                DB::raw("SUM(CASE WHEN depreciations.type = 'fiscal' THEN depreciations.monthly_depre ELSE 0 END) as fiscal_depre_sum"), 
-                DB::raw("COUNT(CASE WHEN depreciations.type = 'commercial' THEN 1 END) as commercial_asset_count"), 
-                DB::raw("COUNT(CASE WHEN depreciations.type = 'fiscal' THEN 1 END) as fiscal_asset_count"))
+            ->select(
+                'depreciations.depre_date',
+                DB::raw("SUM(CASE WHEN depreciations.type = 'commercial' THEN depreciations.monthly_depre ELSE 0 END) as commercial_depre_sum"),
+                DB::raw("SUM(CASE WHEN depreciations.type = 'fiscal' THEN depreciations.monthly_depre ELSE 0 END) as fiscal_depre_sum"),
+                DB::raw("COUNT(CASE WHEN depreciations.type = 'commercial' THEN 1 END) as commercial_asset_count"),
+                DB::raw("COUNT(CASE WHEN depreciations.type = 'fiscal' THEN 1 END) as fiscal_asset_count")
+            )
             ->where('assets.company_id', session('active_company_id'))
             ->whereNull('assets.deleted_at') //tambahan
             ->groupBy('depreciations.depre_date')
             ->orderBy('depreciations.depre_date', 'asc')
             ->get();
 
-        $chartLabels = $depreData->pluck('depre_date')->map(function($date) {
-            return Carbon::parse($date)->format('M-Y'); 
+        $chartLabels = $depreData->pluck('depre_date')->map(function ($date) {
+            return Carbon::parse($date)->format('M-Y');
         });
 
         // Buat data Series
@@ -138,10 +181,26 @@ class DashboardController extends Controller
         $commercialCountData = $depreData->pluck('commercial_asset_count');
         $fiscalCountData = $depreData->pluck('fiscal_asset_count');
 
+        // Current month depreciated asset count (from last entry in $depreData)
+        $currentMonthDepreCount = (int) ($depreData->last()?->commercial_asset_count ?? 0);
+
         return view('index', compact(
-            'assetLocData', 'assetClassData', 'assetArrival', 
-            'assetFixed', 'assetLVA', 'assetRemaks', 
-            'assetRemaksCount', 'chartLabels', 'commercialSumData',
-            'fiscalSumData', 'commercialCountData', 'fiscalCountData'));
+            'assetLocData',
+            'assetClassData',
+            'assetArrival',
+            'assetFixed',
+            'assetLVA',
+            'assetRemaks',
+            'assetRemaksCount',
+            'chartLabels',
+            'commercialSumData',
+            'fiscalSumData',
+            'commercialCountData',
+            'fiscalCountData',
+            'totalAsset',
+            'totalAssetPrice',
+            'assetDeptData',
+            'currentMonthDepreCount'
+        ));
     }
 }

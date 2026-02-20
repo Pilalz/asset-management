@@ -55,7 +55,7 @@
 
     @can('is-admin')
         <div class="flex">
-            <a href="{{ route('commercial.export', ['year' => $selectedYear]) }}" type="button" class="inline-flex items-center text-blue-500 bg-white border border-blue-300 focus:outline-none hover:bg-blue-200 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 text-center me-2 dark:bg-blue-600 dark:text-blue-200 dark:border-blue-400 dark:hover:bg-blue-500 dark:hover:border-blue-400">
+            <a href="{{ route('commercial.export', ['start' => $selectedStartYear, 'end' => $selectedEndYear]) }}" type="button" class="inline-flex items-center text-blue-500 bg-white border border-blue-300 focus:outline-none hover:bg-blue-200 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 text-center me-2 dark:bg-blue-600 dark:text-blue-200 dark:border-blue-400 dark:hover:bg-blue-500 dark:hover:border-blue-400">
                 <svg class="w-4 h-4 me-2 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10V4a1 1 0 0 0-1-1H9.914a1 1 0 0 0-.707.293L5.293 7.207A1 1 0 0 0 5 7.914V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 3v4a1 1 0 0 1-1 1H5m5 6h9m0 0-2-2m2 2-2 2"/>
                 </svg>
@@ -69,15 +69,36 @@
     
     <div class="p-5">
         <div class="relative shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
-            {{-- Form untuk filter tahun jika perlu --}}
-            <div class="mb-4 flex flex-row content-center">
-                <form method="GET" action="{{ route('depreciation.index') }}">
-                    <label for="year" class="dark:text-gray-50">Tampilkan Tahun:</label>
-                    <select name="year" id="year" onchange="this.form.submit()" class="py-2 px-0 w-24 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-50 dark:border-gray-500 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                        @for ($y = now()->year; $y >= 2020; $y--)
-                            <option value="{{ $y }}" class="dark:bg-gray-800" {{ $selectedYear == $y ? 'selected' : '' }}>{{ $y }}</option>
-                        @endfor
-                    </select>
+            {{-- Form untuk filter tahun --}}
+            <div class="mb-4 flex flex-row content-center gap-4">
+                <form method="GET" action="{{ route('depreciation.index') }}" class="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                    <div class="flex items-center gap-2">
+                        <label for="start" class="text-xs font-semibold uppercase text-gray-400 track-wider">Periode:</label>
+                        <div class="inline-flex items-center border rounded-md px-2 bg-gray-50">
+                            <select name="start" id="start" class="bg-transparent border-none text-sm focus:ring-0 py-2">
+                                @for ($y = now()->year; $y >= 2020; $y--)
+                                    <option value="{{ $y }}" {{ $selectedStartYear == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                @endfor
+                            </select>
+                            <span class="text-gray-400 px-2">s/d</span>
+                            <select name="end" id="end" class="bg-transparent border-none text-sm focus:ring-0 py-2">
+                                @for ($y = now()->year; $y >= 2020; $y--)
+                                    <option value="{{ $y }}" {{ $selectedEndYear == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors shadow-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                        Terapkan Filter
+                    </button>
+                </form>
+                <form method="GET" action="{{ route('depreciation.index', ['start' => now()->year, 'end' => now()->year]) }}" class="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors shadow-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                        Tahun Ini
+                    </button>
                 </form>
             </div>
 
@@ -108,30 +129,36 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($pivotedData as $assetId => $data)
-                            <tr class="group">
-                                <td class="sticky left-0 bg-gray-50 dark:bg-gray-700 text-center border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $loop->iteration + (($paginator->currentPage() - 1) * $paginator->perPage()) }}</td>
-                                <td class="sticky left-9 p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $data['master_data']->asset_number ?? 'N/A' }}</td>
-                                <td class="px-6 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $data['master_data']->assetName->name ?? 'N/A' }}</td>
-
-                                @foreach ($months as $monthKey => $monthName)
-                                    @php
-                                        $bgColorClass = $loop->iteration % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800';
-                                    @endphp
-
-                                    @if (isset($data['schedule'][$monthKey]))
-                                        @php $schedule = $data['schedule'][$monthKey]; @endphp
-                                        <td class="border border-gray-100 px-2 text-center min-w-[160px] group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->monthly_depre) }}</td>
-                                        <td class="border border-gray-100 px-2 text-center min-w-[160px] group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->accumulated_depre) }}</td>
-                                        <td class="border border-gray-100 px-2 text-center min-w-[160px] group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->book_value) }}</td>
-                                    @else
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
-                                        <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
-                                    @endif
-                                @endforeach
+                        @if ($pivotedData == null)
+                            <tr>
+                                <td colspan="12" class="text-center py-4">No data available</td>
                             </tr>
-                        @endforeach
+                        @else
+                            @foreach ($pivotedData as $assetId => $data)
+                                <tr class="group">
+                                    <td class="sticky left-0 bg-gray-50 dark:bg-gray-700 text-center border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $loop->iteration + (($paginator->currentPage() - 1) * $paginator->perPage()) }}</td>
+                                    <td class="sticky left-9 p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $data['master_data']->asset_number ?? 'N/A' }}</td>
+                                    <td class="px-6 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-100 group-hover:bg-gray-200 dark:group-hover:bg-gray-500">{{ $data['master_data']->assetName->name ?? 'N/A' }}</td>
+
+                                    @foreach ($months as $monthKey => $monthName)
+                                        @php
+                                            $bgColorClass = $loop->iteration % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800';
+                                        @endphp
+
+                                        @if (isset($data['schedule'][$monthKey]))
+                                            @php $schedule = $data['schedule'][$monthKey]; @endphp
+                                            <td class="border border-gray-100 px-2 text-center min-w-[160px] group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->monthly_depre) }}</td>
+                                            <td class="border border-gray-100 px-2 text-center min-w-[160px] group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->accumulated_depre) }}</td>
+                                            <td class="border border-gray-100 px-2 text-center min-w-[160px] group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">{{ format_currency($schedule->book_value) }}</td>
+                                        @else
+                                            <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
+                                            <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
+                                            <td class="border border-gray-100 px-2 text-center group-hover:bg-gray-200 dark:group-hover:bg-gray-500 {{ $bgColorClass }}">-</td>
+                                        @endif
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -142,7 +169,3 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <!-- @vite('resources/js/pages/commercialDepre.js') -->
-@endpush

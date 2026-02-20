@@ -79,7 +79,7 @@
         @can('is-admin')
             <div class="flex">
                 <a href="{{ route('insurance.create') }}" type="button"
-                    class="inline-flex items-center text-blue-500 bg-white border border-blue-300 focus:outline-none hover:bg-blue-200 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 text-center me-2 dark:bg-blue-600 dark:text-blue-200 dark:border-blue-400 dark:hover:bg-blue-500 dark:hover:border-blue-400">
+                    class="inline-flex items-center text-green-500 bg-white border border-green-300 focus:outline-none hover:bg-green-100 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 dark:bg-green-600 dark:text-gray-200 dark:border-gray-400 dark:hover:bg-green-500 dark:hover:border-green-400">
                     <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                         fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

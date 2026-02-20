@@ -114,74 +114,111 @@ class DepreciationController extends Controller
     //     }
     // }
 
+    
     public function index(Request $request)
     {
-        $year = $request->input('year', now()->year);
+        // Validasi dan set tahun
+        if ($request->input('start') == null && $request->input('end') == null) {
+            $startYear = now()->year;
+            $endYear = now()->year;
+        } 
+        elseif ($request->input('start') > $request->input('end')) {
+            $startYear = $request->input('end', now()->year);
+            $endYear = $request->input('start', now()->year);
+        } 
+        else {
+            $startYear = $request->input('start', now()->year);
+            $endYear = $request->input('end', now()->year);
+        }
+
         $companyId = session('active_company_id');
+        $startDate = Carbon::create($startYear, 1, 1)->startOfDay();
+        $endDate   = Carbon::create($endYear, 12, 31)->endOfDay();
 
-        $startDate = Carbon::create($year, 1, 1)->startOfDay();
-        $endDate   = Carbon::create($year, 12, 31)->endOfDay();
-
+        // Query assets dengan eager loading depreciations
         $assets = Asset::where('company_id', $companyId)
             ->where('asset_type', 'FA')
             ->whereNotIn('status', ['Sold', 'Onboard', 'Disposal'])
-            ->with(['assetName', 'location', 'department'])
+            ->with([
+                'assetName', 
+                'location', 
+                'department',
+                'depreciations' => function($query) use ($startDate, $endDate) {
+                    $query->where('type', 'commercial')
+                        ->whereBetween('depre_date', [$startDate, $endDate])
+                        ->orderBy('depre_date');
+                }
+            ])
             ->whereHas('depreciations', function($query) use ($startDate, $endDate) {
                 $query->where('type', 'commercial')
-                      ->whereBetween('depre_date', [$startDate, $endDate]);
+                    ->whereBetween('depre_date', [$startDate, $endDate]);
             })
             ->orderBy('id')
             ->paginate(15);
 
-        $assetIds = $assets->pluck('id')->toArray();
-        
-        $depreciations = [];
-        if (!empty($assetIds)) {
-            $depreciations = Depreciation::whereIn('asset_id', $assetIds)
-                ->where('type', 'commercial')
-                ->whereBetween('depre_date', [$startDate, $endDate])
-                ->get();
-        }
-
+        // Pivot data langsung dari relasi yang sudah di-load
         $pivotedData = [];
-        foreach ($assets as $asset) {
-            $pivotedData[$asset->id] = [
-                'master_data' => $asset,
-                'schedule' => []
-            ];
-        }
 
-        foreach ($depreciations as $depre) {
-            $monthKey = Carbon::parse($depre->depre_date)->format('Y-m');
-            if (isset($pivotedData[$depre->asset_id])) {
-                $pivotedData[$depre->asset_id]['schedule'][$monthKey] = (object)[
+        foreach ($assets as $asset) {
+            $schedule = [];
+            
+            // Gunakan depreciations dari eager loading
+            foreach ($asset->depreciations as $depre) {
+                $monthKey = Carbon::parse($depre->depre_date)->format('Y-m');
+                $schedule[$monthKey] = (object)[
                     'monthly_depre' => $depre->monthly_depre,
                     'accumulated_depre' => $depre->accumulated_depre,
                     'book_value' => $depre->book_value,
                 ];
             }
+            
+            $pivotedData[$asset->id] = [
+                'master_data' => $asset,
+                'schedule' => $schedule
+            ];
         }
 
         return view('depreciation.commercial.index', [
             'pivotedData' => $pivotedData, 
             'paginator' => $assets, 
-            'months' => $this->getMonths($year),
-            'selectedYear' => $year
+            'months' => $this->getMonths($startYear, $endYear),
+            'selectedStartYear' => $startYear,
+            'selectedEndYear' => $endYear,
         ]);
     }
 
     public function indexFiscal(Request $request)
     {
-        $year = $request->input('year', now()->year);
-        $companyId = session('active_company_id');
+        if ($request->input('start') == null && $request->input('end') == null) {
+            $startYear = now()->year;
+            $endYear = now()->year;
+        } 
+        elseif ($request->input('start') > $request->input('end')) {
+            $startYear = $request->input('end', now()->year);
+            $endYear = $request->input('start', now()->year);
+        } 
+        else {
+            $startYear = $request->input('start', now()->year);
+            $endYear = $request->input('end', now()->year);
+        }
 
-        $startDate = Carbon::create($year, 1, 1)->startOfDay();
-        $endDate   = Carbon::create($year, 12, 31)->endOfDay();
+        $companyId = session('active_company_id');
+        $startDate = Carbon::create($startYear, 1, 1)->startOfDay();
+        $endDate   = Carbon::create($endYear, 12, 31)->endOfDay();
 
         $assets = Asset::where('company_id', $companyId)
             ->where('asset_type', 'FA')
             ->whereNotIn('status', ['Sold', 'Onboard', 'Disposal'])
-            ->with(['assetName', 'location', 'department'])
+            ->with([
+                'assetName',
+                'location',
+                'department',
+                'depreciations' => function($query) use ($startDate, $endDate) {
+                    $query->where('type', 'fiscal')
+                          ->whereBetween('depre_date', [$startDate, $endDate])
+                          ->orderBy('depre_date');
+                }
+            ])
             ->whereHas('depreciations', function($query) use ($startDate, $endDate) {
                 $query->where('type', 'fiscal')
                       ->whereBetween('depre_date', [$startDate, $endDate]);
@@ -189,40 +226,33 @@ class DepreciationController extends Controller
             ->orderBy('id')
             ->paginate(15);
 
-        $assetIds = $assets->pluck('id')->toArray();
+        $pivotedData = [];        
 
-        $depreciations = [];
-        if (!empty($assetIds)) {
-            $depreciations = Depreciation::whereIn('asset_id', $assetIds)
-                ->where('type', 'fiscal')
-                ->whereBetween('depre_date', [$startDate, $endDate])
-                ->get();
-        }
-
-        $pivotedData = [];
         foreach ($assets as $asset) {
-            $pivotedData[$asset->id] = [
-                'master_data' => $asset,
-                'schedule' => []
-            ];
-        }
-
-        foreach ($depreciations as $depre) {
-            $monthKey = Carbon::parse($depre->depre_date)->format('Y-m');
-            if (isset($pivotedData[$depre->asset_id])) {
-                $pivotedData[$depre->asset_id]['schedule'][$monthKey] = (object)[
+            $schedule = [];
+            
+            // Gunakan depreciations dari eager loading
+            foreach ($asset->depreciations as $depre) {
+                $monthKey = Carbon::parse($depre->depre_date)->format('Y-m');
+                $schedule[$monthKey] = (object)[
                     'monthly_depre' => $depre->monthly_depre,
                     'accumulated_depre' => $depre->accumulated_depre,
                     'book_value' => $depre->book_value,
                 ];
             }
+            
+            $pivotedData[$asset->id] = [
+                'master_data' => $asset,
+                'schedule' => $schedule
+            ];
         }
         
         return view('depreciation.fiscal.index', [
             'pivotedData' => $pivotedData, 
             'paginator' => $assets, 
-            'months' => $this->getMonths($year),
-            'selectedYear' => $year
+            'months' => $this->getMonths($startYear, $endYear),
+            'selectedStartYear' => $startYear,
+            'selectedEndYear' => $endYear,
         ]);
     }
 
@@ -320,13 +350,20 @@ class DepreciationController extends Controller
 
     public function exportExcelCommercial(Request $request)
     {
-        $year = $request->input('year', now()->year);        
+        $startYear = $request->input('start', now()->year);
+        $endYear = $request->input('end', now()->year);      
 
         $companyName = session('active_company_id');
         $companyName = Company::where('id', $companyName)->first();
-        $fileName = 'Commercial-Depreciations-'. $year. '-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
         
-        return Excel::download(new CommercialDepreciationsExport($year), $fileName);
+        if ($startYear === $endYear) {
+            $fileName = 'Commercial-Depreciations-'. $startYear. '-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        }
+        else {
+            $fileName = 'Commercial-Depreciations-'. $startYear. '-' . $endYear. '-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        }
+        
+        return Excel::download(new CommercialDepreciationsExport($startYear, $endYear), $fileName);
     }
 
     public function exportExcelFiscal(Request $request)
@@ -340,11 +377,11 @@ class DepreciationController extends Controller
         return Excel::download(new FiscalDepreciationsExport($year), $fileName);
     }
 
-    private function getMonths($year)
+    private function getMonths($startYear, $endYear)
     {
         $months = [];
-        $startDate = Carbon::create($year, 1, 1)->startOfMonth();
-        $endDate = Carbon::create($year, 12, 1)->endOfMonth();
+        $startDate = Carbon::create($startYear, 1, 1)->startOfMonth();
+        $endDate = Carbon::create($endYear, 12, 1)->endOfMonth();
         
         $period = CarbonPeriod::create($startDate, '1 month', $endDate);
         

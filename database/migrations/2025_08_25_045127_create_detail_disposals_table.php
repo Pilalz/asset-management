@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('detail_disposals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('disposal_asset_id')->constrained('disposal_assets')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('disposal_asset_id')->constrained('disposal_assets');
             $table->foreignId('asset_id')->constrained('assets');
             $table->decimal('kurs', 18, 0);
             $table->decimal('njab', 18, 0);

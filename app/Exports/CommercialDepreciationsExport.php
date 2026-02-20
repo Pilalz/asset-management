@@ -19,17 +19,21 @@ class CommercialDepreciationsExport implements FromQuery, WithHeadings, WithMapp
 {
     use Exportable;
 
-    protected $year;
+    protected $startYear;
+    protected $endYear;
     protected $months = [];
 
-    public function __construct(int $year)
+    public function __construct(int $startYear, int $endYear)
     {
-        $this->year = $year;
+        $this->startYear = $startYear;
+        $this->endYear = $endYear;
 
-        // Siapkan header bulan
-        for ($m = 1; $m <= 12; $m++) {
-            $date = Carbon::create($this->year, $m, 1);
-            $this->months[$date->format('Y-m')] = $date->format('M-y'); // Jan-25
+        // Siapkan header bulan dari startYear hingga endYear
+        for ($year = $this->startYear; $year <= $this->endYear; $year++) {
+            for ($month = 1; $month <= 12; $month++) {
+                $date = Carbon::create($year, $month, 1);
+                $this->months[$date->format('Y-m')] = $date->format('M-y'); // Jan-25, Feb-25, ..., Dec-26
+            }
         }
     }
 
@@ -41,23 +45,23 @@ class CommercialDepreciationsExport implements FromQuery, WithHeadings, WithMapp
 
     public function query()
     {
-        $startDate = Carbon::create($this->year, 1, 1)->startOfMonth();
-        $endDate = Carbon::create($this->year, 12, 1)->endOfMonth();
+        $startDate = Carbon::create($this->startYear, 1, 1)->startOfMonth();
+        $endDate = Carbon::create($this->endYear, 12, 1)->endOfMonth();
 
         return Asset::withoutGlobalScope(CompanyScope::class)
             ->where('company_id', session('active_company_id'))
             // --- FILTER: Hanya yang PUNYA depresiasi di tahun ini ---
             ->whereHas('depreciations', function ($query) use ($startDate, $endDate) {
                 $query->whereBetween('depre_date', [$startDate, $endDate])
-                      ->where('type', 'commercial');
+                    ->where('type', 'commercial');
             })
             // --------------------------------------------------------
             ->with([
                 'assetName', // Cukup load relasi yang perlu ditampilkan
                 'depreciations' => function ($query) use ($startDate, $endDate) {
                     $query->whereBetween('depre_date', [$startDate, $endDate])
-                          ->where('type', 'commercial')
-                          ->orderBy('depre_date');
+                        ->where('type', 'commercial')
+                        ->orderBy('depre_date');
                 }
             ]);
     }
@@ -87,7 +91,7 @@ class CommercialDepreciationsExport implements FromQuery, WithHeadings, WithMapp
         // Karena kita pakai FromQuery, kita gak punya index loop otomatis.
         // Kita kosongkan kolom 'No' dulu, nanti bisa diisi manual atau dibiarkan kosong
         // Atau pakai $asset->id sebagai pengganti sementara
-        
+
         $row = [
             '', // Kolom No (Nanti diisi lewat view atau dibiarkan)
             $asset->assetName->name ?? '-',
@@ -119,36 +123,36 @@ class CommercialDepreciationsExport implements FromQuery, WithHeadings, WithMapp
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
+            AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet;
                 $monthsCount = count($this->months);
-                
+
                 // 1. Tambahkan Header Utama (Baris 1)
                 // Kolom A, B, C dibiarkan kosong di baris 1
                 $colIndex = 4; // Mulai dari Kolom D (index 4)
-                
+    
                 foreach ($this->months as $label) {
                     // Konversi index angka ke huruf Excel (D, E, F...)
                     $startCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex);
                     $endCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex + 2);
-                    
+
                     // Merge 3 kolom (Monthly, Accum, Book) untuk 1 Bulan
                     $sheet->mergeCells("{$startCol}1:{$endCol}1");
-                    
+
                     // Tulis Nama Bulan (Jan-25)
                     $sheet->setCellValue("{$startCol}1", $label);
-                    
+
                     // Style: Tengah & Bold
                     $sheet->getStyle("{$startCol}1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                     $sheet->getStyle("{$startCol}1")->getFont()->setBold(true);
-                    
+
                     $colIndex += 3;
                 }
 
                 // 2. Style Header Baris 2 (Sub-Header)
                 $lastColIndex = 3 + ($monthsCount * 3);
                 $lastColStr = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($lastColIndex);
-                
+
                 $sheet->getStyle("A2:{$lastColStr}2")->getFont()->setBold(true);
                 $sheet->getStyle("A2:{$lastColStr}2")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 

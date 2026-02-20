@@ -56,21 +56,21 @@ class AssetController extends Controller
                             ->where('start_depre_date', '<=', $lastMonth->endOfMonth())
                             ->where('company_id', $companyId)
                             ->where(function ($q) use ($year, $month, $endOfMonthDay) {
-                                // Grouping logic whereDoesntHave biar lebih rapi dan optimal
-                                $q->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
-                                    $query->where('type', 'commercial')
-                                        ->whereYear('depre_date', $year)
-                                        ->whereMonth('depre_date', $month)
-                                        ->whereDay('depre_date', $endOfMonthDay);
-                                })
-                                ->orWhereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
-                                    $query->where('type', 'fiscal')
-                                        ->whereYear('depre_date', $year)
-                                        ->whereMonth('depre_date', $month)
-                                        ->whereDay('depre_date', $endOfMonthDay);
-                                });
+                            // Grouping logic whereDoesntHave biar lebih rapi dan optimal
+                            $q->whereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
+                                $query->where('type', 'commercial')
+                                    ->whereYear('depre_date', $year)
+                                    ->whereMonth('depre_date', $month)
+                                    ->whereDay('depre_date', $endOfMonthDay);
                             })
-                            ->exists(); // <--- GANTI get() JADI exists()
+                                ->orWhereDoesntHave('depreciations', function ($query) use ($year, $month, $endOfMonthDay) {
+                                $query->where('type', 'fiscal')
+                                    ->whereYear('depre_date', $year)
+                                    ->whereMonth('depre_date', $month)
+                                    ->whereDay('depre_date', $endOfMonthDay);
+                            });
+                        })
+                            ->exists();
                     }
                 );
             } finally {
@@ -97,6 +97,25 @@ class AssetController extends Controller
 
     public function show(Request $request, Asset $asset)
     {
+        $locs = $asset->locationHistories()->with('location')->get()->map(function ($item) {
+            $item->setAttribute('log_type', 'Lokasi');
+            $item->setAttribute('display_name', $item->location->name);
+            return $item;
+        });
+
+        $users = $asset->userHistories()->with('user')->get()->map(function ($item) {
+            $item->setAttribute('log_type', 'User');
+            $item->setAttribute('display_name', $item->user);
+            return $item;
+        });
+
+        // Combine, sort by date desc, and group by formatted date (minute precision)
+        $timeline = $locs->concat($users)
+            ->sortByDesc('start_date')
+            ->groupBy(function ($item) {
+                return $item->start_date->format('d M Y H:i');
+            });
+
         $year = $request->input('year', now()->year);
         $startDate = Carbon::create($year, 1, 1)->startOfMonth();
         $endDate = Carbon::create($year, 12, 1)->endOfMonth();
@@ -126,12 +145,13 @@ class AssetController extends Controller
         foreach ($period as $date) {
             $months[$date->format('Y-m')] = $date->format('M-y');
         }
-        
+
         return view('asset.fixed.show', [
             'pivotedData' => $pivotedData,
             'months' => $months,
             'selectedYear' => $year,
-            'asset' =>$asset
+            'asset' =>$asset,
+            'timeline' =>$timeline
         ]);
     }
 
@@ -143,7 +163,7 @@ class AssetController extends Controller
         $departments = Department::all();
         $assetclasses = AssetClass::all();
 
-        $activeCompany = Company::find(session('active_company_id')); 
+        $activeCompany = Company::find(session('active_company_id'));
 
         return view('asset.fixed.create', compact('locations', 'departments', 'assetclasses', 'activeCompany'));
     }
@@ -176,17 +196,17 @@ class AssetController extends Controller
             'location_id'      => 'required|exists:locations,id',
             'department_id'    => 'required|exists:departments,id',
             'quantity'         => 'required|integer|min:1',
-            
+
             'status'           => 'required|string',
             'capitalized_date' => 'required|date',
             'start_depre_date' => 'required|date',
-            
+
             'acquisition_value' => 'required',
             'current_cost'      => 'required',
             'commercial_nbv'    => 'required',
             'fiscal_nbv'        => 'required',
             'remaks'            => 'nullable|string',
-            
+
             'commercial_accum_depre' => 'nullable',
             'fiscal_accum_depre'     => 'nullable',
         ]);
@@ -201,7 +221,7 @@ class AssetController extends Controller
 
         $validatedData['commercial_accum_depre'] = $request->input('commercial_accum_depre', 0);
         $validatedData['fiscal_accum_depre']     = $request->input('fiscal_accum_depre', 0);
-        
+
         $validatedData['company_id'] = $companyId;
 
         Asset::create($validatedData);
@@ -215,12 +235,12 @@ class AssetController extends Controller
     public function edit(Asset $asset)
     {
         Gate::authorize('is-admin');
-        
+
         $locations = Location::all();
         $departments = Department::all();
         $assetclasses = AssetClass::all();
 
-        $asset->load('depreciations');        
+        $asset->load('depreciations');
 
         return view('asset.fixed.edit', compact('asset', 'locations', 'departments', 'assetclasses'));
     }
@@ -268,7 +288,7 @@ class AssetController extends Controller
         $dataToUpdate = $validatedData;
 
         $asset->update($dataToUpdate);
-        
+
         $cacheKey = 'assets_not_depreciated_' . $asset->company_id . '_' . Carbon::now()->year . '-' . Carbon::now()->month;
         Cache::forget($cacheKey);
 
@@ -282,13 +302,13 @@ class AssetController extends Controller
         $asset = Asset::findOrFail($id);
 
         if ($asset->detailTransfers()->whereHas('transferAsset', function ($query) {
-            $query->where('status', '!=', 'Approved');
+                $query->where('status', '!=', 'Approved');
         })->exists()) {
             return back()->with('error', 'Gagal dihapus! Aset ini sedang dalam proses transaksi Transfer Asset yang belum selesai.');
         }
 
         if ($asset->detailDisposals()->whereHas('disposalAsset', function ($query) {
-            $query->where('status', '!=', 'Approved');
+                $query->where('status', '!=', 'Approved');
         })->exists()) {
             return back()->with('error', 'Gagal dihapus! Aset ini sedang dalam proses transaksi Disposal Asset yang belum selesai.');
         }
@@ -311,7 +331,7 @@ class AssetController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('asset.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
         }
-        
+
         return redirect()->route('asset.index')->with('success', 'Data aset berhasil diimpor!');
     }
 
@@ -319,8 +339,8 @@ class AssetController extends Controller
     {
         $companyName = session('active_company_id');
         $companyName = Company::where('id', $companyName)->first();
-        $fileName = 'Fixed-Asset-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
-        
+        $fileName = 'Fixed-Asset-' . $companyName->name . '-' . now()->format('Y-m-d') . '.xlsx';
+
         return Excel::download(new AssetsExport, $fileName);
     }
 
@@ -329,31 +349,31 @@ class AssetController extends Controller
         $companyId = session('active_company_id');
 
         $query = Asset::withoutGlobalScope(CompanyScope::class)
-                        ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
-                        ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
-                        ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
-                        ->join('locations', 'assets.location_id', '=', 'locations.id')
-                        ->join('departments', 'assets.department_id', '=', 'departments.id')
-                        ->join('companies', 'assets.company_id', '=', 'companies.id')
-                        ->where('assets.asset_type', '=', 'FA')
-                        ->where('assets.status', '!=', 'Sold')
-                        ->where('assets.status', '!=', 'Onboard')
-                        ->where('assets.status', '!=', 'Disposal')
-                        ->where('assets.company_id', $companyId)
-                        ->select([
-                            'assets.*',
-                            'asset_names.name as asset_name_name',
-                            'asset_classes.obj_acc as asset_class_obj',
-                            'locations.name as location_name',
-                            'departments.name as department_name',
-                            'companies.currency as currency_code',
-                        ]);
+            ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+            ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+            ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+            ->join('locations', 'assets.location_id', '=', 'locations.id')
+            ->join('departments', 'assets.department_id', '=', 'departments.id')
+            ->join('companies', 'assets.company_id', '=', 'companies.id')
+            ->where('assets.asset_type', '=', 'FA')
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
+            ->where('assets.company_id', $companyId)
+            ->select([
+                'assets.*',
+                'asset_names.name as asset_name_name',
+                'asset_classes.obj_acc as asset_class_obj',
+                'locations.name as location_name',
+                'departments.name as department_name',
+                'companies.currency as currency_code',
+            ]);
 
         return DataTables::eloquent($query)
             ->addIndexColumn()
             ->addColumn('action', function ($asset) {
-                $qrContent = Str::isUuid($asset->asset_code) 
-                    ? route('scan.process', ['code' => $asset->asset_code]) 
+                $qrContent = Str::isUuid($asset->asset_code)
+                    ? route('scan.detail', ['code' => $asset->asset_code])
                     : $asset->asset_code;
 
                 return view('components.action-asset-buttons', [

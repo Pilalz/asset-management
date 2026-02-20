@@ -14,6 +14,8 @@ use App\Models\DetailDisposal;
 use App\Models\DetailTransfer;
 use App\Models\Insurance;
 use App\Models\Claim;
+use App\Models\AssetLocationHistory;
+use App\Models\AssetUserHistory;
 use App\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -111,13 +113,21 @@ class Asset extends Model
                     ->withPivot('compensation');
     }
 
+    public function locationHistories() {
+        return $this->hasMany(AssetLocationHistory::class)->orderBy('start_date', 'desc');
+    }
+
+    public function userHistories() {
+        return $this->hasMany(AssetUserHistory::class)->orderBy('start_date', 'desc');
+    }
+
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
 
         static::creating(function ($model) {
-            if (empty($model->identifier)) {
-                $model->identifier = (string) Str::uuid();
+            if (empty($model->asset_code)) {
+                $model->asset_code = (string) Str::uuid();
             }
         });
     }

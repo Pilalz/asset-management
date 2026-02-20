@@ -5,7 +5,7 @@ import flowbite from 'flowbite/plugin';
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: 'class',
-    
+
     content: [
         "./storage/framework/views/*.php",
         "./resources/**/*.blade.php",
@@ -18,7 +18,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
         },
     },

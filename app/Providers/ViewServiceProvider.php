@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use App\Http\View\Composers\CompanyComposer;
 use App\Http\View\Composers\NotificationComposer;
+use App\Http\View\Composers\StockOpnameComposer;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -24,5 +25,6 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::composer('*', CompanyComposer::class);
         View::composer('*', NotificationComposer::class);
+        View::composer('*', StockOpnameComposer::class);
     }
 }

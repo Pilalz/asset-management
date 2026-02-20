@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use App\Models\Company;
 use App\Policies\CompanyPolicy;
+use App\Models\Asset;
+use App\Observers\AssetObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Asset::observe(AssetObserver::class);
+
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
         }

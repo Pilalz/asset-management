@@ -5,7 +5,7 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/css/app.css', 
+                'resources/css/app.css',
                 'resources/js/app.js',
                 //Datatables
                 'resources/js/pages/location.js',
@@ -20,9 +20,10 @@ export default defineConfig({
                 'resources/js/pages/transferAssetCanceled.js',
                 'resources/js/pages/disposalAsset.js',
                 'resources/js/pages/disposalAssetCanceled.js',
-                'resources/js/pages/commercialDepre.js',
                 'resources/js/pages/company.js',
                 'resources/js/pages/history.js',
+                'resources/js/pages/stockOpname.js',
+                'resources/js/pages/stockOpnameShow.js',
                 //Signature Pad User
                 'resources/js/pages/profileSignature.js',
                 //User Search
@@ -31,6 +32,10 @@ export default defineConfig({
                 'resources/js/pages/transferAssetForm.js',
                 //Disposal Asset
                 'resources/js/pages/disposalAssetForm.js',
+                //Fixed Asset
+                'resources/js/pages/fixedAsset.js',
+                //Layout Main
+                'resources/js/pages/layoutMain.js',
             ],
             refresh: true,
         }),

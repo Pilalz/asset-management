@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('detail_registers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('register_asset_id')->constrained('register_assets')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('register_asset_id')->constrained('register_assets');
             $table->string('po_no');
             $table->string('invoice_no');
             $table->date('commission_date')->nullable();

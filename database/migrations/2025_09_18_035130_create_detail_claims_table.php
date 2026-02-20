@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('detail_claims', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('claim_id')->constrained('claims')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('claim_id')->constrained('claims');
             $table->foreignId('asset_id')->constrained('assets');
             $table->integer('compensation')->nullable();
             $table->timestamps();

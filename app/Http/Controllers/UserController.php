@@ -22,10 +22,11 @@ class UserController extends Controller
     public function onboard()
     {
         $user = Auth::user();
+        $dev_company = Company::get();
         $company_user = CompanyUser::where('user_id', $user->id)->get();
         $activeCompany = $user->last_active_company_id;
         
-        return view('onboarding.onboard', compact('company_user', 'activeCompany'));
+        return view('onboarding.onboard', compact('company_user', 'activeCompany', 'dev_company'));
     }
 
     public function createCompany()

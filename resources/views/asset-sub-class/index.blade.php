@@ -2,52 +2,52 @@
 
 @section('content')
 
-@push('styles')
-    <style>
-        /* Gaya untuk Light Mode */
-        #assetSubClassTable tbody tr:hover {
+    @push('styles')
+        <style>
+            /* Gaya untuk Light Mode */
+            #assetSubClassTable tbody tr:hover {
             background-color: #F9FAFB !important; /* Tailwind's hover:bg-gray-50 */
-        }
+            }
 
-        /* Gaya untuk Dark Mode */
-        .dark #assetSubClassTable tbody tr:hover {
+            /* Gaya untuk Dark Mode */
+            .dark #assetSubClassTable tbody tr:hover {
             background-color: #374151 !important; /* Tailwind's dark:hover:bg-gray-700 (contoh) */
-        }
+            }
 
-        /* Matiin Outline */
-        #assetSubClassTable thead tr th:hover {
-            outline: none !important;
-        }
+            /* Matiin Outline */
+            #assetSubClassTable thead tr th:hover {
+                outline: none !important;
+            }
 
-        /* Menghapus background bawaan dari kolom yang diurutkan */
+            /* Menghapus background bawaan dari kolom yang diurutkan */
         table.dataTable tbody tr > .sorting_1,
         table.dataTable tbody tr > .sorting_2,
         table.dataTable tbody tr > .sorting_3 {
-            background-color: inherit !important;
-        }
+                background-color: inherit !important;
+            }
 
-        .dark .dt-search,
-        html.dark .dt-container .dt-paging .dt-paging-button.disabled,
-        html.dark .dt-container .dt-paging .dt-paging-button.disabled:hover,
-        html.dark .dt-container .dt-paging .dt-paging-button.disabled:active,
-        .dark div.dt-container .dt-paging .dt-paging-button,
+            .dark .dt-search,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:hover,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:active,
+            .dark div.dt-container .dt-paging .dt-paging-button,
         .dark div.dt-container .dt-paging .ellipsis{
-            color: #e4e6eb !important;
-        }
+                color: #e4e6eb !important;
+            }
 
         html.dark .dt-container .dt-paging .dt-paging-button.current:hover{
-            color: white !important;
-        }
+                color: white !important;
+            }
 
-        div.dt-container select.dt-input {
-            padding: 4px 25px 4px 4px;
-        }
+            div.dt-container select.dt-input {
+                padding: 4px 25px 4px 4px;
+            }
 
         select.dt-input option{
-            text-align: center !important;
-        }
-    </style>
-@endpush
+                text-align: center !important;
+            }
+        </style>
+    @endpush
 
     <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
@@ -141,34 +141,64 @@
             <div id="import-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="relative p-4 w-full max-w-md max-h-full">
                     <!-- Modal content -->
-                    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+                    <div
+                        class="relative bg-white rounded-2xl shadow-2xl dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
                         <!-- Modal header -->
-                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                        <div
+                            class="flex items-center justify-between p-4 md:p-5 border-b border-gray-100 rounded-t dark:border-gray-700">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                                 Import Data Asset Sub Class
                             </h3>
-                            <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="import-modal">
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            <button type="button"
+                                class="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-700 dark:hover:text-white"
+                                data-modal-hide="import-modal">
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                                 </svg>
                                 <span class="sr-only">Close modal</span>
                             </button>
                         </div>
                         <!-- Modal body -->
                         <div class="p-4 md:p-5">
-                            <form action="{{ route('asset-sub-class.import') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('asset-sub-class.import') }}" method="POST"
+                                enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-4">
-                                    <label for="excel_file" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Upload Excel File (.xlsx, .xls)</label>
-                                    <input type="file" name="excel_file" id="excel_file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" required>
-                                </div>   
-                                <div class="mb-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                                        Silahkan download template Excel jika anda belum memilikinya.
-                                    </p>
-                                    <a href="{{ asset('template/TemplateAssetSubClass.xlsx') }}" class="text-blue-600 hover:underline dark:text-blue-500">Download Template Excel</a>
+                                    <div class="flex items-center justify-center w-full">
+                                        <label for="excel_file"
+                                            class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
+                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                <svg class="w-10 h-10 mb-3 text-gray-400" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2"
+                                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                                </svg>
+                                                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span
+                                                        class="font-semibold">Click to upload</span> or drag and drop</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">XLSX or XLS (MAX. 10MB)
+                                                </p>
+                                            </div>
+                                            <input id="excel_file" name="excel_file" type="file" class="hidden" required />
+                                        </label>
+                                    </div>
                                 </div>
-                                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5">
+                                <div class="mb-6 flex justify-center">
+                                    <a href="{{ asset('template/TemplateAssetSubClass.xlsx') }}"
+                                        class="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4" />
+                                        </svg>
+                                        Download Excel Template
+                                    </a>
+                                </div>
+                                <button type="submit"
+                                    class="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-xl text-sm px-5 py-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 transition-colors shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30">
                                     Import Data
                                 </button>
                             </form>
@@ -180,7 +210,7 @@
     </div>
 
     <x-alerts />
-    
+
     <div class="p-5">
         <div class="relative overflow-x-auto shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
             <table id="assetSubClassTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-100">

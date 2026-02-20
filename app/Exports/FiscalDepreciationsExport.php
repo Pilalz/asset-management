@@ -19,17 +19,21 @@ class FiscalDepreciationsExport implements FromQuery, WithHeadings, WithMapping,
 {
     use Exportable;
 
-    protected $year;
+    protected $startYear;
+    protected $endYear;
     protected $months = [];
 
-    public function __construct(int $year)
+    public function __construct(int $startYear, int $endYear)
     {
-        $this->year = $year;
+        $this->startYear = $startYear;
+        $this->endYear = $endYear;
 
         // Siapkan header bulan untuk looping kolom
-        for ($m = 1; $m <= 12; $m++) {
-            $date = Carbon::create($this->year, $m, 1);
-            $this->months[$date->format('Y-m')] = $date->format('M-y'); // Jan-25
+        for ($year = $this->startYear; $year <= $this->endYear; $year++) {
+            for ($month = 1; $month <= 12; $month++) {
+                $date = Carbon::create($year, $month, 1);
+                $this->months[$date->format('Y-m')] = $date->format('M-y'); // Jan-25, Feb-25, ..., Dec-26
+            }
         }
     }
 
@@ -41,8 +45,8 @@ class FiscalDepreciationsExport implements FromQuery, WithHeadings, WithMapping,
 
     public function query()
     {
-        $startDate = Carbon::create($this->year, 1, 1)->startOfMonth();
-        $endDate = Carbon::create($this->year, 12, 1)->endOfMonth();
+        $startDate = Carbon::create($this->startYear, 1, 1)->startOfMonth();
+        $endDate = Carbon::create($this->endYear, 12, 1)->endOfMonth();
 
         return Asset::withoutGlobalScope(CompanyScope::class)
             ->where('company_id', session('active_company_id'))
