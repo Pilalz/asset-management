@@ -50,12 +50,13 @@
         </style>
     @endpush
 
-    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
+    <div
+        class="bg-white flex p-5 text-lg justify-between items-center border-b border-slate-200 dark:border-gray-700 dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
                     <a href="{{ route('register-asset.index') }}"
-                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">
                         <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor" viewBox="0 0 20 20">
                             <path
@@ -72,7 +73,7 @@
                                 d="m1 9 4-4-4-4" />
                         </svg>
                         <a href="{{ route('register-asset.index') }}"
-                            class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Register
+                            class="ms-1 text-sm font-medium text-gray-700 hover:text-indigo-600 md:ms-2 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">Register
                             Asset</a>
                     </div>
                 </li>
@@ -103,8 +104,8 @@
                         </svg>
                     </a>
                 </div>
-                <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction"
-                    class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-400 dark:hover:bg-gray-500 dark:hover:border-gray-400"
+                <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" data-dropdown-placement="bottom-end"
+                    class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-400 dark:hover:bg-gray-500 dark:hover:border-gray-400 transition-colors"
                     type="button">
                     <span class="sr-only">Action button</span>
                     Action
@@ -116,35 +117,31 @@
                 </button>
                 <!-- Dropdown menu -->
                 <div id="dropdownAction"
-                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700 dark:divide-gray-600">
+                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded-xl shadow-lg w-44 dark:bg-gray-800 dark:divide-gray-700 my-4 border border-gray-100 dark:border-gray-700">
                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton">
                         <li class="sm:hidden">
-                            <div class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                <a href="{{ route('register-asset.create') }}" type="button"
-                                    class="inline-flex items-center me-2">
-                                    <svg class="w-4 h-4 me-2 dark:text-white" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                        viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2" d="M5 12h14m-7 7V5" />
-                                    </svg>
-                                    New Data
-                                </a>
-                            </div>
+                            <a href="{{ route('register-asset.create') }}" type="button"
+                                class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors">
+                                <svg class="w-4 h-4 mr-3 text-gray-400 group-hover:text-green-500 dark:text-gray-500 dark:group-hover:text-green-400 transition-colors"
+                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 12h14m-7 7V5" />
+                                </svg>
+                                New Data
+                            </a>
                         </li>
                         <li>
-                            <div class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                <a href="{{ route('register-asset.trash') }}" type="button"
-                                    class="inline-flex items-center me-2">
-                                    <svg class="w-4 h-4 me-2 dark:text-white" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                        viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2" d="M4 16h13M4 16l4-4m-4 4 4 4M20 8H7m13 0-4 4m4-4-4-4" />
-                                    </svg>
-                                    Restore Data
-                                </a>
-                            </div>
+                            <a href="{{ route('register-asset.trash') }}" type="button"
+                                class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors">
+                                <svg class="w-4 h-4 mr-3 text-gray-400 group-hover:text-amber-500 dark:text-gray-500 dark:group-hover:text-amber-400 transition-colors"
+                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16h13M4 16l4-4m-4 4 4 4M20 8H7m13 0-4 4m4-4-4-4" />
+                                </svg>
+                                Restore Data
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -155,9 +152,10 @@
     <x-alerts />
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
+        <div
+            class="shadow-sm rounded-xl bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 overflow-hidden">
             <table id="registerAssetTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-100">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-100">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
                     <tr>
                         <th scope="col" class="px-6 py-3">No</th>
                         <th scope="col" class="px-6 py-3">Form No</th>

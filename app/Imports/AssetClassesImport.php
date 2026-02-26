@@ -45,7 +45,7 @@ class AssetClassesImport implements ToModel, WithStartRow, WithValidation
                 'max:255',
                 Rule::unique('asset_classes', 'name')->where('company_id', $this->companyId),
             ],
-            '0' => [
+            '1' => [
                 'required',
                 'max:255',
                 Rule::unique('asset_classes', 'obj_id')->where('company_id', $this->companyId),

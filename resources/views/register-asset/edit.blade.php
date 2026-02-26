@@ -2,12 +2,12 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
+    <div class="bg-white flex p-5 text-lg justify-between items-center border-b border-slate-200 dark:border-gray-700 dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
                     <a href="{{ route('register-asset.index') }}"
-                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">
                         <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor" viewBox="0 0 20 20">
                             <path
@@ -24,7 +24,7 @@
                                 d="m1 9 4-4-4-4" />
                         </svg>
                         <a href="{{ route('register-asset.index') }}"
-                            class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Register
+                            class="ms-1 text-sm font-medium text-gray-700 hover:text-indigo-600 md:ms-2 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">Register
                             Asset</a>
                     </div>
                 </li>
@@ -44,7 +44,7 @@
 
     <x-alerts />
 
-    <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg m-5 bg-white dark:bg-gray-800">
+    <div class="shadow-sm rounded-xl p-6 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 mx-auto m-5">
         <form class="max-w mx-auto" action="{{ route('register-asset.update', $register_asset->id) }}" method="POST"
             enctype="multipart/form-data">
             @csrf
@@ -53,7 +53,7 @@
             <div class="grid grid-cols-1 gap-y-5 mb-5 dark:text-white">
                 <div class="md:col-span-1">
                     <h2
-                        class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">
                         Basic Information
                     </h2>
                 </div>
@@ -75,7 +75,7 @@
                             class="text-red-900 dark:text-red-400">*</span></label>
                     <span> : </span>
                     <select name="department_id" id="department-select"
-                        class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                        class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer">
                         <option selected value="">Choose a Department</option>
                         @foreach($departments as $department)
                             <option value="{{ $department->id }}" {{ (old('department_id', $register_asset->department_id) == $department->id) ? 'selected' : '' }}>
@@ -93,7 +93,7 @@
                             class="text-red-900 dark:text-red-400">*</span></label>
                     <span> : </span>
                     <select name="location_id"
-                        class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                        class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer">
                         <option selected value="">Choose a Location</option>
                         @foreach($locations as $location)
                             <option value="{{ $location->id }}" {{ (old('location_id', $register_asset->location_id) == $location->id) ? 'selected' : '' }}>
@@ -113,14 +113,14 @@
                     <div class="w-full flex ml-2">
                         <div class="flex items-center pr-4">
                             <input id="fixed-asset" name="asset_type" type="radio" value="FA"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                 {{ old('asset_type', $register_asset->asset_type) == 'FA' ? 'checked' : '' }}>
                             <label for="fixed-asset" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Fixed
                                 Asset <span class="italic">(FA)</span></label>
                         </div>
                         <div class="flex items-center">
                             <input id="low-value-asset" name="asset_type" type="radio" value="LVA"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                 {{ old('asset_type', $register_asset->asset_type) == 'LVA' ? 'checked' : '' }}>
                             <label for="low-value-asset"
                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Low Value Asset <span
@@ -136,7 +136,7 @@
             <div class="grid grid-cols-1 gap-y-5 mb-5">
                 <div class="md:col-span-1">
                     <h2
-                        class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">
                         Asset List
                     </h2>
                 </div>
@@ -169,7 +169,7 @@
                                             <td class="px-2 py-4">
                                                 <input type="text" name="assets[{{ $index }}][po_no]"
                                                     value="{{ old("assets.$index.po_no", $assetData->po_no ?? '') }}"
-                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer"
                                                     placeholder="PO No." />
                                                 @error("assets.$index.po_no")
                                                     <div class="text-red-500">{{ $message }}</div>
@@ -178,7 +178,7 @@
                                             <td class="px-2 py-4">
                                                 <input type="text" name="assets[{{ $index }}][invoice_no]"
                                                     value="{{ old("assets.$index.invoice_no", $assetData->invoice_no ?? '') }}"
-                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer"
                                                     placeholder="Invoice No." />
                                                 @error("assets.$index.invoice_no")
                                                     <div class="text-red-500">{{ $message }}</div>
@@ -188,7 +188,7 @@
                                                 class="px-2 py-4 commission-date-td overflow-hidden transition-all duration-500 ease-in-out">
                                                 <input type="date" name="assets[{{ $index }}][commission_date]"
                                                     value="{{ old("assets.$index.commission_date", $assetData->commission_date ?? '') }}"
-                                                    class="commission-date-input block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                                    class="commission-date-input block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" />
                                                 @error("assets.$index.commission_date")
                                                     <div class="text-red-500">{{ $message }}</div>
                                                 @enderror
@@ -196,7 +196,7 @@
                                             <td class="px-2 py-4">
                                                 <input type="text" name="assets[{{ $index }}][specification]"
                                                     value="{{ old("assets.$index.specification", $assetData->specification ?? '') }}"
-                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer"
                                                     placeholder="Specification" />
                                                 @error("assets.$index.specification")
                                                     <div class="text-red-500">{{ $message }}</div>
@@ -204,7 +204,7 @@
                                             </td>
                                             <td class="px-2 py-4">
                                                 <select name="assets[{{ $index }}][asset_class_id]"
-                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-class-select">
+                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer asset-class-select">
                                                     <option value="">Choose Asset Class</option>
                                                     @foreach($assetclasses as $class)
                                                         <option value="{{ $class->id }}" {{ old("assets.$index.asset_class_id", $assetData->assetName->assetSubClass->class_id ?? '') == $class->id ? 'selected' : '' }}>
@@ -218,7 +218,7 @@
                                             </td>
                                             <td class="px-2 py-4">
                                                 <select name="assets[{{ $index }}][asset_sub_class_id]"
-                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-sub-class-select">
+                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer asset-sub-class-select">
                                                     <option value="">Choose Asset Sub Class</option>
                                                 </select>
                                                 @error("assets.$index.asset_sub_class_id")
@@ -227,7 +227,7 @@
                                             </td>
                                             <td class="px-2 py-4">
                                                 <select name="assets[{{ $index }}][asset_name_id]"
-                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-name-select">
+                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer asset-name-select">
                                                     <option value="">Choose Asset Name</option>
                                                 </select>
                                                 @error("assets.$index.asset_name_id")
@@ -244,7 +244,7 @@
                             </table>
                         </div>
                         <button type="button" id="add-asset-row"
-                            class="mt-4 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Add
+                            class="mt-4 text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-500 dark:hover:bg-indigo-600">Add
                             Asset</button>
                     </div>
                 </div>
@@ -254,14 +254,14 @@
                             class="text-red-900 dark:text-red-400">*</span></label>
                     <div class="flex items-center mb-4">
                         <input id="insured-yes" name="insured" type="radio" value="1"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                             {{ old('insured', $register_asset->insured) == 1 ? 'checked' : '' }}>
                         <label for="insured-yes" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span
                                 class="italic">(Yes)</span></label>
                     </div>
                     <div class="flex items-center">
                         <input id="insured-no" name="insured" type="radio" value="0"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                             {{ old('insured', $register_asset->insured) == 0 ? 'checked' : '' }}>
                         <label for="insured-no" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak
                             <span class="italic">(No)</span></label>
@@ -278,7 +278,7 @@
                     <span> : </span>
                     <input type="text" id="polish-no-input" name="polish_no"
                         value="{{ old("polish_no", $register_asset->polish_no ?? '') }}"
-                        class="block py-1 px-0 ml-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                        class="block py-1 px-0 ml-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" />
                     @error('polish_no')
                         <div class="text-red-500">{{ $message }}</div>
                     @enderror
@@ -288,7 +288,7 @@
             <div class="grid grid-cols-1 gap-y-5 mb-5">
                 <div class="md:col-span-1">
                     <h2
-                        class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">
                         Attachment List
                     </h2>
                 </div>
@@ -322,7 +322,7 @@
             <div class="grid grid-cols-1 gap-y-5 mb-5">
                 <div class="md:col-span-1">
                     <h2
-                        class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                        class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">
                         Approval List
                     </h2>
                 </div>
@@ -335,7 +335,7 @@
                                     class="text-red-900 dark:text-red-400">*</span> : </label>
                             <div class="flex items-center pr-4">
                                 <input id="sequence-yes" name="sequence" type="radio" value="1"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                     {{ old('sequence', $register_asset->sequence) == 1 ? 'checked' : '' }}>
                                 <label for="sequence-yes"
                                     class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span
@@ -343,7 +343,7 @@
                             </div>
                             <div class="flex items-center">
                                 <input id="sequence-no" name="sequence" type="radio" value="0"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                     {{ old('sequence', $register_asset->sequence) == 0 ? 'checked' : '' }}>
                                 <label for="sequence-no"
                                     class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak <span
@@ -398,7 +398,7 @@
                                             @if ($status === 'pending')
                                                 <td class="px-2 py-4">
                                                     <select name="approvals[{{$index}}][user_id]"
-                                                        class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                        class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer">
                                                         <option value="">Pilih Nama</option>
                                                         @foreach($users as $user)
                                                             <option value="{{ $user->id }}" data-role="{{ $user->user_role }}" {{ $userId == $user->id ? 'selected' : '' }}>
@@ -414,7 +414,7 @@
                                                 <td class="px-2 py-4">
                                                     <input type="text" name="approvals[{{$index}}][user_id]"
                                                         value="{{ $approval->user->name ?? '' }}"
-                                                        class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                        class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer"
                                                         readonly />
                                                     <input type="hidden" name="approvals[{{$index}}][user_id]"
                                                         value="{{ $userId }}" />
@@ -437,14 +437,14 @@
                                                 @if($status === 'approved')
                                                     <input type="date" name="approvals[{{$index}}][approval_date]"
                                                         value="{{ $date }}"
-                                                        class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                                        class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" />
                                                     @error("approvals[{{$index}}][approval_date]")
                                                         <div class="text-red-500">{{ $message }}</div>
                                                     @enderror
                                                 @else
                                                     <input type="date" name="approvals[{{$index}}][approval_date]"
                                                         value="{{ $date }}"
-                                                        class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                        class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer"
                                                         readonly />
                                                     @error("approvals[{{$index}}][approval_date]")
                                                         <div class="text-red-500">{{ $message }}</div>
@@ -475,7 +475,7 @@
 
             <div class="flex flex-col gap-2 sm:flex-row">
                 <button type="submit"
-                    class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
+                    class="text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-500 dark:hover:bg-indigo-600">Update</button>
                 <a href="{{ route('register-asset.index') }}"
                     class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
             </div>
@@ -558,31 +558,31 @@
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 asset-row">
                         <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white asset-row-number text-center">${index + 1}</td>
                         <td class="px-2 py-4">
-                            <input type="text" name="assets[${index}][po_no]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="PO No." />
+                            <input type="text" name="assets[${index}][po_no]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder="PO No." />
                             @error("assets.$index.po_no")
                                 <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </td>
                         <td class="px-2 py-4">
-                            <input type="text" name="assets[${index}][invoice_no]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Invoice No." />
+                            <input type="text" name="assets[${index}][invoice_no]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder="Invoice No." />
                             @error("assets.$index.invoice_no")
                                 <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </td>
                         <td class="px-2 py-4 commission-date-td overflow-hidden transition-all duration-500 ease-in-out">
-                            <input type="date" name="assets[${index}][commission_date]" value="" class="commission-date-input block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                            <input type="date" name="assets[${index}][commission_date]" value="" class="commission-date-input block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" />
                             @error("assets.$index.commission_date")
                                 <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </td>
                         <td class="px-2 py-4">
-                            <input type="text" name="assets[${index}][specification]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="Specification" />
+                            <input type="text" name="assets[${index}][specification]" value="" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder="Specification" />
                             @error("assets.$index.specification")
                                 <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </td>
                         <td class="px-2 py-4">
-                            <select name="assets[${index}][asset_class_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-class-select">
+                            <select name="assets[${index}][asset_class_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer asset-class-select">
                                 <option value="">Choose Asset Class</option>
                                 ${classOptions}
                             </select>
@@ -591,7 +591,7 @@
                             @enderror
                         </td>
                         <td class="px-2 py-4">
-                            <select name="assets[${index}][asset_sub_class_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-sub-class-select">
+                            <select name="assets[${index}][asset_sub_class_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer asset-sub-class-select">
                                 <option value="">Choose Asset Sub Class</option>
                             </select>
                             @error("assets.$index.asset_sub_class_id")
@@ -599,7 +599,7 @@
                             @enderror
                         </td>
                         <td class="px-2 py-4">
-                            <select name="assets[${index}][asset_name_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer asset-name-select">
+                            <select name="assets[${index}][asset_name_id]" class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer asset-name-select">
                                 <option value="">Choose Asset Name</option>
                             </select>
                             @error("assets.$index.asset_name_id")

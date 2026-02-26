@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
+    <div class="bg-white flex p-5 text-lg justify-between items-center border-b border-slate-200 dark:border-gray-700 dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-400 dark:hover:text-white">
@@ -34,16 +34,26 @@
     <x-alerts />
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
-            <form class="max-w mx-auto" action="{{ route('asset.store') }}" method="POST">
-                @csrf
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
-                    <div class="md:col-span-2">
-                        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                            Basic Asset Information
-                        </h2>
-                    </div>
+        <div class="max-w-full mx-auto">
+            <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-slate-200 dark:border-gray-700 overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-200 dark:border-gray-700 bg-slate-50/50 dark:bg-gray-800/50">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        Create New Asset
+                    </h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Fill in the information below to create a new fixed asset.
+                    </p>
+                </div>
+
+                <form action="{{ route('asset.store') }}" method="POST" class="px-6 py-6">
+                    @csrf
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-8">
+                        <div class="md:col-span-2">
+                            <h2 class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                                Basic Asset Information
+                            </h2>
+                        </div>
 
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Number <span class="text-red-900 dark:text-red-400">*</span></label>
@@ -151,12 +161,12 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
-                    <div class="md:col-span-2">
-                        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                            Details & Specifications
-                        </h2>
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-8 pt-6 border-t border-slate-200 dark:border-gray-700">
+                        <div class="md:col-span-2">
+                            <h2 class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                                Details & Specifications
+                            </h2>
+                        </div>
 
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description <span class="text-red-900 dark:text-red-400">*</span></label>
@@ -209,12 +219,12 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
-                    <div class="md:col-span-2">
-                        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                            Financial Information
-                        </h2>
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-8 pt-6 border-t border-slate-200 dark:border-gray-700">
+                        <div class="md:col-span-2">
+                            <h2 class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                                Financial Information
+                            </h2>
+                        </div>
 
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">PO No <span class="text-red-900 dark:text-red-400">*</span></label>
@@ -316,12 +326,12 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-1 gap-x-6 gap-y-5 mb-5">
-                    <div class="md:col-span-2">
-                        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                            Remark
-                        </h2>
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-1 gap-x-6 gap-y-5 mb-8 pt-6 border-t border-slate-200 dark:border-gray-700">
+                        <div class="md:col-span-1">
+                            <h2 class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                                Remark
+                            </h2>
+                        </div>
 
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Remark </label>
@@ -329,11 +339,12 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-2 sm:flex-row">
-                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Save Asset</button>
-                    <a href="{{ route('asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200">Cancel</a>
-                </div>
-            </form>
+                    <div class="mt-8 flex flex-col sm:flex-row gap-3 pt-5 border-t border-slate-100 dark:border-gray-700">
+                        <button type="submit" class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 transition-all shadow-sm focus:outline-none w-full sm:w-auto">Save Asset</button>
+                        <a href="{{ route('asset.index') }}" class="text-gray-700 bg-white border border-slate-300 hover:bg-slate-50 focus:ring-4 focus:ring-slate-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 transition-all shadow-sm focus:outline-none w-full sm:w-auto">Cancel</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

@@ -50,11 +50,12 @@
         </style>
     @endpush
 
-    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
+    <div
+        class="bg-white flex p-5 text-lg justify-between items-center border-b border-slate-200 dark:border-gray-700 dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li
-                    class="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-400 dark:hover:text-white">
+                    class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">
                     <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                         viewBox="0 0 20 20">
                         <path
@@ -70,7 +71,7 @@
                                 d="m1 9 4-4-4-4" />
                         </svg>
                         <a href="{{ route('transfer-asset.index') }}"
-                            class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Transfer
+                            class="ms-1 text-sm font-medium text-gray-700 hover:text-indigo-600 md:ms-2 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">Transfer
                             Asset</a>
                     </div>
                 </li>
@@ -126,7 +127,7 @@
                         <div class="grid grid-cols-1 gap-y-5 mb-5 dark:text-white">
                             <div class="md:col-span-1">
                                 <h2
-                                    class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                                    class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">
                                     Basic Information
                                 </h2>
                             </div>
@@ -140,7 +141,7 @@
                                 </p>
                                 <input type="hidden" name="submit_date"
                                     value="{{ old("transfer_asset.submit_date", $transfer_asset->submit_date ?? '') }}"
-                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" />
                                 @error('submit_date')
                                     <div class="text-red-500">{{ $message }}</div>
                                 @enderror
@@ -163,7 +164,7 @@
                                         class="text-red-900 dark:text-red-400">*</span></label>
                                 <span> : </span>
                                 <select name="department_id"
-                                    class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                    class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer">
                                     @foreach($departments as $department)
                                         <option value="{{ $department->id }}" {{ old('department_id', $transfer_asset->department_id) == $department->id ? 'selected' : '' }}>
                                             {{ $department->name }}
@@ -180,7 +181,7 @@
                                     <span class="text-red-900 dark:text-red-400">*</span></label>
                                 <span> : </span>
                                 <select name="destination_loc_id"
-                                    class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                    class="px-1 mx-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer">
                                     <option selected value="">Choose a Location</option>
                                     @foreach($locations as $location)
                                         <option value="{{ $location->id }}" {{ (old('destination_loc_id', $transfer_asset->destination_loc_id) == $location->id) ? 'selected' : '' }}>
@@ -197,9 +198,9 @@
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alasan <span
                                         class="text-red-900 dark:text-red-400">*</span></label>
                                 <textarea type="text" name="reason"
-                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                                            {{ old('reason', $transfer_asset->reason ?? '') }}
-                                        </textarea>
+                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer">
+                                                {{ old('reason', $transfer_asset->reason ?? '') }}
+                                            </textarea>
                                 @error('reason')
                                     <div class="text-red-500">{{ $message }}</div>
                                 @enderror
@@ -209,7 +210,7 @@
                         <div class="grid grid-cols-1 gap-y-5 mb-5">
                             <div class="md:col-span-1">
                                 <h2
-                                    class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                                    class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">
                                     Attachment List
                                 </h2>
                             </div>
@@ -245,7 +246,7 @@
                         <div class="grid grid-cols-1 gap-y-5 mb-5">
                             <div class="md:col-span-1">
                                 <h2
-                                    class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
+                                    class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">
                                     Approval List
                                 </h2>
                             </div>
@@ -259,7 +260,7 @@
                                             <span class="text-red-900 dark:text-red-400">*</span> : </label>
                                         <div class="flex items-center pr-4">
                                             <input id="sequence-yes" name="sequence" type="radio" value="1"
-                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                                 {{ old('sequence', $transfer_asset->sequence) == 1 ? 'checked' : '' }}>
                                             <label for="sequence-yes"
                                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ya <span
@@ -267,7 +268,7 @@
                                         </div>
                                         <div class="flex items-center">
                                             <input id="sequence-no" name="sequence" type="radio" value="0"
-                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                                 {{ old('sequence', $transfer_asset->sequence) == 0 ? 'checked' : '' }}>
                                             <label for="sequence-no"
                                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tidak
@@ -325,7 +326,7 @@
                                                         @if ($status === 'pending')
                                                             <td class="px-2 py-4">
                                                                 <select name="approvals[{{$index}}][user_id]"
-                                                                    class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                                                                    class="approval-user-select block py-1 px-1 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer">
                                                                     <option value="">Pilih Nama</option>
                                                                     @foreach($users as $user)
                                                                         <option value="{{ $user->id }}"
@@ -342,7 +343,7 @@
                                                             <td class="px-2 py-4">
                                                                 <input type="text" name="approvals[{{$index}}][user_id]"
                                                                     value="{{ $approval->user->name ?? '' }}"
-                                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer"
                                                                     readonly />
                                                                 <input type="hidden" name="approvals[{{$index}}][user_id]"
                                                                     value="{{ $userId }}" />
@@ -366,14 +367,14 @@
                                                             @if($status === 'approved')
                                                                 <input type="date" name="approvals[{{$index}}][approval_date]"
                                                                     value="{{ $date }}"
-                                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" />
                                                                 @error("approvals[{{$index}}][approval_date]")
                                                                     <div class="text-red-500">{{ $message }}</div>
                                                                 @enderror
                                                             @else
                                                                 <input type="date" name="approvals[{{$index}}][approval_date]"
                                                                     value="{{ $date }}"
-                                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                    class="block py-1 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer"
                                                                     readonly />
                                                                 @error("approvals[{{$index}}][approval_date]")
                                                                     <div class="text-red-500">{{ $message }}</div>
@@ -519,7 +520,7 @@
                         @endif
                         <div class="flex flex-col gap-2 sm:flex-row">
                             <button type="submit"
-                                class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
+                                class="text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-500 dark:hover:bg-indigo-600">Update</button>
                             <a href="{{ route('transfer-asset.index') }}"
                                 class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">Cancel</a>
                         </div>

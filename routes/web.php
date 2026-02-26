@@ -141,6 +141,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/scan-process', [ScanController::class, 'scan'])->name('scan.process');
     Route::get('/assets/download-qr/{id}', [ScanController::class, 'download'])->name('scan.qr.download');
     Route::post('/assets/bulk-download-qr', [ScanController::class, 'bulkDownload'])->name('asset.qr.bulk-download');
+    //Start Stock Opname
+    Route::get('/stock-opname/scan', [StockOpnameController::class, 'scan'])->name('stock-opname.scan');
 
     //Start Print QR
     Route::get('/preview-qr-layout', function () {

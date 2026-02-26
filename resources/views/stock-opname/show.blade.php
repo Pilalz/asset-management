@@ -41,14 +41,13 @@
         </nav>
 
         <div class="flex gap-2 content-center">
-            {{-- Export button placeholder --}}
-            <button id="history-btn" data-modal-target="history-modal" data-modal-toggle="history-modal"
+            <a href="{{ route('stock-opname.scan') }}"
                 class="inline-flex items-center text-gray-500 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-200 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-400 dark:hover:bg-gray-500 dark:hover:border-gray-400">
                 <svg class="w-4 h-4 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 6.5h2M11 18h2m-7-5v-2m12 2v-2M5 8h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1Zm0 12h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1Zm12 0h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1Zm0-12h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1Z"/>
                 </svg>
                 SO Scanner
-            </button>
+            </a>
         </div>
     </div>
 
@@ -127,7 +126,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
             {{-- Total --}}
-            <div class="flex items-center gap-4 rounded-xl shadow-md px-5 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-4 rounded-xl shadow-md px-5 py-4 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 transition-transform hover:-translate-y-1 duration-300">
                 <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
                     <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2"/>
@@ -140,7 +139,7 @@
             </div>
 
             {{-- Found --}}
-            <div class="flex items-center gap-4 rounded-xl shadow-md px-5 py-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+            <div class="flex items-center gap-4 rounded-xl shadow-md px-5 py-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 transition-transform hover:-translate-y-1 duration-300">
                 <div class="flex-shrink-0 w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/60 flex items-center justify-center">
                     <svg class="w-6 h-6 text-green-600 dark:text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12 4.7 4.5 9.3-9"/>
@@ -158,7 +157,7 @@
             </div>
 
             {{-- Missing --}}
-            <div class="flex items-center gap-4 rounded-xl shadow-md px-5 py-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+            <div class="flex items-center gap-4 rounded-xl shadow-md px-5 py-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 transition-transform hover:-translate-y-1 duration-300">
                 <div class="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/60 flex items-center justify-center">
                     <svg class="w-6 h-6 text-red-600 dark:text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6m0 12L6 6"/>

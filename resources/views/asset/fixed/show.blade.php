@@ -1,27 +1,37 @@
 @extends('layouts.main')
 
 @section('content')
-    <div class="bg-white flex p-5 text-lg justify-between items-center dark:bg-gray-800 dark:border-b dark:border-gray-700">
+    <div
+        class="bg-white flex p-5 text-lg justify-between items-center border-b border-slate-200 dark:border-gray-700 dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-                <li class="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-400 dark:hover:text-white">
-                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                <li
+                    class="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-400 dark:hover:text-white">
+                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                     </svg>
                     Asset
                 </li>
                 <li>
                     <div class="flex items-center">
-                        <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 9 4-4-4-4" />
                         </svg>
-                        <a href="{{ route('asset.index') }}" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Fixed Asset</a>
+                        <a href="{{ route('asset.index') }}"
+                            class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Fixed
+                            Asset</a>
                     </div>
                 </li>
                 <li aria-current="page">
                     <div class="flex items-center">
-                        <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 9 4-4-4-4" />
                         </svg>
                         <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Detail</span>
                     </div>
@@ -29,32 +39,39 @@
             </ol>
         </nav>
 
-        
+
         <div class="flex gap-4">
             <button id="history-btn" data-modal-target="history-modal" data-modal-toggle="history-modal"
-                class="inline-flex items-center text-gray-500 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-200 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-400 dark:hover:bg-gray-500 dark:hover:border-gray-400">
-                <svg class="w-4 h-4 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9M9 7h6m-7 3h8"/>
+                class="inline-flex items-center text-gray-700 bg-white border border-slate-300 hover:bg-slate-50 focus:ring-4 focus:ring-slate-100 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 transition-all shadow-sm focus:outline-none">
+                <svg class="w-4 h-4 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9M9 7h6m-7 3h8" />
                 </svg>
                 History View
             </button>
-        @can('is-admin')
-            <a href="{{ route('asset.edit', $asset->id) }}" type="button" class="inline-flex items-center text-blue-500 bg-blue-50 border border-blue-300 focus:outline-none hover:bg-blue-200 focus:ring-0 font-medium rounded-md text-sm px-4 py-2 dark:bg-blue-600 dark:text-gray-200 dark:border-blue-400 dark:hover:bg-blue-500 dark:hover:border-blue-400">
-                <svg class="w-4 h-4 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 21">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                </svg>
-                Edit
-            </a>
-        @endcan
+            @can('is-admin')
+                <a href="{{ route('asset.edit', $asset->id) }}" type="button"
+                    class="inline-flex items-center text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 transition-all shadow-sm focus:outline-none">
+                    <svg class="w-4 h-4 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 18 21">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+                    </svg>
+                    Edit
+                </a>
+            @endcan
         </div>
 
         <!-- Modal History -->
-        <div id="history-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto z-50 overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div id="history-modal" tabindex="-1" aria-hidden="true"
+            class="hidden overflow-y-auto z-50 overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-w-2xl max-h-full">
                 <!-- Modal content -->
                 <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
                     <!-- Modal header -->
-                    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                    <div
+                        class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                             History Asset {{ $asset->asset_number }}
                         </h3>
@@ -138,278 +155,327 @@
     <x-alerts />
 
     <div class="p-5">
-        <div class="shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
-            <h1 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Asset Details</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
-                <div class="md:col-span-2">
-                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                        Basic Asset Information
-                    </h2>
+        <div class="p-5">
+            <div
+                class="w-full max-w-full bg-white border border-slate-200 shadow-sm rounded-2xl dark:bg-gray-800 dark:border-gray-700 overflow-hidden mb-5">
+                <div class="px-6 py-5 border-b border-slate-200 dark:border-gray-700 bg-slate-50/50 dark:bg-gray-800/50">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        Asset Details
+                    </h3>
                 </div>
 
-                <div class="dark:text-gray-200">
-                    <table>
-                        <tr>
-                            <td>Asset Number</td>
-                            <td class="px-2">:</td>
-                            <td>{{ $asset->asset_number }}</td>
-                        </tr>
-                        <tr>
-                            <td>Status</td>
-                            <td class="px-2">:</td>
-                            <td>{{ $asset->status }}</td>
-                        </tr>
-                        <tr>
-                            <td>Asset Class</td>
-                            <td class="px-2">:</td>
-                            <td>{{ $asset->assetName?->assetSubClass?->assetClass?->name ?? 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Asset Sub Class</td>
-                            <td class="px-2">:</td>
-                            <td>{{ $asset->assetName?->assetSubClass?->name ?? 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Asset Name</td>
-                            <td class="px-2">:</td>
-                            <td>{{ $asset->assetName?->name ?? 'N/A' }}</td>
-                        </tr>
-                    </table>
-                </div>
+                <div class="px-6 py-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-8">
+                        <div class="md:col-span-2">
+                            <h2
+                                class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                                Basic Asset Information
+                            </h2>
+                        </div>
 
-                <div class="dark:text-gray-200">
-                    <table>
-                        <tr>
-                            <td>Obj Acc</td>
-                            <td class="px-2">:</td>
-                            <td>Direct Ownership : {{ $asset->assetName?->assetSubClass?->assetClass?->obj_acc ?? 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Location</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->location->name == null) ? "-" : $asset->location->name }}</td>
-                        </tr>
-                        <tr>
-                            <td>Department</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->department->name == null) ? "-" : $asset->department->name }}</td>
-                        </tr>
-                        <tr>
-                            <td>Quantity</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->quantity == null) ? "-" : $asset->quantity }}</td>
-                        </tr>
-                        <tr>
-                            <td>User</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->user == null) ? "-" : $asset->user }}</td>
-                        </tr>
-                    </table>
+                        <div class="dark:text-gray-200">
+                            <table>
+                                <tr>
+                                    <td>Asset Number</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ $asset->asset_number }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ $asset->status }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Asset Class</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ $asset->assetName?->assetSubClass?->assetClass?->name ?? 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Asset Sub Class</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ $asset->assetName?->assetSubClass?->name ?? 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Asset Name</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ $asset->assetName?->name ?? 'N/A' }}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="dark:text-gray-200">
+                            <table>
+                                <tr>
+                                    <td>Obj Acc</td>
+                                    <td class="px-2">:</td>
+                                    <td>Direct Ownership :
+                                        {{ $asset->assetName?->assetSubClass?->assetClass?->obj_acc ?? 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Location</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->location->name == null) ? "-" : $asset->location->name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Department</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->department->name == null) ? "-" : $asset->department->name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Quantity</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->quantity == null) ? "-" : $asset->quantity }}</td>
+                                </tr>
+                                <tr>
+                                    <td>User</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->user == null) ? "-" : $asset->user }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-8 pt-6 border-t border-slate-200 dark:border-gray-700">
+                        <div class="md:col-span-2">
+                            <h2
+                                class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                                Details & Specifications
+                            </h2>
+                        </div>
+
+                        <div class="dark:text-gray-200">
+                            <table>
+                                <tr>
+                                    <td>Description</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->description == null) ? "-" : $asset->description }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Detail</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->detail == null) ? "-" : $asset->detail }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Pareto</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->pareto == null) ? "-" : $asset->pareto }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Unit No.</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->unit_no == null) ? "-" : $asset->unit_no }}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="dark:text-gray-200">
+                            <table>
+                                <tr>
+                                    <td>SN Chassis</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->sn_chassis == null) ? "-" : $asset->sn_chassis }}</td>
+                                </tr>
+                                <tr>
+                                    <td>SN Engine</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->sn_engine == null) ? "-" : $asset->sn_engine }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Production Year</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ $asset->production_year ? \Carbon\Carbon::parse($asset->production_year)->format('Y') : '-' }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-8 pt-6 border-t border-slate-200 dark:border-gray-700">
+                        <div class="md:col-span-2">
+                            <h2
+                                class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                                Financial Information
+                            </h2>
+                        </div>
+
+                        <div class="dark:text-gray-200">
+                            <table>
+                                <tr>
+                                    <td>PO No</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->po_no == null) ? "-" : $asset->po_no }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Capitalized Date</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ $asset->capitalized_date ? \Carbon\Carbon::parse($asset->capitalized_date)->format('d F Y') : '-' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Start Depre Date</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ $asset->start_depre_date ? \Carbon\Carbon::parse($asset->start_depre_date)->format('d F Y') : '-' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Acquisition Value</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ format_currency($asset->acquisition_value) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Commercial Useful Life Month</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->commercial_useful_life_month == null) ? "-" : $asset->commercial_useful_life_month }}
+                                        Month</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="dark:text-gray-200">
+                            <table>
+                                <tr>
+                                    <td>Commercial Accum Depre</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ format_currency($asset->commercial_accum_depre) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Commercial Net Book Value</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ format_currency($asset->commercial_nbv) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Fiscal Useful Life Month</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ ($asset->fiscal_useful_life_month == null) ? "-" : $asset->fiscal_useful_life_month }}
+                                        Month</td>
+                                </tr>
+                                <tr>
+                                    <td>Fiscal Accum Depre</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ format_currency($asset->fiscal_accum_depre) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Fiscal Net Book Value</td>
+                                    <td class="px-2">:</td>
+                                    <td>{{ format_currency($asset->fiscal_nbv) }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-1 gap-x-6 gap-y-5 mb-8 pt-6 border-t border-slate-200 dark:border-gray-700">
+                        <div class="md:col-span-1">
+                            <h2
+                                class="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                                Remark
+                            </h2>
+                        </div>
+
+                        <div class="dark:text-gray-200">
+                            <table>
+                                <tr>
+                                    <td>Remark :</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ ($asset->remaks == null) ? "-" : $asset->remaks }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
-                <div class="md:col-span-2">
-                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                        Details & Specifications
-                    </h2>
-                </div>
-
-                <div class="dark:text-gray-200">
-                    <table>
-                        <tr>
-                            <td>Description</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->description == null) ? "-" : $asset->description }}</td>
-                        </tr>
-                        <tr>
-                            <td>Detail</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->detail == null) ? "-" : $asset->detail }}</td>
-                        </tr>
-                        <tr>
-                            <td>Pareto</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->pareto == null) ? "-" : $asset->pareto }}</td>
-                        </tr>
-                        <tr>
-                            <td>Unit No.</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->unit_no == null) ? "-" : $asset->unit_no }}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="dark:text-gray-200">
-                    <table>
-                        <tr>
-                            <td>SN Chassis</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->sn_chassis == null) ? "-" : $asset->sn_chassis }}</td>
-                        </tr>
-                        <tr>
-                            <td>SN Engine</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->sn_engine == null) ? "-" : $asset->sn_engine }}</td>
-                        </tr>
-                        <tr>
-                            <td>Production Year</td>
-                            <td class="px-2">:</td>
-                            <td>{{ $asset->production_year ? \Carbon\Carbon::parse($asset->production_year)->format('Y') : '-' }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-5">
-                <div class="md:col-span-2">
-                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                        Financial Information
-                    </h2>
-                </div>
-
-                <div class="dark:text-gray-200">
-                    <table>
-                        <tr>
-                            <td>PO No</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->po_no == null) ? "-" : $asset->po_no }}</td>
-                        </tr>
-                        <tr>
-                            <td>Capitalized Date</td>
-                            <td class="px-2">:</td>
-                            <td>{{ $asset->capitalized_date ? \Carbon\Carbon::parse($asset->capitalized_date)->format('d F Y') : '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Start Depre Date</td>
-                            <td class="px-2">:</td>
-                            <td>{{ $asset->start_depre_date ? \Carbon\Carbon::parse($asset->start_depre_date)->format('d F Y') : '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Acquisition Value</td>
-                            <td class="px-2">:</td>
-                            <td>{{ format_currency($asset->acquisition_value) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Commercial Useful Life Month</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->commercial_useful_life_month == null) ? "-" : $asset->commercial_useful_life_month }} Month</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="dark:text-gray-200">
-                    <table>
-                        <tr>
-                            <td>Commercial Accum Depre</td>
-                            <td class="px-2">:</td>
-                            <td>{{ format_currency($asset->commercial_accum_depre) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Commercial Net Book Value</td>
-                            <td class="px-2">:</td>
-                            <td>{{ format_currency($asset->commercial_nbv) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Fiscal Useful Life Month</td>
-                            <td class="px-2">:</td>
-                            <td>{{ ($asset->fiscal_useful_life_month == null) ? "-" : $asset->fiscal_useful_life_month }} Month</td>
-                        </tr>
-                        <tr>
-                            <td>Fiscal Accum Depre</td>
-                            <td class="px-2">:</td>
-                            <td>{{ format_currency($asset->fiscal_accum_depre) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Fiscal Net Book Value</td>
-                            <td class="px-2">:</td>
-                            <td>{{ format_currency($asset->fiscal_nbv) }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-1 gap-x-6 gap-y-5 mb-5">
-                <div class="md:col-span-2">
-                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2">
-                        Remark
-                    </h2>
-                </div>
-
-                <div class="dark:text-gray-200">
-                    <table>
-                        <tr>
-                            <td>Remark :</td>
-                        </tr>
-                        <tr>
-                            <td>{{ ($asset->remaks == null) ? "-" : $asset->remaks }}</td>
-                        </tr>
-                    </table>
-                </div>
+            <div class="mt-4 flex flex-col sm:flex-row gap-3 pt-5 border-t border-slate-100 dark:border-gray-700 px-6 pb-6">
+                <a href="{{ route('asset.index') }}"
+                    class="text-gray-700 bg-white border border-slate-300 hover:bg-slate-50 focus:ring-4 focus:ring-slate-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 transition-all shadow-sm focus:outline-none w-full sm:w-auto">Back
+                    to List</a>
             </div>
         </div>
 
-        <div class="shadow-md rounded-lg mt-3 bg-white p-4 dark:bg-gray-800">
-            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Depreciation</h2>
-            <div class="mb-4 flex flex-row content-center">
-                <form method="GET" action="{{ route('asset.show', $asset->id) }}">
-                    <label for="year" class="dark:text-gray-200">Tampilkan Tahun:</label>
-                    <select name="year" id="year" onchange="this.form.submit()" class="py-2 px-0 w-24 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-200 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                        @for ($y = now()->year; $y >= 2020; $y--)
-                            <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>{{ $y }}</option>
-                        @endfor
-                    </select>
-                </form>
-            </div>
+        <div
+            class="w-full max-w-full bg-white border border-slate-200 shadow-sm rounded-2xl dark:bg-gray-800 dark:border-gray-700 overflow-hidden mt-6 mb-5">
+            <div
+                class="px-6 py-5 border-b border-slate-200 dark:border-gray-700 bg-slate-50/50 dark:bg-gray-800/50 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Depreciation
+                </h3>
+                <div class="mb-4 flex flex-row content-center">
+                    <form method="GET" action="{{ route('asset.show', $asset->id) }}">
+                        <label for="year" class="dark:text-gray-200">Tampilkan Tahun:</label>
+                        <select name="year" id="year" onchange="this.form.submit()"
+                            class="py-2 px-0 w-24 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-200 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                            @for ($y = now()->year; $y >= 2020; $y--)
+                                <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>{{ $y }}</option>
+                            @endfor
+                        </select>
+                    </form>
+                </div>
 
-            <div class="relative overflow-x-auto">
-                <table class="w-full p-2 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-200">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:text-gray-200 dark:bg-gray-700">
-                        {{-- Baris Header Pertama --}}
-                        <tr>
-                            @foreach($months as $monthName)
-                                <th colspan="3" class="text-center px-6 py-3 border">{{ $monthName }}</th>
-                            @endforeach
-                        </tr>
-                        {{-- Baris Header Kedua --}}
-                        <tr>
-                            @foreach($months as $monthName)
-                                <th class="px-2 py-2 border">Monthly Depre</th>
-                                <th class="px-2 py-2 border">Accum Depre</th>
-                                <th class="px-2 py-2 border">Book Value</th>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($pivotedData as $assetId => $data)
-                            <tr class="bg-white border-b hover:bg-gray-50 dark:bg-gray-600">
-
-                                {{-- Loop untuk mengisi data per bulan --}}
-                                @foreach ($months as $monthKey => $monthName)
-                                    {{-- Cek apakah ada data untuk aset ini di bulan ini --}}
-                                    @if (isset($data['schedule'][$monthKey]))
-                                        <td class="px-2 py-4 border text-right">{{ format_currency($data['schedule'][$monthKey]->monthly_depre) }}</td>
-                                        <td class="px-2 py-4 border text-right">{{ format_currency($data['schedule'][$monthKey]->accumulated_depre) }}</td>
-                                        <td class="px-2 py-4 border text-right">{{ format_currency($data['schedule'][$monthKey]->book_value) }}</td>
-                                    @else
-                                        {{-- Jika tidak ada data, buat sel kosong --}}
-                                        <td class="px-2 py-4 border"></td>
-                                        <td class="px-2 py-4 border"></td>
-                                        <td class="px-2 py-4 border"></td>
-                                    @endif
+                <div class="relative overflow-x-auto px-6 py-6 border-t border-slate-200 dark:border-gray-700">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-600 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
+                            {{-- Baris Header Pertama --}}
+                            <tr>
+                                @foreach($months as $monthName)
+                                    <th colspan="3"
+                                        class="text-center px-6 py-3 border border-slate-200 dark:border-gray-600 font-semibold">
+                                        {{ $monthName }}</th>
                                 @endforeach
                             </tr>
-                        @empty
+                            {{-- Baris Header Kedua --}}
                             <tr>
-                                <td colspan="{{ 3 + (count($months) * 3) }}" class="text-center p-3">Tidak ada data untuk ditampilkan.</td>
+                                @foreach($months as $monthName)
+                                    <th
+                                        class="px-4 py-2 border border-slate-200 dark:border-gray-600 font-medium text-[11px] whitespace-nowrap">
+                                        Monthly Depre</th>
+                                    <th
+                                        class="px-4 py-2 border border-slate-200 dark:border-gray-600 font-medium text-[11px] whitespace-nowrap">
+                                        Accum Depre</th>
+                                    <th
+                                        class="px-4 py-2 border border-slate-200 dark:border-gray-600 font-medium text-[11px] whitespace-nowrap">
+                                        Book Value</th>
+                                @endforeach
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse ($pivotedData as $assetId => $data)
+                                <tr
+                                    class="bg-white border-b hover:bg-slate-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors duration-200">
+
+                                    {{-- Loop untuk mengisi data per bulan --}}
+                                    @foreach ($months as $monthKey => $monthName)
+                                        {{-- Cek apakah ada data untuk aset ini di bulan ini --}}
+                                        @if (isset($data['schedule'][$monthKey]))
+                                            <td
+                                                class="px-4 py-3 border border-slate-200 dark:border-gray-700 text-right whitespace-nowrap">
+                                                {{ format_currency($data['schedule'][$monthKey]->monthly_depre) }}</td>
+                                            <td
+                                                class="px-4 py-3 border border-slate-200 dark:border-gray-700 text-right whitespace-nowrap">
+                                                {{ format_currency($data['schedule'][$monthKey]->accumulated_depre) }}</td>
+                                            <td
+                                                class="px-4 py-3 border border-slate-200 dark:border-gray-700 text-right whitespace-nowrap">
+                                                {{ format_currency($data['schedule'][$monthKey]->book_value) }}</td>
+                                        @else
+                                            {{-- Jika tidak ada data, buat sel kosong --}}
+                                            <td class="px-4 py-3 border border-slate-200 dark:border-gray-700"></td>
+                                            <td class="px-4 py-3 border border-slate-200 dark:border-gray-700"></td>
+                                            <td class="px-4 py-3 border border-slate-200 dark:border-gray-700"></td>
+                                        @endif
+                                    @endforeach
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="{{ 3 + (count($months) * 3) }}"
+                                        class="text-center p-6 text-gray-500 py-8 bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700">
+                                        Tidak ada data untuk ditampilkan.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div class="shadow-md rounded-lg mt-3 bg-white p-4 dark:bg-gray-800">
-            <a href="{{ route('asset.index') }}" class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600 ml-2 dark:text-gray-200">Back</a>
         </div>
     </div>
 @endsection

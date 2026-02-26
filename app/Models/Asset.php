@@ -127,7 +127,10 @@ class Asset extends Model
 
         static::creating(function ($model) {
             if (empty($model->asset_code)) {
-                $model->asset_code = (string) Str::uuid();
+                do {
+                    $code = strtolower(substr(Str::uuid()->toString(), 0, 10));
+                } while (static::where('asset_code', $code)->exists());
+                $model->asset_code = $code;
             }
         });
     }

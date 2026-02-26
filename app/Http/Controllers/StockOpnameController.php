@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\StockOpnameSession;
 use App\Models\AssetName;
+use App\Models\Asset;
 use Yajra\DataTables\Facades\DataTables;
 use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class StockOpnameController extends Controller
 {
@@ -99,7 +101,7 @@ class StockOpnameController extends Controller
         $stock_opname->load('createdBy', 'company');
 
         // Hitung Found/Missing dalam 1 query groupBy
-        $statusCounts = $stock_opname->details()
+        $statusCounts = $stock_opname->soDetails()
             ->selectRaw('status, COUNT(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
@@ -167,6 +169,12 @@ class StockOpnameController extends Controller
         return redirect()->route('stock-opname.index')->with('success', 'Data berhasil dihapus!');
     }
 
+    public function scan(Request $request)
+    {
+        Gate::authorize('is-admin');
+        return view('stock-opname.scan');
+    }
+
     public function datatables(Request $request)
     {
         $companyId = session('active_company_id');
@@ -194,7 +202,7 @@ class StockOpnameController extends Controller
 
     public function detailsDatatables(Request $request, StockOpnameSession $stock_opname)
     {
-        $query = $stock_opname->details()
+        $query = $stock_opname->soDetails()
             ->with([
                 'asset.assetName',
                 'systemLocation',

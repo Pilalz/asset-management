@@ -39,7 +39,7 @@ class StockOpnameSession extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function details(): HasMany
+    public function soDetails(): HasMany
     {
         return $this->hasMany(StockOpnameDetail::class, 'so_session_id');
     }

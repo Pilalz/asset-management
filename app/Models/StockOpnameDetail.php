@@ -28,9 +28,10 @@ class StockOpnameDetail extends Model
         'attachment_path',
         'scanned_at',
         'scanned_by',
+        'mark'
     ];
 
-    public function session(): BelongsTo
+    public function soSession(): BelongsTo
     {
         return $this->belongsTo(StockOpnameSession::class, 'so_session_id');
     }

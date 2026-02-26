@@ -50,12 +50,13 @@
         </style>
     @endpush
 
-    <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
+    <div
+        class="bg-white flex p-5 text-lg justify-between items-center border-b border-slate-200 dark:border-gray-700 dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
                     <a href="{{ route('register-asset.index') }}"
-                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">
                         <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor" viewBox="0 0 20 20">
                             <path
@@ -72,7 +73,7 @@
                                 d="m1 9 4-4-4-4" />
                         </svg>
                         <a href="{{ route('register-asset.index') }}"
-                            class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Register
+                            class="ms-1 text-sm font-medium text-gray-700 hover:text-indigo-600 md:ms-2 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">Register
                             Asset</a>
                     </div>
                 </li>
@@ -103,9 +104,10 @@
     <x-alerts />
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md rounded-lg bg-white p-4 dark:bg-gray-800">
+        <div
+            class="shadow-sm rounded-xl bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 overflow-hidden">
             <table id="registerAssetTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-100">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-100">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
                     <tr>
                         <th scope="col" class="px-6 py-3">No</th>
                         <th scope="col" class="px-6 py-3">Form No</th>

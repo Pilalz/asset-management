@@ -2,12 +2,12 @@
 
 @section('content')
 
-    <div class="bg-white flex p-5 text-lg justify-between">
+    <div class="bg-white flex p-5 text-lg justify-between border-b border-slate-200 dark:border-gray-700 dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
                     <a href="{{ route('asset-name.index') }}"
-                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-gray-400 transition-colors">
                         <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor" viewBox="0 0 20 20">
                             <path
@@ -24,7 +24,7 @@
                                 d="m1 9 4-4-4-4" />
                         </svg>
                         <a href="{{ route('asset-name.index') }}"
-                            class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Asset
+                            class="ms-1 text-sm font-medium text-gray-700 hover:text-indigo-600 md:ms-2 dark:text-gray-400 dark:hover:text-white transition-colors">Asset
                             Name</a>
                     </div>
                 </li>
@@ -44,81 +44,117 @@
 
     <x-alerts />
 
-    <div class="relative overflow-x-auto shadow-md py-5 px-6 rounded-lg m-5 bg-white dark:bg-gray-900">
-        <form class="max-w mx-auto" action="{{ route('asset-name.update', $asset_name->id) }}" method="POST">
-            @csrf
-            @method('PUT')
+    <div class="p-5">
+        <div class="max-w-full mx-auto">
+            <div
+                class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-slate-200 dark:border-gray-700 overflow-hidden">
+                <!-- Header Card -->
+                <div class="px-6 py-5 border-b border-slate-200 dark:border-gray-700 bg-slate-50/50 dark:bg-gray-800/50">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        Edit Asset Name Details
+                    </h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Update the information for this asset name.
+                    </p>
+                </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a Class <span
-                        class="text-red-900 dark:text-red-400">*</span></label>
-                <select name="sub_class_id"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required>
-                    <option value="">Choose a Class</option>
-                    @foreach($assetsubclasses as $asset_sub_class)
-                        <option value="{{ $asset_sub_class->id }}" {{ (old('sub_class_id', $asset_name->sub_class_id) == $asset_sub_class->id) ? 'selected' : '' }}>
-                            {{ $asset_sub_class->assetClass->name }} - {{ $asset_sub_class->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('class_id')
-                    <div class="text-red-500">{{ $message }}</div>
-                @enderror
-            </div>
+                <!-- Form Section -->
+                <form action="{{ route('asset-name.update', $asset_name->id) }}" method="POST" class="px-6 py-6">
+                    @csrf
+                    @method('PUT')
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sub Class Name <span
-                        class="text-red-900 dark:text-red-400">*</span></label>
-                <input type="text" name="name" value="{{ old('name', $asset_name->name) }}"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Buildings" required />
-                @error('name')
-                    <div class="text-red-500">{{ $message }}</div>
-                @enderror
-            </div>
+                    <div class="space-y-6">
+                        <!-- Input Select Sub Class -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Select a Sub Class <span class="text-red-500">*</span>
+                            </label>
+                            <select name="sub_class_id"
+                                class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400 hover:border-slate-400 transition-colors shadow-sm @error('sub_class_id') border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 @enderror"
+                                required>
+                                <option value="">Choose a Sub Class</option>
+                                @foreach($assetsubclasses as $asset_sub_class)
+                                    <option value="{{ $asset_sub_class->id }}" {{ (old('sub_class_id', $asset_name->sub_class_id) == $asset_sub_class->id) ? 'selected' : '' }}>
+                                        {{ $asset_sub_class->assetClass->name ?? '' }} - {{ $asset_sub_class->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('sub_class_id')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asset Grouping Name <span
-                        class="text-red-900 dark:text-red-400">*</span></label>
-                <input type="text" name="grouping" value="{{ old('grouping', $asset_name->grouping) }}"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="" required />
-                @error('grouping')
-                    <div class="text-red-500">{{ $message }}</div>
-                @enderror
-            </div>
+                        <!-- Input Name -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Asset Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="name" value="{{ old('name', $asset_name->name) }}"
+                                class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400 hover:border-slate-400 transition-colors shadow-sm @error('name') border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 @enderror"
+                                placeholder="e.g. Buildings" required />
+                            @error('name')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Commercial Life <span
-                        class="text-red-900 dark:text-red-400">*</span></label>
-                <input type="number" name="commercial" value="{{ old('commercial', $asset_name->commercial) }}"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="4" required />
-                @error('commercial')
-                    <div class="text-red-500">{{ $message }}</div>
-                @enderror
-                <small class="text-xs text-gray-400">Dalam satuan tahun</small>
-            </div>
+                        <!-- Input Asset Grouping -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Asset Grouping <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="grouping" value="{{ old('grouping', $asset_name->grouping) }}"
+                                class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400 hover:border-slate-400 transition-colors shadow-sm @error('grouping') border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 @enderror"
+                                placeholder="e.g. Group A" required />
+                            @error('grouping')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
 
-            <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fiscal Life <span
-                        class="text-red-900 dark:text-red-400">*</span></label>
-                <input type="number" name="fiscal" value="{{ old('fiscal', $asset_name->fiscal) }}"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="4" required />
-                @error('fiscal')
-                    <div class="text-red-500">{{ $message }}</div>
-                @enderror
-                <small class="text-xs text-gray-400">Dalam satuan tahun</small>
-            </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <!-- Input Commercial Life -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Commercial Life <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" name="commercial"
+                                    value="{{ old('commercial', $asset_name->commercial) }}"
+                                    class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400 hover:border-slate-400 transition-colors shadow-sm @error('commercial') border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 @enderror"
+                                    placeholder="4" required />
+                                <small class="text-xs text-slate-500 mt-1 block">In years</small>
+                                @error('commercial')
+                                    <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-            <div class="flex flex-col gap-2 sm:flex-row">
-                <button type="submit"
-                    class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">Update</button>
-                <a href="{{ route('asset-name.index') }}"
-                    class="text-gray-900 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:hover:bg-gray-600">Cancel</a>
+                            <!-- Input Fiscal Life -->
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Fiscal Life <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" name="fiscal" value="{{ old('fiscal', $asset_name->fiscal) }}"
+                                    class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400 hover:border-slate-400 transition-colors shadow-sm @error('fiscal') border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 @enderror"
+                                    placeholder="4" required />
+                                <small class="text-xs text-slate-500 mt-1 block">In years</small>
+                                @error('fiscal')
+                                    <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-8 flex flex-col sm:flex-row gap-3 pt-5 border-t border-slate-100 dark:border-gray-700">
+                        <button type="submit"
+                            class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 transition-all shadow-sm focus:outline-none w-full sm:w-auto">
+                            Update Name
+                        </button>
+                        <a href="{{ route('asset-name.index') }}"
+                            class="text-gray-700 bg-white border border-slate-300 hover:bg-slate-50 focus:ring-4 focus:ring-slate-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 transition-all shadow-sm focus:outline-none w-full sm:w-auto">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 @endsection

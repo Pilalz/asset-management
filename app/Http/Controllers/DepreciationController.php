@@ -368,13 +368,20 @@ class DepreciationController extends Controller
 
     public function exportExcelFiscal(Request $request)
     {
-        $year = $request->input('year', now()->year);        
+        $startYear = $request->input('start', now()->year);
+        $endYear = $request->input('end', now()->year);        
 
         $companyName = session('active_company_id');
         $companyName = Company::where('id', $companyName)->first();
-        $fileName = 'Fiscal-Depreciations-'. $year. '-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+
+        if ($startYear === $endYear) {
+            $fileName = 'Fiscal-Depreciations-'. $startYear. '-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        }
+        else {
+            $fileName = 'Fiscal-Depreciations-'. $startYear. '-' . $endYear. '-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
+        }
         
-        return Excel::download(new FiscalDepreciationsExport($year), $fileName);
+        return Excel::download(new FiscalDepreciationsExport($startYear, $endYear), $fileName);
     }
 
     private function getMonths($startYear, $endYear)

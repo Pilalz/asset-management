@@ -108,7 +108,6 @@ class AssetClassController extends Controller
     {
         Gate::authorize('is-admin');
         
-        // 1. Validasi file yang diupload
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);
