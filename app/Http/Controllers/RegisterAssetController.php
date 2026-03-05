@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\DB;
 
-use App\Scopes\CompanyScope;
 use Yajra\DataTables\Facades\DataTables;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Gate;
@@ -27,17 +26,9 @@ class RegisterAssetController extends Controller
 {
     public function index()
     {
-        $companyId = session('active_company_id');
+        $locationsForFilter = Location::orderBy('name', 'asc')->get(['id', 'name']);
 
-        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', $companyId)
-            ->orderBy('name', 'asc')
-            ->get(['id', 'name']);
-
-        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', $companyId)
-            ->orderBy('name', 'asc')
-            ->get(['id', 'name']);
+        $departmentsForFilter = Department::orderBy('name', 'asc')->get(['id', 'name']);
 
         return view('register-asset.index', [
             'locationsForFilter' => $locationsForFilter,
@@ -512,7 +503,7 @@ class RegisterAssetController extends Controller
 
         $createdInsurance = null;
 
-        if ($register_asset->insured == 1 && !empty($register_asset->polish_no)){
+        if ($register_asset->insured == 1 && !empty($register_asset->polish_no)) {
             $createdInsurance = Insurance::firstOrCreate([
                 'polish_no' => $register_asset->polish_no,
                 'start_date' => null,
@@ -535,36 +526,32 @@ class RegisterAssetController extends Controller
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = RegisterAsset::withoutGlobalScope(CompanyScope::class)
-            ->with(['department', 'location'])
-            ->withCount(['detailRegisters'])
-            ->where('company_id', $companyId);
+        $query = RegisterAsset::with(['department', 'location'])
+            ->withCount(['detailRegisters']);
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('department_name', function($registerAsset) {
+            ->addColumn('department_name', function ($registerAsset) {
                 return $registerAsset->department->name ?? '-';
             })
-            ->addColumn('location_name', function($registerAsset) {
+            ->addColumn('location_name', function ($registerAsset) {
                 return $registerAsset->location->name ?? '-';
             })
             ->addColumn('action', function ($register_assets) {
                 return view('components.action-form-buttons', [
                     'model'     => $register_assets,
-                    'showUrl' => route('register-asset.show', $register_assets->id),
-                    'editUrl' => route('register-asset.edit', $register_assets->id),
+                    'showUrl'   => route('register-asset.show', $register_assets->id),
+                    'editUrl'   => route('register-asset.edit', $register_assets->id),
                     'deleteUrl' => route('register-asset.destroy', $register_assets->id)
                 ])->render();
             })
-            ->filterColumn('department_name', function($query, $keyword) {
-                $query->whereHas('department', function($q) use ($keyword) {
+            ->filterColumn('department_name', function ($query, $keyword) {
+                $query->whereHas('department', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
-            ->filterColumn('location_name', function($query, $keyword) {
-                $query->whereHas('location', function($q) use ($keyword) {
+            ->filterColumn('location_name', function ($query, $keyword) {
+                $query->whereHas('location', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
@@ -600,20 +587,16 @@ class RegisterAssetController extends Controller
 
     public function datatablesCanceled(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = RegisterAsset::withoutGlobalScope(CompanyScope::class)
-            ->with(['department', 'location'])
+        $query = RegisterAsset::with(['department', 'location'])
             ->withCount('detailRegisters')
-            ->onlyTrashed()
-            ->where('company_id', $companyId);
+            ->onlyTrashed();
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('department_name', function($registerAsset) {
+            ->addColumn('department_name', function ($registerAsset) {
                 return $registerAsset->department->name ?? '-';
             })
-            ->addColumn('location_name', function($registerAsset) {
+            ->addColumn('location_name', function ($registerAsset) {
                 return $registerAsset->location->name ?? '-';
             })
             ->addColumn('action', function ($register_assets) {
@@ -622,13 +605,13 @@ class RegisterAssetController extends Controller
                     'restoreUrl' => route('register-asset.restore', $register_assets->id)
                 ])->render();
             })
-            ->filterColumn('department_name', function($query, $keyword) {
-                $query->whereHas('department', function($q) use ($keyword) {
+            ->filterColumn('department_name', function ($query, $keyword) {
+                $query->whereHas('department', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
-            ->filterColumn('location_name', function($query, $keyword) {
-                $query->whereHas('location', function($q) use ($keyword) {
+            ->filterColumn('location_name', function ($query, $keyword) {
+                $query->whereHas('location', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })

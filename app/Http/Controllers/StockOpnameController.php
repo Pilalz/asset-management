@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\StockOpnameSession;
 use App\Models\AssetName;
 use App\Models\Asset;
+use App\Models\Location;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -75,16 +75,23 @@ class StockOpnameController extends Controller
                 // Simpan ke variabel agar bisa ambil $session->id
                 $session = StockOpnameSession::create($request->all());
 
-                DB::statement("
-                    INSERT INTO stock_opname_details 
-                    (so_session_id, asset_id, status, system_location_id, [system_user], system_condition, created_at, updated_at)
-                    SELECT 
-                        ?, id, 'Missing', location_id, [user], status, GETDATE(), GETDATE()
-                    FROM assets 
-                    WHERE company_id = ? 
-                    AND deleted_at IS NULL 
-                    AND status NOT IN ('Sold', 'Disposal')
-                ", [$session->id, $request->company_id]);
+                DB::table('stock_opname_details')->insertUsing(
+                    ['so_session_id', 'asset_id', 'status', 'system_location_id', 'system_user', 'system_condition', 'created_at', 'updated_at'],
+                    DB::table('assets')
+                        ->select([
+                            DB::raw($session->id),
+                            'id',
+                            DB::raw("'Missing'"),
+                            'location_id',
+                            'user',
+                            'status',
+                            DB::raw('CURRENT_TIMESTAMP'),
+                            DB::raw('CURRENT_TIMESTAMP')
+                        ])
+                        ->where('company_id', $request->company_id)
+                        ->whereNull('deleted_at')
+                        ->whereNotIn('status', ['Sold', 'Disposal'])
+                );
 
                 return redirect()->route('stock-opname.index')->with('success', 'Data berhasil ditambah');
             });
@@ -177,15 +184,11 @@ class StockOpnameController extends Controller
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = StockOpnameSession::withoutGlobalScope(CompanyScope::class)
-            ->with(['createdBy'])
-            ->where('stock_opname_sessions.company_id', $companyId);
+        $query = StockOpnameSession::with(['createdBy']);
 
         return DataTables::eloquent($query)
             ->addIndexColumn()
-            ->addColumn('created_by_name', function($stockOpnameSession) {
+            ->addColumn('created_by_name', function ($stockOpnameSession) {
                 return $stockOpnameSession->createdBy->name ?? '-';
             })
             ->addColumn('action', function ($stockOpnameSession) {
@@ -216,6 +219,7 @@ class StockOpnameController extends Controller
             ->addColumn('asset_description', fn($d) => $d->asset?->description ?? '-')
             ->addColumn('system_location_name', fn($d) => $d->systemLocation?->name ?? '-')
             ->addColumn('actual_location_name', fn($d) => $d->actualLocation?->name ?? '-')
+            ->editColumn('mark', fn($d) => $d->mark ?? false)
             ->addColumn('status_badge', function ($d) {
                 $color = match ($d->status) {
                     'Found' => 'green',
@@ -251,6 +255,39 @@ class StockOpnameController extends Controller
             })
             ->filterColumn('actual_user', function ($query, $keyword) {
                 $query->where('actual_user', 'like', "%{$keyword}%");
+            })
+            ->orderColumn('asset_number', function ($query, $order) {
+                $query->orderBy(
+                    Asset::select('asset_number')
+                        ->whereColumn('assets.id', 'stock_opname_details.asset_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('asset_name', function ($query, $order) {
+                $query->orderBy(
+                    AssetName::select('asset_names.name')
+                        ->join('assets', 'asset_names.id', '=', 'assets.asset_name_id')
+                        ->whereColumn('assets.id', 'stock_opname_details.asset_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('system_location_name', function ($query, $order) {
+                $query->orderBy(
+                    Location::select('locations.name')
+                        ->whereColumn('locations.id', 'stock_opname_details.system_location_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('actual_location_name', function ($query, $order) {
+                $query->orderBy(
+                    Location::select('locations.name')
+                        ->whereColumn('locations.id', 'stock_opname_details.actual_location_id')
+                        ->limit(1),
+                    $order
+                );
             })
             ->rawColumns(['status_badge'])
             ->toJson();

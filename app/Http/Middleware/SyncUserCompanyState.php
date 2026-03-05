@@ -25,13 +25,15 @@ class SyncUserCompanyState
             // Skenario 1: User baru ditambahkan (session kosong, DB ada)
             if (is_null($sessionCompanyId) && !is_null($databaseCompanyId)) {
                 session(['active_company_id' => $databaseCompanyId]);
+                config(['app.active_company_id' => $databaseCompanyId]);
                 return redirect($request->fullUrl());
             }
 
             // Skenario 2: User dihapus dari company aktif (session ada, DB kosong)
             if (!is_null($sessionCompanyId) && is_null($databaseCompanyId)) {
                 session()->forget('active_company_id');
-                return redirect()->route('onboard.index'); 
+                config(['app.active_company_id' => null]);
+                return redirect()->route('onboard.index');
             }
 
             // --- KONDISI BARU (PALING PENTING) ---
@@ -39,8 +41,14 @@ class SyncUserCompanyState
             if (!is_null($sessionCompanyId) && !is_null($databaseCompanyId) && $sessionCompanyId != $databaseCompanyId) {
                 // Update session agar sesuai dengan database
                 session(['active_company_id' => $databaseCompanyId]);
+                config(['app.active_company_id' => $databaseCompanyId]);
                 // Refresh halaman agar perubahan terlihat
                 return redirect($request->fullUrl());
+            }
+
+            // Set config for normal requests where session is already correct
+            if (!is_null($sessionCompanyId)) {
+                config(['app.active_company_id' => $sessionCompanyId]);
             }
         }
 

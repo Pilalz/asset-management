@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Scopes\CompanyScope;
 
 class HistoryController extends Controller
 {
@@ -15,11 +15,10 @@ class HistoryController extends Controller
     {
         $companyId = session('active_company_id');
 
-        $usersForFilter = User::withoutGlobalScope(CompanyScope::class)
-                                     ->leftJoin('company_users', 'users.id', '=', 'company_users.user_id')
-                                     ->where('company_users.company_id', $companyId)
-                                     ->orderBy('name', 'asc')
-                                     ->get(['users.id', 'users.name']);
+        $usersForFilter = User::leftJoin('company_users', 'users.id', '=', 'company_users.user_id')
+            ->where('company_users.company_id', $companyId)
+            ->orderBy('name', 'asc')
+            ->get(['users.id', 'users.name']);
 
         return view('history.index', [
             'usersForFilter' => $usersForFilter
@@ -30,8 +29,9 @@ class HistoryController extends Controller
     {
         $companyId = session('active_company_id');
 
-        $query = Activity::with(['causer'])
-            ->where('log_name', $companyId);
+        $query = Activity::withoutGlobalScope(CompanyScope::class)
+            ->with(['causer'])
+            ->where('log_name', (string) $companyId);
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('created_at', [
@@ -50,17 +50,16 @@ class HistoryController extends Controller
             ->editColumn('changes', function ($activity) {
                 // Buat tampilan HTML untuk kolom 'changes'
                 if ($activity->properties->isEmpty()) return '-';
-                
+
                 $changes = '';
-                if ($activity->subject_type === 'App\Models\Insurance' && $activity->event === null){
-                    if (explode(' ', $activity->description)[0] === "Created"){
+                if ($activity->subject_type === 'App\Models\Insurance' && $activity->event === null) {
+                    if (explode(' ', $activity->description)[0] === "Created") {
                         $changes .= '<strong>Created:</strong> ' . json_encode($activity->properties->get('attributes'));
-                    }
-                    elseif (explode(' ', $activity->description)[0] === "Updated"){
+                    } elseif (explode(' ', $activity->description)[0] === "Updated") {
                         $changes .= '<strong>Before:</strong> ' . json_encode($activity->properties->get('old')) . '<br>';
                         $changes .= '<strong>After:</strong> ' . json_encode($activity->properties->get('attributes'));
                     }
-                }elseif ($activity->event === 'updated') {
+                } elseif ($activity->event === 'updated') {
                     $changes .= '<strong>Before:</strong> ' . json_encode($activity->properties->get('old')) . '<br>';
                     $changes .= '<strong>After:</strong> ' . json_encode($activity->properties->get('attributes'));
                 } elseif ($activity->event === 'created') {
@@ -70,8 +69,8 @@ class HistoryController extends Controller
                 }
                 return $changes;
             })
-            ->filterColumn('causer.name', function($query, $keyword) {
-                $query->whereHas('causer', function($q) use ($keyword) {
+            ->filterColumn('causer.name', function ($query, $keyword) {
+                $query->whereHas('causer', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })

@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\Asset;
-use App\Scopes\CompanyScope;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -15,13 +14,11 @@ class LVAExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', session('active_company_id'))
-            ->with([
-                'assetName.assetSubClass.assetClass', 
-                'location',
-                'department'
-            ])
+        return Asset::with([
+            'assetName.assetSubClass.assetClass',
+            'location',
+            'department'
+        ])
             ->where('status', '!=', 'Onboard')
             ->where('status', '!=', 'Disposal')
             ->where('status', '!=', 'Sold')

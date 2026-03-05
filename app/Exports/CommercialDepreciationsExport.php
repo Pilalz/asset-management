@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\Asset;
-use App\Scopes\CompanyScope;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -25,6 +24,12 @@ class CommercialDepreciationsExport implements FromQuery, WithHeadings, WithMapp
 
     public function __construct(int $startYear, int $endYear)
     {
+        if (($endYear - $startYear) > 5) {
+            throw new \Illuminate\Http\Exceptions\HttpResponseException(
+                redirect()->back()->with('error', 'The maximum year range is 5 years for export. Please narrow the year range.')
+            );
+        }
+
         $this->startYear = $startYear;
         $this->endYear = $endYear;
 
@@ -48,13 +53,10 @@ class CommercialDepreciationsExport implements FromQuery, WithHeadings, WithMapp
         $startDate = Carbon::create($this->startYear, 1, 1)->startOfMonth();
         $endDate = Carbon::create($this->endYear, 12, 1)->endOfMonth();
 
-        return Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', session('active_company_id'))
-            // --- FILTER: Hanya yang PUNYA depresiasi di tahun ini ---
-            ->whereHas('depreciations', function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('depre_date', [$startDate, $endDate])
-                    ->where('type', 'commercial');
-            })
+        return Asset::whereHas('depreciations', function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('depre_date', [$startDate, $endDate])
+                ->where('type', 'commercial');
+        })
             // --------------------------------------------------------
             ->with([
                 'assetName', // Cukup load relasi yang perlu ditampilkan

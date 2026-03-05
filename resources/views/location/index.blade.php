@@ -68,10 +68,10 @@
             @can('is-admin')
                 <div class="hidden sm:block">
                     <a href="{{ route('location.create') }}" type="button"
-                        class="inline-flex items-center text-green-500 bg-white border border-green-300 focus:outline-none hover:bg-green-100 focus:ring-0 font-medium rounded-md text-sm px-3 py-1.5 dark:bg-green-600 dark:text-gray-200 dark:border-gray-400 dark:hover:bg-green-500 dark:hover:border-green-400">
+                        class="inline-flex items-center text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 transition-colors shadow-sm">
                         <span class="sr-only">New Data</span>
                         New Data
-                        <svg class="w-4 h-4 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        <svg class="w-4 h-4 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                             fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M5 12h14m-7 7V5" />
@@ -97,8 +97,8 @@
                             <li class="sm:hidden">
                                 <a href="{{ route('location.create') }}" type="button"
                                     class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors">
-                                    <svg class="w-4 h-4 mr-3 text-gray-400 group-hover:text-green-500 dark:text-gray-500 dark:group-hover:text-green-400 transition-colors" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                    <svg class="w-4 h-4 mr-3 text-gray-400 group-hover:text-green-500 dark:text-gray-500 dark:group-hover:text-green-400 transition-colors"
+                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                         viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="M5 12h14m-7 7V5" />
@@ -123,8 +123,8 @@
                             <li>
                                 <a href="{{ route('location.export') }}" type="button"
                                     class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors">
-                                    <svg class="w-4 h-4 mr-3 text-gray-400 group-hover:text-indigo-500 dark:text-gray-500 dark:group-hover:text-indigo-400 transition-colors" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                    <svg class="w-4 h-4 mr-3 text-gray-400 group-hover:text-indigo-500 dark:text-gray-500 dark:group-hover:text-indigo-400 transition-colors"
+                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                         viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2"
@@ -167,9 +167,10 @@
                                 @csrf
                                 <div class="mb-4">
                                     <div class="flex items-center justify-center w-full">
-                                        <label
+                                        <label id="file-upload-label"
                                             class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
-                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <div id="file-upload-placeholder"
+                                                class="flex flex-col items-center justify-center pt-5 pb-6">
                                                 <svg class="w-10 h-10 mb-3 text-gray-400" aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                                     <path stroke="currentColor" stroke-linecap="round"
@@ -181,9 +182,42 @@
                                                 <p class="text-xs text-gray-500 dark:text-gray-400">XLSX or XLS (MAX. 10MB)
                                                 </p>
                                             </div>
-                                            <input name="excel_file" type="file" class="hidden" required />
+                                            <div id="file-upload-selected"
+                                                class="hidden flex-col items-center justify-center pt-5 pb-6">
+                                                <svg class="w-10 h-10 mb-3 text-green-500" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-6 9 2 2 4-4" />
+                                                </svg>
+                                                <p id="file-name-display"
+                                                    class="mb-1 text-sm font-semibold text-gray-700 dark:text-gray-300 text-center px-4 break-all">
+                                                </p>
+                                                <p class="text-xs text-green-500 dark:text-green-400">File selected — click
+                                                    to change</p>
+                                            </div>
+                                            <input id="excel_file_input" name="excel_file" type="file" class="hidden"
+                                                accept=".xlsx,.xls" required />
                                         </label>
                                     </div>
+                                    <script>
+                                        document.getElementById('excel_file_input').addEventListener('change', function () {
+                                            var fileName = this.files[0] ? this.files[0].name : null;
+                                            if (fileName) {
+                                                document.getElementById('file-upload-placeholder').classList.add('hidden');
+                                                document.getElementById('file-upload-selected').classList.remove('hidden');
+                                                document.getElementById('file-upload-selected').classList.add('flex');
+                                                document.getElementById('file-name-display').textContent = fileName;
+                                            } else {
+                                                document.getElementById('file-upload-placeholder').classList.remove('hidden');
+                                                document.getElementById('file-upload-selected').classList.add('hidden');
+                                                document.getElementById('file-upload-selected').classList.remove('flex');
+                                            }
+                                        });
+                                    </script>
+
                                 </div>
                                 <div class="mb-6 flex justify-center">
                                     <a href="{{ asset('template/TemplateLocation.xlsx') }}"

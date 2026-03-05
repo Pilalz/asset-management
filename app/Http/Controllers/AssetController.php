@@ -14,7 +14,6 @@ use App\Models\Company;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use App\Imports\AssetsImport;
 use App\Exports\AssetsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -82,14 +81,11 @@ class AssetController extends Controller
         }
 
         // Filter list (ini ringan karena cuma ambil ID dan Name)
-        $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', $companyId)->orderBy('name', 'asc')->get(['id', 'name']);
+        $assetNamesForFilter = AssetName::orderBy('name', 'asc')->get(['id', 'name']);
 
-        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', $companyId)->orderBy('name', 'asc')->get(['id', 'name']);
+        $locationsForFilter = Location::orderBy('name', 'asc')->get(['id', 'name']);
 
-        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', $companyId)->orderBy('name', 'asc')->get(['id', 'name']);
+        $departmentsForFilter = Department::orderBy('name', 'asc')->get(['id', 'name']);
 
         // Kirim variable boolean baru ke view
         return view('asset.fixed.index', compact('hasPendingDepreciation', 'assetNamesForFilter', 'locationsForFilter', 'departmentsForFilter'));
@@ -133,7 +129,7 @@ class AssetController extends Controller
 
         foreach ($schedules as $schedule) {
             $monthKey = Carbon::parse($schedule->depre_date)->format('Y-m');
-            $pivotedData[$asset->id]['schedule'][$monthKey] = (object)[
+            $pivotedData[$asset->id]['schedule'][$monthKey] = (object) [
                 'monthly_depre' => $schedule->monthly_depre,
                 'accumulated_depre' => $schedule->accumulated_depre,
                 'book_value' => $schedule->book_value,
@@ -346,10 +342,7 @@ class AssetController extends Controller
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = Asset::withoutGlobalScope(CompanyScope::class)
-            ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+        $query = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
             ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
             ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
             ->join('locations', 'assets.location_id', '=', 'locations.id')
@@ -359,7 +352,6 @@ class AssetController extends Controller
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
-            ->where('assets.company_id', $companyId)
             ->select([
                 'assets.*',
                 'asset_names.name as asset_name_name',
@@ -387,19 +379,19 @@ class AssetController extends Controller
                     'depreUrl' => route('depreciation.depre', $asset->id),
                 ])->render();
             })
-            ->addColumn('currency', function($asset) {
+            ->addColumn('currency', function ($asset) {
                 return $asset->currency_code ?? 'USD';
             })
-            ->filterColumn('asset_name_name', function($query, $keyword) {
+            ->filterColumn('asset_name_name', function ($query, $keyword) {
                 $query->where('asset_names.name', 'like', "%{$keyword}%");
             })
-            ->filterColumn('asset_class_obj', function($query, $keyword) {
+            ->filterColumn('asset_class_obj', function ($query, $keyword) {
                 $query->where('asset_classes.obj_acc', 'like', "%{$keyword}%");
             })
-            ->filterColumn('location_name', function($query, $keyword) {
+            ->filterColumn('location_name', function ($query, $keyword) {
                 $query->where('locations.name', 'like', "%{$keyword}%");
             })
-            ->filterColumn('department_name', function($query, $keyword) {
+            ->filterColumn('department_name', function ($query, $keyword) {
                 $query->where('departments.name', 'like', "%{$keyword}%");
             })
             ->rawColumns(['action'])

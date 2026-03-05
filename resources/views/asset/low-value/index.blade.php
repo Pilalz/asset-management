@@ -49,29 +49,19 @@
             }
         </style>
     @endpush
-    <div class="bg-white flex p-5 text-lg justify-between items-center dark:bg-gray-800 dark:border-b dark:border-gray-700">
+    <div class="bg-white flex p-5 text-lg justify-between border-b border-slate-200 dark:border-gray-700 dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-                <li
-                    class="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-400 dark:hover:text-white">
-                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                        viewBox="0 0 20 20">
-                        <path
-                            d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
-                    </svg>
-                    Asset
-                </li>
-                <li>
-                    <div class="flex items-center">
-                        <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m1 9 4-4-4-4" />
+                <li class="inline-flex items-center">
+                    <a href="{{ route('assetLVA.index') }}"
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-gray-400">
+                        <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                         </svg>
-                        <a href="{{ route('assetLVA.index') }}"
-                            class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Low
-                            Value</a>
-                    </div>
+                        Low Value Asset
+                    </a>
                 </li>
                 <li aria-current="page">
                     <div class="flex items-center">
@@ -90,19 +80,19 @@
             @can('is-admin')
                 <div class="hidden sm:block">
                     <a href="{{ route('assetLVA.create') }}" type="button"
-                        class="inline-flex items-center text-white bg-indigo-600 border border-transparent focus:outline-none hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 transition-all shadow-sm">
+                        class="inline-flex items-center text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 transition-colors shadow-sm">
                         <span class="sr-only">New Data</span>
                         New Data
-                        <svg class="w-4 h-4 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            fill="none" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M5 12h14m-7 7V5" />
                         </svg>
                     </a>
                 </div>
                 <div>
-                    <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction"
-                        class="inline-flex items-center text-gray-700 bg-white border border-slate-300 hover:bg-slate-50 focus:ring-4 focus:ring-slate-100 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 transition-all shadow-sm"
+                    <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" data-dropdown-placement="bottom-end"
+                        class="inline-flex items-center text-gray-700 bg-white border border-slate-300 focus:outline-none hover:bg-slate-50 focus:ring-4 focus:ring-slate-100 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 transition-colors shadow-sm"
                         type="button">
                         <span class="sr-only">Action button</span>
                         Actions
@@ -116,67 +106,60 @@
             @endcan
             <!-- Dropdown menu -->
             <div id="dropdownAction"
-                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700 dark:divide-gray-600">
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-xl shadow-lg w-56 dark:bg-gray-800 dark:divide-gray-700 my-4 border border-gray-100 dark:border-gray-700">
                 <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton">
                     <li>
-                        <div class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                            <!-- Modal toggle -->
-                            <button data-modal-target="import-modal" data-modal-toggle="import-modal"
-                                class="inline-flex items-center me-2" type="button">
-                                <svg class="w-4 h-4 me-2 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                    viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M5 12V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-4m5-13v4a1 1 0 0 1-1 1H5m0 6h9m0 0-2-2m2 2-2 2" />
-                                </svg>
-                                Import Data
-                            </button>
-                        </div>
+                        <a href="javascript:void(0)" data-modal-target="import-modal" data-modal-toggle="import-modal"
+                            class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors"
+                            type="button">
+                            <svg class="w-4 h-4 mr-3 text-gray-400 group-hover:text-indigo-500 dark:text-gray-500 dark:group-hover:text-indigo-400 transition-colors"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 12V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-4m5-13v4a1 1 0 0 1-1 1H5m0 6h9m0 0-2-2m2 2-2 2" />
+                            </svg>
+                            Import Data
+                        </a>
                     </li>
                     <li>
-                        <div class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                            <a href="{{ route('assetLVA.export') }}" class="inline-flex items-center me-2">
-                                <svg class="w-4 h-4 me-2 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                    viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M19 10V4a1 1 0 0 0-1-1H9.914a1 1 0 0 0-.707.293L5.293 7.207A1 1 0 0 0 5 7.914V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 3v4a1 1 0 0 1-1 1H5m5 6h9m0 0-2-2m2 2-2 2" />
-                                </svg>
-                                Export Excel
-                            </a>
-                        </div>
+                        <a href="{{ route('assetLVA.export') }}" type="button"
+                            class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors">
+                            <svg class="w-4 h-4 mr-3 text-gray-400 group-hover:text-indigo-500 dark:text-gray-500 dark:group-hover:text-indigo-400 transition-colors"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 10V4a1 1 0 0 0-1-1H9.914a1 1 0 0 0-.707.293L5.293 7.207A1 1 0 0 0 5 7.914V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 3v4a1 1 0 0 1-1 1H5m5 6h9m0 0-2-2m2 2-2 2" />
+                            </svg>
+                            Export Excel
+                        </a>
                     </li>
                     <li>
-                        <div class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                            <button id="print-selected-btn" data-modal-target="print-modal" data-modal-toggle="print-modal"
-                                class="inline-flex items-center me-2 opacity-50 cursor-not-allowed" type="button" disabled>
-                                <svg class="w-4 h-4 me-2 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                    viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
-                                        d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z" />
-                                </svg>
-                                <span id="print-selected-text">Print Selected (0)</span>
-                            </button>
-                        </div>
+                        <a href="javascript:void(0)" id="print-selected-btn" data-modal-target="print-modal"
+                            data-modal-toggle="print-modal"
+                            class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors opacity-50 cursor-not-allowed pointer-events-none disabled"
+                            disabled>
+                            <svg class="w-4 h-4 mr-3 text-gray-400 group-hover:text-indigo-500 dark:text-gray-500 dark:group-hover:text-indigo-400 transition-colors"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
+                                    d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z" />
+                            </svg>
+                            <span id="print-selected-text">Print Selected (0)</span>
+                        </a>
                     </li>
                     <li>
-                        <div class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                            <button id="download-selected-btn" data-modal-target="download-modal"
-                                data-modal-toggle="download-modal"
-                                class="inline-flex items-center me-2 opacity-50 cursor-not-allowed" type="button" disabled>
-                                <svg class="w-4 h-4 me-2 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                    viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M5 12V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-4m5-13v4a1 1 0 0 1-1 1H5m0 6h9m0 0-2-2m2 2-2 2" />
-                                </svg>
-                                <span id="download-selected-text">Download Selected (0)</span>
-                            </button>
-                        </div>
+                        <a href="javascript:void(0)" id="download-selected-btn" data-modal-target="download-modal"
+                            data-modal-toggle="download-modal"
+                            class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors opacity-50 cursor-not-allowed pointer-events-none disabled"
+                            disabled>
+                            <svg class="w-4 h-4 mr-3 text-gray-400 group-hover:text-indigo-500 dark:text-gray-500 dark:group-hover:text-indigo-400 transition-colors"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 12V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-4m5-13v4a1 1 0 0 1-1 1H5m0 6h9m0 0-2-2m2 2-2 2" />
+                            </svg>
+                            <span id="download-selected-text">Download Selected (0)</span>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -211,9 +194,10 @@
                                 @csrf
                                 <div class="mb-4">
                                     <div class="flex items-center justify-center w-full">
-                                        <label
+                                        <label id="lva-file-upload-label"
                                             class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
-                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <div id="lva-file-upload-placeholder"
+                                                class="flex flex-col items-center justify-center pt-5 pb-6">
                                                 <svg class="w-10 h-10 mb-3 text-gray-400" aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                                     <path stroke="currentColor" stroke-linecap="round"
@@ -225,9 +209,40 @@
                                                 <p class="text-xs text-gray-500 dark:text-gray-400">XLSX or XLS (MAX. 10MB)
                                                 </p>
                                             </div>
-                                            <input name="excel_file" type="file" class="hidden" required />
+                                            <div id="lva-file-upload-selected"
+                                                class="hidden flex-col items-center justify-center pt-5 pb-6">
+                                                <svg class="w-10 h-10 mb-3 text-green-500" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-6 9 2 2 4-4" />
+                                                </svg>
+                                                <p id="lva-file-name-display"
+                                                    class="mb-1 text-sm font-semibold text-gray-700 dark:text-gray-300 text-center px-4 break-all">
+                                                </p>
+                                                <p class="text-xs text-green-500 dark:text-green-400">File selected — click
+                                                    to change</p>
+                                            </div>
+                                            <input id="lva-excel-file-input" name="excel_file" type="file" class="hidden"
+                                                accept=".xlsx,.xls" required />
                                         </label>
                                     </div>
+                                    <script>
+                                        document.getElementById('lva-excel-file-input').addEventListener('change', function () {
+                                            var fileName = this.files[0] ? this.files[0].name : null;
+                                            if (fileName) {
+                                                document.getElementById('lva-file-upload-placeholder').classList.add('hidden');
+                                                document.getElementById('lva-file-upload-selected').classList.remove('hidden');
+                                                document.getElementById('lva-file-upload-selected').classList.add('flex');
+                                                document.getElementById('lva-file-name-display').textContent = fileName;
+                                            } else {
+                                                document.getElementById('lva-file-upload-placeholder').classList.remove('hidden');
+                                                document.getElementById('lva-file-upload-selected').classList.add('hidden');
+                                                document.getElementById('lva-file-upload-selected').classList.remove('flex');
+                                            }
+                                        });
+                                    </script>
+
                                 </div>
                                 <div class="mb-6 flex justify-center">
                                     <a href="{{ asset('template/TemplateLowValueAsset.xlsx') }}"

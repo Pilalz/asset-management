@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\Department;
-use App\Scopes\CompanyScope;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -15,9 +14,7 @@ class DepartmentsExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return Department::query()
-            ->withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', session('active_company_id'));
+        return Department::query();
     }
 
     public function headings(): array

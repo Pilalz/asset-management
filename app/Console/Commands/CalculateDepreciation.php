@@ -27,7 +27,7 @@ class CalculateDepreciation extends Command
      */
     public function handle()
     {
-        
+
         $this->info('Dispatching monthly depreciation jobs for all active companies...');
 
         // Ambil semua ID perusahaan yang aktif

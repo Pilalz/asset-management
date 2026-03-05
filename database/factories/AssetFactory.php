@@ -9,6 +9,7 @@ use App\Models\Location;
 use App\Models\Department;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class AssetFactory extends Factory
 {
@@ -21,7 +22,7 @@ class AssetFactory extends Factory
 
         return [
             'asset_number' => 'AST-' . $this->faker->unique()->numerify('######'),
-            'asset_code' => $this->faker->bothify('AC-#####'),
+            'asset_code' => strtolower(substr(Str::uuid()->toString(), 0, 10)),
             'asset_name_id' => AssetName::factory(),
             'asset_type' => $this->faker->randomElement(['FA', 'LVA', 'Arrival']),
             'status' => $this->faker->randomElement(['Active', 'Sold', 'Disposal', 'Onboard']),

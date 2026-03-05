@@ -12,7 +12,6 @@ use App\Models\DisposalAsset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -23,7 +22,7 @@ class CompanyController extends Controller
     public function index()
     {
         $userId = Auth::id();
-            
+
         $companies = Company::join('company_users', 'companies.id', '=', 'company_users.company_id')
             ->where('user_id', $userId)
             ->get();
@@ -41,7 +40,7 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         Gate::authorize('is-dev');
-        
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'alias' => 'required|string|unique:companies,alias',
@@ -55,7 +54,7 @@ class CompanyController extends Controller
 
         $user = Auth::user();
         $validated['owner_id'] = $user->id;
-        
+
         if ($request->hasFile('logo')) {
             $validated['logo'] = $request->file('logo')->store('company-logos', 'public');
         }
@@ -75,11 +74,7 @@ class CompanyController extends Controller
     {
         $this->authorize('update', $company);
 
-        $companyId = session('active_company_id');
-
-        $countAsset = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('assets.company_id', $companyId)
-            ->where('status', 'Active')
+        $countAsset = Asset::where('status', 'Active')
             ->count();
 
         $companyUsers = $company->users()
@@ -142,8 +137,8 @@ class CompanyController extends Controller
         }
 
         $hasPending = TransferAsset::where('company_id', $companyId)->where('status', 'Waiting')->exists() ||
-                    RegisterAsset::where('company_id', $companyId)->where('status', 'Waiting')->exists() ||
-                    DisposalAsset::where('company_id', $companyId)->where('status', 'Waiting')->exists();
+            RegisterAsset::where('company_id', $companyId)->where('status', 'Waiting')->exists() ||
+            DisposalAsset::where('company_id', $companyId)->where('status', 'Waiting')->exists();
 
         if ($hasPending) {
             return back()->with('error', "Gagal! Masih ada transaksi (Transfer/Register/Disposal) yang berstatus 'Waiting'.");
@@ -172,12 +167,12 @@ class CompanyController extends Controller
         $user = Auth::user();
 
         if ($user->companies()->where('companies.id', $companyId)->exists()) {
-            
+
             Session::put('active_company_id', $companyId);
 
             $user->last_active_company_id = $companyId;
             $user->save();
-            
+
             return redirect()->back()->with('success', 'Berhasil berganti perusahaan.');
         }
 
@@ -198,7 +193,7 @@ class CompanyController extends Controller
         if (!Hash::check($request->password, $user->password)) {
             return back()->with('error', 'Password konfirmasi salah.');
         }
-        
+
         $isMember = $company->users()->where('users.id', $request->new_owner_id)->exists();
         if (!$isMember) {
             return back()->with('error', 'User tersebut bukan anggota perusahaan ini.');

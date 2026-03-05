@@ -169,11 +169,11 @@ function updateBulkActionButtons() {
     downloadText.text(`Download Selected ${countText}`);
 
     if (count > 0) {
-        printBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
-        downloadBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+        printBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed pointer-events-none disabled');
+        downloadBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed pointer-events-none disabled');
     } else {
-        printBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
-        downloadBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+        printBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed pointer-events-none disabled');
+        downloadBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed pointer-events-none disabled');
     }
 
     // Update hidden inputs for both print and download
@@ -461,8 +461,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Run All Depreciation button
         runBtn.on('click', function () {
-            if (!confirm('Apakah Anda yakin ingin menjalankan depresiasi untuk semua aset?')) return;
-
             updateUI('running', 0);
             statusText.text('Mengirim permintaan...');
 

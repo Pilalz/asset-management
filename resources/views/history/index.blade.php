@@ -3,18 +3,6 @@
 @section('content')
     @push('styles')
         <style>
-            /* Gaya untuk Light Mode */
-            #historyTable tbody tr:hover {
-                background-color: #F9FAFB !important;
-                /* Tailwind's hover:bg-gray-50 */
-            }
-
-            /* Gaya untuk Dark Mode */
-            .dark #historyTable tbody tr:hover {
-                background-color: #374151 !important;
-                /* Tailwind's dark:hover:bg-gray-700 (contoh) */
-            }
-
             /* Matiin Outline */
             #historyTable thead tr th:hover {
                 outline: none !important;
@@ -80,48 +68,50 @@
     <x-alerts />
 
     <div class="p-5">
-        <div class="relative overflow-x-auto shadow-md rounded-lg bg-white dark:bg-gray-800 p-4">
-            <div id="date-range-picker" date-rangepicker class="flex items-center mb-4">
-                <div class="relative">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                        </svg>
+        <div
+            class="shadow-sm rounded-xl bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 overflow-hidden">
+            <div class="p-4 border-b border-slate-200 dark:border-gray-700">
+                <div id="date-range-picker" date-rangepicker class="flex items-center">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                            </svg>
+                        </div>
+                        <input id="start_date" name="start" type="text"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Select date start">
                     </div>
-                    <input id="start_date" name="start" type="text"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Select date start">
-                </div>
-                <span class="mx-4 text-gray-500">to</span>
-                <div class="relative">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                        </svg>
+                    <span class="mx-4 text-gray-500">to</span>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                            </svg>
+                        </div>
+                        <input id="end_date" name="end" type="text"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Select date end">
                     </div>
-                    <input id="end_date" name="end" type="text"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Select date end">
+                    <span class="mx-2"></span>
+                    <button id="clear_date" class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                        Clear
+                    </button>
                 </div>
-                <span class="mx-2"></span>
-                <button id="clear_date" class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                    Clear
-                </button>
             </div>
 
-
-            <table id="historyTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-100"
+            <table id="historyTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-100"
                 data-url="{{ route('api.history') }}">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-100">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
                     <tr>
-                        <th scope="col" class="px-6 py-3">Event</th>
-                        <th scope="col" class="px-6 py-3">User</th>
-                        <th scope="col" class="px-6 py-3">Changes</th>
-                        <th scope="col" class="px-6 py-3">Date</th>
+                        <th scope="col" class="px-6 py-3"><span class="flex items-center">Event</span></th>
+                        <th scope="col" class="px-6 py-3"><span class="flex items-center">User</span></th>
+                        <th scope="col" class="px-6 py-3"><span class="flex items-center">Changes</span></th>
+                        <th scope="col" class="px-6 py-3"><span class="flex items-center">Date</span></th>
                     </tr>
                     <tr id="filter-row">
                         <th></th>

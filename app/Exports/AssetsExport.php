@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\Asset;
-use App\Scopes\CompanyScope;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -14,22 +13,20 @@ class AssetsExport implements FromQuery, WithHeadings, WithMapping
     use Exportable;
 
     /**
-    * Kita ubah dari collection() ke query()
-    * Biarkan Laravel Excel yang melakukan fetching (chunking)
-    */
+     * Kita ubah dari collection() ke query()
+     * Biarkan Laravel Excel yang melakukan fetching (chunking)
+     */
     public function query()
     {
-        return Asset::withoutGlobalScope(CompanyScope::class)
-                ->where('company_id', session('active_company_id'))
-                ->with([
-                    'assetName.assetSubClass.assetClass', 
-                    'location',
-                    'department'
-                ])
-                ->where('status', '!=', 'Onboard')
-                ->where('status', '!=', 'Disposal')
-                ->where('status', '!=', 'Sold')
-                ->where('asset_type', 'FA');
+        return Asset::with([
+            'assetName.assetSubClass.assetClass',
+            'location',
+            'department'
+        ])
+            ->where('status', '!=', 'Onboard')
+            ->where('status', '!=', 'Disposal')
+            ->where('status', '!=', 'Sold')
+            ->where('asset_type', 'FA');
     }
 
     public function headings(): array
@@ -68,7 +65,7 @@ class AssetsExport implements FromQuery, WithHeadings, WithMapping
     }
 
     public function map($asset): array
-    {   
+    {
         return [
             $asset->id,
             $asset->asset_number,

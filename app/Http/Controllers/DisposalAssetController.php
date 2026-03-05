@@ -15,7 +15,6 @@ use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Gate;
@@ -24,13 +23,8 @@ use App\Rules\AssetIsAvailable;
 class DisposalAssetController extends Controller
 {
     public function index()
-    {   
-        $companyId = session('active_company_id');
-        
-        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', $companyId)
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
+    {
+        $departmentsForFilter = Department::orderBy('name', 'asc')->get(['id', 'name']);
 
         return view('disposal-asset.index', compact('departmentsForFilter'));
     }
@@ -45,18 +39,9 @@ class DisposalAssetController extends Controller
         Gate::authorize('is-form-maker');
 
         $departments = Department::all();
-        $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', session('active_company_id'))
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
-        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', session('active_company_id'))
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
-        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', session('active_company_id'))
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
+        $assetNamesForFilter = AssetName::orderBy('name', 'asc')->get(['id', 'name']);
+        $locationsForFilter = Location::orderBy('name', 'asc')->get(['id', 'name']);
+        $departmentsForFilter = Department::orderBy('name', 'asc')->get(['id', 'name']);
 
         $users = User::join('company_users', 'users.id', '=', 'company_users.user_id')
             ->where('company_users.company_id', session('active_company_id'))
@@ -66,14 +51,14 @@ class DisposalAssetController extends Controller
         $lastDisposalAsset = DisposalAsset::withTrashed()->latest('id')->first();
         $seq = 1;
 
-        if ($lastDisposalAsset){
+        if ($lastDisposalAsset) {
             $lastSeq = (int) substr($lastDisposalAsset->form_no, -5);
             $seq = $lastSeq + 1;
         }
-        
+
         $formattedSeq = str_pad($seq, 5, '0', STR_PAD_LEFT);
-        $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq ;
-        
+        $form_no = Auth::user()->lastActiveCompany->alias . "/" . now()->format('Y/m') . "/" . $formattedSeq;
+
         return view('disposal-asset.create', compact('departments', 'assetNamesForFilter', 'form_no', 'users', 'locationsForFilter', 'departmentsForFilter'));
     }
 
@@ -83,30 +68,30 @@ class DisposalAssetController extends Controller
 
         //Store Disposal Asset
         $validated = $request->validate([
-            'submit_date'  => 'required|date',
+            'submit_date' => 'required|date',
             'form_no' => 'required|string|max:255|unique:disposal_assets,form_no',
             'department_id' => 'required|exists:departments,id',
-            'reason'  => 'required',
-            'sequence'  => 'required',
-            'nbv'  => 'required',
-            'esp'  => 'required',
-            'company_id'  => 'required|exists:companies,id',
-            'kurs'  => 'required',
+            'reason' => 'required',
+            'sequence' => 'required',
+            'nbv' => 'required',
+            'esp' => 'required',
+            'company_id' => 'required|exists:companies,id',
+            'kurs' => 'required',
 
             //Validasi Detail Asset
-            'prices'     => ['required', 'array', 'min:1', new AssetIsAvailable],
-            'prices.*'      => 'required|numeric',
+            'prices' => ['required', 'array', 'min:1', new AssetIsAvailable],
+            'prices.*' => 'required|numeric',
 
             //Validasi Attachment
             'attachments.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,xlsx|max:5120',
 
             //Validasi Approval
-            'approvals'                     => 'required|array|min:1',
-            'approvals.*.approval_action'   => 'required|string|max:255',
-            'approvals.*.role'              => 'required|string|max:255',
-            'approvals.*.user_id'           => 'required|string|max:255',
-            'approvals.*.status'            => 'required|string|max:255',
-            'approvals.0.approval_date'     => 'nullable|date',
+            'approvals' => 'required|array|min:1',
+            'approvals.*.approval_action' => 'required|string|max:255',
+            'approvals.*.role' => 'required|string|max:255',
+            'approvals.*.user_id' => 'required|string|max:255',
+            'approvals.*.status' => 'required|string|max:255',
+            'approvals.0.approval_date' => 'nullable|date',
         ]);
 
         $pricesByAssetId = $validated['prices'];
@@ -123,12 +108,12 @@ class DisposalAssetController extends Controller
             }
 
             $approvalsToStore[] = [
-                'approval_action'   => $approvalData['approval_action'],
-                'role'              => $approvalData['role'],
-                'user_id'            => $approvalData['user_id'],
-                'status'            => 'pending',
-                'approval_date'     => null,
-                'approval_order'    => $order,
+                'approval_action' => $approvalData['approval_action'],
+                'role' => $approvalData['role'],
+                'user_id' => $approvalData['user_id'],
+                'status' => 'pending',
+                'approval_date' => null,
+                'approval_order' => $order,
             ];
         }
 
@@ -138,15 +123,15 @@ class DisposalAssetController extends Controller
                 $assetsToDispose = Asset::whereIn('id', $assetIds)->get()->keyBy('id');
 
                 $disposalAsset = DisposalAsset::create([
-                    'submit_date'   => $validated['submit_date'],
-                    'form_no'       => $validated['form_no'],
+                    'submit_date' => $validated['submit_date'],
+                    'form_no' => $validated['form_no'],
                     'department_id' => $validated['department_id'],
-                    'reason'        => $validated['reason'],
-                    'nbv'           => $validated['nbv'],
-                    'esp'           => $validated['esp'],
-                    'sequence'      => $validated['sequence'],
-                    'status'        => 'Waiting',
-                    'company_id'    => $validated['company_id'],
+                    'reason' => $validated['reason'],
+                    'nbv' => $validated['nbv'],
+                    'esp' => $validated['esp'],
+                    'sequence' => $validated['sequence'],
+                    'status' => 'Waiting',
+                    'company_id' => $validated['company_id'],
                 ]);
 
                 foreach ($pricesByAssetId as $assetId => $price) {
@@ -156,8 +141,8 @@ class DisposalAssetController extends Controller
                         // 8. Buat record 'detailDisposals'
                         $disposalAsset->detailDisposals()->create([
                             'asset_id' => $assetId,
-                            'kurs'     => $validated['kurs'],
-                            'njab'     => $price,
+                            'kurs' => $validated['kurs'],
+                            'njab' => $price,
                         ]);
                     }
                 }
@@ -166,7 +151,7 @@ class DisposalAssetController extends Controller
                     foreach ($request->file('attachments') as $file) {
 
                         $filePath = $file->store('attachments', 'public');
-                        
+
                         $disposalAsset->attachments()->create([
                             'file_path' => $filePath,
                             'original_filename' => $file->getClientOriginalName(),
@@ -190,7 +175,7 @@ class DisposalAssetController extends Controller
     public function edit(DisposalAsset $disposal_asset)
     {
         Gate::authorize('is-form-maker');
-        
+
         $departments = Department::all();
         $users = User::join('company_users', 'users.id', '=', 'company_users.user_id')
             ->where('company_users.company_id', session('active_company_id'))
@@ -201,7 +186,7 @@ class DisposalAssetController extends Controller
 
         $pricesForJs = $disposal_asset->detailDisposals->pluck('njab', 'asset_id');
 
-        return view('disposal-asset.edit', [ 
+        return view('disposal-asset.edit', [
             'disposal_asset' => $disposal_asset,
             'departments' => $departments,
             'users' => $users,
@@ -216,15 +201,15 @@ class DisposalAssetController extends Controller
 
         $validated = $request->validate([
             'department_id' => 'required|exists:departments,id',
-            'reason'  => 'required',
-            'sequence'  => 'required',
-            'nbv'  => 'required',
-            'esp'  => 'required',
-            'kurs'  => 'required',
+            'reason' => 'required',
+            'sequence' => 'required',
+            'nbv' => 'required',
+            'esp' => 'required',
+            'kurs' => 'required',
 
             //Validasi Detail Asset
             'prices' => ['required', 'array', 'min:1', new AssetIsAvailable('disposal', $disposalAsset->id)],
-            'prices.*'      => 'required|numeric',
+            'prices.*' => 'required|numeric',
 
             //Validasi Attachments
             'attachments.*' => 'nullable|file|mimes:pdf,jpg,png,xlsx|max:5120',
@@ -232,12 +217,12 @@ class DisposalAssetController extends Controller
             'deleted_attachments.*' => 'integer|exists:attachments,id',
 
             //Validasi Approval
-            'approvals'                     => 'required|array|min:1',
-            'approvals.*.approval_action'   => 'required|string|max:255',
-            'approvals.*.role'              => 'required|string|max:255',
-            'approvals.*.user_id'           => 'required|string|max:255',
-            'approvals.*.status'            => 'required|string|max:255',
-            'approvals.*.approval_date'     => 'nullable|date',
+            'approvals' => 'required|array|min:1',
+            'approvals.*.approval_action' => 'required|string|max:255',
+            'approvals.*.role' => 'required|string|max:255',
+            'approvals.*.user_id' => 'required|string|max:255',
+            'approvals.*.status' => 'required|string|max:255',
+            'approvals.*.approval_date' => 'nullable|date',
         ]);
 
         $pricesByAssetId = $validated['prices'];
@@ -247,25 +232,25 @@ class DisposalAssetController extends Controller
             DB::transaction(function () use ($validated, $request, $assetIds, $pricesByAssetId, $disposalAsset) {
                 $disposalAsset->update([
                     'department_id' => $validated['department_id'],
-                    'reason'        => $validated['reason'],
-                    'sequence'      => $validated['sequence'],
-                    'nbv'           => $validated['nbv'],
-                    'esp'           => $validated['esp'],
+                    'reason' => $validated['reason'],
+                    'sequence' => $validated['sequence'],
+                    'nbv' => $validated['nbv'],
+                    'esp' => $validated['esp'],
                 ]);
 
                 $disposalAsset->detailDisposals()->delete();
                 $disposalAsset->approvals()->delete();
 
                 $assetsToDispose = Asset::whereIn('id', $assetIds)->get()->keyBy('id');
-                
+
                 foreach ($pricesByAssetId as $assetId => $price) {
                     $assetId = trim($assetId);
                     if ($assetId !== '' && $assetsToDispose->has($assetId)) {
                         $asset = $assetsToDispose->get($assetId);
                         $disposalAsset->detailDisposals()->create([
                             'asset_id' => $assetId,
-                            'kurs'     => $validated['kurs'],
-                            'njab'     => $price,
+                            'kurs' => $validated['kurs'],
+                            'njab' => $price,
                         ]);
                     }
                 }
@@ -288,18 +273,18 @@ class DisposalAssetController extends Controller
                         ]);
                     }
                 }
-                
+
                 // 5. Buat ulang daftar approval dengan logika yang benar
                 $isSequence = ($validated['sequence'] === "1");
                 foreach ($validated['approvals'] as $index => $approvalData) {
                     $isFirstApprover = ($index === 0);
                     $disposalAsset->approvals()->create([
-                        'approval_action'   => $approvalData['approval_action'],
-                        'role'              => $approvalData['role'],
-                        'approval_order'    => $isSequence ? ($index + 1) : 1,
-                        'status'            => $approvalData['status'],
-                        'approval_date'     => $approvalData['approval_date'],
-                        'user_id'           => $approvalData['user_id'],
+                        'approval_action' => $approvalData['approval_action'],
+                        'role' => $approvalData['role'],
+                        'approval_order' => $isSequence ? ($index + 1) : 1,
+                        'status' => $approvalData['status'],
+                        'approval_date' => $approvalData['approval_date'],
+                        'user_id' => $approvalData['user_id'],
                     ]);
                 }
             });
@@ -332,8 +317,8 @@ class DisposalAssetController extends Controller
         try {
             $disposal_asset = DisposalAsset::onlyTrashed()
                 ->with([
-                    'department'=> function($q) { 
-                        $q->withTrashed(); 
+                    'department' => function ($q) {
+                        $q->withTrashed();
                     },
                 ])
                 ->findOrFail($id);
@@ -357,7 +342,7 @@ class DisposalAssetController extends Controller
     {
         // Eager load relasi untuk efisiensi
         $disposal_asset->load('approvals.user', 'department', 'detailDisposals', 'attachments');
-        
+
         $canApprove = false;
         $userApprovalStatus = null;
 
@@ -410,7 +395,7 @@ class DisposalAssetController extends Controller
         ) {
             return back()->with('error', 'Saat ini bukan giliran Anda untuk melakukan approval.');
         }
-        
+
         try {
             DB::transaction(function () use ($disposal_asset, $user, $request, $nextApprover) {
                 // 1. Update baris approval milik user ini
@@ -465,34 +450,30 @@ class DisposalAssetController extends Controller
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = DisposalAsset::withoutGlobalScope(CompanyScope::class)
-                        ->with(['department', 'company'])
-                        ->withCount(['detailDisposals'])
-                        ->where('company_id', $companyId);
+        $query = DisposalAsset::with(['department', 'company'])
+            ->withCount(['detailDisposals']);
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('currency', function($disposalAsset) {
+            ->addColumn('currency', function ($disposalAsset) {
                 return $disposalAsset->company->currency ?? 'USD';
             })
-            ->addColumn('department_name', function($disposalAsset) {
+            ->addColumn('department_name', function ($disposalAsset) {
                 return $disposalAsset->department->name ?? '-';
             })
-            ->addColumn('asset_quantity', function($disposalAsset) {
+            ->addColumn('asset_quantity', function ($disposalAsset) {
                 return $disposalAsset->detail_disposals_count . ' Asset(s)';
             })
             ->addColumn('action', function ($disposal_assets) {
                 return view('components.action-form-buttons', [
-                    'model'     => $disposal_assets,
+                    'model' => $disposal_assets,
                     'showUrl' => route('disposal-asset.show', $disposal_assets->id),
                     'editUrl' => route('disposal-asset.edit', $disposal_assets->id),
                     'deleteUrl' => route('disposal-asset.destroy', $disposal_assets->id)
                 ])->render();
             })
-            ->filterColumn('department_name', function($query, $keyword) {
-                $query->whereHas('department', function($q) use ($keyword) {
+            ->filterColumn('department_name', function ($query, $keyword) {
+                $query->whereHas('department', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
@@ -521,33 +502,29 @@ class DisposalAssetController extends Controller
 
     public function datatablesCanceled(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = DisposalAsset::withoutGlobalScope(CompanyScope::class)
-                        ->with(['department', 'company'])
-                        ->withCount('detailDisposals')
-                        ->onlyTrashed()
-                        ->where('company_id', $companyId);
+        $query = DisposalAsset::with(['department', 'company'])
+            ->withCount('detailDisposals')
+            ->onlyTrashed();
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('currency', function($disposalAsset) {
+            ->addColumn('currency', function ($disposalAsset) {
                 return $disposalAsset->company->currency ?? 'USD';
             })
-            ->addColumn('department_name', function($disposalAsset) {
+            ->addColumn('department_name', function ($disposalAsset) {
                 return $disposalAsset->department->name ?? '-';
             })
-            ->addColumn('asset_quantity', function($disposalAsset) {
+            ->addColumn('asset_quantity', function ($disposalAsset) {
                 return $disposalAsset->detail_disposals_count . ' Asset(s)';
             })
             ->addColumn('action', function ($disposal_assets) {
                 return view('components.action-form-canceled-buttons', [
-                    'model'     => $disposal_assets,
+                    'model' => $disposal_assets,
                     'restoreUrl' => route('disposal-asset.restore', $disposal_assets->id)
                 ])->render();
             })
-            ->filterColumn('department_name', function($query, $keyword) {
-                $query->whereHas('department', function($q) use ($keyword) {
+            ->filterColumn('department_name', function ($query, $keyword) {
+                $query->whereHas('department', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
@@ -564,61 +541,57 @@ class DisposalAssetController extends Controller
 
     public function datatablesAsset(Request $request)
     {
-        $companyId = session('active_company_id');
-
         $formToIgnoreId = $request->input('form_to_ignore_id');
         $formType = $request->input('form_type');
 
-        $query = Asset::withoutGlobalScope(CompanyScope::class)
-                        ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
-                        ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
-                        ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
-                        ->join('locations', 'assets.location_id', '=', 'locations.id')
-                        ->join('departments', 'assets.department_id', '=', 'departments.id')
-                        ->join('companies', 'assets.company_id', '=', 'companies.id')
-                        ->where('assets.status', '!=', 'Sold')
-                        ->where('assets.status', '!=', 'Onboard')
-                        ->where('assets.status', '!=', 'Disposal')
-                        ->where('assets.company_id', $companyId)
-                        ->whereDoesntHave('detailDisposals.disposalAsset', function ($q) use ($formType, $formToIgnoreId) {
-                            $q->where('status', 'Waiting');
-                            if ($formType === 'disposal' && $formToIgnoreId) { 
-                                $q->where('id', '!=', $formToIgnoreId);
-                            }
-                        })
-                        ->whereDoesntHave('detailTransfers.transferAsset', function ($q) use ($formType, $formToIgnoreId) {
-                            $q->where('status', 'Waiting');
-                            if ($formType === 'transfer' && $formToIgnoreId) {
-                                $q->where('id', '!=', $formToIgnoreId);
-                            }
-                        })
-                        ->select([
-                            'assets.*',
-                            'asset_names.name as asset_name_name',
-                            'asset_classes.obj_acc as asset_class_obj',
-                            'locations.name as location_name',
-                            'departments.name as department_name',
-                            'companies.currency as currency_code',
-                        ]);
+        $query = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+            ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+            ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+            ->join('locations', 'assets.location_id', '=', 'locations.id')
+            ->join('departments', 'assets.department_id', '=', 'departments.id')
+            ->join('companies', 'assets.company_id', '=', 'companies.id')
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
+            ->whereDoesntHave('detailDisposals.disposalAsset', function ($q) use ($formType, $formToIgnoreId) {
+                $q->where('status', 'Waiting');
+                if ($formType === 'disposal' && $formToIgnoreId) {
+                    $q->where('id', '!=', $formToIgnoreId);
+                }
+            })
+            ->whereDoesntHave('detailTransfers.transferAsset', function ($q) use ($formType, $formToIgnoreId) {
+                $q->where('status', 'Waiting');
+                if ($formType === 'transfer' && $formToIgnoreId) {
+                    $q->where('id', '!=', $formToIgnoreId);
+                }
+            })
+            ->select([
+                'assets.*',
+                'asset_names.name as asset_name_name',
+                'asset_classes.obj_acc as asset_class_obj',
+                'locations.name as location_name',
+                'departments.name as department_name',
+                'companies.currency as currency_code',
+            ]);
 
         return DataTables::eloquent($query)
             ->addIndexColumn()
-            ->addColumn('currency', function($asset) {
+            ->addColumn('currency', function ($asset) {
                 return $asset->currency_code ?? 'USD';
             })
             ->addColumn('checkbox', function ($asset) {
                 return '<input type="checkbox" class="asset-checkbox" value="' . $asset->id . '">';
             })
-            ->filterColumn('asset_name_name', function($query, $keyword) {
+            ->filterColumn('asset_name_name', function ($query, $keyword) {
                 $query->where('asset_names.name', 'like', "%{$keyword}%");
             })
-            ->filterColumn('asset_class_obj', function($query, $keyword) {
+            ->filterColumn('asset_class_obj', function ($query, $keyword) {
                 $query->where('asset_classes.obj_acc', 'like', "%{$keyword}%");
             })
-            ->filterColumn('location_name', function($query, $keyword) {
+            ->filterColumn('location_name', function ($query, $keyword) {
                 $query->where('locations.name', 'like', "%{$keyword}%");
             })
-            ->filterColumn('department_name', function($query, $keyword) {
+            ->filterColumn('department_name', function ($query, $keyword) {
                 $query->where('departments.name', 'like', "%{$keyword}%");
             })
             ->rawColumns(['checkbox'])
@@ -636,26 +609,25 @@ class DisposalAssetController extends Controller
         $companyId = session('active_company_id');
 
         // Gunakan query yang sama dengan DataTables Anda untuk konsistensi data
-        $query = Asset::withoutGlobalScope(CompanyScope::class)
-                        ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
-                        ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
-                        ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
-                        ->join('locations', 'assets.location_id', '=', 'locations.id')
-                        ->join('departments', 'assets.department_id', '=', 'departments.id')
-                        ->join('companies', 'assets.company_id', '=', 'companies.id') // Join untuk currency
-                        ->whereIn('assets.id', $ids) // Ambil berdasarkan ID yang diminta
-                        ->where('assets.company_id', $companyId)
-                        ->select([
-                            'assets.*',
-                            'asset_names.name as asset_name_name',
-                            'asset_classes.obj_acc as asset_class_obj',
-                            'locations.name as location_name',
-                            'departments.name as department_name',
-                            'companies.currency as currency_code' // Ambil currency code
-                        ]);
+        $query = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+            ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+            ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+            ->join('locations', 'assets.location_id', '=', 'locations.id')
+            ->join('departments', 'assets.department_id', '=', 'departments.id')
+            ->join('companies', 'assets.company_id', '=', 'companies.id') // Join untuk currency
+            ->whereIn('assets.id', $ids) // Ambil berdasarkan ID yang diminta
+            ->where('assets.company_id', $companyId)
+            ->select([
+                'assets.*',
+                'asset_names.name as asset_name_name',
+                'asset_classes.obj_acc as asset_class_obj',
+                'locations.name as location_name',
+                'departments.name as department_name',
+                'companies.currency as currency_code' // Ambil currency code
+            ]);
 
         // keyBy('id') penting agar mudah dicari di JavaScript
-        $assets = $query->get()->keyBy('id'); 
+        $assets = $query->get()->keyBy('id');
 
         return response()->json($assets);
     }
@@ -663,13 +635,13 @@ class DisposalAssetController extends Controller
     public function exportPdf(DisposalAsset $disposal_asset)
     {
         $disposal_asset->load(
-            'department', 
-            'detailDisposals', 
+            'department',
+            'detailDisposals',
             'approvals.user',
             'company'
         );
 
-        $sumQuantity = $disposal_asset->detailDisposals->sum(function($detail) {
+        $sumQuantity = $disposal_asset->detailDisposals->sum(function ($detail) {
             return $detail->asset?->quantity ?? 0;
         });
 
@@ -680,16 +652,16 @@ class DisposalAssetController extends Controller
 
         $activeCompany = Company::find(session('active_company_id'));
 
-        if($activeCompany->currency === 'USD') {
+        if ($activeCompany->currency === 'USD') {
             $totalNjabUsd = $totalNjabPrimary;
             // Hitung total konversi ke IDR
-            $totalNjabIdr = $disposal_asset->detailDisposals->sum(function($detail) {
+            $totalNjabIdr = $disposal_asset->detailDisposals->sum(function ($detail) {
                 return ($detail->kurs ?? 0) * ($detail->njab ?? 0);
             });
         } elseif ($activeCompany->currency === 'IDR') {
             $totalNjabIdr = $totalNjabPrimary;
             // Hitung total konversi ke USD
-            $totalNjabUsd = $disposal_asset->detailDisposals->sum(function($detail) {
+            $totalNjabUsd = $disposal_asset->detailDisposals->sum(function ($detail) {
                 // Hindari pembagian dengan nol
                 if ($detail->kurs && $detail->kurs != 0) {
                     return ($detail->njab ?? 0) / $detail->kurs;
@@ -700,16 +672,16 @@ class DisposalAssetController extends Controller
         }
 
         $pdf = Pdf::loadView('disposal-asset.pdf', [
-            'disposal_asset'    => $disposal_asset,
-            'sumQuantity'       => $sumQuantity,
-            'totalNjabUsd'      => $totalNjabUsd,
-            'totalNjabIdr'      => $totalNjabIdr
+            'disposal_asset' => $disposal_asset,
+            'sumQuantity' => $sumQuantity,
+            'totalNjabUsd' => $totalNjabUsd,
+            'totalNjabIdr' => $totalNjabIdr
         ]);
 
         $pdf->setPaper('a4', 'portrait');
 
         $safeFilename = str_replace('/', '-', $disposal_asset->form_no);
-        
-        return $pdf->stream('Disposal-Asset-' . $safeFilename  . '.pdf');
+
+        return $pdf->stream('Disposal-Asset-' . $safeFilename . '.pdf');
     }
 }

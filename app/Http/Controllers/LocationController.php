@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Location;
 use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use App\Imports\LocationsImport;
 use App\Exports\LocationsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -16,14 +15,14 @@ use Illuminate\Validation\Rule;
 class LocationController extends Controller
 {
     public function index()
-    {   
+    {
         return view('location.index');
     }
 
     public function create()
     {
         Gate::authorize('is-admin');
-        
+
         return view('location.create');
     }
 
@@ -32,7 +31,7 @@ class LocationController extends Controller
         Gate::authorize('is-admin');
 
         $companyId = $request->input('company_id');
-        
+
         $request->validate([
             'name' => [
                 'required', 'string', 'max:255',                
@@ -50,7 +49,7 @@ class LocationController extends Controller
     public function edit(Location $location)
     {
         Gate::authorize('is-admin');
-        
+
         return view('location.edit', compact('location'));
     }
 
@@ -59,7 +58,7 @@ class LocationController extends Controller
         Gate::authorize('is-admin');
 
         $companyId = $location->company_id;
-        
+
         $validatedData = $request->validate([
             'name' => [
                 'required', 'string', 'max:255',
@@ -94,7 +93,7 @@ class LocationController extends Controller
         if ($hasActiveAssets) {
             return back()->with('error', 'Gagal dihapus! Masih ada Aset Aktif di lokasi ini.');
         }
-        
+
         $location->delete();
 
         return redirect()->route('location.index')->with('success', 'Data berhasil dihapus!');
@@ -103,7 +102,7 @@ class LocationController extends Controller
     public function importExcel(Request $request)
     {
         Gate::authorize('is-admin');
-        
+
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);
@@ -113,7 +112,7 @@ class LocationController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('location.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
         }
-        
+
         return redirect()->route('location.index')->with('success', 'Data aset berhasil diimpor!');
     }
 
@@ -122,18 +121,13 @@ class LocationController extends Controller
         $companyName = session('active_company_id');
         $companyName = Company::where('id', $companyName)->first();
         $fileName = 'Locations-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
-        
+
         return Excel::download(new LocationsExport, $fileName);
     }
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = Location::withoutGlobalScope(CompanyScope::class)
-                          ->select('locations.*');
-
-        $query->where('locations.company_id', $companyId);
+        $query = Location::select('locations.*');
 
         return DataTables::eloquent($query)
             ->addIndexColumn()

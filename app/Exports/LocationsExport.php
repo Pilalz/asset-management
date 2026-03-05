@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\Location;
-use App\Scopes\CompanyScope;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -15,8 +14,7 @@ class LocationsExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return Location::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', session('active_company_id'));
+        return Location::query();
     }
 
     public function headings(): array

@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
-use App\Scopes\CompanyScope;
-
 use Yajra\DataTables\Facades\DataTables;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Gate;
@@ -27,17 +25,9 @@ class TransferAssetController extends Controller
 {
     public function index()
     {
-        $companyId = session('active_company_id');
+        $locationsForFilter = Location::orderBy('name', 'asc')->get(['id', 'name']);
 
-        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', $companyId)
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
-
-        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', $companyId)
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
+        $departmentsForFilter = Department::orderBy('name', 'asc')->get(['id', 'name']);
 
         return view('transfer-asset.index', [
             'locationsForFilter' => $locationsForFilter,
@@ -54,18 +44,9 @@ class TransferAssetController extends Controller
     {
         Gate::authorize('is-form-maker');
 
-        $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', session('active_company_id'))
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
-        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', session('active_company_id'))
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
-        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', session('active_company_id'))
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
+        $assetNamesForFilter = AssetName::orderBy('name', 'asc')->get(['id', 'name']);
+        $locationsForFilter = Location::orderBy('name', 'asc')->get(['id', 'name']);
+        $departmentsForFilter = Department::orderBy('name', 'asc')->get(['id', 'name']);
 
         $departments = $departmentsForFilter;
         $locations = $locationsForFilter;
@@ -78,14 +59,14 @@ class TransferAssetController extends Controller
         $lastTransferAsset = TransferAsset::withTrashed()->latest('id')->first();
         $seq = 1;
 
-        if ($lastTransferAsset){
+        if ($lastTransferAsset) {
             $lastSeq = (int) substr($lastTransferAsset->form_no, -5);
             $seq = $lastSeq + 1;
         }
-        
+
         $formattedSeq = str_pad($seq, 5, '0', STR_PAD_LEFT);
         $form_no = Auth::user()->lastActiveCompany->alias ."/". now()->format('Y/m') ."/". $formattedSeq;
-        
+
         return view('transfer-asset.create', compact('locations', 'departments', 'form_no', 'users', 'assetNamesForFilter', 'locationsForFilter', 'departmentsForFilter'));
     }
 
@@ -170,7 +151,7 @@ class TransferAssetController extends Controller
                     foreach ($request->file('attachments') as $file) {
                         // Simpan file ke storage/app/public/attachments
                         $filePath = $file->store('attachments', 'public');
-                        
+
                         // Buat record di tabel attachments
                         $transferAsset->attachments()->create([
                             'file_path' => $filePath,
@@ -197,19 +178,10 @@ class TransferAssetController extends Controller
         Gate::authorize('is-form-maker');
 
         $activeCompany = session('active_company_id');
-        
-        $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', $activeCompany)
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
-        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', $activeCompany)
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
-        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', $activeCompany)
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
+
+        $assetNamesForFilter = AssetName::orderBy('name', 'asc')->get(['id', 'name']);
+        $locationsForFilter = Location::orderBy('name', 'asc')->get(['id', 'name']);
+        $departmentsForFilter = Department::orderBy('name', 'asc')->get(['id', 'name']);
 
         $departments = $departmentsForFilter;
         $locations = $locationsForFilter;
@@ -341,11 +313,11 @@ class TransferAssetController extends Controller
         try {
             $transfer_asset = TransferAsset::onlyTrashed()
                 ->with([
-                    'destinationLocation' => function($q) { 
-                        $q->withTrashed(); 
+                    'destinationLocation' => function ($q) {
+                        $q->withTrashed();
                     },
-                    'department'=> function($q) { 
-                        $q->withTrashed(); 
+                    'department' => function ($q) {
+                        $q->withTrashed();
                     },
                 ])
                 ->findOrFail($id);
@@ -359,7 +331,7 @@ class TransferAssetController extends Controller
                 return redirect()->route('transfer-asset.trash')
                     ->with('error', "Gagal Restore! Departemen '{$transfer_asset->department->name}' saat ini berstatus Terhapus (Deleted). Silahkan restore departemen tersebut terlebih dahulu di menu Master Data.");
             }
-            
+
             $transfer_asset->restore();
 
         } catch (\Exception $e) {
@@ -407,7 +379,7 @@ class TransferAssetController extends Controller
                 $userApprovalStatus = 'Anda tidak memiliki role di perusahaan ini.';
             }
         }
-        return view('transfer-asset.show', compact('transfer_asset', 'canApprove', 'userApprovalStatus',));
+        return view('transfer-asset.show', compact('transfer_asset', 'canApprove', 'userApprovalStatus', ));
     }
 
     public function approve(Request $request, TransferAsset $transfer_asset)
@@ -431,7 +403,7 @@ class TransferAssetController extends Controller
         ) {
             return back()->with('error', 'Saat ini bukan giliran Anda untuk melakukan approval.');
         }
-        
+
         try {
             DB::transaction(function () use ($transfer_asset, $user, $request, $nextApprover) {
                 // 1. Update baris approval milik user ini
@@ -441,7 +413,7 @@ class TransferAssetController extends Controller
                     ->when($transfer_asset->sequence === 1, function ($query) use ($nextApprover) {
                         return $query->where('approval_order', $nextApprover->approval_order);
                     })
-                    ->first();                    
+                    ->first();
 
                 if ($approval) {
                     $approval->update([
@@ -478,10 +450,10 @@ class TransferAssetController extends Controller
         $detailLines = $transfer_asset->detailTransfers()->get();
 
         if ($detailLines->isNotEmpty()) {
-            foreach ($detailLines as $detail){
+            foreach ($detailLines as $detail) {
 
                 $masterAsset = $detail->asset;
-                
+
                 if ($masterAsset) {
                     $masterAsset->update([
                         'location_id' => $transfer_asset->destination_loc_id,
@@ -496,22 +468,18 @@ class TransferAssetController extends Controller
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = TransferAsset::withoutGlobalScope(CompanyScope::class)
-                        ->with(['destinationLocation', 'department'])
-                        ->withCount(['detailTransfers'])
-                        ->where('company_id', $companyId);
+        $query = TransferAsset::with(['destinationLocation', 'department'])
+            ->withCount(['detailTransfers']);  
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('destination_location_name', function($transferAsset) {
+            ->addColumn('destination_location_name', function ($transferAsset) {
                 return $transferAsset->destinationLocation->name ?? '-';
             })
-            ->addColumn('department_name', function($transferAsset) {
+            ->addColumn('department_name', function ($transferAsset) {
                 return $transferAsset->department->name ?? '-';
             })
-            ->addColumn('asset_quantity', function($transferAsset) {
+            ->addColumn('asset_quantity', function ($transferAsset) {
                 return $transferAsset->detail_transfers_count . ' Asset(s)';
             })
             ->addColumn('action', function ($transfer_assets) {
@@ -522,13 +490,13 @@ class TransferAssetController extends Controller
                     'deleteUrl' => route('transfer-asset.destroy', $transfer_assets->id)
                 ])->render();
             })
-            ->filterColumn('destination_location_name', function($query, $keyword) {
-                $query->whereHas('destinationLocation', function($q) use ($keyword) {
+            ->filterColumn('destination_location_name', function ($query, $keyword) {
+                $query->whereHas('destinationLocation', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
-            ->filterColumn('department_name', function($query, $keyword) {
-                $query->whereHas('department', function($q) use ($keyword) {
+            ->filterColumn('department_name', function ($query, $keyword) {
+                $query->whereHas('department', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
@@ -564,23 +532,19 @@ class TransferAssetController extends Controller
 
     public function datatablesCanceled(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = TransferAsset::withoutGlobalScope(CompanyScope::class)
-                        ->with(['destinationLocation', 'department'])
-                        ->withCount('detailTransfers')
-                        ->onlyTrashed()
-                        ->where('company_id', $companyId);
+        $query = TransferAsset::with(['destinationLocation', 'department'])
+            ->withCount('detailTransfers')
+            ->onlyTrashed();
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('destination_location_name', function($transferAsset) {
+            ->addColumn('destination_location_name', function ($transferAsset) {
                 return $transferAsset->destinationLocation->name ?? '-';
             })
-            ->addColumn('department_name', function($transferAsset) {
+            ->addColumn('department_name', function ($transferAsset) {
                 return $transferAsset->department->name ?? '-';
             })
-            ->addColumn('asset_quantity', function($transferAsset) {
+            ->addColumn('asset_quantity', function ($transferAsset) {
                 return $transferAsset->detail_transfers_count . ' Asset(s)';
             })
             ->addColumn('action', function ($transfer_assets) {
@@ -589,13 +553,13 @@ class TransferAssetController extends Controller
                     'restoreUrl' => route('transfer-asset.restore', $transfer_assets->id),
                 ])->render();
             })
-            ->filterColumn('destination_location_name', function($query, $keyword) {
-                $query->whereHas('destinationLocation', function($q) use ($keyword) {
+            ->filterColumn('destination_location_name', function ($query, $keyword) {
+                $query->whereHas('destinationLocation', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
-            ->filterColumn('department_name', function($query, $keyword) {
-                $query->whereHas('department', function($q) use ($keyword) {
+            ->filterColumn('department_name', function ($query, $keyword) {
+                $query->whereHas('department', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
             })
@@ -620,10 +584,10 @@ class TransferAssetController extends Controller
     public function exportPdf(TransferAsset $transfer_asset)
     {
         $transfer_asset->load(
-            'department', 
-            'destinationLocation', 
-            'detailTransfers', 
-            'approvals.user', 
+            'department',
+            'destinationLocation',
+            'detailTransfers',
+            'approvals.user',
             'company'
         );
 
@@ -632,7 +596,7 @@ class TransferAssetController extends Controller
         $pdf->setPaper('a4', 'portrait');
 
         $safeFilename = str_replace('/', '-', $transfer_asset->form_no);
-        
+
         return $pdf->stream('Transfer-Asset-' . $safeFilename  . '.pdf');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Company;
+use Illuminate\Support\Facades\Cache;
 
 if (!function_exists('format_currency')) {
     /**
@@ -29,12 +30,11 @@ if (!function_exists('format_currency')) {
 
         if ($currencyCode === 'IDR') {
             $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 0);
-        }
-        elseif ($currencyCode === 'USD') {
+        } elseif ($currencyCode === 'USD') {
             $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
             $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 0);
         }
-        
+
         return $formatter->formatCurrency($amount, $currencyCode);
     }
 }

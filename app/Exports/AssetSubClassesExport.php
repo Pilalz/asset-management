@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\AssetSubClass;
-use App\Scopes\CompanyScope;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -15,9 +14,7 @@ class AssetSubClassesExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return AssetSubClass::withoutGlobalScope(CompanyScope::class)
-            ->with(['assetClass'])
-            ->where('company_id', session('active_company_id'));
+        return AssetSubClass::with(['assetClass']);
     }
 
     public function headings(): array

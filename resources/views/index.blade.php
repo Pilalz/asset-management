@@ -67,8 +67,10 @@
                         </p>
                     </div>
                     <div class="hidden md:block z-10">
-                        <span class="inline-flex items-center justify-center p-3 bg-indigo-50 text-indigo-600 rounded-full dark:bg-indigo-900/30 dark:text-indigo-300">
-                            <img src="{{ Storage::url($activeCompany->logo) }}" alt="{{ $activeCompany->name }}" class="h-14 w-auto">
+                        <span
+                            class="inline-flex items-center justify-center p-3 bg-indigo-50 text-indigo-600 rounded-full dark:bg-indigo-900/30 dark:text-indigo-300">
+                            <img src="{{ Storage::url($activeCompany->logo) }}" alt="{{ $activeCompany->name }}"
+                                class="h-14 w-auto">
                         </span>
                     </div>
                 </div>
@@ -165,23 +167,23 @@
 
             {{-- Total Value --}}
             <!-- <div
-                class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-slate-200 dark:border-gray-700 p-5 transition-transform hover:-translate-y-1 duration-300">
-                <div class="flex items-center">
-                    <div
-                        class="flex-shrink-0 p-3 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Value</p>
-                        <h3 class="text-xl font-bold text-slate-800 dark:text-white mt-1">{{ $totalAssetPrice > 0 ? format_currency($totalAssetPrice) : 'Rp 0' }}</h3>
-                    </div>
-                </div>
-            </div> -->
+                                                                        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-slate-200 dark:border-gray-700 p-5 transition-transform hover:-translate-y-1 duration-300">
+                                                                        <div class="flex items-center">
+                                                                            <div
+                                                                                class="flex-shrink-0 p-3 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                                                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                                                    xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                                                                    </path>
+                                                                                </svg>
+                                                                            </div>
+                                                                            <div class="ml-4">
+                                                                                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Value</p>
+                                                                                <h3 class="text-xl font-bold text-slate-800 dark:text-white mt-1">{{ $totalAssetPrice > 0 ? format_currency($totalAssetPrice) : 'Rp 0' }}</h3>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div> -->
         </div>
 
         {{-- Charts Section --}}
@@ -198,7 +200,17 @@
                     </svg>
                     Assets by Category
                 </h2>
-                <div id="chart"></div>
+                @if(empty($assetClassData['series']) || array_sum($assetClassData['series']) == 0)
+                    <div class="flex flex-col items-center justify-center h-[380px] text-slate-400 dark:text-slate-500">
+                        <svg class="w-12 h-12 mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        <p class="text-sm font-medium">No data available for Category</p>
+                    </div>
+                @else
+                    <div id="chart"></div>
+                @endif
             </div>
 
             {{-- Department Chart --}}
@@ -212,7 +224,17 @@
                     </svg>
                     Assets by Department
                 </h2>
-                <div id="chart3"></div>
+                @if(empty($assetDeptData['series']) || array_sum($assetDeptData['series']) == 0)
+                    <div class="flex flex-col items-center justify-center h-[350px] text-slate-400 dark:text-slate-500">
+                        <svg class="w-12 h-12 mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        <p class="text-sm font-medium">No data available for Department</p>
+                    </div>
+                @else
+                    <div id="chart3"></div>
+                @endif
             </div>
 
             {{-- Location Chart --}}
@@ -227,7 +249,17 @@
                     </svg>
                     Assets by Location
                 </h2>
-                <div id="chart2"></div>
+                @if(empty($assetLocData['series']) || array_sum($assetLocData['series']) == 0)
+                    <div class="flex flex-col items-center justify-center h-[350px] text-slate-400 dark:text-slate-500">
+                        <svg class="w-12 h-12 mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        <p class="text-sm font-medium">No data available for Location</p>
+                    </div>
+                @else
+                    <div id="chart2"></div>
+                @endif
             </div>
         </div>
 
@@ -238,11 +270,13 @@
                 <div class="flex items-center justify-between mb-4">
                     <h5 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
                         <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                         </svg>
                         Asset Remark
                     </h5>
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                    <span
+                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
                         {{ $assetRemaksCount }} items
                     </span>
                 </div>
@@ -250,10 +284,11 @@
                 {{-- List --}}
                 <div class="overflow-y-auto max-h-72 pr-1">
                     @forelse($assetRemaks as $remark)
-                        <div class="flex items-start gap-3 py-3 {{ !$loop->last ? 'border-b border-slate-100 dark:border-gray-700' : '' }}">
+                                <div
+                                    class="flex items-start gap-3 py-3 {{ !$loop->last ? 'border-b border-slate-100 dark:border-gray-700' : '' }}">
                                     {{-- Type Badge --}}
                                     <span class="shrink-0 mt-0.5 inline-flex items-center px-2 py-0.5 rounded text-xs font-bold
-                                                        {{ $remark->asset_type === 'FA'
+                                                                                                                                                                                                                                                                                        {{ $remark->asset_type === 'FA'
                         ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
                         : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300' }}">
                                         {{ $remark->asset_type }}
@@ -304,19 +339,37 @@
                 {{-- Mini Summary Totals --}}
                 <div class="grid grid-cols-3 gap-4 mb-5">
                     <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4">
-                        <p class="text-xs font-medium text-indigo-500 dark:text-indigo-400 uppercase tracking-wide">Total Commercial</p>
+                        <p class="text-xs font-medium text-indigo-500 dark:text-indigo-400 uppercase tracking-wide">Total
+                            Commercial</p>
                         <p class="text-lg font-bold text-indigo-700 dark:text-indigo-300 mt-1" id="totalCommercial">—</p>
                     </div>
                     <div class="bg-teal-50 dark:bg-teal-900/20 rounded-lg p-4">
-                        <p class="text-xs font-medium text-teal-600 dark:text-teal-400 uppercase tracking-wide">Total Fiscal</p>
+                        <p class="text-xs font-medium text-teal-600 dark:text-teal-400 uppercase tracking-wide">Total Fiscal
+                        </p>
                         <p class="text-lg font-bold text-teal-700 dark:text-teal-300 mt-1" id="totalFiscal">—</p>
                     </div>
                     <div class="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4">
-                        <p class="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wide">Assets This Month</p>
-                        <p class="text-lg font-bold text-amber-700 dark:text-amber-300 mt-1">{{ $currentMonthDepreCount }} assets</p>
+                        <p class="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wide">Assets
+                            This Month</p>
+                        <p class="text-lg font-bold text-amber-700 dark:text-amber-300 mt-1">{{ $currentMonthDepreCount }}
+                            assets</p>
                     </div>
                 </div>
 
+                <!-- Range Selector Buttons -->
+                <div class="flex items-center gap-1 mb-3" id="depre-range-btns">
+                    <span class="text-xs text-slate-400 dark:text-slate-500 mr-2 font-medium">Rentang:</span>
+                    <button data-range="1"
+                        class="depre-range-btn px-2.5 py-1 text-xs rounded-md font-semibold border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 transition-all">1M</button>
+                    <button data-range="3"
+                        class="depre-range-btn px-2.5 py-1 text-xs rounded-md font-semibold border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 transition-all">3M</button>
+                    <button data-range="6"
+                        class="depre-range-btn px-2.5 py-1 text-xs rounded-md font-semibold border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 transition-all">6M</button>
+                    <button data-range="12"
+                        class="depre-range-btn active-range px-2.5 py-1 text-xs rounded-md font-semibold border border-indigo-400 bg-indigo-500 text-white transition-all">1Y</button>
+                    <button data-range="0"
+                        class="depre-range-btn px-2.5 py-1 text-xs rounded-md font-semibold border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 transition-all">All</button>
+                </div>
                 <div id="line-chart"></div>
             </div>
         </div>
@@ -325,54 +378,60 @@
     </div>
 
     @push('scripts')
-        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.41.0/dist/apexcharts.min.js"></script>
         <script>
             const isDark = document.documentElement.classList.contains('dark');
             const chartFont = 'Inter, sans-serif';
 
             // Chart 1: Assets by Category
-            new ApexCharts(document.querySelector("#chart"), {
-                chart: { type: 'donut', height: 380, fontFamily: chartFont, toolbar: { show: false }, background: 'transparent' },
-                theme: { mode: isDark ? 'dark' : 'light' },
-                series: @json($assetClassData['series']),
-                labels: @json($assetClassData['labels']),
-                colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#06b6d4'],
-                legend: { position: 'left', fontFamily: chartFont, fontSize: '13px', offsetY: 0, itemMargin: { vertical: 4 } },
-                plotOptions: {
-                    pie: {
-                        donut: {
-                            size: '70%',
-                            labels: {
-                                show: true,
-                                total: { show: true, showAlways: true, label: 'Total', fontSize: '16px', fontFamily: chartFont, fontWeight: 600, color: '#64748b' }
+            if (document.querySelector("#chart")) {
+                new ApexCharts(document.querySelector("#chart"), {
+                    chart: { type: 'donut', height: 380, fontFamily: chartFont, toolbar: { show: false }, background: 'transparent' },
+                    theme: { mode: isDark ? 'dark' : 'light' },
+                    series: @json($assetClassData['series']),
+                    labels: @json($assetClassData['labels']),
+                    colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#06b6d4'],
+                    legend: { position: 'left', fontFamily: chartFont, fontSize: '13px', offsetY: 0, itemMargin: { vertical: 4 } },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                size: '70%',
+                                labels: {
+                                    show: true,
+                                    total: { show: true, showAlways: true, label: 'Total', fontSize: '16px', fontFamily: chartFont, fontWeight: 600, color: '#64748b' }
+                                }
                             }
                         }
-                    }
-                },
-                tooltip: { style: { fontFamily: chartFont } }
-            }).render();
+                    },
+                    tooltip: { style: { fontFamily: chartFont } }
+                }).render();
+            }
 
             // Chart 2: Assets by Location
-            new ApexCharts(document.querySelector("#chart2"), {
-                chart: { type: 'pie', height: 350, fontFamily: chartFont, toolbar: { show: false }, background: 'transparent' },
-                theme: { mode: isDark ? 'dark' : 'light' },
-                series: @json($assetLocData['series']),
-                labels: @json($assetLocData['labels']),
-                colors: ['#3b82f6', '#0ea5e9', '#06b6d4', '#14b8a6', '#10b981'],
-                legend: { position: 'bottom', fontFamily: chartFont, fontSize: '12px' },
-                tooltip: { style: { fontFamily: chartFont } }
-            }).render();
+            if (document.querySelector("#chart2")) {
+                new ApexCharts(document.querySelector("#chart2"), {
+                    chart: { type: 'pie', height: 350, fontFamily: chartFont, toolbar: { show: false }, background: 'transparent' },
+                    theme: { mode: isDark ? 'dark' : 'light' },
+                    series: @json($assetLocData['series']),
+                    labels: @json($assetLocData['labels']),
+                    colors: ['#3b82f6', '#0ea5e9', '#06b6d4', '#14b8a6', '#10b981'],
+                    legend: { position: 'bottom', fontFamily: chartFont, fontSize: '12px' },
+                    tooltip: { style: { fontFamily: chartFont } }
+                }).render();
+            }
 
             // Chart 3: Assets by Department (Bar)
-            new ApexCharts(document.querySelector("#chart3"), {
-                chart: { type: 'pie', height: 350, fontFamily: chartFont, toolbar: { show: false }, background: 'transparent' },
-                theme: { mode: isDark ? 'dark' : 'light' },
-                series: @json($assetDeptData['series']),
-                labels: @json($assetDeptData['labels']),
-                colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6'],
-                legend: { position: 'bottom', fontFamily: chartFont, fontSize: '12px' },
-                tooltip: { style: { fontFamily: chartFont } }
-            }).render();
+            if (document.querySelector("#chart3")) {
+                new ApexCharts(document.querySelector("#chart3"), {
+                    chart: { type: 'pie', height: 350, fontFamily: chartFont, toolbar: { show: false }, background: 'transparent' },
+                    theme: { mode: isDark ? 'dark' : 'light' },
+                    series: @json($assetDeptData['series']),
+                    labels: @json($assetDeptData['labels']),
+                    colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6'],
+                    legend: { position: 'bottom', fontFamily: chartFont, fontSize: '12px' },
+                    tooltip: { style: { fontFamily: chartFont } }
+                }).render();
+            }
 
             //Depre Chart Data
             const chartLabels = @json($chartLabels);
@@ -380,6 +439,12 @@
             const fiscalSumData = @json($fiscalSumData);
             const commercialCountData = @json($commercialCountData);
             const fiscalCountData = @json($fiscalCountData);
+
+            // Filter out any invalid labels and map into perfect 1st day of month UNIX timestamps
+            const parsedDates = chartLabels.filter(label => label).map(label => {
+                const parts = label.split('-'); // Now format is Y-m-d
+                return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1).getTime();
+            });
 
             // Depreciation Area Chart
             const commercialTotal = commercialSumData.reduce((a, b) => a + Number(b), 0);
@@ -393,90 +458,141 @@
             document.getElementById('totalCommercial').textContent = formatCurrency(commercialTotal);
             document.getElementById('totalFiscal').textContent = formatCurrency(fiscalTotal);
 
+            // Build clean [timestamp, value] pairs — JSON.stringify detaches from any proxy/reactive refs
+            const commercialSeriesData = JSON.parse(JSON.stringify(
+                parsedDates.map((ts, i) => [ts, Number(commercialSumData[i])])
+            ));
+            const fiscalSeriesData = JSON.parse(JSON.stringify(
+                parsedDates.map((ts, i) => [ts, Number(fiscalSumData[i])])
+            ));
+            const countSeriesData = JSON.parse(JSON.stringify(
+                parsedDates.map((ts, i) => [ts, Number(commercialCountData[i])])
+            ));
+            const countSeriesData2 = JSON.parse(JSON.stringify(
+                parsedDates.map((ts, i) => [ts, Number(fiscalCountData[i])])
+            ));
+
             if (document.getElementById('line-chart') && typeof ApexCharts !== 'undefined') {
                 const depreChart = new ApexCharts(document.getElementById('line-chart'), {
                     chart: {
+                        id: 'main-depre-chart',
                         type: 'line',
-                        height: 340,
+                        height: 320,
                         fontFamily: chartFont,
-                        toolbar: { show: false },
                         background: 'transparent',
-                        zoom: { enabled: false }
+                        toolbar: {
+                            show: true,
+                            autoSelected: 'zoom',
+                            tools: {
+                                download: true,
+                                selection: false,
+                                zoom: true,
+                                zoomin: true,
+                                zoomout: true,
+                                pan: true,
+                                reset: true
+                            }
+                        },
+                        zoom: { enabled: true, type: 'x' }
                     },
                     theme: { mode: isDark ? 'dark' : 'light' },
                     series: [
-                        {
-                            name: 'Commercial Depre',
-                            type: 'area',
-                            data: commercialSumData.map(Number),
-                            yAxisIndex: 0
-                        },
-                        {
-                            name: 'Fiscal Depre',
-                            type: 'area',
-                            data: fiscalSumData.map(Number),
-                            yAxisIndex: 0
-                        },
-                        {
-                            name: 'Asset Count',
-                            type: 'line',
-                            data: commercialCountData.map(Number),
-                            yAxisIndex: 1
-                        }
+                        { name: 'Commercial Depre', data: commercialSeriesData },
+                        { name: 'Fiscal Depre', data: fiscalSeriesData },
+                        { name: 'Commercial Assets', data: countSeriesData },
+                        { name: 'Fiscal Assets', data: countSeriesData2 }
                     ],
-                    colors: ['#6366f1', '#14b8a6', '#f59e0b'],
+                    colors: ['#6366f1', '#14b8a6', '#f59e0b', '#f59e0b'],
                     fill: {
-                        type: ['gradient', 'gradient', 'solid'],
-                        gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.02, stops: [0, 95, 100] }
+                        type: 'gradient',
+                        gradient: {
+                            shade: 'dark',
+                            type: "horizontal",
+                            shadeIntensity: 0.5,
+                            gradientToColors: undefined,
+                            inverseColors: true,
+                            opacityFrom: 1,
+                            opacityTo: 1,
+                            stops: [0, 50, 100],
+                            colorStops: []
+                        },
                     },
-                    stroke: {
-                        curve: 'smooth',
-                        width: [2.5, 2.5, 2.5],
-                        dashArray: [0, 0, 5]
-                    },
+                    stroke: { curve: 'smooth', width: [2.5, 2.5, 0, 0] },
                     dataLabels: { enabled: false },
                     xaxis: {
-                        categories: chartLabels,
-                        labels: { style: { fontSize: '11px', fontFamily: chartFont }, rotate: -30 },
+                        type: 'datetime',
+                        labels: {
+                            style: { fontSize: '11px', fontFamily: chartFont },
+                            datetimeFormatter: { year: 'yyyy', month: 'MMM \'yy' }
+                        },
                         axisBorder: { show: false },
                         axisTicks: { show: false }
                     },
-                    yaxis: [
-                        {
-                            seriesName: 'Commercial Depre',
-                            title: { text: 'Depreciation (Rp)', style: { fontSize: '11px', fontFamily: chartFont, color: '#6366f1' } },
-                            labels: { style: { fontSize: '11px', fontFamily: chartFont }, formatter: formatCurrency }
-                        },
-                        {
-                            seriesName: 'Fiscal Depre',
-                            show: false
-                        },
-                        {
-                            seriesName: 'Asset Count',
-                            opposite: true,
-                            title: { text: 'Asset Count', style: { fontSize: '11px', fontFamily: chartFont, color: '#f59e0b' } },
-                            labels: { style: { fontSize: '11px', fontFamily: chartFont }, formatter: (v) => Math.round(v) }
+                    yaxis: {
+                        labels: {
+                            style: { fontSize: '11px', fontFamily: chartFont },
+                            formatter: formatCurrency
                         }
-                    ],
+                    },
                     grid: {
                         strokeDashArray: 4,
                         borderColor: isDark ? '#374151' : '#f1f5f9',
-                        padding: { left: 8, right: 8, top: -10 }
+                        padding: { left: 8, right: 16, top: -10 }
                     },
-                    legend: { position: 'top', horizontalAlign: 'right', fontFamily: chartFont, fontSize: '12px' },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'left',
+                        fontFamily: chartFont,
+                        fontSize: '12px',
+                        showForSingleSeries: true,
+                        customLegendItems: ['Commercial Depre', 'Fiscal Depre']
+                    },
                     tooltip: {
                         shared: true,
                         followCursor: true,
                         style: { fontFamily: chartFont },
+                        x: { format: 'MMM yyyy' },
                         y: [
                             { formatter: formatCurrency },
                             { formatter: formatCurrency },
+                            { formatter: (v) => Math.round(v) + ' assets' },
                             { formatter: (v) => Math.round(v) + ' assets' }
                         ]
                     },
-                    markers: { size: [0, 0, 4], strokeWidth: 0, hover: { size: 6 } }
+                    markers: { size: 0, hover: { size: 5 } }
                 });
                 depreChart.render();
+
+                // --- Range Selector Buttons (using zoomX — official API, most stable) ---
+                const maxDate = parsedDates.length > 0 ? parsedDates[parsedDates.length - 1] : undefined;
+
+                function setDepreRange(months) {
+                    if (!maxDate) return;
+                    let minDate;
+                    if (months === 0) {
+                        minDate = parsedDates.length > 0 ? parsedDates[0] : maxDate;
+                    } else {
+                        const d = new Date(maxDate);
+                        d.setMonth(d.getMonth() - months);
+                        minDate = Math.max(d.getTime(), parsedDates.length > 0 ? parsedDates[0] : d.getTime());
+                    }
+                    ApexCharts.exec('main-depre-chart', 'zoomX', minDate, maxDate);
+                }
+
+                document.querySelectorAll('.depre-range-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        setDepreRange(parseInt(this.dataset.range));
+                        document.querySelectorAll('.depre-range-btn').forEach(b => {
+                            b.classList.remove('bg-indigo-500', 'text-white', 'border-indigo-400');
+                            b.classList.add('border-slate-200', 'dark:border-slate-600', 'text-slate-500', 'dark:text-slate-400');
+                        });
+                        this.classList.add('bg-indigo-500', 'text-white', 'border-indigo-400');
+                        this.classList.remove('border-slate-200', 'dark:border-slate-600', 'text-slate-500', 'dark:text-slate-400');
+                    });
+                });
+
+                // Default: show last 12 months
+                setDepreRange(12);
             }
         </script>
 

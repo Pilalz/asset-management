@@ -7,7 +7,6 @@ use App\Models\AssetSubClass;
 use App\Models\AssetName;
 use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use App\Imports\AssetNamesImport;
 use App\Exports\AssetNamesExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -20,12 +19,7 @@ class AssetNameController extends Controller
 {
     public function index()
     {
-        $companyId = session('active_company_id');
-
-        $assetSubClassesForFilter = AssetSubClass::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', $companyId)
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
+        $assetSubClassesForFilter = AssetSubClass::orderBy('name', 'asc')->get(['id', 'name']);
 
         return view('asset-name.index', [
             'assetSubClassesForFilter' => $assetSubClassesForFilter,
@@ -60,9 +54,9 @@ class AssetNameController extends Controller
                 'required', 'string', 'max:255',
                 Rule::unique('asset_names')->where('company_id', $companyId)
             ],
-            'commercial'  => 'required',
-            'fiscal'  => 'required',
-            'company_id'  => 'required',
+            'commercial' => 'required',
+            'fiscal' => 'required',
+            'company_id' => 'required',
         ]);
 
         AssetName::create($request->all());
@@ -73,7 +67,7 @@ class AssetNameController extends Controller
     public function edit(AssetName $asset_name)
     {
         Gate::authorize('is-admin');
-        
+
         $assetsubclasses = AssetSubClass::with('assetClass')->get();
 
         return view('asset-name.edit', compact('asset_name', 'assetsubclasses'));
@@ -84,7 +78,7 @@ class AssetNameController extends Controller
         Gate::authorize('is-admin');
 
         $companyId = $asset_name->company_id;
-        
+
         $validatedData = $request->validate([
             'sub_class_id' => [
                 'required',
@@ -98,8 +92,8 @@ class AssetNameController extends Controller
                 'required', 'string', 'max:255',
                 Rule::unique('asset_names')->ignore($asset_name->id)->where('company_id', $companyId)
             ],
-            'commercial'  => 'required',
-            'fiscal'  => 'required',
+            'commercial' => 'required',
+            'fiscal' => 'required',
         ]);
 
         $dataToUpdate = $validatedData;
@@ -122,7 +116,7 @@ class AssetNameController extends Controller
         }
 
         if ($asset_name->detailRegisters()->whereHas('registerAsset', function ($query) {
-            $query->where('status', '!=', 'Approved');
+                $query->where('status', '!=', 'Approved');
         })->exists()) {
             return back()->with('error', 'Gagal dihapus! Grouping Asset Name ini masih digunakan dalam Detail Register.');
         }
@@ -135,7 +129,7 @@ class AssetNameController extends Controller
     public function importExcel(Request $request)
     {
         Gate::authorize('is-admin');
-        
+
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:10240',
         ]);
@@ -145,17 +139,17 @@ class AssetNameController extends Controller
 
         if ($request->hasFile('excel_file')) {
             $file = $request->file('excel_file');
-        
+
             $fileNameOnly = time() . '_' . $file->getClientOriginalName();
 
-            $path = $file->storeAs('imports', $fileNameOnly, 'local'); 
+            $path = $file->storeAs('imports', $fileNameOnly, 'local');
 
             if (!$path) {
                 return response()->json(['message' => 'Gagal menyimpan file.'], 500);
             }
 
             $fullPath = storage_path('app/private/' . $path);
-            
+
             $totalRows = 1000;
 
             Cache::put($jobId, ['status' => 'running', 'progress' => 0, 'processed_rows' => 0], now()->addHour());
@@ -190,19 +184,14 @@ class AssetNameController extends Controller
         $companyName = session('active_company_id');
         $companyName = Company::where('id', $companyName)->first();
         $fileName = 'AssetName-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
-        
+
         return Excel::download(new AssetNamesExport, $fileName);
     }
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = AssetName::withoutGlobalScope(CompanyScope::class)
-                          ->with('assetSubClass')
-                          ->select('asset_names.*');
-
-        $query->where('asset_names.company_id', $companyId);
+        $query = AssetName::with('assetSubClass')
+            ->select('asset_names.*');
 
         return DataTables::eloquent($query)
             ->addIndexColumn()

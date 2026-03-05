@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Department;
 use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use App\Imports\DepartmentsImport;
 use App\Exports\DepartmentsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -24,7 +23,7 @@ class DepartmentController extends Controller
     public function create()
     {
         Gate::authorize('is-admin');
-        
+
         return view('department.create');
     }
 
@@ -52,7 +51,7 @@ class DepartmentController extends Controller
     public function edit(Department $department)
     {
         Gate::authorize('is-admin');
-        
+
         return view('department.edit', compact('department'));
     }
 
@@ -80,7 +79,7 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         Gate::authorize('is-admin');
-        
+
         if ($department->registerAsset()->where('register_assets.status', '!=', 'Approved')->exists()) {
             return back()->with('error', 'Gagal dihapus! Department ini masih digunakan dalam transaksi Register Asset.');
         }
@@ -109,7 +108,7 @@ class DepartmentController extends Controller
     public function importExcel(Request $request)
     {
         Gate::authorize('is-admin');
-        
+
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);
@@ -119,7 +118,7 @@ class DepartmentController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('department.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
         }
-        
+
         return redirect()->route('department.index')->with('success', 'Data aset berhasil diimpor!');
     }
 
@@ -128,18 +127,13 @@ class DepartmentController extends Controller
         $companyName = session('active_company_id');
         $companyName = Company::where('id', $companyName)->first();
         $fileName = 'Departments-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
-        
+
         return Excel::download(new DepartmentsExport, $fileName);
     }
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = Department::withoutGlobalScope(CompanyScope::class)
-                          ->select('departments.*');
-
-        $query->where('departments.company_id', $companyId);
+        $query = Department::select('departments.*');
 
         return DataTables::eloquent($query)
             ->addIndexColumn()

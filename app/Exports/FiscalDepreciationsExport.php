@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\Asset;
-use App\Scopes\CompanyScope;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -48,24 +47,22 @@ class FiscalDepreciationsExport implements FromQuery, WithHeadings, WithMapping,
         $startDate = Carbon::create($this->startYear, 1, 1)->startOfMonth();
         $endDate = Carbon::create($this->endYear, 12, 1)->endOfMonth();
 
-        return Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', session('active_company_id'))
-            ->where('status', '!=', 'Onboard')
+        return Asset::where('status', '!=', 'Onboard')
             ->where('status', '!=', 'Disposal')
             ->where('status', '!=', 'Sold')
             ->where('asset_type', 'FA')
             // --- FILTER: Hanya yang PUNYA depresiasi FISCAL di tahun ini ---
             ->whereHas('depreciations', function ($query) use ($startDate, $endDate) {
                 $query->whereBetween('depre_date', [$startDate, $endDate])
-                      ->where('type', 'fiscal'); // <--- INI BEDANYA (Fiscal)
+                    ->where('type', 'fiscal'); // <--- INI BEDANYA (Fiscal)
             })
             // --- EAGER LOAD: Ambil data depresiasi FISCAL ---
             ->with([
-                'assetName', 
+                'assetName',
                 'depreciations' => function ($query) use ($startDate, $endDate) {
                     $query->whereBetween('depre_date', [$startDate, $endDate])
-                          ->where('type', 'fiscal') // <--- INI BEDANYA (Fiscal)
-                          ->orderBy('depre_date');
+                        ->where('type', 'fiscal') // <--- INI BEDANYA (Fiscal)
+                        ->orderBy('depre_date');
                 }
             ]);
     }
@@ -122,34 +119,34 @@ class FiscalDepreciationsExport implements FromQuery, WithHeadings, WithMapping,
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
+            AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet;
                 $monthsCount = count($this->months);
-                
+
                 // 1. Header Utama (Baris 1) - Merge Cell per Bulan
                 $colIndex = 4; // Mulai dari Kolom D
-                
+    
                 foreach ($this->months as $label) {
                     $startCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex);
                     $endCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex + 2);
-                    
+
                     // Merge 3 cell jadi 1
                     $sheet->mergeCells("{$startCol}1:{$endCol}1");
-                    
+
                     // Isi Nama Bulan
                     $sheet->setCellValue("{$startCol}1", $label);
-                    
+
                     // Style Header Bulan
                     $sheet->getStyle("{$startCol}1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                     $sheet->getStyle("{$startCol}1")->getFont()->setBold(true);
-                    
+
                     $colIndex += 3;
                 }
 
                 // 2. Style Header Baris 2 (Monthly, Accum, Book)
                 $lastColIndex = 3 + ($monthsCount * 3);
                 $lastColStr = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($lastColIndex);
-                
+
                 $sheet->getStyle("A2:{$lastColStr}2")->getFont()->setBold(true);
                 $sheet->getStyle("A2:{$lastColStr}2")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 

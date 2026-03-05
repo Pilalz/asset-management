@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\AssetClass;
 use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use App\Imports\AssetClassesImport;
 use App\Exports\AssetClassesExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -81,7 +80,7 @@ class AssetClassController extends Controller
                 'max:255',
                 Rule::unique('asset_classes')->ignore($asset_class->id)->where('company_id', $companyId)
             ],
-            'obj_acc' => 'required|string|max:255',          
+            'obj_acc' => 'required|string|max:255',
         ]);
 
         $dataToUpdate = $validatedData;
@@ -107,7 +106,7 @@ class AssetClassController extends Controller
     public function importExcel(Request $request)
     {
         Gate::authorize('is-admin');
-        
+
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);
@@ -126,18 +125,13 @@ class AssetClassController extends Controller
         $companyName = session('active_company_id');
         $companyName = Company::where('id', $companyName)->first();
         $fileName = 'AssetClasses-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
-        
+
         return Excel::download(new AssetClassesExport, $fileName);
     }
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = AssetClass::withoutGlobalScope(CompanyScope::class)
-                          ->select('asset_classes.*');
-
-        $query->where('asset_classes.company_id', $companyId);
+        $query = AssetClass::select('asset_classes.*');
 
         return DataTables::eloquent($query)
             ->addIndexColumn()

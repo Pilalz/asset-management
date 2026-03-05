@@ -69,11 +69,11 @@ function updateBulkActionButtons() {
     downloadText.text(`Download Selected ${countText}`);
 
     if (count > 0) {
-        printBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
-        downloadBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+        printBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed pointer-events-none disabled');
+        downloadBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed pointer-events-none disabled');
     } else {
-        printBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
-        downloadBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+        printBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed pointer-events-none disabled');
+        downloadBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed pointer-events-none disabled');
     }
 
     // Update hidden inputs for both print and download

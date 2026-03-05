@@ -7,7 +7,6 @@ use App\Models\AssetClass;
 use App\Models\AssetSubClass;
 use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use App\Imports\AssetSubClassesImport;
 use App\Exports\AssetSubClassesExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,12 +17,7 @@ class AssetSubClassController extends Controller
 {
     public function index()
     {
-        $companyId = session('active_company_id');
-
-        $assetclassesForFilter = AssetClass::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', $companyId)
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
+        $assetclassesForFilter = AssetClass::orderBy('name', 'asc')->get(['id', 'name']);
 
         return view('asset-sub-class.index', [
             'assetclassesForFilter' => $assetclassesForFilter,
@@ -51,13 +45,13 @@ class AssetSubClassController extends Controller
                 'max:255',
                 Rule::unique('asset_sub_classes')->where('company_id', $companyId)
             ],
-            'class_id'  => [
+            'class_id' => [
                 'required',
                 'string',
                 'max:255',
                 Rule::exists('asset_classes', 'id')->where('company_id', $companyId)
             ],
-            'company_id'  => 'required',
+            'company_id' => 'required',
         ]);
 
         AssetSubClass::create($request->all());
@@ -87,7 +81,7 @@ class AssetSubClassController extends Controller
                 'max:255',
                 Rule::unique('asset_sub_classes')->ignore($asset_sub_class->id)->where('company_id', $companyId)
             ],
-            'class_id'  => [
+            'class_id' => [
                 'required',
                 'string',
                 'max:255',
@@ -118,7 +112,7 @@ class AssetSubClassController extends Controller
     public function importExcel(Request $request)
     {
         Gate::authorize('is-admin');
-        
+
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,xls|max:5120',
         ]);
@@ -137,19 +131,14 @@ class AssetSubClassController extends Controller
         $companyName = session('active_company_id');
         $companyName = Company::where('id', $companyName)->first();
         $fileName = 'AssetSubClasses-' . $companyName->name .'-'. now()->format('Y-m-d') . '.xlsx';
-        
+
         return Excel::download(new AssetSubClassesExport, $fileName);
     }
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = AssetSubClass::withoutGlobalScope(CompanyScope::class)
-                          ->with('assetClass')
-                          ->select('asset_sub_classes.*');
-
-        $query->where('asset_sub_classes.company_id', $companyId);
+        $query = AssetSubClass::with('assetClass')
+            ->select('asset_sub_classes.*');
 
         return DataTables::eloquent($query)
             ->addIndexColumn()

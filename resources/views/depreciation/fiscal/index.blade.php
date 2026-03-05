@@ -55,7 +55,7 @@
 
     @can('is-admin')
         <div class="flex">
-            <a href="{{ route('fiscal.export', ['start' => $selectedStartYear, 'end' => $selectedEndYear]) }}" type="button" class="inline-flex items-center justify-center text-indigo-700 bg-indigo-50 border border-indigo-200 focus:outline-none hover:bg-indigo-100 hover:text-indigo-800 focus:ring-4 focus:ring-indigo-100 font-medium rounded-xl text-sm px-4 py-2 text-center my-4 md:my-0 shadow-sm transition-colors dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-800 dark:hover:bg-indigo-800 dark:hover:text-white dark:focus:ring-indigo-900">
+            <a href="{{ route('fiscal.export', ['start' => $selectedStartYear, 'end' => $selectedEndYear]) }}" type="button" class="inline-flex items-center justify-center text-indigo-700 bg-indigo-50 border border-indigo-200 focus:outline-none hover:bg-indigo-100 hover:text-indigo-800 focus:ring-4 focus:ring-indigo-100 font-medium rounded-lg text-sm px-4 py-2 text-center my-4 md:my-0 shadow-sm transition-colors dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-800 dark:hover:bg-indigo-800 dark:hover:text-white dark:focus:ring-indigo-900">
                 <svg class="w-4 h-4 me-2 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10V4a1 1 0 0 0-1-1H9.914a1 1 0 0 0-.707.293L5.293 7.207A1 1 0 0 0 5 7.914V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 3v4a1 1 0 0 1-1 1H5m5 6h9m0 0-2-2m2 2-2 2"/>
                 </svg>
@@ -107,7 +107,7 @@
                     <thead class="text-xs text-slate-500 dark:text-gray-400 bg-slate-50 dark:bg-gray-700/50 uppercase font-semibold tracking-wider">
                         <tr>
                             <th rowspan="2" class="px-3 py-4 border-b border-r border-slate-200 bg-slate-50 dark:bg-gray-700/80 dark:border-gray-600 sticky left-0 z-10 w-12 text-center shadow-[1px_0_4px_rgba(0,0,0,0.05)]">No</th>
-                            <th rowspan="2" class="px-5 py-4 border-b border-slate-200 dark:border-gray-600 border-r-2 bg-slate-50 dark:bg-gray-700/80 sticky left-[3rem] z-10 whitespace-nowrap shadow-[2px_0_5px_rgba(0,0,0,0.05)]">Asset Name</th>
+                            <th rowspan="2" class="px-5 py-4 border-b border-slate-200 dark:border-gray-600 border-r-2 bg-slate-50 dark:bg-gray-700/80 sticky left-[43px] z-10 whitespace-nowrap shadow-[2px_0_5px_rgba(0,0,0,0.05)]">Asset Name</th>
                             <th rowspan="2" class="px-5 py-4 border-b border-slate-200 dark:border-gray-600 whitespace-nowrap">Asset Number</th>
                             
                             @foreach($months as $monthName)
@@ -142,8 +142,8 @@
                         @else
                             @foreach ($pivotedData as $assetId => $data)
                                 <tr class="group hover:bg-indigo-50/50 dark:hover:bg-gray-700/50 transition-colors bg-white dark:bg-gray-800 border-b border-slate-100 dark:border-gray-700 last:border-0">
-                                    <td class="sticky left-0 bg-white dark:bg-gray-800 group-hover:bg-indigo-50/50 dark:group-hover:bg-gray-700/50 text-center px-3 py-3 border-r border-slate-100 dark:border-gray-700 z-10 shadow-[1px_0_4px_rgba(0,0,0,0.02)]">{{ $loop->iteration + (($paginator->currentPage() - 1) * $paginator->perPage()) }}</td>
-                                    <td class="sticky left-[3rem] px-5 py-3 bg-white dark:bg-gray-800 group-hover:bg-indigo-50/50 dark:group-hover:bg-gray-700/50 border-r-2 border-slate-100 dark:border-gray-700 z-10 whitespace-nowrap font-medium text-slate-900 dark:text-gray-100 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">{{ $data['master_data']->assetName->name ?? 'N/A' }}</td>
+                                    <td class="sticky left-0 bg-white dark:bg-gray-800 group-hover:bg-indigo-50 dark:group-hover:bg-gray-700 text-center px-3 py-3 border-r border-slate-100 dark:border-gray-700 z-10 shadow-[1px_0_4px_rgba(0,0,0,0.02)]">{{ $loop->iteration + (($paginator->currentPage() - 1) * $paginator->perPage()) }}</td>
+                                    <td class="sticky left-[43px] px-5 py-3 bg-white dark:bg-gray-800 group-hover:bg-indigo-50 dark:group-hover:bg-gray-700 border-r-2 border-slate-100 dark:border-gray-700 z-10 whitespace-nowrap font-medium text-slate-900 dark:text-gray-100 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">{{ $data['master_data']->assetName->name ?? 'N/A' }}</td>
                                     <td class="px-5 py-3 whitespace-nowrap border-r border-slate-50/50 dark:border-gray-700/50">{{ $data['master_data']->asset_number ?? 'N/A' }}</td>
 
                                     @foreach ($months as $monthKey => $monthName)

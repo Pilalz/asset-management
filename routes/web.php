@@ -24,6 +24,7 @@ use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\StockOpnameController;
+use App\Http\Controllers\Api\StockOpnameDataController;
 
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -211,4 +212,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/disposal-asset-find', [DisposalAssetController::class, 'datatablesAsset'])->name('api.disposal-asset-find');
     Route::get('api/users/search', [CompanyUserController::class, 'search'])->name('api.users.search');
     Route::post('api/get-assets-by-ids', [DisposalAssetController::class, 'getAssetsByIds'])->name('api.get-assets-by-ids');
+
+    //Start Stock Opname Scanner
+    Route::get('api/asset-by-code/{assetCode}', [StockOpnameDataController::class, 'getAssetByCode']);
+    Route::get('api/found-asset/{id}', [StockOpnameDataController::class, 'foundAsset']);
 });

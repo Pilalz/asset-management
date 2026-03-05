@@ -9,7 +9,6 @@ use App\Models\Department;
 use App\Models\AssetClass;
 use App\Models\Company;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use App\Imports\LVAImport;
 use App\Exports\LVAExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -216,10 +215,7 @@ class AssetLowValueController extends Controller
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = Asset::withoutGlobalScope(CompanyScope::class)
-            ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+        $query = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
             ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
             ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
             ->join('locations', 'assets.location_id', '=', 'locations.id')
@@ -230,7 +226,6 @@ class AssetLowValueController extends Controller
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
             ->where('assets.status', '=', 'Active')
-            ->where('assets.company_id', $companyId)
             ->select([
                 'assets.*',
                 'asset_names.name as asset_name_name',
@@ -257,19 +252,19 @@ class AssetLowValueController extends Controller
                     'depreUrl' => '', // Not used for LVA
                 ])->render();
             })
-            ->addColumn('currency', function($asset) {
+            ->addColumn('currency', function ($asset) {
                 return $asset->currency_code ?? 'USD';
             })
-            ->filterColumn('asset_name_name', function($query, $keyword) {
+            ->filterColumn('asset_name_name', function ($query, $keyword) {
                 $query->where('asset_names.name', 'like', "%{$keyword}%");
             })
-            ->filterColumn('asset_class_obj', function($query, $keyword) {
+            ->filterColumn('asset_class_obj', function ($query, $keyword) {
                 $query->where('asset_classes.obj_acc', 'like', "%{$keyword}%");
             })
-            ->filterColumn('location_name', function($query, $keyword) {
+            ->filterColumn('location_name', function ($query, $keyword) {
                 $query->where('locations.name', 'like', "%{$keyword}%");
             })
-            ->filterColumn('department_name', function($query, $keyword) {
+            ->filterColumn('department_name', function ($query, $keyword) {
                 $query->where('departments.name', 'like', "%{$keyword}%");
             })
             ->rawColumns(['action'])

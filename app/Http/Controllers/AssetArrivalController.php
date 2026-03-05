@@ -9,7 +9,6 @@ use App\Models\Department;
 use App\Models\AssetClass;
 use App\Models\AssetName;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Gate;
 
 class AssetArrivalController extends Controller
@@ -18,32 +17,21 @@ class AssetArrivalController extends Controller
     {
         Gate::authorize('is-admin');
 
-        $companyId = session('active_company_id');
+        $assetNamesForFilter = AssetName::orderBy('name', 'asc')->get(['id', 'name']);
 
-        $assetNamesForFilter = AssetName::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', $companyId)
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
+        $locationsForFilter = Location::orderBy('name', 'asc')->get(['id', 'name']);
 
-        $locationsForFilter = Location::withoutGlobalScope(CompanyScope::class)
-                                     ->where('company_id', $companyId)
-                                     ->orderBy('name', 'asc')
-                                     ->get(['id', 'name']);
-
-        $departmentsForFilter = Department::withoutGlobalScope(CompanyScope::class)
-                                       ->where('company_id', $companyId)
-                                       ->orderBy('name', 'asc')
-                                       ->get(['id', 'name']);
+        $departmentsForFilter = Department::orderBy('name', 'asc')->get(['id', 'name']);
 
         return view('asset.arrival.index', [
             'assetNamesForFilter' => $assetNamesForFilter,
             'locationsForFilter' => $locationsForFilter,
             'departmentsForFilter' => $departmentsForFilter,
-        ]);    
+        ]);
     }
 
     public function edit(Asset $assetArrival)
-    {      
+    {
         Gate::authorize('is-admin');
 
         $locations = Location::all();
@@ -61,12 +49,12 @@ class AssetArrivalController extends Controller
     public function update(Request $request, Asset $assetArrival)
     {
         Gate::authorize('is-admin');
-        
-        if ($request->asset_number === $assetArrival->asset_number){
+
+        if ($request->asset_number === $assetArrival->asset_number) {
             $validAssetNumber = $request->validate([
                 'asset_number' => 'required|string|max:255',
             ]);
-        }else{
+        } else {
             $validAssetNumber = $request->validate([
                 'asset_number' => 'unique:assets,asset_number',
             ]);
@@ -103,7 +91,7 @@ class AssetArrivalController extends Controller
 
         $validatedData['commercial_useful_life_month'] = $assetName->commercial * 12;
         $validatedData['fiscal_useful_life_month'] = $assetName->fiscal * 12;
-        
+
         $validatedData['current_cost'] = $validatedData['acquisition_value'];
         $validatedData['commercial_nbv'] = $validatedData['acquisition_value'];
         $validatedData['fiscal_nbv'] = $validatedData['acquisition_value'];
@@ -116,23 +104,19 @@ class AssetArrivalController extends Controller
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = Asset::withoutGlobalScope(CompanyScope::class)
-                        ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
-                        ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
-                        ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
-                        ->join('locations', 'assets.location_id', '=', 'locations.id')
-                        ->join('departments', 'assets.department_id', '=', 'departments.id')
-                        ->where('assets.status', '=', 'Onboard')
-                        ->where('assets.company_id', $companyId)
-                        ->select([
-                            'assets.*',
-                            'asset_names.name as asset_name_name',
-                            'asset_classes.obj_acc as asset_class_obj',
-                            'locations.name as location_name',
-                            'departments.name as department_name',
-                        ]);
+        $query = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+            ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+            ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+            ->join('locations', 'assets.location_id', '=', 'locations.id')
+            ->join('departments', 'assets.department_id', '=', 'departments.id')
+            ->where('assets.status', '=', 'Onboard')
+            ->select([
+                'assets.*',
+                'asset_names.name as asset_name_name',
+                'asset_classes.obj_acc as asset_class_obj',
+                'locations.name as location_name',
+                'departments.name as department_name',
+            ]);
 
         return DataTables::eloquent($query)
             ->addIndexColumn()
@@ -142,16 +126,16 @@ class AssetArrivalController extends Controller
                     'deleteUrl' => route('asset.destroy', $asset->id)
                 ])->render();
             })
-            ->filterColumn('asset_name_name', function($query, $keyword) {
+            ->filterColumn('asset_name_name', function ($query, $keyword) {
                 $query->where('asset_names.name', 'like', "%{$keyword}%");
             })
-            ->filterColumn('asset_class_obj', function($query, $keyword) {
+            ->filterColumn('asset_class_obj', function ($query, $keyword) {
                 $query->where('asset_classes.obj_acc', 'like', "%{$keyword}%");
             })
-            ->filterColumn('location_name', function($query, $keyword) {
+            ->filterColumn('location_name', function ($query, $keyword) {
                 $query->where('locations.name', 'like', "%{$keyword}%");
             })
-            ->filterColumn('department_name', function($query, $keyword) {
+            ->filterColumn('department_name', function ($query, $keyword) {
                 $query->where('departments.name', 'like', "%{$keyword}%");
             })
             ->rawColumns(['action'])

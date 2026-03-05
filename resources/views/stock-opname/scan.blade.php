@@ -438,7 +438,7 @@
                         Stop Kamera
                     </button>
                     <label
-                        class="col-span-2 flex items-center justify-center gap-2 w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-semibold cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                        class="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-semibold cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -446,6 +446,14 @@
                         Upload Gambar
                         <input type="file" id="qr-input-file" accept="image/*" class="hidden">
                     </label>
+
+                    <a href="{{ route('stock-opname.index') }}" 
+                        class="col-span-2 flex items-center justify-center gap-2 w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-semibold cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9h13a5 5 0 0 1 0 10H7M3 9l4-4M3 9l4 4"/>
+                        </svg>
+                        Back
+                    </a>
                 </div>
             </div>
         </div>
@@ -503,11 +511,7 @@
                                 User</p>
                             <p id="detail-user" class="mt-1 text-gray-700 dark:text-gray-200">-</p>
                         </div>
-                        <div class="col-span-2">
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                                Mark</p>
-                            <p id="detail-description" class="mt-1 text-gray-600 dark:text-gray-300">-</p>
-                        </div>
+
                     </div>
                 </div>
 
@@ -612,29 +616,35 @@
         const markIconSolid = document.getElementById('mark-icon-solid');
         let isMarked = false;
 
+        //Found
+        const markFoundBtn = document.getElementById('mark-found-btn');
+        let currentAssetId = null;
+
         // --- TAMPILKAN PANEL DETAIL ---
         function showDetail(asset, wrongCompany = false, assetCompanyName = null, assetCompanyId = null) {
             // Isi data
+            currentAssetId = asset.id; // Simpan ID asset
+
             document.getElementById('detail-number').textContent = asset.asset_number ?? '-';
-            document.getElementById('detail-name').textContent = asset.asset_name.name ?? '-';
+            document.getElementById('detail-name').textContent = asset.asset_name ?? '-';
             document.getElementById('detail-description').textContent = asset.description ?? '-';
-            document.getElementById('detail-location').textContent = asset.location.name ?? '-';
-            document.getElementById('detail-department').textContent = asset.department.name ?? '-';
-            document.getElementById('detail-condition').textContent = asset.condition ?? '-';
+            document.getElementById('detail-location').textContent = asset.location ?? '-';
+            document.getElementById('detail-department').textContent = asset.department ?? '-';
+            document.getElementById('detail-condition').textContent = asset.status ?? '-';
             document.getElementById('detail-user').textContent = asset.user ?? '-';
 
             // ⚠️ Tampilkan/sembunyikan modal wrong company
             const markFoundBtn = document.getElementById('mark-found-btn');
             const modal = document.getElementById('wrong-company-modal');
             if (wrongCompany && assetCompanyName) {
-                document.getElementById('modal-asset-name').textContent = asset.asset_name.name ?? '-';
+                document.getElementById('modal-asset-name').textContent = asset.asset_name ?? '-';
                 document.getElementById('modal-asset-number').textContent = asset.asset_number ?? '-';
                 document.getElementById('modal-company-name').textContent = assetCompanyName;
                 document.getElementById('modal-btn-company-name').textContent = assetCompanyName;
                 if (assetCompanyId) document.getElementById('modal-company-id').value = assetCompanyId;
-                
+
                 modal.classList.remove('hidden');
-                
+
                 // Nonaktifkan tombol "Mark as Found" karena beda company
                 markFoundBtn.disabled = true;
                 markFoundBtn.classList.add('opacity-50', 'cursor-not-allowed');
@@ -673,7 +683,7 @@
 
             // Sembunyikan modal
             document.getElementById('wrong-company-modal').classList.add('hidden');
-            
+
             const markFoundBtn = document.getElementById('mark-found-btn');
             markFoundBtn.disabled = false;
             markFoundBtn.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -753,6 +763,45 @@
             }
         }
 
+        async function markFound() {
+            if (!currentAssetId) {
+                alert("Tidak ada asset yang sedang ditampilkan.");
+                return;
+            }
+
+            // Simpan tulisan tombol asli
+            const originalHTML = markFoundBtn.innerHTML;
+
+            // Disable tombol dan kasih tulisan processing (UI Feedback)
+            markFoundBtn.disabled = true;
+            markFoundBtn.innerHTML = 'Processing...';
+
+            try {
+                // Hit API endpoint
+                const url = `/api/found-asset/${encodeURIComponent(currentAssetId)}` +
+                    (isMarked ? `?mark=true` : '');
+
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    alert('Asset berhasil ditandai sebagai found!');
+                    // Kembali ke scanner dengan kamera aktif
+                    showScanner();
+                } else {
+                    // Jika gagal, tetap di panel detail dan alert user
+                    alert(data.message ?? 'Gagal menandai asset.');
+                }
+            } catch (e) {
+                alert('Terjadi kesalahan koneksi saat menghubungi server.');
+                console.error(e);
+            } finally {
+                // Kembalikan tombol ke state semula
+                markFoundBtn.disabled = false;
+                markFoundBtn.innerHTML = originalHTML;
+            }
+        }
+
         startBtn.addEventListener('click', startCamera);
 
         stopBtn.addEventListener('click', () => {
@@ -764,6 +813,10 @@
         });
 
         backBtn.addEventListener('click', showScanner);
+
+        markFoundBtn.addEventListener('click', () => {
+            markFound();
+        });
 
         document.getElementById('modal-cancel-btn').addEventListener('click', () => {
             document.getElementById('wrong-company-modal').classList.add('hidden');

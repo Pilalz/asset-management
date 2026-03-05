@@ -1,6 +1,40 @@
 @extends('layouts.main')
 
 @section('content')
+    @push('styles')
+        <style>
+            #soDetailTable thead tr th:hover {
+                outline: none !important;
+            }
+
+            table.dataTable tbody tr>.sorting_1,
+            table.dataTable tbody tr>.sorting_2,
+            table.dataTable tbody tr>.sorting_3 {
+                background-color: inherit !important;
+            }
+
+            .dark .dt-search,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:hover,
+            html.dark .dt-container .dt-paging .dt-paging-button.disabled:active,
+            .dark div.dt-container .dt-paging .dt-paging-button,
+            .dark div.dt-container .dt-paging .ellipsis {
+                color: #e4e6eb !important;
+            }
+
+            html.dark .dt-container .dt-paging .dt-paging-button.current:hover {
+                color: white !important;
+            }
+
+            div.dt-container select.dt-input {
+                padding: 4px 25px 4px 4px;
+            }
+
+            select.dt-input option {
+                text-align: center !important;
+            }
+        </style>
+    @endpush
 
     <div class="bg-white flex p-5 text-lg justify-between dark:bg-gray-800">
         <nav class="flex" aria-label="Breadcrumb">
@@ -177,48 +211,49 @@
         </div>
 
         {{-- ── Asset Detail List ─────────────────────────────────────────── --}}
-        <div class="relative shadow-md py-5 px-6 rounded-lg bg-white dark:bg-gray-800">
-            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700 pb-2 mb-4">
-                Daftar Aset
-            </h2>
-
-            <div class="overflow-x-auto">
-                <table id="soDetailTable"
-                    class="w-full text-sm text-left text-gray-500 dark:text-gray-200"
-                    data-url="{{ route('api.stock-opname.details', $stockOpnameSession->id) }}">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
-                        <tr>
-                            <th scope="col" class="px-4 py-3">No</th>
-                            <th scope="col" class="px-4 py-3">Asset Number</th>
-                            <th scope="col" class="px-4 py-3">Asset Name</th>
-                            <th scope="col" class="px-4 py-3">Description</th>
-                            <th scope="col" class="px-4 py-3">Lokasi Sistem</th>
-                            <th scope="col" class="px-4 py-3">Lokasi Aktual</th>
-                            <th scope="col" class="px-4 py-3">Kondisi Sistem</th>
-                            <th scope="col" class="px-4 py-3">Kondisi Aktual</th>
-                            <th scope="col" class="px-4 py-3">User Sistem</th>
-                            <th scope="col" class="px-4 py-3">User Aktual</th>
-                            <th scope="col" class="px-4 py-3">Status</th>
-                            <th scope="col" class="px-4 py-3">Waktu Scan</th>
-                        </tr>
-                        <tr id="filter-row">
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+        <div class="shadow-sm rounded-xl bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 overflow-hidden">
+            <table id="soDetailTable"
+                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-100"
+                data-url="{{ route('api.stock-opname.details', $stockOpnameSession->id) }}">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
+                    <tr>
+                        <th scope="col" class="px-3 py-3 w-10 text-center">
+                            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 inline" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                            </svg>
+                        </th>
+                        <th scope="col" class="px-4 py-3">No</th>
+                        <th scope="col" class="px-4 py-3">Asset Number</th>
+                        <th scope="col" class="px-4 py-3">Asset Name</th>
+                        <th scope="col" class="px-4 py-3">Description</th>
+                        <th scope="col" class="px-4 py-3">Lokasi Sistem</th>
+                        <th scope="col" class="px-4 py-3">Lokasi Aktual</th>
+                        <th scope="col" class="px-4 py-3">Kondisi Sistem</th>
+                        <th scope="col" class="px-4 py-3">Kondisi Aktual</th>
+                        <th scope="col" class="px-4 py-3">User Sistem</th>
+                        <th scope="col" class="px-4 py-3">User Aktual</th>
+                        <th scope="col" class="px-4 py-3">Status</th>
+                        <th scope="col" class="px-4 py-3">Waktu Scan</th>
+                    </tr>
+                    <tr id="filter-row"
+                        class="bg-gray-50/50 dark:bg-gray-700/50 border-t border-slate-200 dark:border-gray-600">
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
 
         {{-- ── Back Button ───────────────────────────────────────────────── --}}

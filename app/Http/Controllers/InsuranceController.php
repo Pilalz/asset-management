@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Insurance;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
@@ -59,7 +58,7 @@ class InsuranceController extends Controller
                 activity()
                     ->performedOn($insurance) // subject_type, id
                     ->causedBy(auth()->user()) // causer_id, type
-                    ->inLog(session('active_company_id')) 
+                    ->inLog(session('active_company_id'))
                     ->withProperty('attributes', ['assets' => $newAssetNames]) // Simpan daftar nama baru
                     ->log("Created asset list for insurance polish '{$insurance->polish_no}'"); // description
 
@@ -74,7 +73,7 @@ class InsuranceController extends Controller
     public function edit(Insurance $insurance)
     {
         Gate::authorize('is-admin');
-        
+
         $insurance->load('detailInsurances');
 
         $selectedAssetIds = $insurance->detailInsurances->pluck('id');
@@ -103,7 +102,7 @@ class InsuranceController extends Controller
         $assetIds = explode(',', $validated['asset_ids']);
 
         try {
-            DB::transaction(function () use ($validated, $insurance, $assetIds) {  
+            DB::transaction(function () use ($validated, $insurance, $assetIds) {
                 $oldAssetNames = $insurance->detailInsurances()->pluck('asset_number')->toArray();
 
                 $insurance->update($validated);
@@ -115,7 +114,7 @@ class InsuranceController extends Controller
                     activity()
                         ->performedOn($insurance) // subject_type, id
                         ->causedBy(auth()->user()) // causer_id, type
-                        ->inLog(session('active_company_id')) 
+                        ->inLog(session('active_company_id'))
                         ->withProperty('old', ['assets' => $oldAssetNames]) // Simpan daftar nama lama
                         ->withProperty('attributes', ['assets' => $newAssetNames]) // Simpan daftar nama baru
                         ->log("Updated asset list for insurance polish '{$insurance->polish_no}'"); // description
@@ -131,7 +130,7 @@ class InsuranceController extends Controller
     public function destroy(Insurance $insurance)
     {
         Gate::authorize('is-admin');
-        
+
         $insurance->delete();
 
         return redirect()->route('insurance.index')->with('success', 'Data berhasil dihapus!');
@@ -139,28 +138,23 @@ class InsuranceController extends Controller
 
     public function datatables(Request $request)
     {
-        $companyId = session('active_company_id');
-
-        $query = Insurance::withoutGlobalScope(CompanyScope::class)
-                          ->join('companies', 'insurances.company_id', '=', 'companies.id')
-                          ->select('insurances.*', 'companies.currency as currency_code',);
-
-        $query->where('insurances.company_id', $companyId);
+        $query = Insurance::join('companies', 'insurances.company_id', '=', 'companies.id')
+            ->select('insurances.*', 'companies.currency as currency_code', );
 
         return DataTables::eloquent($query)
             ->addIndexColumn()
-            ->addColumn('currency', function($insurance) {
+            ->addColumn('currency', function ($insurance) {
                 return $insurance->currency_code ?? 'USD';
             })
             ->addColumn('action', function ($insurance) {
                 return view('components.action-buttons-3-buttons', [
                     'model'     => $insurance,
-                    'showUrl' => route('insurance.show', $insurance->id),
-                    'editUrl' => route('insurance.edit', $insurance->id),
+                    'showUrl'   => route('insurance.show', $insurance->id),
+                    'editUrl'   => route('insurance.edit', $insurance->id),
                     'deleteUrl' => route('insurance.destroy', $insurance->id)
                 ])->render();
             })
-            ->filterColumn('status', function($query, $keyword) {
+            ->filterColumn('status', function ($query, $keyword) {
                 if (!empty($keyword)) {
                     $query->where('insurances.status', '=', $keyword);
                 }

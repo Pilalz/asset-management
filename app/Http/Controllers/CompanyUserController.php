@@ -6,13 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\CompanyUser;
 use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
-use App\Scopes\CompanyScope;
 use Illuminate\Support\Facades\Gate;
 
 class CompanyUserController extends Controller
 {
     public function index()
-    {   
+    {
         return view('company-user.index');
     }
 
@@ -41,7 +40,7 @@ class CompanyUserController extends Controller
     public function edit(CompanyUser $company_user)
     {
         Gate::authorize('is-admin');
-        
+
         return view('company-user.edit', compact('company_user'));
     }
 
@@ -63,7 +62,7 @@ class CompanyUserController extends Controller
     public function destroy(CompanyUser $company_user)
     {
         Gate::authorize('is-admin');
-        
+
         $company_user->delete();
 
         return redirect()->route('company-user.index')->with('success', 'Data berhasil dihapus!');
@@ -73,10 +72,9 @@ class CompanyUserController extends Controller
     {
         $companyId = session('active_company_id');
 
-        $query = CompanyUser::withoutGlobalScope(CompanyScope::class)
-                          ->where('role', '!=', 'owner')
-                          ->with('user')
-                          ->select('company_users.*');
+        $query = CompanyUser::where('role', '!=', 'owner')
+            ->with('user')
+            ->select('company_users.*');
 
         $query->where('company_users.company_id', $companyId);
 
@@ -111,9 +109,9 @@ class CompanyUserController extends Controller
         $users = User::query()
             ->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'like', "%{$searchTerm}%")
-                      ->orWhere('email', 'like', "%{$searchTerm}%");
+                    ->orWhere('email', 'like', "%{$searchTerm}%");
             })
-            ->whereDoesntHave('companies', function($query) use ($companyId) {
+            ->whereDoesntHave('companies', function ($query) use ($companyId) {
                 $query->where('companies.id', $companyId);
             })
             ->limit(10)

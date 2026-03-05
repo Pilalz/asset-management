@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Asset;
 use App\Models\Depreciation;
 use Illuminate\Support\Facades\DB;
-use App\Scopes\CompanyScope;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -14,9 +13,7 @@ class DashboardController extends Controller
     public function index()
     {
         //Asset By Location
-        $assets = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', session('active_company_id'))
-            ->where('assets.status', '!=', 'Sold')
+        $assets = Asset::where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
             ->with('location')
@@ -41,12 +38,10 @@ class DashboardController extends Controller
         ];
 
         //Asset By Category
-        $assetCountByClass = Asset::withoutGlobalScope(CompanyScope::class)
-            ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+        $assetCountByClass = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
             ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
             ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
             ->select('asset_classes.name as class_name', DB::raw('count(assets.id) as asset_count'))
-            ->where('assets.company_id', session('active_company_id'))
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
@@ -60,9 +55,7 @@ class DashboardController extends Controller
         ];
 
         // Asset By Department
-        $assetsdep = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('company_id', session('active_company_id'))
-            ->where('assets.status', '!=', 'Sold')
+        $assetsdep = Asset::where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
             ->with('department')
@@ -87,9 +80,7 @@ class DashboardController extends Controller
         ];
 
         // Active assets base query (reusable)
-        $activeAssetsQuery = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('assets.company_id', session('active_company_id'))
-            ->where('assets.status', '!=', 'Sold')
+        $activeAssetsQuery = Asset::where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal');
 
@@ -100,55 +91,43 @@ class DashboardController extends Controller
         $totalAssetPrice = (clone $activeAssetsQuery)->sum('commercial_nbv');
 
         //Asset Arrival
-        $assetArrival = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('assets.status', '!=', 'Sold')
+        $assetArrival = Asset::where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Disposal')
             ->where('assets.status', 'Onboard')
-            ->where('assets.company_id', session('active_company_id'))
             ->count();
 
         //Fixed Asset
-        $assetFixed = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('assets.status', '!=', 'Sold')
+        $assetFixed = Asset::where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
             ->where('asset_type', 'FA')
-            ->where('assets.company_id', session('active_company_id'))
             ->count();
 
         //Low Value Asset
-        $assetLVA = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('assets.status', '!=', 'Sold')
+        $assetLVA = Asset::where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
             ->where('asset_type', 'LVA')
-            ->where('assets.company_id', session('active_company_id'))
             ->count();
 
         //Asset Remaks
-        $assetRemaks = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('assets.status', '!=', 'Sold')
+        $assetRemaks = Asset::where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
             ->where('assets.remaks', '!=', null)
-            ->where('assets.company_id', session('active_company_id'))
             ->get();
 
-        $assetRemaksCount = Asset::withoutGlobalScope(CompanyScope::class)
-            ->where('assets.status', '!=', 'Sold')
+        $assetRemaksCount = Asset::where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
             ->where('assets.remaks', '!=', null)
-            ->where('assets.company_id', session('active_company_id'))
             ->count();
 
         //Sum Depre by Asset Class
-        $depreByClass = Asset::withoutGlobalScope(CompanyScope::class)
-            ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+        $depreByClass = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
             ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
             ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
             ->select('asset_classes.obj_id', DB::raw('sum(assets.commercial_accum_depre) as commercial_depre_sum'), DB::raw('sum(assets.fiscal_accum_depre) as fiscal_depre_sum'))
-            ->where('assets.company_id', session('active_company_id'))
             ->where('assets.asset_type', 'FA')
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
@@ -156,8 +135,7 @@ class DashboardController extends Controller
             ->groupBy('asset_classes.obj_id')
             ->get();
 
-        $depreData = Depreciation::withoutGlobalScope(CompanyScope::class)
-            ->join('assets', 'depreciations.asset_id', '=', 'assets.id')
+        $depreData = Depreciation::join('assets', 'depreciations.asset_id', '=', 'assets.id')
             ->select(
                 'depreciations.depre_date',
                 DB::raw("SUM(CASE WHEN depreciations.type = 'commercial' THEN depreciations.monthly_depre ELSE 0 END) as commercial_depre_sum"),
@@ -172,7 +150,7 @@ class DashboardController extends Controller
             ->get();
 
         $chartLabels = $depreData->pluck('depre_date')->map(function ($date) {
-            return Carbon::parse($date)->format('M-Y');
+            return Carbon::parse($date)->format('Y-m-d');
         });
 
         // Buat data Series
