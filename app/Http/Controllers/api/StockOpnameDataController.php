@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
+use App\Models\StockOpnameSession;
 use App\Models\StockOpnameDetail;
 use App\Models\CompanyUser;
 use App\Scopes\CompanyScope;
@@ -13,6 +14,15 @@ class StockOpnameDataController extends Controller
 {
     public function getAssetByCode(Request $request, string $assetCode)
     {
+        $soExist = StockOpnameSession::where('status', 'Open')->exists();
+
+        if (!$soExist) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stock opname is not open!',
+            ], 404);
+        }
+
         $asset = Asset::withoutGlobalScope(CompanyScope::class)
             ->where('asset_code', $assetCode)
             ->with([

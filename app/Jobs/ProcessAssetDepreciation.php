@@ -239,11 +239,11 @@ class ProcessAssetDepreciation implements ShouldQueue
         if ($this->batch()) {
             $batch = $this->batch();
             $progress = $batch->progress();
-            $statusData = \Illuminate\Support\Facades\Cache::get($this->jobStatusId, []);
+            $statusData = Cache::get($this->jobStatusId, []);
             if (isset($statusData['status']) && $statusData['status'] !== 'completed') {
                 $statusData['progress'] = $progress;
                 $statusData['message'] = "Memproses... ({$progress}%)";
-                \Illuminate\Support\Facades\Cache::put($this->jobStatusId, $statusData, now()->addHour());
+                Cache::put($this->jobStatusId, $statusData, now()->addHour());
             }
         }
     }

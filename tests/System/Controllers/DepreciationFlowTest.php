@@ -17,11 +17,12 @@ class DepreciationFlowTest extends TestCase
     public function test_full_admin_depreciation_workflow(): void
     {
         $this->actingAsUser();
-        
+
         $location = Location::factory()->create(['company_id' => $this->company->id]);
         $department = Department::factory()->create(['company_id' => $this->company->id]);
         $name = AssetName::factory()->create([
-            'commercial' => '12',
+            'commercial' => '1',
+            'fiscal' => '1',
             'company_id' => $this->company->id,
         ]);
 
@@ -51,7 +52,7 @@ class DepreciationFlowTest extends TestCase
             'fiscal_accum_depre' => 0,
             'fiscal_nbv' => 12000000,
         ];
-        
+
         $response = $this->post('/asset', $assetData);
 
         $response->assertSessionHasNoErrors();
@@ -65,12 +66,12 @@ class DepreciationFlowTest extends TestCase
         $asset = Asset::where('asset_number', 'E2E-001')
             ->where('company_id', $this->company->id)
             ->first();
-        
-        $this->assertEquals(10000000, (int)$asset->commercial_nbv);
-        $this->assertEquals(2000000, (int)$asset->commercial_accum_depre);
-        
-        // Pastikan ada 2 record history penyusutan
-        $this->assertDatabaseCount('depreciations', 2);
+
+        $this->assertEquals(10000000, (int) $asset->commercial_nbv);
+        $this->assertEquals(2000000, (int) $asset->commercial_accum_depre);
+
+        // Pastikan ada 4 record history penyusutan (2 bulan x 2 tipe: commercial & fiscal)
+        $this->assertDatabaseCount('depreciations', 4);
 
         // 4. Verifikasi Laporan Excel bisa dihasilkan
         $response = $this->get(route('commercial.export', ['year' => now()->year]));

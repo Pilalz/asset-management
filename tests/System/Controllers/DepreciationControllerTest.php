@@ -66,11 +66,13 @@ class DepreciationControllerTest extends TestCase
      */
     public function test_depreciation_schedule_shows_correct_data(): void
     {
-        Depreciation::factory()->count(12)->create([
-            'asset_id' => $this->asset->id,
-            'type' => 'commercial',
-            'depre_date' => Carbon::now(),
-        ]);
+        for ($i = 1; $i <= 12; $i++) {
+            Depreciation::factory()->create([
+                'asset_id' => $this->asset->id,
+                'type' => 'commercial',
+                'depre_date' => Carbon::now()->subMonths($i),
+            ]);
+        }
 
         $response = $this->get("/asset/{$this->asset->id}?year=" . Carbon::now()->year);
 
@@ -105,10 +107,13 @@ class DepreciationControllerTest extends TestCase
      */
     public function test_depreciation_datatable_returns_data(): void
     {
-        Depreciation::factory()->count(5)->create([
-            'asset_id' => $this->asset->id,
-            'type' => 'commercial',
-        ]);
+        for ($i = 1; $i <= 5; $i++) {
+            Depreciation::factory()->create([
+                'asset_id' => $this->asset->id,
+                'type' => 'commercial',
+                'depre_date' => Carbon::now()->subMonths($i),
+            ]);
+        }
 
         $response = $this->get('/depreciation');
 
@@ -117,7 +122,8 @@ class DepreciationControllerTest extends TestCase
             'pivotedData',
             'paginator',
             'months',
-            'selectedYear',
+            'selectedStartYear',
+            'selectedEndYear',
         ]);
     }
 
@@ -159,7 +165,7 @@ class DepreciationControllerTest extends TestCase
         $this->actingAsUser();
 
         $response = $this->post('/depreciation/run-all', ['type' => 'commercial']);
-        
+
         $response->assertStatus(200);
 
         // Cek apakah status di cache sudah ter-update menjadi 'queued' atau 'running'
@@ -172,11 +178,14 @@ class DepreciationControllerTest extends TestCase
      */
     public function test_can_view_depreciation_history(): void
     {
-        Depreciation::factory()->count(3)->create([
-            'asset_id' => $this->asset->id,
-            'type' => 'commercial',
-            'company_id' => $this->company->id,
-        ]);
+        for ($i = 1; $i <= 3; $i++) {
+            Depreciation::factory()->create([
+                'asset_id' => $this->asset->id,
+                'type' => 'commercial',
+                'company_id' => $this->company->id,
+                'depre_date' => Carbon::now()->subMonths($i),
+            ]);
+        }
 
         $depreciations = $this->asset->refresh()->depreciations;
 
@@ -188,11 +197,14 @@ class DepreciationControllerTest extends TestCase
      */
     public function test_can_view_depreciation_expense_report(): void
     {
-        Depreciation::factory()->count(5)->create([
-            'asset_id' => $this->asset->id,
-            'type' => 'commercial',
-            'company_id' => $this->company->id,
-        ]);
+        for ($i = 1; $i <= 5; $i++) {
+            Depreciation::factory()->create([
+                'asset_id' => $this->asset->id,
+                'type' => 'commercial',
+                'company_id' => $this->company->id,
+                'depre_date' => Carbon::now()->subMonths($i),
+            ]);
+        }
 
         $response = $this->get(route('commercial.export', ['year' => now()->year]));
 
@@ -204,17 +216,23 @@ class DepreciationControllerTest extends TestCase
      */
     public function test_depreciation_can_be_filtered_by_type(): void
     {
-        Depreciation::factory()->count(3)->create([
-            'asset_id' => $this->asset->id,
-            'type' => 'commercial',
-            'company_id' => $this->company->id,
-        ]);
+        for ($i = 1; $i <= 3; $i++) {
+            Depreciation::factory()->create([
+                'asset_id' => $this->asset->id,
+                'type' => 'commercial',
+                'company_id' => $this->company->id,
+                'depre_date' => Carbon::now()->subMonths($i),
+            ]);
+        }
 
-        Depreciation::factory()->count(2)->create([
-            'asset_id' => $this->asset->id,
-            'type' => 'fiscal',
-            'company_id' => $this->company->id,
-        ]);
+        for ($i = 1; $i <= 2; $i++) {
+            Depreciation::factory()->create([
+                'asset_id' => $this->asset->id,
+                'type' => 'fiscal',
+                'company_id' => $this->company->id,
+                'depre_date' => Carbon::now()->subMonths($i),
+            ]);
+        }
 
         $commercial = Depreciation::where('type', 'commercial')->count();
         $fiscal = Depreciation::where('type', 'fiscal')->count();
@@ -231,12 +249,14 @@ class DepreciationControllerTest extends TestCase
         $start = Carbon::now()->startOfMonth();
         $end = Carbon::now()->endOfMonth();
 
-        Depreciation::factory()->count(5)->create([
-            'asset_id' => $this->asset->id,
-            'type' => 'commercial',
-            'depre_date' => $start->copy()->addDays(5),
-            'company_id' => $this->company->id,
-        ]);
+        for ($i = 1; $i <= 5; $i++) {
+            Depreciation::factory()->create([
+                'asset_id' => $this->asset->id,
+                'type' => 'commercial',
+                'depre_date' => $start->copy()->addDays($i), // Ensure dates stay within the month
+                'company_id' => $this->company->id,
+            ]);
+        }
 
         $depreciations = Depreciation::whereBetween('depre_date', [$start, $end])->count();
 

@@ -38,6 +38,20 @@ class CurrencyHelperTest extends TestCase
     }
 
     /**
+     * Test format_currency dengan IDR
+     */
+    public function test_format_currency_with_idr(): void
+    {
+        $company = Company::factory()->create(['currency' => 'IDR']);
+        session(['active_company_id' => $company->id]);
+
+        $result = format_currency(1000);
+
+        // Should return formatted IDR currency
+        $this->assertStringContainsString('Rp', $result);
+    }
+
+    /**
      * Test format_currency tanpa active company (fallback ke IDR)
      */
     public function test_format_currency_without_active_company(): void

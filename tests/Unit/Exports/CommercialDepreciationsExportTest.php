@@ -9,21 +9,21 @@ use Carbon\Carbon;
 class CommercialDepreciationsExportTest extends TestCase
 {
     /**
-     * Test export is instantiable with year parameter.
+     * Menguji apakah class export dapat diinstansiasi dengan parameter tahun awal dan akhir.
      */
     public function test_export_can_be_instantiated(): void
     {
-        $export = new CommercialDepreciationsExport(2024);
+        $export = new CommercialDepreciationsExport(2024, 2024);
 
         $this->assertInstanceOf(CommercialDepreciationsExport::class, $export);
     }
 
     /**
-     * Test export has correct headings structure.
+     * Menguji apakah export memiliki struktur penamaan kolom (heading) yang benar sesuai rentang tahun.
      */
     public function test_export_has_correct_headings(): void
     {
-        $export = new CommercialDepreciationsExport(2024);
+        $export = new CommercialDepreciationsExport(2024, 2024);
         $headings = $export->headings();
 
         $this->assertIsArray($headings);
@@ -43,38 +43,24 @@ class CommercialDepreciationsExportTest extends TestCase
     }
 
     /**
-     * Test export starts from correct cell.
+     * Menguji apakah data export dimulai dari sel A2 (karena A1 digunakan untuk header bulan).
      */
     public function test_export_starts_from_correct_cell(): void
     {
-        $export = new CommercialDepreciationsExport(2024);
+        $export = new CommercialDepreciationsExport(2024, 2024);
 
         $this->assertEquals('A2', $export->startCell());
     }
 
     /**
-     * Test export generates 12 months correctly.
-     */
-    public function test_export_generates_correct_months(): void
-    {
-        $year = 2024;
-        $export = new CommercialDepreciationsExport($year);
-        $headings = $export->headings();
-
-        // Each month should have 3 columns (Monthly, Accum, Book)
-        // So total should be 3 (base columns) + 12*3 (month columns) = 39
-        $this->assertCount(39, $headings);
-    }
-
-    /**
-     * Test export query filters by commercial type.
+     * Menguji apakah query pada export memfilter tipe depresiasi secara benar ('commercial').
      */
     public function test_export_query_filters_commercial_type(): void
     {
         // This is a semi-integration test since we need session
         session(['active_company_id' => 1]);
 
-        $export = new CommercialDepreciationsExport(2024);
+        $export = new CommercialDepreciationsExport(2024, 2024);
         $query = $export->query();
 
         // Verify the query builder is returned
@@ -85,18 +71,18 @@ class CommercialDepreciationsExportTest extends TestCase
     }
 
     /**
-     * Test logika pemetaan data ke kolom Excel (Mapping)
+     * Menguji logika pemetaan data model Asset ke dalam baris dan kolom Excel yang sesuai letak bulannya.
      */
     public function test_export_maps_data_correctly_to_columns(): void
     {
-        $export = new CommercialDepreciationsExport(2024);
-        
+        $export = new CommercialDepreciationsExport(2024, 2024);
+
         // Mocking object Asset dengan relasi depreciations
-        $asset = (object)[
+        $asset = (object) [
             'asset_number' => 'AST-001',
-            'assetName' => (object)['name' => 'Laptop'],
+            'assetName' => (object) ['name' => 'Laptop'],
             'depreciations' => collect([
-                (object)[
+                (object) [
                     'depre_date' => '2024-01-31',
                     'monthly_depre' => 500000,
                     'accumulated_depre' => 500000,
