@@ -106,7 +106,7 @@ class RunBulkDepreciation implements ShouldQueue
             }
 
             // Memecah menjadi potongan kecil agar dieksekusi oleh ProcessAssetDepreciation
-            $chunks = $assetIds->chunk(50);
+            $chunks = $assetIds->chunk(500);
             $jobs = [];
 
             foreach ($chunks as $chunk) {
