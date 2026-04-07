@@ -27,7 +27,6 @@ class DepreciationController extends Controller
 
                 // Tentukan periode pengejaran
                 $lastDepreciation = Depreciation::where('asset_id', $asset->id)
-                    ->where('type', 'commercial')
                     ->latest('depre_date')
                     ->first();
                 
@@ -62,7 +61,6 @@ class DepreciationController extends Controller
 
                     Depreciation::create([
                         'asset_id'          => $asset->id,
-                        'type'              => 'commercial',
                         'depre_date'        => $date->copy()->endOfMonth()->toDateString(),
                         'monthly_depre'     => $finalDepreciationAmount,
                         'accumulated_depre' => $currentAccumulatedDepre,
@@ -111,7 +109,6 @@ class DepreciationController extends Controller
             ->whereHas('asset', function ($query) {
                 $query->where('asset_type', 'FA');
             })
-            ->where('type', 'commercial')
             ->orderBy('asset_id')
             ->orderBy('depre_date')
             ->get();
