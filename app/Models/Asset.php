@@ -41,9 +41,6 @@ class Asset extends Model
         'commercial_useful_life_month',
         'commercial_accum_depre',
         'commercial_nbv',
-        'fiscal_useful_life_month',
-        'fiscal_accum_depre',
-        'fiscal_nbv',
         'company_id',
     ];
 

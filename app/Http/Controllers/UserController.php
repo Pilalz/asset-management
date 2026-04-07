@@ -34,6 +34,7 @@ class UserController extends Controller
         // 1. Validasi input, owner_id tidak lagi diambil dari form
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'alias' => 'required|string|max:255',
             'code' => 'required|string|unique:companies,code', // Pastikan kode unik
         ]);
 
@@ -42,6 +43,7 @@ class UserController extends Controller
         // 2. Buat perusahaan baru, atur owner_id secara otomatis
         $company = Company::create([
             'name' => $validated['name'],
+            'alias' => $validated['alias'],
             'code' => $validated['code'],
             'owner_id' => $user->id,
         ]);

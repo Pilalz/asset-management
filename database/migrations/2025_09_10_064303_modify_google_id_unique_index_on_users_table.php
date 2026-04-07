@@ -16,7 +16,7 @@ return new class extends Migration
             $table->dropUnique('users_google_id_unique');
         });
 
-        DB::statement('CREATE UNIQUE NONCLUSTERED INDEX users_google_id_unique ON users(google_id) WHERE google_id IS NOT NULL');
+        DB::statement('CREATE UNIQUE INDEX users_google_id_unique ON users(google_id) WHERE google_id IS NOT NULL');
     }
 
     /**

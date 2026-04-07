@@ -17,7 +17,6 @@ class Depreciation extends Model
 
     protected $fillable = [
         'asset_id',
-        'type',
         'depre_date',
         'monthly_depre',
         'accumulated_depre',

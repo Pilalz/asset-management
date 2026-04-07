@@ -33,47 +33,38 @@ class CalculateDepreciation extends Command
         $this->info('Starting monthly depreciation calculation...');
 
         $today = Carbon::now()->endOfMonth();
-        $types = ['commercial', 'fiscal'];
 
-        foreach ($types as $type) {
-            $this->info("Processing '{$type}' depreciation for {$today->format('F Y')}...");
+        $this->info("Processing commercial depreciation for {$today->format('F Y')}...");
 
-            // Tentukan nama kolom dinamis berdasarkan tipe
-            $usefulLifeCol = $type . '_useful_life_month';
-            $accumDepreCol = $type . '_accum_depre';
-            $nbvCol        = $type . '_nbv';
+        // Ambil semua aset yang aktif, relevan, dan belum lunas
+        $assetsToDepreciate = Asset::withoutGlobalScope(CompanyScope::class)
+            ->where('status', 'Active')
+            ->where('asset_type', 'FA')
+            ->where('start_depre_date', '<=', now())
+            ->where('commercial_useful_life_month', '>', 0) // Pastikan masa manfaat valid
+            ->whereColumn('commercial_accum_depre', '<', 'acquisition_value') // Cek jika belum lunas
+            ->get();
 
-            // Ambil semua aset yang aktif, relevan, dan belum lunas untuk TIPE INI
-            $assetsToDepreciate = Asset::withoutGlobalScope(CompanyScope::class)
-                ->where('status', 'Active')
-                ->where('asset_type', 'FA')
-                ->where('start_depre_date', '<=', now())
-                ->where($usefulLifeCol, '>', 0) // Pastikan masa manfaat valid untuk tipe ini
-                ->whereColumn($accumDepreCol, '<', 'acquisition_value') // Cek jika belum lunas untuk tipe ini
-                ->get();
-
-            if ($assetsToDepreciate->isEmpty()) {
-                $this->line("No assets to depreciate for '{$type}' type this month.");
-                continue; // Lanjut ke tipe berikutnya
-            }
-
+        if ($assetsToDepreciate->isEmpty()) {
+            $this->line("No assets to depreciate for this month.");
+        } else {
             foreach ($assetsToDepreciate as $asset) {
-                // Cek apakah depresiasi untuk TIPE ini sudah pernah dijalankan
+                /** @var \App\Models\Asset $asset */
+                // Cek apakah depresiasi untuk bulan ini sudah pernah dijalankan
                 $alreadyRun = Depreciation::withoutGlobalScope(CompanyScope::class)
                     ->where('asset_id', $asset->id)
-                    ->where('type', $type) // <-- Pengecekan baru
                     ->whereYear('depre_date', $today->year)
                     ->whereMonth('depre_date', $today->month)
                     ->exists();
 
                 if ($alreadyRun) {
-                    $this->line("Skipping asset #{$asset->asset_number}: '{$type}' depreciation already run.");
+                    $this->line("Skipping asset #{$asset->asset_number}: depreciation already run.");
                     continue;
                 }
 
-                // Lakukan kalkulasi menggunakan kolom dinamis
-                $monthlyDepre = $asset->acquisition_value / $asset->$usefulLifeCol;
-                $newAccumDepre = $asset->$accumDepreCol + $monthlyDepre;
+                // Lakukan kalkulasi
+                $monthlyDepre = $asset->acquisition_value / $asset->commercial_useful_life_month;
+                $newAccumDepre = $asset->commercial_accum_depre + $monthlyDepre;
                 $newBookValue = $asset->acquisition_value - $newAccumDepre;
 
                 // Jangan biarkan book value menjadi negatif
@@ -83,10 +74,9 @@ class CalculateDepreciation extends Command
                     $newAccumDepre = $asset->acquisition_value;
                 }
 
-                // Simpan record depresiasi baru dengan menyertakan tipe
+                // Simpan record depresiasi baru
                 Depreciation::create([
                     'asset_id'          => $asset->id,
-                    'type'              => $type, // <-- Simpan jenisnya
                     'depre_date'        => $today,
                     'monthly_depre'     => $monthlyDepre,
                     'accumulated_depre' => $newAccumDepre,
@@ -94,13 +84,13 @@ class CalculateDepreciation extends Command
                     'company_id'        => $asset->company_id,
                 ]);
 
-                // Update nilai di tabel aset utama menggunakan kolom dinamis
+                // Update nilai di tabel aset utama
                 $asset->update([
-                    $accumDepreCol => $newAccumDepre,
-                    $nbvCol        => $newBookValue,
+                    'commercial_accum_depre' => $newAccumDepre,
+                    'commercial_nbv'         => $newBookValue,
                 ]);
 
-                $this->info("Success for asset #{$asset->asset_number} ({$type}).");
+                $this->info("Success for asset #{$asset->asset_number}.");
             }
         }
 

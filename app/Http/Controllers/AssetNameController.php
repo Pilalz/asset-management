@@ -85,7 +85,7 @@ class AssetNameController extends Controller
         try {
             Excel::import(new AssetNamesImport, $request->file('excel_file'));
         } catch (\Exception $e) {
-            return redirect()->route('asset-name.import.form')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+            return redirect()->route('asset-name.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
         }
 
         return redirect()->route('asset-name.index')->with('success', 'Data aset berhasil diimpor!');
