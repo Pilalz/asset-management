@@ -53,44 +53,83 @@ export function closeInstantQr() {
 }
 
 // Depreciation Functions
-function listenForUpdates(streamUrl) {
+function listenForUpdates(streamUrl, statusUrl) {
     let eventSource = null;
+    let reconnectTimer = null;
 
-    // Close old connection if exists
-    if (eventSource) {
-        eventSource.close();
+    function connect() {
+        // Bersihkan timer reconnect jika ada
+        if (reconnectTimer) {
+            clearTimeout(reconnectTimer);
+            reconnectTimer = null;
+        }
+
+        // Tutup koneksi lama jika ada
+        if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+        }
+
+        // Buka koneksi SSE baru
+        eventSource = new EventSource(streamUrl);
+
+        // Handle incoming data
+        eventSource.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+
+            if (!data) {
+                eventSource.close();
+                updateUI('idle');
+                return;
+            }
+
+            // Update UI berdasarkan status yang diterima
+            updateUI(data.status, data.progress, data.message, data.error);
+
+            // Tutup koneksi jika job sudah selesai atau gagal (status terminal)
+            if (data.status === 'completed' || data.status === 'completed_with_errors' || data.status === 'failed') {
+                eventSource.close();
+            }
+        };
+
+        // Handle error koneksi SSE (termasuk saat server menutup koneksi setelah timeout)
+        eventSource.onerror = function () {
+            eventSource.close();
+            eventSource = null;
+
+            // Cek status cache dulu sebelum reset UI —
+            // server mungkin sengaja menutup koneksi (55 detik) padahal job masih running
+            if (statusUrl) {
+                $.get(statusUrl).done(function (data) {
+                    if (data && data.status && ['queued', 'running'].includes(data.status)) {
+                        // Job masih berjalan → reconnect setelah 2 detik
+                        console.info('SSE putus, job masih running. Auto-reconnect dalam 2 detik...');
+                        updateUI(data.status, data.progress, data.message);
+                        reconnectTimer = setTimeout(connect, 2000);
+                    } else {
+                        // Job sudah selesai, gagal, atau idle → reset UI
+                        console.info('SSE putus, job sudah tidak aktif. Reset UI.');
+                        updateUI('idle');
+                    }
+                }).fail(function () {
+                    // Gagal cek status → aman untuk reset UI
+                    updateUI('idle');
+                });
+            } else {
+                updateUI('idle');
+            }
+        };
     }
 
-    // Open new connection to stream
-    eventSource = new EventSource(streamUrl);
+    connect();
 
-    // Handle incoming data
-    eventSource.onmessage = function (event) {
-        const data = JSON.parse(event.data);
-
-        if (!data) {
-            eventSource.close();
-            updateUI('idle');
-            return;
-        }
-
-        // Update UI based on received status
-        updateUI(data.status, data.progress, data.message, data.error);
-
-        // Close connection if completed or failed
-        if (data.status === 'completed' || data.status === 'failed') {
-            eventSource.close();
+    // Return object untuk bisa di-close dari luar jika perlu
+    return {
+        close: function () {
+            if (reconnectTimer) clearTimeout(reconnectTimer);
+            if (eventSource) eventSource.close();
         }
     };
-
-    // Handle connection errors
-    eventSource.onerror = function () {
-        console.error("SSE connection failed. Closing connection.");
-        eventSource.close();
-        updateUI('idle');
-    };
-
-    return eventSource;
 }
 
 function updateUI(status, progress = 0, message = '', error = '') {
@@ -466,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             $.post(routes.depreciationRunAll)
                 .done(function () {
-                    eventSource = listenForUpdates(routes.depreciationStream);
+                    eventSource = listenForUpdates(routes.depreciationStream, routes.depreciationStatus);
                 })
                 .fail(function (xhr) {
                     alert('Gagal memulai proses: ' + (xhr.responseJSON?.message || 'Error tidak diketahui.'));
@@ -476,8 +515,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Check status on page load
         $.get(routes.depreciationStatus).done(function (data) {
-            if (data && data.status === 'running') {
-                eventSource = listenForUpdates(routes.depreciationStream);
+            if (data && (data.status === 'running' || data.status === 'queued')) {
+                updateUI(data.status, data.progress, data.message);
+                eventSource = listenForUpdates(routes.depreciationStream, routes.depreciationStatus);
             }
         });
 
