@@ -99,8 +99,8 @@ class AssetSeederLarge extends Seeder
             $companyId = $faker->randomElement($companyIds);
             $selectedAssetName = $assetNames->random();
 
-            $commUsefulLife = $selectedAssetName->commercial_useful_life ?? 48;
-            $fiscalUsefulLife = $selectedAssetName->fiscal_useful_life ?? 48;
+            $commUsefulLife  = ($selectedAssetName->commercial ?? 4) * 12;
+            $fiscalUsefulLife = ($selectedAssetName->fiscal ?? 4) * 12;
 
             $acqValue = floor($faker->numberBetween(5_000_000, 2_000_000_000) / 1000) * 1000;
             $buyDate = Carbon::now()->subDays($faker->numberBetween(1, 1800));
