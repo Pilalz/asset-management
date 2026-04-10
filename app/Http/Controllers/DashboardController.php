@@ -12,129 +12,110 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        //Asset By Location
-        $assets = Asset::where('assets.status', '!=', 'Sold')
-            ->where('assets.status', '!=', 'Onboard')
-            ->where('assets.status', '!=', 'Disposal')
-            ->with('location')
-            ->get();
+        // ─── Asset Stats: 1 query dengan semua counter sekaligus ─────────────
+        $assetStats = Asset::select([
+                DB::raw("SUM(CASE WHEN status != 'Sold' AND status != 'Onboard' AND status != 'Disposal' THEN 1 ELSE 0 END) as total_active"),
+                DB::raw("SUM(CASE WHEN status != 'Sold' AND status != 'Onboard' AND status != 'Disposal' AND asset_type = 'FA' THEN 1 ELSE 0 END) as total_fa"),
+                DB::raw("SUM(CASE WHEN status != 'Sold' AND status != 'Onboard' AND status != 'Disposal' AND asset_type = 'LVA' THEN 1 ELSE 0 END) as total_lva"),
+                DB::raw("SUM(CASE WHEN status = 'Onboard' THEN 1 ELSE 0 END) as total_arrival"),
+                DB::raw("SUM(CASE WHEN status != 'Sold' AND status != 'Onboard' AND status != 'Disposal' THEN commercial_nbv ELSE 0 END) as total_nbv"),
+            ])
+            ->where('status', '!=', 'Sold')
+            ->where('status', '!=', 'Disposal')
+            ->first();
 
-        $assetCountByLocation = $assets
-            ->groupBy(function ($asset) {
-                return $asset->location->name ?? 'No Location';
-            })
-            ->map(function ($group, $locationName) {
-                return [
-                    'location_name' => $locationName,
-                    'asset_count' => $group->count(),
-                ];
-            })
-            ->sortByDesc('asset_count')
-            ->values();
+        $totalAsset      = (int) ($assetStats->total_active ?? 0);
+        $totalAssetPrice = (float) ($assetStats->total_nbv ?? 0);
+        $assetArrival    = (int) ($assetStats->total_arrival ?? 0);
+        $assetFixed      = (int) ($assetStats->total_fa ?? 0);
+        $assetLVA        = (int) ($assetStats->total_lva ?? 0);
 
-        $assetLocData = [
-            'labels' => $assetCountByLocation->pluck('location_name')->all(),
-            'series' => $assetCountByLocation->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
-        ];
-
-        //Asset By Category
-        $assetCountByClass = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
-            ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
-            ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
-            ->select('asset_classes.name as class_name', DB::raw('count(assets.id) as asset_count'))
+        // ─── Asset by Location (SQL GROUP BY — tidak load seluruh data ke PHP) ──
+        $locationRows = Asset::join('locations', 'assets.location_id', '=', 'locations.id')
+            ->select('locations.name as location_name', DB::raw('COUNT(assets.id) as asset_count'))
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
-            ->groupBy('asset_classes.name')
-            ->orderBy('asset_count', 'desc')
+            ->groupBy('locations.id', 'locations.name')
+            ->orderByDesc('asset_count')
+            ->get();
+
+        $noLocationCount = Asset::whereNull('location_id')
+            ->where('status', '!=', 'Sold')
+            ->where('status', '!=', 'Onboard')
+            ->where('status', '!=', 'Disposal')
+            ->count();
+
+        if ($noLocationCount > 0) {
+            $locationRows->push((object) ['location_name' => 'No Location', 'asset_count' => $noLocationCount]);
+        }
+
+        $assetLocData = [
+            'labels' => $locationRows->pluck('location_name')->values()->all(),
+            'series' => $locationRows->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
+        ];
+
+        // ─── Asset by Category (SQL GROUP BY) ────────────────────────────────
+        $classRows = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+            ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
+            ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
+            ->select('asset_classes.name as class_name', DB::raw('COUNT(assets.id) as asset_count'))
+            ->where('assets.status', '!=', 'Sold')
+            ->where('assets.status', '!=', 'Onboard')
+            ->where('assets.status', '!=', 'Disposal')
+            ->groupBy('asset_classes.id', 'asset_classes.name')
+            ->orderByDesc('asset_count')
             ->get();
 
         $assetClassData = [
-            'labels' => $assetCountByClass->pluck('class_name')->values()->all(),
-            'series' => $assetCountByClass->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
+            'labels' => $classRows->pluck('class_name')->values()->all(),
+            'series' => $classRows->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
         ];
 
-        // Asset By Department
-        $assetsdep = Asset::where('assets.status', '!=', 'Sold')
-            ->where('assets.status', '!=', 'Onboard')
-            ->where('assets.status', '!=', 'Disposal')
-            ->with('department')
-            ->get();
-
-        $assetCountByDepartment = $assetsdep
-            ->groupBy(function ($asset) {
-                return $asset->department->name ?? 'No Department';
-            })
-            ->map(function ($group, $departmentName) {
-                return [
-                    'department_name' => $departmentName,
-                    'asset_count' => $group->count(),
-                ];
-            })
-            ->sortByDesc('asset_count')
-            ->values();
-
-        $assetDeptData = [
-            'labels' => $assetCountByDepartment->pluck('department_name')->all(),
-            'series' => $assetCountByDepartment->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
-        ];
-
-        // Active assets base query (reusable)
-        $activeAssetsQuery = Asset::where('assets.status', '!=', 'Sold')
-            ->where('assets.status', '!=', 'Onboard')
-            ->where('assets.status', '!=', 'Disposal');
-
-        // Total Assets
-        $totalAsset = (clone $activeAssetsQuery)->count();
-
-        // Total Asset Value
-        $totalAssetPrice = (clone $activeAssetsQuery)->sum('commercial_nbv');
-
-        //Asset Arrival
-        $assetArrival = Asset::where('assets.status', '!=', 'Sold')
-            ->where('assets.status', '!=', 'Disposal')
-            ->where('assets.status', 'Onboard')
-            ->count();
-
-        //Fixed Asset
-        $assetFixed = Asset::where('assets.status', '!=', 'Sold')
-            ->where('assets.status', '!=', 'Onboard')
-            ->where('assets.status', '!=', 'Disposal')
-            ->where('asset_type', 'FA')
-            ->count();
-
-        //Low Value Asset
-        $assetLVA = Asset::where('assets.status', '!=', 'Sold')
-            ->where('assets.status', '!=', 'Onboard')
-            ->where('assets.status', '!=', 'Disposal')
-            ->where('asset_type', 'LVA')
-            ->count();
-
-        //Asset Remaks
-        $assetRemaks = Asset::where('assets.status', '!=', 'Sold')
-            ->where('assets.status', '!=', 'Onboard')
-            ->where('assets.status', '!=', 'Disposal')
-            ->where('assets.remaks', '!=', null)
-            ->get();
-
-        $assetRemaksCount = Asset::where('assets.status', '!=', 'Sold')
-            ->where('assets.status', '!=', 'Onboard')
-            ->where('assets.status', '!=', 'Disposal')
-            ->where('assets.remaks', '!=', null)
-            ->count();
-
-        //Sum Depre by Asset Class
-        $depreByClass = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
-            ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
-            ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
-            ->select('asset_classes.obj_id', DB::raw('sum(assets.commercial_accum_depre) as commercial_depre_sum'), DB::raw('sum(assets.fiscal_accum_depre) as fiscal_depre_sum'))
-            ->where('assets.asset_type', 'FA')
+        // ─── Asset by Department (SQL GROUP BY — tidak load seluruh data ke PHP) ─
+        $deptRows = Asset::join('departments', 'assets.department_id', '=', 'departments.id')
+            ->select('departments.name as department_name', DB::raw('COUNT(assets.id) as asset_count'))
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
-            ->groupBy('asset_classes.obj_id')
+            ->groupBy('departments.id', 'departments.name')
+            ->orderByDesc('asset_count')
             ->get();
 
+        $noDeptCount = Asset::whereNull('department_id')
+            ->where('status', '!=', 'Sold')
+            ->where('status', '!=', 'Onboard')
+            ->where('status', '!=', 'Disposal')
+            ->count();
+
+        if ($noDeptCount > 0) {
+            $deptRows->push((object) ['department_name' => 'No Department', 'asset_count' => $noDeptCount]);
+        }
+
+        $assetDeptData = [
+            'labels' => $deptRows->pluck('department_name')->values()->all(),
+            'series' => $deptRows->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
+        ];
+
+        // ─── Asset Remaks (limit 50 — hanya kolom yang dibutuhkan) ───────────
+        $assetRemaks = Asset::where('status', '!=', 'Sold')
+            ->where('status', '!=', 'Onboard')
+            ->where('status', '!=', 'Disposal')
+            ->whereNotNull('remaks')
+            ->where('remaks', '!=', '')
+            ->select('id', 'asset_number', 'asset_type', 'remaks')
+            ->latest('updated_at')
+            ->limit(50)
+            ->get();
+
+        $assetRemaksCount = Asset::where('status', '!=', 'Sold')
+            ->where('status', '!=', 'Onboard')
+            ->where('status', '!=', 'Disposal')
+            ->whereNotNull('remaks')
+            ->where('remaks', '!=', '')
+            ->count();
+
+        // ─── Depreciation Trend Chart ─────────────────────────────────────────
         $depreData = Depreciation::join('assets', 'depreciations.asset_id', '=', 'assets.id')
             ->select(
                 'depreciations.depre_date',
@@ -144,7 +125,7 @@ class DashboardController extends Controller
                 DB::raw("COUNT(CASE WHEN depreciations.type = 'fiscal' THEN 1 END) as fiscal_asset_count")
             )
             ->where('assets.company_id', session('active_company_id'))
-            ->whereNull('assets.deleted_at') //tambahan
+            ->whereNull('assets.deleted_at')
             ->groupBy('depreciations.depre_date')
             ->orderBy('depreciations.depre_date', 'asc')
             ->get();
@@ -153,13 +134,11 @@ class DashboardController extends Controller
             return Carbon::parse($date)->format('Y-m-d');
         });
 
-        // Buat data Series
-        $commercialSumData = $depreData->pluck('commercial_depre_sum');
-        $fiscalSumData = $depreData->pluck('fiscal_depre_sum');
+        $commercialSumData   = $depreData->pluck('commercial_depre_sum');
+        $fiscalSumData       = $depreData->pluck('fiscal_depre_sum');
         $commercialCountData = $depreData->pluck('commercial_asset_count');
-        $fiscalCountData = $depreData->pluck('fiscal_asset_count');
+        $fiscalCountData     = $depreData->pluck('fiscal_asset_count');
 
-        // Current month depreciated asset count (from last entry in $depreData)
         $currentMonthDepreCount = (int) ($depreData->last()?->commercial_asset_count ?? 0);
 
         return view('index', compact(
