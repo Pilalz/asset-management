@@ -30,9 +30,15 @@ class DashboardController extends Controller
         $assetFixed      = (int) ($assetStats->total_fa ?? 0);
         $assetLVA        = (int) ($assetStats->total_lva ?? 0);
 
-        // ─── Asset by Location (SQL GROUP BY — tidak load seluruh data ke PHP) ──
-        $locationRows = Asset::join('locations', 'assets.location_id', '=', 'locations.id')
+        // ─── Asset by Location (DB::table untuk hindari konflik scope & SoftDeletes) ──
+        $activeCompanyId = session('active_company_id');
+
+        $locationRows = DB::table('assets')
+            ->join('locations', 'assets.location_id', '=', 'locations.id')
             ->select('locations.name as location_name', DB::raw('COUNT(assets.id) as asset_count'))
+            ->where('assets.company_id', $activeCompanyId)
+            ->whereNull('assets.deleted_at')
+            ->whereNull('locations.deleted_at')
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
@@ -40,7 +46,10 @@ class DashboardController extends Controller
             ->orderByDesc('asset_count')
             ->get();
 
-        $noLocationCount = Asset::whereNull('location_id')
+        $noLocationCount = DB::table('assets')
+            ->where('company_id', $activeCompanyId)
+            ->whereNull('deleted_at')
+            ->whereNull('location_id')
             ->where('status', '!=', 'Sold')
             ->where('status', '!=', 'Onboard')
             ->where('status', '!=', 'Disposal')
@@ -55,11 +64,14 @@ class DashboardController extends Controller
             'series' => $locationRows->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
         ];
 
-        // ─── Asset by Category (SQL GROUP BY) ────────────────────────────────
-        $classRows = Asset::join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
+        // ─── Asset by Category (DB::table untuk konsistensi) ──────────────────
+        $classRows = DB::table('assets')
+            ->join('asset_names', 'assets.asset_name_id', '=', 'asset_names.id')
             ->join('asset_sub_classes', 'asset_names.sub_class_id', '=', 'asset_sub_classes.id')
             ->join('asset_classes', 'asset_sub_classes.class_id', '=', 'asset_classes.id')
             ->select('asset_classes.name as class_name', DB::raw('COUNT(assets.id) as asset_count'))
+            ->where('assets.company_id', $activeCompanyId)
+            ->whereNull('assets.deleted_at')
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
@@ -72,9 +84,13 @@ class DashboardController extends Controller
             'series' => $classRows->pluck('asset_count')->map(fn($v) => (int) $v)->values()->all(),
         ];
 
-        // ─── Asset by Department (SQL GROUP BY — tidak load seluruh data ke PHP) ─
-        $deptRows = Asset::join('departments', 'assets.department_id', '=', 'departments.id')
+        // ─── Asset by Department (DB::table untuk hindari konflik scope & SoftDeletes) ─
+        $deptRows = DB::table('assets')
+            ->join('departments', 'assets.department_id', '=', 'departments.id')
             ->select('departments.name as department_name', DB::raw('COUNT(assets.id) as asset_count'))
+            ->where('assets.company_id', $activeCompanyId)
+            ->whereNull('assets.deleted_at')
+            ->whereNull('departments.deleted_at')
             ->where('assets.status', '!=', 'Sold')
             ->where('assets.status', '!=', 'Onboard')
             ->where('assets.status', '!=', 'Disposal')
@@ -82,7 +98,10 @@ class DashboardController extends Controller
             ->orderByDesc('asset_count')
             ->get();
 
-        $noDeptCount = Asset::whereNull('department_id')
+        $noDeptCount = DB::table('assets')
+            ->where('company_id', $activeCompanyId)
+            ->whereNull('deleted_at')
+            ->whereNull('department_id')
             ->where('status', '!=', 'Sold')
             ->where('status', '!=', 'Onboard')
             ->where('status', '!=', 'Disposal')
