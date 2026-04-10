@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\AssetSubClass;
 use App\Models\Company;
 use App\Models\RegisterAsset;
+use App\Models\DetailRegister;
 use App\Models\Asset;
 use App\Scopes\CompanyScope;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -47,7 +48,7 @@ class AssetName extends Model
 
     public function detailRegisters(): HasMany
     {
-        return $this->hasMany(RegisterAsset::class, 'asset_name_id', 'id');
+        return $this->hasMany(DetailRegister::class, 'asset_name_id', 'id');
     }
 
     protected static function booted(): void
